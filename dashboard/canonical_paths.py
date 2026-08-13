@@ -1,9 +1,9 @@
 """Canonical path guard for VOID Pirate / Captain Dashboard automation.
 
 Approved roots:
-- Business root: C:\Users\kidsm\Documents\My Docs\VOID Pirate Trading Co
-- Vault:        <business root>\Obsidian_Vault
-- Dashboard:    <business root>\Captain_Dashboard
+- Business root: C:\\Users\\kidsm\\Documents\\My Docs\\VOID Pirate Trading Co
+- Vault:        <business root>\\Obsidian_Vault
+- Dashboard:    <business root>\\Captain_Dashboard
 
 Any write/read outside these roots is rejected by path_guard().
 """
@@ -39,13 +39,9 @@ def path_guard(target, mode="read"):
     except Exception:
         raise ValueError(f"Bad path: {target}")
 
-    if mode == "read":
-        allowed = APPROVED_ROOTS
-    elif mode == "write":
-        allowed = APPROVED_ROOTS
-    else:
+    if mode not in ("read", "write"):
         raise ValueError(f"Unknown mode: {mode}")
 
-    if not any(str(p).startswith(str(root)) for root in allowed):
+    if not any(str(p).startswith(str(root)) for root in APPROVED_ROOTS):
         raise PermissionError(f"Blocked {mode} outside approved root: {p} -> {target}")
     return p
