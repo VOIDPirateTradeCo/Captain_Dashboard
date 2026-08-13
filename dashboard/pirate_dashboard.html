@@ -746,7 +746,7 @@ async function updateDashboard() {
         // OPSEC
         const o = d.opsec || {};
         setText('opsec-git', o.shared_with_pink_gitignored ? '✅ YES' : '❌ NO', o.shared_with_pink_gitignored ? 'online' : 'offline');
-        setText('opsec-secrets', o.real_secrets_tracked === 0 ? '✅ 0' : `❌ ${o.real_secrets}`, o.real_secrets_tracked === 0 ? 'online' : 'offline');
+        setText('opsec-secrets', o.real_secrets_tracked === 0 ? '✅ 0' : `❌ ${o.real_secrets_tracked}`, o.real_secrets_tracked === 0 ? 'online' : 'offline');
         setText('opsec-chinese', o.chinese_content_files === 0 ? '✅ 0' : `⚠️ ${o.chinese_content_files}`, o.chinese_content_files === 0 ? 'online' : 'offline');
         setText('opsec-allclear', o.all_clear ? '✅ SECURE' : '⚠️ CHECKS', o.all_clear ? 'online' : 'offline');
 
@@ -806,28 +806,14 @@ document.getElementById('whale-passphrase').addEventListener('keypress', functio
 updateDashboard();
 // Auto-refresh every 10 seconds
 setInterval(updateDashboard, 10000);
-// Per-stat live updates
+// Per-stat live updates — consolidated to single shared status fetch to avoid rate-limit storm and race against updateDashboard
 setInterval(async () => {
-  const [ships, services, internal, tailscale, network, tools, vault, comms] = await Promise.all([
-    fetch('/api/status', {cache:'no-store'}).then(r=>r.json()).then(d=>({ships:d.ships, ship_details:d.ship_details, network:d.network, tools:d.tools, vault:d.vault, comms:d.comms, internal_services:d.internal_services, tailscale_status:d.tailscale_status})),
-    fetch('/api/status', {cache:'no-store'}).then(r=>r.json()).then(d=>({services:d.services})),
-    fetch('/api/status', {cache:'no-store'}).then(r=>r.json()).then(d=>({internal_services:d.internal_services||{}})),
-    fetch('/api/status', {cache:'no-store'}).then(r=>r.json()).then(d=>({tailscale_status:d.tailscale_status||{}})),
-    fetch('/api/status', {cache:'no-store'}).then(r=>r.json()).then(d=>({network:d.network})),
-    fetch('/api/status', {cache:'no-store'}).then(r=>r.json()).then(d=>({tools:d.tools})),
-    fetch('/api/status', {cache:'no-store'}).then(r=>r.json()).then(d=>({vault:d.vault})),
-    fetch('/api/status', {cache:'no-store'}).then(r=>r.json()).then(d=>({comms:d.comms})),
-  ]);
-  try { if (ships.ships) applyShips(ships.ships, ships.ship_details, ships.latency); } catch (e) {}
-  try { if (services.services) applyServices(services.services); } catch (e) {}
-  try { if (network.network) applyNetwork(network.network, ships.ship_details); } catch (e) {}
-  try { if (tools.tools) applyTools(tools.tools, tools.health_status, tools.health_message); } catch (e) {}
-  try { if (vault.vault) applyVault(vault.vault); } catch (e) {}
-  try { if (vault.opsec) applyOpsec(vault.opsec); } catch (e) {}
-  try { if (comms.comms) applyComms(comms.comms, comms.cipher); } catch (e) {}
-  try { if (internal.internal_services) applyInternalServices(internal.internal_services); } catch (e) {}
-  try { if (tailscale.tailscale_status) applyTailscaleCrew(tailscale.tailscale_status); } catch (e) {}
-}, 3000);
+  try {
+    const resp = await fetch(API, {cache:'no-store'});
+    const d = await resp.json();
+    applyAll(d);
+  } catch (e) {}
+}, 10000);
 
 function applyShips(ships, details, latency) {
   for (const [key, elId] of [['SQUIDSTATION','ship-squid'],['PINKCADY','ship-pink'],['STEALTHATTACK','ship-azure']]) {
@@ -931,6 +917,17 @@ function applyComms(comms, cipher) {
   setText('cipher-encode', cipher['encode_pirate.py'] ? '✅ Present' : '❌ Missing', cipher['encode_pirate.py'] ? 'online' : 'offline');
   setText('cipher-decode', cipher['decode_pirate.py'] ? '✅ Present' : '❌ Missing', cipher['decode_pirate.py'] ? 'online' : 'offline');
   setText('cipher-doc', cipher['TIDAL_TONGUE_CIPHER.md'] ? '✅ Present' : '❌ Missing', cipher['TIDAL_TONGUE_CIPHER.md'] ? 'online' : 'offline');
+}
+function applyAll(d) {
+  try { if (d.ships) applyShips(d.ships, d.ship_details, d.latency); } catch (e) {}
+  try { if (d.services) applyServices(d.services); } catch (e) {}
+  try { if (d.network) applyNetwork(d.network, d.ship_details); } catch (e) {}
+  try { if (d.tools) applyTools(d.tools.classification_levels || [], d.health_status, d.health_message); } catch (e) {}
+  try { if (d.vault) applyVault(d.vault); } catch (e) {}
+  try { if (d.opsec) applyOpsec(d.opsec); } catch (e) {}
+  try { if (d.comms) applyComms(d.comms, d.cipher); } catch (e) {}
+  try { if (d.internal_services) applyInternalServices(d.internal_services); } catch (e) {}
+  try { if (d.tailscale_status) applyTailscaleCrew(d.tailscale_status); } catch (e) {}
 }
 </script>
 </body>
