@@ -1581,7 +1581,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
         elif path.startswith('/api/tools/classification') or path == '/api/tools':
             self.handle_tools_classification_api()
         elif path == '/api/signals' or path.startswith('/api/signals/'):
-            self.handle_proxy_api('http://127.0.0.1:5000/api/signals', keep_path=True)
+            self.handle_proxy_api('http://127.0.0.1:5000/api/signals')
         elif path.startswith('/api/augur/scan/status'):
             self.handle_proxy_api('http://127.0.0.1:5000/api/augur/scan/status')
         elif path.startswith('/api/augur/augmented_signals'):
