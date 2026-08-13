@@ -1,0 +1,27 @@
+[2026-08-08T21:07:26.053982] Watchdog started. Monitoring http://127.0.0.1:9000/
+[2026-08-08T21:28:28.456686] Dashboard DOWN detected!
+[2026-08-08T21:28:28.456686] Attempting dashboard restart...
+[2026-08-08T21:28:36.467495] Restart succeeded.
+[2026-08-08T21:28:56.666488] Watchdog started. Monitoring http://127.0.0.1:9000/
+[2026-08-08T22:32:20.031192] Watchdog started. Monitoring http://127.0.0.1:9000/
+[2026-08-08T22:32:22.078736] Dashboard DOWN detected!
+[2026-08-08T22:32:22.079736] Attempting dashboard restart (windowless)...
+[2026-08-08T22:32:30.100476] Restart succeeded.
+[2026-08-08T22:33:17.493617] Watchdog started. Monitoring http://127.0.0.1:9000/
+[2026-08-08T22:37:51.069048] Watchdog started. Monitoring http://127.0.0.1:9000/
+[2026-08-09T05:30:56.273163] Watchdog started. Monitoring http://127.0.0.1:9000/
+[2026-08-09T05:49:13.106600] Watchdog started. Monitoring http://127.0.0.1:9000/
+[2026-08-09T07:52:15.995609] Dashboard DOWN detected!
+[2026-08-09T07:52:15.997150] Attempting dashboard restart (windowless)...
+[2026-08-09T07:52:24.007174] Restart succeeded.
+[2026-08-09T11:31:36.926705] Watchdog started. Monitoring http://127.0.0.1:9000/
+[2026-08-09T11:31:38.983254] Dashboard DOWN detected!
+[2026-08-09T11:31:38.984043] Attempting dashboard restart (windowless)...
+[2026-08-09T11:31:46.993995] Restart succeeded.
+[2026-08-10T23:19:27.352534] Watchdog started. Monitoring http://127.0.0.1:8080/
+[2026-08-12T01:40:37.604491] Dashboard DOWN detected!
+[2026-08-12T01:40:37.610347] Attempting dashboard restart...
+[2026-08-12T01:40:37.610899] launcher missing: C:\Users\kidsm\Documents\My Docs\VOID Pirate Trading Co\Obsidian_Vault\Developer_Brain\01_Projects\Automation\launchers\launch_dashboard.ps1
+[2026-08-12T01:40:37.617709] discord alert failed: No module named 'void_discord_webhook'
+[2026-08-12T01:41:37.619443] Dashboard RECOVERED.
+[2026-08-12T01:41:37.620443] discord alert failed: No module named 'void_discord_webhook'

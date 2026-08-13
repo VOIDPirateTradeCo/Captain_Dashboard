@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Monitoring Tab</title>
+    <style>
+        body { background:#0b1d2e; color:#ffd700; font-family:sans-serif; padding:20px; }
+        .card { background:#122a3d; border:1px solid #1f3a55; padding:15px; margin:10px 0; border-radius:8px; }
+        .metric { color:#4da6ff; }
+        .online { color:#56fb88; }
+        .offline { color:#f85149; }
+        a { color:#4da6ff; }
+        iframe { width:100%; height:420px; border:1px solid #1f3a55; border-radius:6px; background:#000; }
+        .grid { display:grid; gap:12px; }
+        .col-2 { grid-template-columns: repeat(2, 1fr); }
+        .col-3 { grid-template-columns: repeat(3, 1fr); }
+    </style>
+</head>
+<body>
+    <h1>📡 Local Monitoring</h1>
+    <div class="card">
+        <h2>Stack</h2>
+        <ul>
+            <li class="metric"><a href="http://192.168.0.39:3002" target="_blank">Grafana</a></li>
+            <li class="metric"><a href="http://192.168.0.39:9090" target="_blank">Prometheus</a></li>
+            <li class="metric"><a href="http://192.168.0.39:8081" target="_blank">cAdvisor</a></li>
+            <li class="metric"><a href="http://192.168.0.39:3001" target="_blank">Uptime Kuma</a></li>
+        </ul>
+    </div>
+    <div class="card">
+        <h2>Live Status</h2>
+        <p id="status">Loading...</p>
+    </div>
+    <div class="card">
+        <h2>Panels</h2>
+        <div class="grid col-2">
+            <div>
+                <h3>Grafana</h3>
+                <iframe src="http://192.168.0.39:3002" sandbox="allow-scripts allow-same-origin allow-forms"></iframe>
+            </div>
+            <div>
+                <h3>Uptime Kuma</h3>
+                <iframe src="http://192.168.0.39:3001" sandbox="allow-scripts allow-same-origin allow-forms"></iframe>
+            </div>
+        </div>
+        <div class="grid col-3" style="margin-top:12px;">
+            <div>
+                <h3>Prometheus</h3>
+                <iframe src="http://192.168.0.39:9090" sandbox="allow-scripts allow-same-origin allow-forms"></iframe>
+            </div>
+            <div>
+                <h3>cAdvisor</h3>
+                <iframe src="http://192.168.0.39:8081" sandbox="allow-scripts allow-same-origin allow-forms"></iframe>
+            </div>
+            <div>
+                <h3>Captain API Status</h3>
+                <iframe src="/api/status" sandbox="allow-scripts allow-same-origin"></iframe>
+            </div>
+        </div>
+    </div>
+    <script>
+        async function load() {
+            try {
+                const res = await fetch('/api/status');
+                const data = await res.json();
+                const services = data.services || {};
+                const internal = data.internal_services || {};
+                const lines = [];
+                const names = {grafana:'Grafana', prometheus:'Prometheus', cadvisor:'cAdvisor', kuma:'Uptime Kuma'};
+                for (const [key, label] of Object.entries(names)) {
+                    const ok = !!internal[key];
+                    lines.push(`<span class="${ok ? 'online' : 'offline'}">${label}: ${ok ? 'UP' : 'DOWN'}</span>`);
+                }
+                document.getElementById('status').innerHTML = lines.join('<br>');
+            } catch (e) {
+                document.getElementById('status').innerText = 'Failed to load status';
+            }
+        }
+        load();
+        setInterval(load, 3000);
+    </script>
+</body>
+</html>
