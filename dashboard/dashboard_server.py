@@ -1598,6 +1598,8 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.handle_proxy_api('http://127.0.0.1:5000/api/paper_trades', keep_path=True)
         elif path.startswith('/api/tailscale'):
             self.handle_proxy_api('http://127.0.0.1:5000/api/tailscale')
+        elif path.startswith('/api/git-sync'):
+            self.handle_git_sync_status()
         elif path.startswith('/api/'):
             self.handle_proxy_api('http://127.0.0.1:5000', keep_path=True)
         else:
@@ -3291,6 +3293,47 @@ class DashboardHandler(BaseHTTPRequestHandler):
                 'statuses': statuses,
             }
             self.wfile.write(json.dumps(payload, indent=2, default=str).encode('utf-8'))
+        except Exception as e:
+            self.wfile.write(json.dumps({'error': str(e)}).encode('utf-8'))
+
+
+    def handle_git_sync_status(self):
+        """Git sync status for all tracked repos."""
+        self.send_response(200)
+        self.send_header('Content-Type', 'application/json')
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.end_headers()
+        try:
+            import subprocess
+            repos = [
+                'Obsidian_Vault',
+                'Captain_Dashboard',
+                'PROJECT_tr3asure_mAp',
+                'PROJECT_crownless_fortune',
+                'PROJECT_VOID_Pirate_Website',
+                'automations',
+                'ops',
+            ]
+            root = Path(__file__).resolve().parent.parent.parent
+            results = []
+            for repo in repos:
+                rdir = root / repo
+                if not rdir.exists():
+                    results.append({'repo': repo, 'exists': False})
+                    continue
+                try:
+                    branch = subprocess.check_output(['git', '-C', str(rdir), 'rev-parse', '--abbrev-ref', 'HEAD'], text=True, timeout=10).strip()
+                    dirty = subprocess.check_output(['git', '-C', str(rdir), 'status', '--short'], text=True, timeout=10).strip()
+                    results.append({
+                        'repo': repo,
+                        'exists': True,
+                        'branch': branch,
+                        'dirty': bool(dirty),
+                        'changes': len(dirty.splitlines()) if dirty else 0,
+                    })
+                except Exception as exc:
+                    results.append({'repo': repo, 'exists': True, 'error': str(exc)})
+            self.wfile.write(json.dumps({'repos': results, 'timestamp': datetime.datetime.now(datetime.timezone.utc).isoformat()}, indent=2).encode('utf-8'))
         except Exception as e:
             self.wfile.write(json.dumps({'error': str(e)}).encode('utf-8'))
 
