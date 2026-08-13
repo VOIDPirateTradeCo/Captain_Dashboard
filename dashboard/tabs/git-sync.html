@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Git Sync Status — Captain Dashboard</title>
+  <style>
+    body { background:#0a1622; color:#d6e1ff; font-family:Consolas,monospace; margin:0; padding:20px; }
+    h1 { font-size:18px; margin-bottom:12px; }
+    .repo { border:1px solid #15233b; padding:10px; margin:8px 0; border-radius:6px; background:#0d1b2a; }
+    .dirty { color:#ff6b6b; } .clean { color:#6bff9e; }
+    button { background:#00e5ff; color:#001e2b; border:none; padding:6px 10px; margin:4px; cursor:pointer; font-weight:bold; border-radius:4px; }
+    button:hover { background:#7ff7ff; }
+    .timestamp { color:#7a8baa; font-size:12px; margin-top:10px; }
+  </style>
+</head>
+<body>
+  <h1>⚓ Git Sync Status</h1>
+  <div id="repos">Loading...</div>
+  <div class="timestamp" id="ts"></div>
+
+  <script>
+    async function load() {
+      const res = await fetch('/api/git-sync', {cache:'no-store'});
+      const data = await res.json();
+      const box = document.getElementById('repos');
+      document.getElementById('ts').textContent = 'Updated: ' + (data.timestamp || '');
+      box.innerHTML = '';
+      for (const r of data.repos || []) {
+        const exists = r.exists ? '' : '(missing) ';
+        const dirtyClass = r.dirty ? 'dirty' : 'clean';
+        const dirtyText = r.dirty ? `dirty (${r.changes})` : 'clean';
+        const line = document.createElement('div');
+        line.className = 'repo';
+        line.innerHTML = `<b>${exists}${r.repo}</b> — <span class="${dirtyClass}">${dirtyText}</span><br><small>branch: ${r.branch || '-'}${r.error ? ' — error: '+r.error : ''}</small>`;
+        box.appendChild(line);
+      }
+    }
+    load();
+    setInterval(load, 10000);
+  </script>
+</body>
+</html>
