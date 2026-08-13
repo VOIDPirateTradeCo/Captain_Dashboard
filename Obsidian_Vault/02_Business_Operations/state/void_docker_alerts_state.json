@@ -1,0 +1,19 @@
+{
+  "last_sent": null,
+  "last_containers": {
+    "healthy": [],
+    "unhealthy": [],
+    "missing": [
+      "void-api-server",
+      "void-comfyui-local",
+      "void-ffmpeg-local",
+      "void-grafana",
+      "void-prometheus",
+      "void-tts-local",
+      "void-watcher",
+      "void-watcher-verify",
+      "void-webhooks",
+      "void-whisper-local"
+    ]
+  }
+}
