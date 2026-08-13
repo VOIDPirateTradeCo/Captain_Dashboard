@@ -43,6 +43,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from socketserver import ThreadingMixIn
 from urllib.parse import urlparse, parse_qs
+from canonical_paths import path_guard
 from pathlib import Path
 import urllib.request
 
@@ -2320,7 +2321,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
         """Serve WHITE WHALE PROTOCOL classification levels for all tools."""
         try:
             # Read security findings + crew access from fleet state
-            state_path = r"C:\Users\kidsm\Documents\My Docs\VOID Pirate Trading Co\Obsidian_Vault\02_Business_Operations\state\fleet_mesh_state.json"
+            state_path = r"C:\Users\kidsm\Documents\My Docs\VOID Pirate Trading Co\FLEET_MESH_STATE"
             remediated = {}
             crew_access = {
                 "SirGreen": {"level": 4, "can_see_whale": True},

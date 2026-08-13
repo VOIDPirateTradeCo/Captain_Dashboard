@@ -2,7 +2,7 @@
 """Update VOID Ops Trello cards for OODA batch 1 (Sir Green)."""
 import urllib.request as u, urllib.parse as p, json, os, sys
 
-SRC = r"C:\Users\kidsm\Documents\My Docs\VOID Pirate Trading Co\Obsidian_Vault\Developer_Brain\02_Business_Operations\_Hub\_KEY_VAULT\secrets.env"
+SRC = r"C:\Users\kidsm\Documents\My Docs\VOID Pirate Trading Co\SECRETS_ENV"
 env = {}
 for line in open(SRC, encoding='utf-8'):
     line=line.strip()

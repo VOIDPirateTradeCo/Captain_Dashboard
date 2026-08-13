@@ -1,6 +1,6 @@
 import urllib.request as u, urllib.parse as p, json, time
 env={}
-for l in open(r'C:\Users\kidsm\Documents\My Docs\VOID Pirate Trading Co\Obsidian_Vault\Developer_Brain\02_Business_Operations\_Hub\_KEY_VAULT\secrets.env',encoding='utf-8'):
+for l in open(r'C:\Users\kidsm\Documents\My Docs\VOID Pirate Trading Co\SECRETS_ENV',encoding='utf-8'):
     if l.strip().startswith('TRELLO_') and '=' in l: k,v=l.strip().split('=',1); env[k]=v.strip()
 KEY,TOK=env['TRELLO_KEY'],env['TRELLO_TOKEN']
 def call(path,data=None,method='GET'):
