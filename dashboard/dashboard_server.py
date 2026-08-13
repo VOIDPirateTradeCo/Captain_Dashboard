@@ -1588,6 +1588,8 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.handle_proxy_api('http://127.0.0.1:5000/api/augur/augmented_signals')
         elif path.startswith('/api/ticker_fundamentals'):
             self.handle_proxy_api('http://127.0.0.1:5000/api/ticker_fundamentals', keep_path=True)
+        elif path == '/api/fundamentals' or path == '/api/fundamentals/':
+            self.handle_fundamentals_index()
         elif path.startswith('/api/fundamentals'):
             self.handle_proxy_api('http://127.0.0.1:5000/api/fundamentals', keep_path=True)
         elif path.startswith('/api/positions'):
@@ -3255,6 +3257,42 @@ class DashboardHandler(BaseHTTPRequestHandler):
         self.send_header('Content-Length', str(len(body)))
         self.end_headers()
         self.wfile.write(body)
+
+
+    def handle_fundamentals_index(self):
+        """Fundamentals API index — available endpoints and status."""
+        self.send_response(200)
+        self.send_header('Content-Type', 'application/json')
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.end_headers()
+        try:
+            import urllib.request as _u
+            statuses = {}
+            endpoints = [
+                ('sectors', 'http://127.0.0.1:5000/api/fundamentals/sectors'),
+                ('progress', 'http://127.0.0.1:5000/api/fundamentals/progress'),
+            ]
+            for name, url in endpoints:
+                try:
+                    with _u.urlopen(url, timeout=5) as r:
+                        statuses[name] = {'status': r.status, 'data': json.loads(r.read())}
+                except Exception as exc:
+                    statuses[name] = {'status': 'unavailable', 'error': str(exc)}
+            payload = {
+                'endpoint': '/api/fundamentals',
+                'backend': 'http://127.0.0.1:5000',
+                'available_paths': [
+                    '/api/fundamentals/<ticker>',
+                    '/api/fundamentals/download',
+                    '/api/fundamentals/progress',
+                    '/api/fundamentals/sectors',
+                    '/api/fundamentals/sectors/refresh',
+                ],
+                'statuses': statuses,
+            }
+            self.wfile.write(json.dumps(payload, indent=2, default=str).encode('utf-8'))
+        except Exception as e:
+            self.wfile.write(json.dumps({'error': str(e)}).encode('utf-8'))
 
     def handle_whale_api(self):
         """WHITE WHALE API — requires passphrase verification.
