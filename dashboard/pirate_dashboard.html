@@ -905,7 +905,7 @@ function applyVault(vault) {
 
 function applyOpsec(opsec) {
   setText('opsec-git', opsec.shared_with_pink_gitignored ? '✅ YES' : '❌ NO', opsec.shared_with_pink_gitignored ? 'online' : 'offline');
-  setText('opsec-secrets', opsec.real_secrets_tracked === 0 ? '✅ 0' : `❌ ${opsec.real_secrets}`, opsec.real_secrets_tracked === 0 ? 'online' : 'offline');
+  setText('opsec-secrets', opsec.real_secrets_tracked === 0 ? '✅ 0' : `❌ ${opsec.real_secrets_tracked}`, opsec.real_secrets_tracked === 0 ? 'online' : 'offline');
   setText('opsec-chinese', opsec.chinese_content_files === 0 ? '✅ 0' : `⚠️ ${opsec.chinese_content_files}`, opsec.chinese_content_files === 0 ? 'online' : 'offline');
   setText('opsec-allclear', opsec.all_clear ? '✅ SECURE' : '⚠️ CHECKS', opsec.all_clear ? 'online' : 'offline');
 }
@@ -922,7 +922,7 @@ function applyAll(d) {
   try { if (d.ships) applyShips(d.ships, d.ship_details, d.latency); } catch (e) {}
   try { if (d.services) applyServices(d.services); } catch (e) {}
   try { if (d.network) applyNetwork(d.network, d.ship_details); } catch (e) {}
-  try { if (d.tools) applyTools(d.tools.classification_levels || [], d.health_status, d.health_message); } catch (e) {}
+  try { if (d.tools) applyTools(d.tools || {}, d.health_status, d.health_message); } catch (e) {}
   try { if (d.vault) applyVault(d.vault); } catch (e) {}
   try { if (d.opsec) applyOpsec(d.opsec); } catch (e) {}
   try { if (d.comms) applyComms(d.comms, d.cipher); } catch (e) {}
