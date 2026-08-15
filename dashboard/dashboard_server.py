@@ -104,7 +104,7 @@ GATEWAY_IP = "192.168.0.1"
 HEALTH_API = f"http://{SQUID_IP}:9999"
 KALI_CONTAINER = "kali-full"
 NETWORK_CIDR = "192.168.0.0/24"
-DASHBOARD_PORT = 9000
+DASHBOARD_PORT = 8080
 TS_SQUID_IP = None  # SQUIDSTATION local
 TS_PINK_IP = None   # PINKCADY local
 TS_AZURE_IP = "100.83.247.14"  # STEALTHATTACK Tailscale (LAN ports closed, TS works)
@@ -1792,7 +1792,15 @@ class DashboardHandler(BaseHTTPRequestHandler):
                     return
                 self._json_err(404, 'unknown POST action')
                 return
-            self._json_ok({'status': get_download_status(), 'progress': get_progress(), 'active': is_download_active()})
+            # GET status: return cached snapshot to avoid slow DB reads on every poll
+            if not hasattr(self, '_dl_cache') or not hasattr(self, '_dl_cache_ts') or (__import__('time').time() - getattr(self, '_dl_cache_ts', 0) > 5):
+                self._dl_cache = {
+                    'status': get_download_status(),
+                    'progress': get_progress(),
+                    'active': is_download_active(),
+                }
+                self._dl_cache_ts = __import__('time').time()
+            self._json_ok(self._dl_cache)
         except Exception as exc:
             self._json_err(500, str(exc))
 

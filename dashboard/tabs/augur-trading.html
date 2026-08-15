@@ -96,6 +96,77 @@
 </div>
 
 <div class="card">
+  <h3 class="section-title">Live News</h3>
+  <div class="row">
+    <input id="news-ticker" placeholder="TICKER" value="SPY" style="background:#000;color:#e2e8f0;border:1px solid #1e293b;padding:6px 8px;border-radius:6px;width:90px;">
+    <button id="btn-news-refresh" class="btn">Refresh</button>
+    <button id="btn-news-clear" class="btn btn-secondary">Clear</button>
+  </div>
+  <pre id="news" class="metric">Loading...</pre>
+  <div id="news-status" style="margin-top:6px;font-size:0.8em;color:#94a3b8;"></div>
+</div>
+
+<div class="card">
+  <h3 class="section-title">Study / Scan Presets</h3>
+  <p class="metric">Save indicator combinations and genome parameter sets for quick reuse.</p>
+  <div class="row">
+    <input id="preset-name" placeholder="PRESET NAME" style="background:#000;color:#e2e8f0;border:1px solid #1e293b;padding:6px 8px;border-radius:6px;width:160px;">
+    <input id="preset-ticker" placeholder="TICKER" style="background:#000;color:#e2e8f0;border:1px solid #1e293b;padding:6px 8px;border-radius:6px;width:90px;">
+    <input id="preset-discipline" placeholder="discipline" value="day" style="background:#000;color:#e2e8f0;border:1px solid #1e293b;padding:6px 8px;border-radius:6px;width:90px;">
+    <input id="preset-direction" placeholder="direction" value="long" style="background:#000;color:#e2e8f0;border:1px solid #1e293b;padding:6px 8px;border-radius:6px;width:90px;">
+    <button id="btn-preset-save" class="btn">Save Preset</button>
+    <button id="btn-preset-refresh" class="btn btn-secondary">Refresh</button>
+  </div>
+  <pre id="presets" class="metric">Loading...</pre>
+</div>
+
+<div class="card">
+  <h3 class="section-title">Bracket / OCO Order</h3>
+  <p class="metric">Manual bracket with stop-loss and target. Paper by default.</p>
+  <div class="row">
+    <input id="bracket-ticker" placeholder="TICKER" style="background:#000;color:#e2e8f0;border:1px solid #1e293b;padding:6px 8px;border-radius:6px;width:90px;">
+    <select id="bracket-side" style="background:#000;color:#e2e8f0;border:1px solid #1e293b;padding:6px 8px;border-radius:6px;width:90px;">
+      <option value="long">LONG</option>
+      <option value="short">SHORT</option>
+    </select>
+    <input id="bracket-entry" placeholder="entry" style="background:#000;color:#e2e8f0;border:1px solid #1e293b;padding:6px 8px;border-radius:6px;width:80px;">
+    <input id="bracket-stop" placeholder="stop" style="background:#000;color:#e2e8f0;border:1px solid #1e293b;padding:6px 8px;border-radius:6px;width:80px;">
+    <input id="bracket-target" placeholder="target" style="background:#000;color:#e2e8f0;border:1px solid #1e293b;padding:6px 8px;border-radius:6px;width:80px;">
+    <input id="bracket-qty" placeholder="qty" style="background:#000;color:#e2e8f0;border:1px solid #1e293b;padding:6px 8px;border-radius:6px;width:60px;">
+    <select id="bracket-mode" style="background:#000;color:#e2e8f0;border:1px solid #1e293b;padding:6px 8px;border-radius:6px;width:80px;">
+      <option value="paper">PAPER</option>
+      <option value="live">LIVE</option>
+    </select>
+    <button id="btn-bracket-submit" class="btn">Submit Bracket</button>
+    <button id="btn-bracket-info" class="btn btn-secondary">Get Info</button>
+  </div>
+  <pre id="bracket-result" class="metric">Idle.</pre>
+</div>
+
+<div class="card">
+  <h3 class="section-title">Bracket / OCO Order</h3>
+  <p class="metric">Manual bracket with stop-loss and target. Paper by default.</p>
+  <div class="row">
+    <input id="bracket-ticker" placeholder="TICKER" style="background:#000;color:#e2e8f0;border:1px solid #1e293b;padding:6px 8px;border-radius:6px;width:90px;">
+    <select id="bracket-side" style="background:#000;color:#e2e8f0;border:1px solid #1e293b;padding:6px 8px;border-radius:6px;width:90px;">
+      <option value="long">LONG</option>
+      <option value="short">SHORT</option>
+    </select>
+    <input id="bracket-entry" placeholder="entry" style="background:#000;color:#e2e8f0;border:1px solid #1e293b;padding:6px 8px;border-radius:6px;width:80px;">
+    <input id="bracket-stop" placeholder="stop" style="background:#000;color:#e2e8f0;border:1px solid #1e293b;padding:6px 8px;border-radius:6px;width:80px;">
+    <input id="bracket-target" placeholder="target" style="background:#000;color:#e2e8f0;border:1px solid #1e293b;padding:6px 8px;border-radius:6px;width:80px;">
+    <input id="bracket-qty" placeholder="qty" style="background:#000;color:#e2e8f0;border:1px solid #1e293b;padding:6px 8px;border-radius:6px;width:60px;">
+    <select id="bracket-mode" style="background:#000;color:#e2e8f0;border:1px solid #1e293b;padding:6px 8px;border-radius:6px;width:80px;">
+      <option value="paper">PAPER</option>
+      <option value="live">LIVE</option>
+    </select>
+    <button id="btn-bracket-submit" class="btn">Submit Bracket</button>
+    <button id="btn-bracket-info" class="btn btn-secondary">Get Info</button>
+  </div>
+  <pre id="bracket-result" class="metric">Idle.</pre>
+</div>
+
+<div class="card">
   <h3 class="section-title">Signals</h3>
   <pre id="signals">Loading...</pre>
 </div>
@@ -248,11 +319,129 @@ async function loadDatasetVerify(){
   pollDownload();
 })();
 
+(function(){
+  const presetsEl=document.getElementById('presets');
+  async function loadPresets(){
+    try {
+      const r = await fetch('/api/genome/presets');
+      const data = await r.json();
+      const list = data.presets || [];
+      presetsEl.textContent = list.map(p => `[${p.id}] ${p.name} | ${p.discipline} ${p.direction} | ticker=${p.ticker || '-'}\n${p.notes || p.description || ''}\n`).join('\n') || 'No presets saved yet.';
+    } catch(e) {
+      presetsEl.textContent = 'Error loading presets: ' + e.message;
+    }
+  }
+  document.getElementById('btn-preset-save')?.addEventListener('click', async ()=>{
+    const name = document.getElementById('preset-name').value.trim();
+    if(!name) { alert('Preset name required'); return; }
+    const body = {
+      name,
+      ticker: document.getElementById('preset-ticker').value.trim() || undefined,
+      discipline: document.getElementById('preset-discipline').value.trim() || 'day',
+      direction: document.getElementById('preset-direction').value.trim() || 'long',
+      notes: 'Captain preset ' + (document.getElementById('preset-ticker').value.trim() || ''),
+    };
+    const res = await fetch('/api/genome/presets', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)});
+    const data = await res.json();
+    alert(data.status === 'saved' ? 'Preset saved' : 'Error: ' + (data.error || 'unknown'));
+    loadPresets();
+  });
+  document.getElementById('btn-preset-refresh')?.addEventListener('click', loadPresets);
+  loadPresets();
+})();
+
 document.getElementById('btn-verify-dataset')?.addEventListener('click', loadDatasetVerify);
 document.getElementById('btn-refresh-sources')?.addEventListener('click', loadDataSources);
 loadDataSources();
 load();
 setInterval(load, 15000);
+
+(function(){
+  const newsEl=document.getElementById('news');
+  const newsStatus=document.getElementById('news-status');
+  const tickerEl=document.getElementById('news-ticker');
+  const refreshBtn=document.getElementById('btn-news-refresh');
+  const clearBtn=document.getElementById('btn-clear-news');
+
+  async function loadNews(){
+    const t = (tickerEl?.value || 'SPY').trim().toUpperCase();
+    if(!t) return;
+    newsEl.textContent = 'Loading...';
+    try {
+      const r = await fetch('/api/news/' + encodeURIComponent(t));
+      const data = await r.json();
+      const articles = data.articles || [];
+      newsStatus.textContent = t + ' — ' + articles.length + ' articles from ' + (data.source || 'unknown');
+      if (!articles.length) {
+        newsEl.textContent = 'No articles found.';
+        return;
+      }
+      newsEl.textContent = articles.map(a => {
+        const sent = a.sentiment_label ? '[' + a.sentiment_label + '] ' : '';
+        const date = a.published_at ? a.published_at.slice(0, 10) : '';
+        return sent + a.headline + '\n' + (a.summary || '').slice(0, 180) + '\n' + (a.url || '') + ' — ' + date + '\n';
+      }).join('\n');
+    } catch(e) {
+      newsEl.textContent = 'Error: ' + e.message;
+      newsStatus.textContent = '';
+    }
+  }
+
+  refreshBtn?.addEventListener('click', async ()=>{
+    const t = (tickerEl?.value || 'SPY').trim().toUpperCase();
+    try {
+      await fetch('/api/news/refresh', {method:'POST'});
+      newsStatus.textContent = 'Refresh queued for ' + t;
+    } catch(e) {
+      newsStatus.textContent = 'Refresh failed: ' + e.message;
+    }
+    setTimeout(loadNews, 1500);
+  });
+
+  clearBtn?.addEventListener('click', ()=>{
+    newsEl.textContent = 'Cleared.';
+    newsStatus.textContent = '';
+  });
+
+  setInterval(loadNews, 30000);
+  loadNews();
+})();
+
+(function(){
+  const out = document.getElementById('bracket-result');
+  async function getBracketInfo(){
+    const ticker = (document.getElementById('bracket-ticker').value || '').trim().toUpperCase();
+    if(!ticker) { alert('Ticker required'); return; }
+    try {
+      const r = await fetch('/api/augur/bracket/info/' + encodeURIComponent(ticker));
+      const data = await r.json();
+      out.textContent = JSON.stringify(data, null, 2);
+    } catch(e) {
+      out.textContent = 'Error: ' + e.message;
+    }
+  }
+  async function submitBracket(){
+    const ticker = (document.getElementById('bracket-ticker').value || '').trim().toUpperCase();
+    const side = document.getElementById('bracket-side').value;
+    const entry = parseFloat(document.getElementById('bracket-entry').value);
+    const stop = parseFloat(document.getElementById('bracket-stop').value);
+    const target = parseFloat(document.getElementById('bracket-target').value);
+    const qty = parseInt(document.getElementById('bracket-qty').value, 10);
+    const mode = document.getElementById('bracket-mode').value;
+    if(!ticker || isNaN(entry) || isNaN(stop) || isNaN(target) || isNaN(qty)) {
+      alert('Fill all bracket fields'); return;
+    }
+    try {
+      const r = await fetch('/api/augur/manual_signal', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ticker, side, entry_price: entry, stop_price: stop, target_price: target, qty, mode})});
+      const data = await r.json();
+      out.textContent = JSON.stringify(data, null, 2);
+    } catch(e) {
+      out.textContent = 'Error: ' + e.message;
+    }
+  }
+  document.getElementById('btn-bracket-info')?.addEventListener('click', getBracketInfo);
+  document.getElementById('btn-bracket-submit')?.addEventListener('click', submitBracket);
+})();
 </script>
 </body>
 </html>
