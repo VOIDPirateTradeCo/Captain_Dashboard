@@ -48,9 +48,11 @@ from pathlib import Path
 import urllib.request
 
 # Offline-first: make TM backend modules importable directly
-_BACKEND_DIR = Path(r'C:\Users\kidsm\Documents\My Docs\VOID Pirate Trading Co\PROJECT_tr3asure_mAp\tr3asure_mAp\backend')
-if str(_BACKEND_DIR) not in sys.path:
-    sys.path.insert(0, str(_BACKEND_DIR))
+_BACKEND_DIR = Path(r'C:\Users\kidsm\Documents\My Docs\VOID Pirate Trading Co\PROJECT_tr3asure_mAp\tr3asure_mAp')
+_BACKEND_PY_DIR = _BACKEND_DIR / 'backend'
+if str(_BACKEND_PY_DIR) not in sys.path:
+    sys.path.insert(0, str(_BACKEND_PY_DIR))
+_DB_PATH = _BACKEND_DIR / 'data' / 'treasure_map.db'
 
 def load_json(path, default=None):
     try:
@@ -102,7 +104,7 @@ GATEWAY_IP = "192.168.0.1"
 HEALTH_API = f"http://{SQUID_IP}:9999"
 KALI_CONTAINER = "kali-full"
 NETWORK_CIDR = "192.168.0.0/24"
-DASHBOARD_PORT = 8080
+DASHBOARD_PORT = 9000
 TS_SQUID_IP = None  # SQUIDSTATION local
 TS_PINK_IP = None   # PINKCADY local
 TS_AZURE_IP = "100.83.247.14"  # STEALTHATTACK Tailscale (LAN ports closed, TS works)
@@ -1728,7 +1730,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def _json_err(self, code, message):
-        payload = json.dumps({'error': message}, indent=2, default=str).encode('utf-8')
+        payload = json.dumps({'error': message, 'trace': repr(message)}, indent=2, default=str).encode('utf-8')
         self.send_response(code)
         self.send_header('Content-Type', 'application/json')
         self.send_header('Access-Control-Allow-Origin', '*')
