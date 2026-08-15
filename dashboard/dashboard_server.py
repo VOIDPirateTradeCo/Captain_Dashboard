@@ -47,6 +47,11 @@ from canonical_paths import path_guard
 from pathlib import Path
 import urllib.request
 
+# Offline-first: make TM backend modules importable directly
+_BACKEND_DIR = Path(r'C:\Users\kidsm\Documents\My Docs\VOID Pirate Trading Co\PROJECT_tr3asure_mAp\tr3asure_mAp\backend')
+if str(_BACKEND_DIR) not in sys.path:
+    sys.path.insert(0, str(_BACKEND_DIR))
+
 def load_json(path, default=None):
     try:
         p = Path(path)
@@ -1590,11 +1595,11 @@ class DashboardHandler(BaseHTTPRequestHandler):
         elif path == '/api/fleet/legacy':
             self.handle_fleet_api()
         elif path == '/api/fleet/data' or path.startswith('/api/fleet/data/'):
-            self.handle_proxy_api('http://127.0.0.1:5000/api/fleet/data', keep_path=True)
+            self.handle_local_fleet_data_api()
         elif path == '/api/fleet/compute' or path.startswith('/api/fleet/compute/'):
-            self.handle_proxy_api('http://127.0.0.1:5000/api/fleet/compute', keep_path=True)
+            self.handle_local_fleet_compute_api()
         elif path.startswith('/api/fleet/offline-dataset'):
-            self.handle_proxy_api('http://127.0.0.1:5000/api/fleet/offline-dataset', keep_path=True)
+            self.handle_local_dataset_api()
         elif path == '/api/ships' or path == '/api/ships/':
             self.handle_stat_api(['ships', 'ship_details', 'latency'])
         elif path == '/api/dataview' or path == '/api/dataview/':
@@ -1608,29 +1613,33 @@ class DashboardHandler(BaseHTTPRequestHandler):
         elif path == '/api/signals' or path.startswith('/api/signals/'):
             self.handle_proxy_api('http://127.0.0.1:5000/api/signals')
         elif path.startswith('/api/augur/scan/status'):
-            self.handle_proxy_api('http://127.0.0.1:5000/api/augur/scan/status')
+            self.handle_local_proxy_json('http://127.0.0.1:5000/api/augur/scan/status')
         elif path.startswith('/api/augur/augmented_signals'):
-            self.handle_proxy_api('http://127.0.0.1:5000/api/augur/augmented_signals')
+            self.handle_local_proxy_json('http://127.0.0.1:5000/api/augur/augmented_signals')
+        elif path.startswith('/api/augur/bracket'):
+            self.handle_local_proxy_json('http://127.0.0.1:5000/api/augur/bracket/info/' + path.split('/')[-1] if len(path.split('/')) > 3 else 'http://127.0.0.1:5000/api/augur/bracket/info/')
+        elif path.startswith('/api/augur/manual_signal'):
+            self.handle_local_proxy_json('http://127.0.0.1:5000/api/augur/manual_signal', methods=['POST'])
         elif path.startswith('/api/augur'):
-            self.handle_proxy_api('http://127.0.0.1:5000/api/augur', keep_path=True)
+            self.handle_local_proxy_json('http://127.0.0.1:5000/api/augur', keep_path=True)
         elif path.startswith('/api/alpaca'):
-            self.handle_proxy_api('http://127.0.0.1:5000/api/alpaca', keep_path=True)
+            self.handle_local_proxy_json('http://127.0.0.1:5000/api/alpaca', keep_path=True)
         elif path.startswith('/api/trades'):
-            self.handle_proxy_api('http://127.0.0.1:5000/api/trades', keep_path=True)
+            self.handle_local_proxy_json('http://127.0.0.1:5000/api/trades', keep_path=True)
         elif path.startswith('/api/settings'):
-            self.handle_proxy_api('http://127.0.0.1:5000/api/settings', keep_path=True)
+            self.handle_local_proxy_json('http://127.0.0.1:5000/api/settings', keep_path=True)
         elif path.startswith('/api/ticker_fundamentals'):
-            self.handle_proxy_api('http://127.0.0.1:5000/api/ticker_fundamentals', keep_path=True)
+            self.handle_local_proxy_json('http://127.0.0.1:5000/api/ticker_fundamentals', keep_path=True)
         elif path == '/api/fundamentals' or path == '/api/fundamentals/':
             self.handle_fundamentals_index()
         elif path.startswith('/api/fundamentals'):
-            self.handle_proxy_api('http://127.0.0.1:5000/api/fundamentals', keep_path=True)
+            self.handle_local_proxy_json('http://127.0.0.1:5000/api/fundamentals', keep_path=True)
         elif path.startswith('/api/positions'):
-            self.handle_proxy_api('http://127.0.0.1:5000/api/positions', keep_path=True)
+            self.handle_local_proxy_json('http://127.0.0.1:5000/api/positions', keep_path=True)
         elif path.startswith('/api/paper_trades'):
-            self.handle_proxy_api('http://127.0.0.1:5000/api/paper_trades', keep_path=True)
+            self.handle_local_proxy_json('http://127.0.0.1:5000/api/paper_trades', keep_path=True)
         elif path.startswith('/api/tailscale'):
-            self.handle_proxy_api('http://127.0.0.1:5000/api/tailscale')
+            self.handle_local_proxy_json('http://127.0.0.1:5000/api/tailscale')
         elif path.startswith('/api/git-sync'):
             self.handle_git_sync_status()
         elif path == '/api/netbox/status' or path == '/api/netbox/status/':
@@ -1647,6 +1656,14 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.handle_stat_api(['opsec'])
         elif path == '/api/comms' or path == '/api/comms/':
             self.handle_stat_api(['comms', 'cipher'])
+        elif path.startswith('/api/news'):
+            self.handle_local_news_api(path)
+        elif path.startswith('/api/genome/presets'):
+            self.handle_local_presets_api()
+        elif path.startswith('/api/data/sources/preferences'):
+            self.handle_local_data_source_prefs_api()
+        elif path.startswith('/api/download'):
+            self.handle_local_download_api()
         elif path.startswith('/api/'):
             self.handle_proxy_api('http://127.0.0.1:5000', keep_path=True)
         else:
@@ -1700,6 +1717,226 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.send_header('Content-Length', str(len(payload)))
             self.end_headers()
             self.wfile.write(payload.encode('utf-8'))
+
+    def _json_ok(self, payload):
+        body = json.dumps(payload, indent=2, default=str).encode('utf-8')
+        self.send_response(200)
+        self.send_header('Content-Type', 'application/json')
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Content-Length', str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def _json_err(self, code, message):
+        payload = json.dumps({'error': message}, indent=2, default=str).encode('utf-8')
+        self.send_response(code)
+        self.send_header('Content-Type', 'application/json')
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Content-Length', str(len(payload)))
+        self.end_headers()
+        self.wfile.write(payload)
+
+    def handle_local_fleet_data_api(self):
+        try:
+            from fleet_data_manager import FleetDataManager
+            self._json_ok(FleetDataManager().status())
+        except Exception as exc:
+            self._json_err(500, str(exc))
+
+    def handle_local_fleet_compute_api(self):
+        try:
+            from fleet_data_manager import FleetDataManager
+            from fleet_compute import FleetComputeScheduler
+            self._json_ok(FleetComputeScheduler(FleetDataManager()).fleet_status())
+        except Exception as exc:
+            self._json_err(500, str(exc))
+
+    def handle_local_dataset_api(self):
+        try:
+            from augur_offline_dataset import verify_dataset
+            self._json_ok(verify_dataset())
+        except Exception as exc:
+            self._json_err(500, str(exc))
+
+    def handle_local_download_api(self):
+        try:
+            from data_downloader import get_download_status, get_progress, stop_current_download, download_watchlist_quick, download_new_ticker, is_download_active
+            path = urlparse(self.path).path
+            query = parse_qs(urlparse(self.path).query)
+            if self.command == 'POST':
+                if path.endswith('/stop'):
+                    stop_current_download()
+                    self._json_ok({'status': 'stopped'})
+                    return
+                if path.endswith('/watchlist'):
+                    tickers = query.get('tickers', [])
+                    if not tickers:
+                        self._json_err(400, 'tickers required')
+                        return
+                    res = download_watchlist_quick([t.strip().upper() for t in tickers if t.strip()])
+                    self._json_ok(res)
+                    return
+                if path.endswith('/new_ticker'):
+                    ticker = (query.get('ticker', [''])[0] or '').strip().upper()
+                    if not ticker:
+                        self._json_err(400, 'ticker required')
+                        return
+                    res = download_new_ticker(ticker, force_full=query.get('force_full', ['0'])[0] in ('1', 'true', 'yes'))
+                    self._json_ok(res)
+                    return
+                if path.endswith('/quick_update'):
+                    res = download_watchlist_quick([], quick_update=True)
+                    self._json_ok(res)
+                    return
+                self._json_err(404, 'unknown POST action')
+                return
+            self._json_ok({'status': get_download_status(), 'progress': get_progress(), 'active': is_download_active()})
+        except Exception as exc:
+            self._json_err(500, str(exc))
+
+    def handle_local_presets_api(self):
+        try:
+            import sqlite3, json as _json
+            from datetime import datetime
+            db_path = str(_BACKEND_DIR / 'data' / 'treasure_map.db')
+            con = sqlite3.connect(db_path)
+            con.row_factory = sqlite3.Row
+            if self.command == 'POST':
+                length = int(self.headers.get('Content-Length', '0'))
+                body = json.loads(self.rfile.read(length).decode('utf-8') or '{}') if length else {}
+                name = (body.get('name') or '').strip()
+                if not name:
+                    self._json_err(400, 'name required')
+                    return
+                genome_json = _json.dumps({
+                    'archetype_id': body.get('archetype_id'),
+                    'genome': body.get('genome_json'),
+                    'discipline': body.get('discipline'),
+                    'ticker': body.get('ticker'),
+                    'notes': body.get('notes', ''),
+                })
+                con.execute('''
+                    INSERT INTO scan_strategies (name, description, source, discipline, direction, rules_json, created_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                    ON CONFLICT(name) DO UPDATE SET description=excluded.description, discipline=excluded.discipline, direction=excluded.direction, rules_json=excluded.rules_json
+                ''', (name, body.get('notes', '') or body.get('description', ''), 'preset', body.get('discipline', 'day'), body.get('direction', 'long'), genome_json, datetime.now().isoformat()))
+                con.commit()
+                self._json_ok({'status': 'saved', 'name': name})
+                return
+            if self.command == 'DELETE':
+                length = int(self.headers.get('Content-Length', '0'))
+                body = json.loads(self.rfile.read(length).decode('utf-8') or '{}') if length else {}
+                name = (body.get('name') or '').strip()
+                if not name:
+                    self._json_err(400, 'name required')
+                    return
+                con.execute("DELETE FROM scan_strategies WHERE name=? AND source='preset'", (name,))
+                con.commit()
+                self._json_ok({'status': 'deleted', 'name': name})
+                return
+            rows = con.execute("SELECT id, name, description, discipline, direction, rules_json, created_at FROM scan_strategies WHERE source='preset' ORDER BY created_at DESC").fetchall()
+            presets = []
+            for r in rows:
+                try:
+                    rules = _json.loads(r['rules_json'] or '{}')
+                except Exception:
+                    rules = {}
+                presets.append({'id': r['id'], 'name': r['name'], 'description': r['description'], 'discipline': r['discipline'], 'direction': r['direction'], 'archetype_id': rules.get('archetype_id'), 'genome_json': rules.get('genome'), 'ticker': rules.get('ticker'), 'notes': rules.get('notes', ''), 'created_at': r['created_at']})
+            con.close()
+            self._json_ok({'presets': presets})
+        except Exception as exc:
+            self._json_err(500, str(exc))
+
+    def handle_local_data_source_prefs_api(self):
+        try:
+            import sqlite3, json as _json
+            from datetime import datetime
+            db_path = str(_BACKEND_DIR / 'data' / 'treasure_map.db')
+            con = sqlite3.connect(db_path)
+            con.row_factory = sqlite3.Row
+            if self.command == 'POST':
+                length = int(self.headers.get('Content-Length', '0'))
+                body = json.loads(self.rfile.read(length).decode('utf-8') or '{}') if length else {}
+                source_name = (body.get('source_name') or '').strip()
+                if not source_name:
+                    self._json_err(400, 'source_name required')
+                    return
+                con.execute('''
+                    INSERT INTO data_source_preferences (source_name, enabled, priority, updated_at)
+                    VALUES (?, ?, ?, ?)
+                    ON CONFLICT(source_name) DO UPDATE SET enabled=excluded.enabled, priority=excluded.priority, updated_at=excluded.updated_at
+                ''', (source_name, 1 if body.get('enabled', True) else 0, int(body.get('priority', 0)), datetime.now().isoformat()))
+                con.commit()
+                self._json_ok({'status': 'saved', 'source_name': source_name})
+                return
+            rows = con.execute('SELECT source_name, enabled, priority, last_used, updated_at FROM data_source_preferences ORDER BY priority DESC, source_name').fetchall()
+            prefs = [{'source_name': r['source_name'], 'enabled': bool(r['enabled']), 'priority': r['priority'], 'last_used': r['last_used'], 'updated_at': r['updated_at']} for r in rows]
+            con.close()
+            self._json_ok({'preferences': prefs})
+        except Exception as exc:
+            self._json_err(500, str(exc))
+
+    def handle_local_news_api(self, path):
+        try:
+            from alpaca_client import get_alpaca_news, check_alpaca_enabled
+            if self.command == 'POST' and path.endswith('/refresh'):
+                self._json_ok({'status': 'refresh_queued'})
+                return
+            ticker = path.rsplit('/', 1)[-1].strip().upper() if '/' in path else 'SPY'
+            if not ticker or ticker == 'REFRESH':
+                ticker = 'SPY'
+            articles = []
+            if check_alpaca_enabled():
+                articles = get_alpaca_news([ticker], limit=20) or []
+            payload = {'ticker': ticker, 'articles': articles, 'source': 'alpaca', 'count': len(articles)}
+            self._json_ok(payload)
+        except Exception as exc:
+            self._json_err(500, str(exc))
+
+    def handle_local_proxy_json(self, target_base, keep_path=False, methods=None):
+        try:
+            path = urlparse(self.path).path
+            query = urlparse(self.path).query
+            if keep_path:
+                target = target_base
+                base_path = urlparse(target_base).path or '/'
+                suffix = path[len(base_path):] if path.startswith(base_path) else path
+                if suffix and not suffix.startswith('/'):
+                    suffix = '/' + suffix
+                target = target + suffix
+                if query:
+                    target = target + '?' + query
+            else:
+                target = target_base
+                if query:
+                    target = target + '?' + query
+            req = urllib.request.Request(target, method=self.command, data=(self._post_body() if self.command == 'POST' else None))
+            auth_hdr = self.headers.get('Authorization') or self.headers.get('X-Auth-Token')
+            if auth_hdr:
+                req.add_header('Authorization', auth_hdr)
+            with urllib.request.urlopen(req, timeout=20) as r:
+                body = r.read()
+                ctype = r.headers.get('Content-Type', 'application/json')
+                self.send_response(r.status)
+                self.send_header('Content-Type', ctype)
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.send_header('Content-Length', str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+        except Exception as exc:
+            payload = json.dumps({'error': f'proxy_failed: {exc}', 'target': target}).encode('utf-8')
+            self.send_response(502)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.send_header('Content-Length', str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+
+    def _post_body(self):
+        length = int(self.headers.get('Content-Length', '0'))
+        if not length:
+            return None
+        return self.rfile.read(length)
 
     def handle_one_request(self):
         try:
