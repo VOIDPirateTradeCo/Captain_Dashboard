@@ -22,16 +22,58 @@
         .badge.ok { color:#56fb88; border-color:#22c55e44; background:#22c55e12; }
         .badge.warn { color:#fbae42; border-color:#f59e0b44; background:#f59e0b12; }
         .badge.bad { color:#f85149; border-color:#ef444444; background:#ef444412; }
+        .row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+        .col { display:flex; flex-direction:column; gap:8px; }
+        .switch { display:inline-flex; align-items:center; gap:6px; cursor:pointer; user-select:none; }
+        .btn { background:#0f172a; color:#e2e8f0; border:1px solid #1e293b; padding:6px 12px; border-radius:6px; cursor:pointer; }
+        .btn-secondary { border-color:#334155; color:#7dd3fc; }
+        .btn-danger { border-color:#7f1d1d; color:#f87171; }
     </style>
 </head>
 <body>
 <nav>
     <a href="/">🏠 HQ</a><a href="/tab/fleet">🛰️ Fleet</a><a href="/tab/security">🛡️ Security</a>
     <a href="/tab/tickets">🎟️ Tickets</a><a href="/tab/hivemind">🧠 Hive Mind</a><a href="/tab/art">🎨 AI Art</a>
-    <a href="/tab/whitewhale">🐋 White Whale</a><a href="/tab/monitoring">📡 Monitoring</a><a href="/tab/rig-report">⚙️ Rig Report</a>
+    <a href="/tab/whitewhale">🐋 White Whale</a><a href="/tab/monitoring">📡 Monitoring</a>
 </nav>
 <h1>🧠 AUGUR TRADING — Live Alpaca + AI Status</h1>
 <p class="metric">Augur training status, Alpaca paper account, open orders, positions, and signals.</p>
+
+<div class="card">
+  <h3 class="section-title">Smart Download — Sources & Control</h3>
+  <p class="metric">Use the existing download pipeline safely: partial runs are resumable, INSERT OR IGNORE prevents corruption, and a stop flag halts cleanly between tickers.</p>
+  <div class="row">
+    <div class="col">
+      <label class="switch"><input id="dl-schwab" type="checkbox" checked><span>Schwab</span></label>
+      <label class="switch"><input id="dl-alpaca" type="checkbox" checked><span>Alpaca</span></label>
+      <label class="switch"><input id="dl-yfinance" type="checkbox"><span>yfinance</span></label>
+      <label class="switch"><input id="dl-fred" type="checkbox" checked><span>FRED</span></label>
+    </div>
+    <div class="col">
+      <button id="btn-start-download" class="btn">Start Full Download</button>
+      <button id="btn-quick-update" class="btn btn-secondary">Quick Update</button>
+      <button id="btn-stop-download" class="btn btn-danger">Stop Download</button>
+    </div>
+  </div>
+  <div id="download-status" class="metric">Status: idle</div>
+  <div id="download-progress" class="metric">Progress: —</div>
+  <div id="download-errors" class="metric" style="color:#ff6b6b"></div>
+</div>
+
+<div class="card">
+  <h3 class="section-title">Data Source Control</h3>
+  <div class="kv">
+    <div class="row"><span class="label">Schwab</span><span class="value" id="ds-schwab">—</span></div>
+    <div class="row"><span class="label">Alpaca</span><span class="value" id="ds-alpaca">—</span></div>
+    <div class="row"><span class="label">yfinance</span><span class="value" id="ds-yfinance">—</span></div>
+    <div class="row"><span class="label">FRED</span><span class="value" id="ds-fred">—</span></div>
+  </div>
+  <div style="margin-top:10px;">
+    <button id="btn-verify-dataset" style="background:#0f172a;color:#e2e8f0;border:1px solid #1e293b;padding:6px 12px;border-radius:6px;cursor:pointer;margin-right:6px;">Verify Offline Dataset</button>
+    <button id="btn-refresh-sources" style="background:#0f172a;color:#e2e8f0;border:1px solid #1e293b;padding:6px 12px;border-radius:6px;cursor:pointer;">Refresh Sources</button>
+  </div>
+  <div id="dataset-status" style="margin-top:8px;font-size:0.85em;color:#9fb3d0;"></div>
+</div>
 
 <div class="card">
   <h3 class="section-title">Alpaca Account</h3>
@@ -105,6 +147,110 @@ async function load(){
     document.getElementById('account').innerHTML = '<span class="badge bad">ERR ' + esc(e.message) + '</span>';
   }
 }
+
+async function loadDataSources(){
+  try {
+    const r = await fetch('/api/data/sources/status');
+    const data = await r.json();
+    const sources = data.sources || [];
+    const map = {};
+    sources.forEach(s => { map[s.name] = s; });
+    const setCell = (id, source) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const s = map[source];
+      const status = s ? s.status : 'unknown';
+      const rows = s ? s.rows : 0;
+      el.innerHTML = '<span class="badge ' + (status === 'good' ? 'ok' : (status === 'stale' ? 'warn' : 'bad')) + '">' + esc(status) + '</span> <span style="color:#94a3b8;">' + esc(rows) + ' rows</span>';
+    };
+    setCell('ds-schwab', 'Schwab Daily');
+    setCell('ds-alpaca', 'Alpaca Daily');
+    setCell('ds-yfinance', 'yfinance');
+    setCell('ds-fred', 'FRED Macro');
+  } catch(e) {
+    const el = document.getElementById('dataset-status');
+    if (el) el.innerHTML = '<span style="color:#f87171;">Source status error: ' + esc(e.message) + '</span>';
+  }
+}
+async function loadDatasetVerify(){
+  const el = document.getElementById('dataset-status');
+  if (!el) return;
+  el.innerHTML = 'Verifying...';
+  try {
+    const r = await fetch('/api/fleet/offline-dataset/verify');
+    const data = await r.json();
+    el.innerHTML = '<span style="color:#34d399;">Dataset valid</span> — files: ' + esc(data.file_count) + ', size: ' + esc(data.gb_size) + ' GB';
+  } catch(e) {
+    el.innerHTML = '<span style="color:#f87171;">Verify failed: ' + esc(e.message) + '</span>';
+  }
+}
+
+(function(){
+  const $=s=>document.querySelector(s);
+  const statusEl=$('#download-status');
+  const progressEl=$('#download-progress');
+  const errorsEl=$('#download-errors');
+
+  async function api(path, opts){
+    const r=await fetch('/api'+path, Object.assign({headers:{'Content-Type':'application/json'}}, opts||{}));
+    return r.json();
+  }
+
+  async function pollDownload(){
+    try {
+      const [prog, qProg, status] = await Promise.all([
+        fetch('/api/download/progress').then(r=>r.json()).catch(()=>({progress:{running:false}})),
+        fetch('/api/download/quick_update/progress').then(r=>r.json()).catch(()=>({running:false})),
+        fetch('/api/download/status').then(r=>r.json()).catch(()=>({}))
+      ]);
+      const p = prog.progress || {};
+      const running = p.running || qProg.running || false;
+      statusEl.textContent = 'Status: ' + (running ? 'RUNNING' : 'idle') + (status.locked ? ' (DB locked)' : '');
+      if (running) {
+        const total = p.total || 0;
+        const completed = p.completed || 0;
+        const failed = p.failed || 0;
+        const current = p.current_ticker || '';
+        const bars = p.bars_written || 0;
+        progressEl.textContent = 'Progress: ' + completed + '/' + total + ' tickers — ' + bars.toLocaleString() + ' bars written — current: ' + current + (failed ? ' — ' + failed + ' failed' : '');
+        if (p.errors && p.errors.length) {
+          errorsEl.textContent = 'Errors: ' + p.errors.slice(-5).map(e=>e.ticker + ' ' + (e.error||'')).join(' | ');
+        }
+      } else {
+        progressEl.textContent = 'Progress: —';
+        errorsEl.textContent = '';
+      }
+    } catch (e) {
+      // swallow poll errors
+    }
+  }
+
+  $('#btn-start-download').onclick = async ()=>{
+    const body = {
+      use_schwab: $('#dl-schwab').checked,
+      use_alpaca: $('#dl-alpaca').checked,
+      use_yfinance: $('#dl-yfinance').checked,
+      use_fred: $('#dl-fred').checked,
+    };
+    const res = await api('/download', {method:'POST', body: JSON.stringify(body)});
+    statusEl.textContent = 'Status: ' + (res.message || res.status || 'requested');
+  };
+  $('#btn-quick-update').onclick = async ()=>{
+    const res = await api('/download/quick_update', {method:'POST'});
+    statusEl.textContent = 'Status: ' + (res.message || res.status || 'requested');
+  };
+  $('#btn-stop-download').onclick = async ()=>{
+    await api('/download/stop', {method:'POST'}).catch(()=>({}));
+    statusEl.textContent = 'Status: stop requested';
+  };
+
+  setInterval(pollDownload, 1500);
+  pollDownload();
+})();
+
+document.getElementById('btn-verify-dataset')?.addEventListener('click', loadDatasetVerify);
+document.getElementById('btn-refresh-sources')?.addEventListener('click', loadDataSources);
+loadDataSources();
 load();
 setInterval(load, 15000);
 </script>
