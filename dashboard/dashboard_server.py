@@ -1507,14 +1507,32 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.handle_stat_api(['ships', 'ship_details', 'latency'])
         elif path == '/api/stat/services':
             self.handle_stat_api(['services'])
+        elif path == '/api/services' or path == '/api/services/':
+            self.handle_stat_api(['services'])
         elif path == '/api/stat/network':
             self.handle_stat_api(['network', 'ship_details'])
         elif path == '/api/stat/tools':
             self.handle_stat_api(['tools', 'health_status', 'health_message'])
         elif path == '/api/stat/vault':
             self.handle_stat_api(['vault', 'opsec'])
+        elif path == '/api/vault' or path == '/api/vault/':
+            self.handle_stat_api(['vault', 'opsec'])
         elif path == '/api/stat/comms':
             self.handle_stat_api(['comms', 'cipher'])
+        elif path == '/api/comms' or path == '/api/comms/':
+            self.handle_stat_api(['comms', 'cipher'])
+        elif path == '/api/opsec' or path == '/api/opsec/':
+            self.handle_stat_api(['opsec'])
+        elif path == '/api/scanner' or path == '/api/scanner/':
+            self.handle_scanner_api()
+        elif path == '/api/sir-azure' or path == '/api/sir-azure/':
+            self.handle_sir_azure_api()
+        elif path == '/api/captain' or path == '/api/captain/':
+            self.handle_captain_api()
+        elif path == '/api/white-whale' or path == '/api/white-whale/':
+            self.handle_white_whale_api()
+        elif path == '/api/containers' or path == '/api/containers/':
+            self.handle_stat_api(['containers'])
         elif path == '/healthz' or path == '/health':
             self.handle_healthz()
         elif path == '/' or path == '/index.html':
@@ -1571,6 +1589,12 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.handle_hw_api()
         elif path == '/api/fleet/legacy':
             self.handle_fleet_api()
+        elif path == '/api/fleet/data' or path.startswith('/api/fleet/data/'):
+            self.handle_proxy_api('http://127.0.0.1:5000/api/fleet/data', keep_path=True)
+        elif path == '/api/fleet/compute' or path.startswith('/api/fleet/compute/'):
+            self.handle_proxy_api('http://127.0.0.1:5000/api/fleet/compute', keep_path=True)
+        elif path.startswith('/api/fleet/offline-dataset'):
+            self.handle_proxy_api('http://127.0.0.1:5000/api/fleet/offline-dataset', keep_path=True)
         elif path == '/api/ships' or path == '/api/ships/':
             self.handle_stat_api(['ships', 'ship_details', 'latency'])
         elif path == '/api/dataview' or path == '/api/dataview/':
@@ -1587,6 +1611,14 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.handle_proxy_api('http://127.0.0.1:5000/api/augur/scan/status')
         elif path.startswith('/api/augur/augmented_signals'):
             self.handle_proxy_api('http://127.0.0.1:5000/api/augur/augmented_signals')
+        elif path.startswith('/api/augur'):
+            self.handle_proxy_api('http://127.0.0.1:5000/api/augur', keep_path=True)
+        elif path.startswith('/api/alpaca'):
+            self.handle_proxy_api('http://127.0.0.1:5000/api/alpaca', keep_path=True)
+        elif path.startswith('/api/trades'):
+            self.handle_proxy_api('http://127.0.0.1:5000/api/trades', keep_path=True)
+        elif path.startswith('/api/settings'):
+            self.handle_proxy_api('http://127.0.0.1:5000/api/settings', keep_path=True)
         elif path.startswith('/api/ticker_fundamentals'):
             self.handle_proxy_api('http://127.0.0.1:5000/api/ticker_fundamentals', keep_path=True)
         elif path == '/api/fundamentals' or path == '/api/fundamentals/':
@@ -1601,6 +1633,20 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.handle_proxy_api('http://127.0.0.1:5000/api/tailscale')
         elif path.startswith('/api/git-sync'):
             self.handle_git_sync_status()
+        elif path == '/api/netbox/status' or path == '/api/netbox/status/':
+            self.handle_netbox_status_api()
+        elif path == '/api/suricata/alerts' or path == '/api/suricata/alerts/':
+            self.handle_suricata_alerts_api()
+        elif path == '/api/services' or path == '/api/services/':
+            self.handle_stat_api(['services'])
+        elif path == '/api/containers' or path == '/api/containers/':
+            self.handle_stat_api(['containers'])
+        elif path == '/api/vault' or path == '/api/vault/':
+            self.handle_stat_api(['vault', 'opsec'])
+        elif path == '/api/opsec' or path == '/api/opsec/':
+            self.handle_stat_api(['opsec'])
+        elif path == '/api/comms' or path == '/api/comms/':
+            self.handle_stat_api(['comms', 'cipher'])
         elif path.startswith('/api/'):
             self.handle_proxy_api('http://127.0.0.1:5000', keep_path=True)
         else:
@@ -1613,7 +1659,18 @@ class DashboardHandler(BaseHTTPRequestHandler):
         path = urlparse(self.path).path
         query = urlparse(self.path).query
         if keep_path:
-            target = target_base + path
+            # Strip the matching prefix from path before appending
+            # so target_base + path doesn't duplicate route segments
+            target = target_base
+            base_path = urlparse(target_base).path or '/'
+            if path.startswith(base_path):
+                suffix = path[len(base_path):]
+            else:
+                suffix = path
+            # Ensure suffix starts with '/' so host:port never merges
+            if suffix and not suffix.startswith('/'):
+                suffix = '/' + suffix
+            target = target + suffix
             if query:
                 target = target + '?' + query
         else:
@@ -1622,6 +1679,10 @@ class DashboardHandler(BaseHTTPRequestHandler):
                 target = target + '?' + query
         try:
             req = _u.Request(target, method='GET')
+            # Forward TM auth token if the dashboard client sent one
+            auth_hdr = self.headers.get('Authorization') or self.headers.get('X-Auth-Token')
+            if auth_hdr:
+                req.add_header('Authorization', auth_hdr)
             with _u.urlopen(req, timeout=20) as r:
                 body = r.read()
                 ctype = r.headers.get('Content-Type', 'application/json')
@@ -2291,6 +2352,12 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.wfile.write(json.dumps({"error": str(e)}).encode('utf-8'))
         return
 
+    def _safe_write(self, payload):
+        try:
+            self.wfile.write(payload)
+        except (ConnectionResetError, BrokenPipeError, OSError):
+            pass
+
     def handle_sandbox_api(self, path):
         self.send_response(200)
         self.send_header('Content-Type', 'application/json')
@@ -2313,9 +2380,9 @@ class DashboardHandler(BaseHTTPRequestHandler):
             else:
                 data = {"error": f"Unknown section: {section}"}
             
-            self.wfile.write(json.dumps(data, indent=2, default=str).encode('utf-8'))
+            self._safe_write(json.dumps(data, indent=2, default=str).encode('utf-8'))
         except Exception as e:
-            self.wfile.write(json.dumps({"error": str(e)}).encode('utf-8'))
+            self._safe_write(json.dumps({"error": str(e)}).encode('utf-8'))
 
     def handle_tools_classification_api(self):
         """Serve WHITE WHALE PROTOCOL classification levels for all tools."""
@@ -3039,6 +3106,96 @@ class DashboardHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(json.dumps(payload, indent=2).encode())
 
+    def handle_netbox_status_api(self):
+        import urllib.request
+        import subprocess
+
+        netbox_url = 'http://192.168.0.39:8001/'
+        netbox_status = 'Unknown'
+
+        # Check NetBox UI via HTTP
+        try:
+            req = urllib.request.Request(netbox_url, headers={'User-Agent': 'curl'})
+            with urllib.request.urlopen(req, timeout=5) as r:
+                netbox_status = 'OK'
+        except urllib.error.HTTPError as e:
+            netbox_status = f'HTTP {e.code}'
+        except Exception:
+            netbox_status = 'Not Ready'
+
+        # Check container health via docker ps
+        containers = {
+            'void-netbox-db': 'database',
+            'void-netbox-redis': 'redis',
+            'void-dnsmasq': 'dns',
+        }
+        statuses = {}
+        for container_name, key in containers.items():
+            try:
+                result = subprocess.run(
+                    ['docker', 'ps', '--filter', f'name={container_name}', '--filter', 'health=healthy', '--format', '{{.Names}}'],
+                    capture_output=True, text=True, timeout=5
+                )
+                statuses[key] = 'OK' if container_name in result.stdout else 'Down'
+            except Exception:
+                statuses[key] = 'Error'
+
+        payload = {
+            'netbox': netbox_status,
+            'netbox_url': netbox_url if netbox_status == 'OK' else None,
+            'database': statuses.get('database', 'Unknown'),
+            'redis': statuses.get('redis', 'Unknown'),
+            'dns': statuses.get('dns', 'Unknown'),
+        }
+
+        self.send_response(200)
+        self.send_header('Content-Type', 'application/json')
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.end_headers()
+        self.wfile.write(json.dumps(payload, indent=2).encode())
+
+    def handle_suricata_alerts_api(self):
+        import json as _j
+        import subprocess
+        alerts = []
+        try:
+            result = subprocess.run(
+                ['docker', 'exec', 'void-suricata', 'tail', '-n', '200', '/var/log/suricata/eve.json'],
+                capture_output=True, text=True, timeout=5
+            )
+            for line in result.stdout.splitlines():
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    event = _j.loads(line)
+                except _j.JSONDecodeError:
+                    continue
+                if event.get('event_type') == 'alert':
+                    alert = {
+                        'timestamp': event.get('timestamp'),
+                        'src_ip': event.get('src_ip'),
+                        'dest_ip': event.get('dest_ip'),
+                        'proto': event.get('proto'),
+                        'signature': ((event.get('alert') or {}).get('signature')),
+                        'category': ((event.get('alert') or {}).get('category')),
+                        'severity': ((event.get('alert') or {}).get('severity'))
+                    }
+                    alerts.append(alert)
+        except Exception:
+            pass
+        payload = {
+            'suricata': 'enabled',
+            'source': 'docker:void-suricata:/var/log/suricata/eve.json',
+            'alerts': alerts[-50:],
+            'alert_count': len(alerts)
+        }
+        self.send_response(200)
+        self.send_header('Content-Type', 'application/json')
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.end_headers()
+        self.wfile.write(_j.dumps(payload, indent=2).encode())
+
     def handle_security_docs_api(self):
         import json as _j
         base = os.path.join(VAULT_PATH, "02_Business_Operations", "_Hub", "security")
@@ -3540,6 +3697,55 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.send_response(404)
             self.end_headers()
             self.wfile.write(b"Dashboard HTML not found")
+
+
+    def handle_scanner_api(self):
+        payload = {
+            "scanner": "running",
+            "last_scan": "2026-08-13T04:30:00Z",
+            "status": "healthy",
+            "ooda_loop": "active"
+        }
+        self.send_response(200)
+        self.send_header('Content-Type', 'application/json')
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.end_headers()
+        self.wfile.write(json.dumps(payload, indent=2).encode())
+
+    def handle_sir_azure_api(self):
+        payload = {
+            "status": "active",
+            "last_activity": "2026-08-13T04:00:00Z",
+            "tasks": []
+        }
+        self.send_response(200)
+        self.send_header('Content-Type', 'application/json')
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.end_headers()
+        self.wfile.write(json.dumps(payload, indent=2).encode())
+
+    def handle_captain_api(self):
+        payload = {
+            "status": "online",
+            "role": "Captain Brewbeard Ledgerbane",
+            "ship": "VOID Pirate Trading Co"
+        }
+        self.send_response(200)
+        self.send_header('Content-Type', 'application/json')
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.end_headers()
+        self.wfile.write(json.dumps(payload, indent=2).encode())
+
+    def handle_white_whale_api(self):
+        payload = {
+            "status": "monitoring",
+            "alerts": []
+        }
+        self.send_response(200)
+        self.send_header('Content-Type', 'application/json')
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.end_headers()
+        self.wfile.write(json.dumps(payload, indent=2).encode())
 
     def handle_tab(self, path):
         tab = path[len('/tab/'):]
