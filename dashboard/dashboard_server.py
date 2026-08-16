@@ -1598,6 +1598,8 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.handle_local_data_source_status_api()
         elif path.startswith('/api/data/sources'):
             self.handle_local_proxy_json('http://127.0.0.1:5001/api/data/sources', keep_path=True)
+        elif path == '/api/schwab/auth-url':
+            return self.handle_local_schwab_auth_url_api()
         elif path.startswith('/api/schwab'):
             self.handle_local_schwab_status_api()
         elif path == '/api/hw' or path == '/api/hw/':
@@ -1756,13 +1758,16 @@ class DashboardHandler(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def _json_err(self, code, message):
-        payload = json.dumps({'error': message, 'trace': repr(message)}, indent=2, default=str).encode('utf-8')
-        self.send_response(code)
-        self.send_header('Content-Type', 'application/json')
-        self.send_header('Access-Control-Allow-Origin', '*')
-        self.send_header('Content-Length', str(len(payload)))
-        self.end_headers()
-        self.wfile.write(payload)
+        try:
+            payload = json.dumps({'error': message, 'trace': repr(message)}, indent=2, default=str).encode('utf-8')
+            self.send_response(code)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.send_header('Content-Length', str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+        except (ConnectionAbortedError, BrokenPipeError, ConnectionResetError):
+            pass
 
     def handle_local_fleet_data_api(self):
         try:
@@ -1966,20 +1971,17 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self._json_err(500, str(exc))
 
     def handle_local_data_source_status_api(self):
-        try:
-            from datetime import datetime as _dt, timedelta as _td
-            stale_cutoff = (_dt.now() - _td(days=7)).strftime('%Y-%m-%d')
-            sources = [
-                {'name': 'Historical Prices', 'rows': 3016004, 'last_date': '2026-08-14', 'coverage': 1223, 'status': 'good'},
-                {'name': '1min Bars', 'rows': 24857270, 'last_date': '2026-08-14', 'coverage': 1172, 'status': 'good'},
-                {'name': 'FRED Macro', 'rows': 16590, 'last_date': '2026-03-06', 'coverage': 16590, 'status': 'stale'},
-                {'name': 'Fundamentals', 'rows': 117, 'last_date': None, 'coverage': 117, 'status': 'empty'},
-                {'name': 'Watchlist', 'rows': 0, 'last_date': None, 'coverage': 0, 'status': 'empty'},
-                {'name': 'Trades', 'rows': 0, 'last_date': None, 'coverage': 0, 'status': 'empty'},
-            ]
-            self._json_ok({'sources': sources, 'stale_cutoff': stale_cutoff})
-        except Exception as exc:
-            self._json_err(500, str(exc))
+        from datetime import datetime as _dt, timedelta as _td
+        stale_cutoff = (_dt.now() - _td(days=7)).strftime('%Y-%m-%d')
+        sources = [
+            {'name': 'Historical Prices', 'rows': 3016004, 'last_date': '2026-08-14', 'coverage': 1223, 'status': 'good'},
+            {'name': '1min Bars', 'rows': 24857270, 'last_date': '2026-08-14', 'coverage': 1172, 'status': 'good'},
+            {'name': 'FRED Macro', 'rows': 16590, 'last_date': '2026-03-06', 'coverage': 16590, 'status': 'stale'},
+            {'name': 'Fundamentals', 'rows': 117, 'last_date': None, 'coverage': 117, 'status': 'empty'},
+            {'name': 'Watchlist', 'rows': 0, 'last_date': None, 'coverage': 0, 'status': 'empty'},
+            {'name': 'Trades', 'rows': 0, 'last_date': None, 'coverage': 0, 'status': 'empty'},
+        ]
+        self._json_ok({'sources': sources, 'stale_cutoff': stale_cutoff})
 
     def handle_local_schwab_status_api(self):
         try:
