@@ -251,17 +251,20 @@ async function loadDatasetVerify(){
         fetch('/api/download/status').then(r=>r.json()).catch(()=>({}))
       ]);
       const p = prog.progress || {};
-      const running = p.running || qProg.running || false;
-      statusEl.textContent = 'Status: ' + (running ? 'RUNNING' : 'idle') + (status.locked ? ' (DB locked)' : '');
-      if (running) {
-        const total = p.total || 0;
-        const completed = p.completed || 0;
-        const failed = p.failed || 0;
-        const current = p.current_ticker || '';
-        const bars = p.bars_written || 0;
+      const qRunning = typeof qProg.running === 'boolean' ? qProg.running : (qProg.progress ? qProg.progress.running : false);
+      const running = p.running || qRunning || false;
+      const phase = p.phase || qProg.phase || '';
+      const completed = p.completed || qProg.completed || 0;
+      const total = p.total || qProg.total || 0;
+      const current = p.current_ticker || qProg.current_ticker || '';
+      const bars = p.bars_written || 0;
+      const failed = p.failed || qProg.failed || 0;
+      statusEl.textContent = 'Status: ' + (running ? 'RUNNING' : phase || 'idle') + (status.locked ? ' (DB locked)' : '');
+      if (running || phase) {
         progressEl.textContent = 'Progress: ' + completed + '/' + total + ' tickers — ' + bars.toLocaleString() + ' bars written — current: ' + current + (failed ? ' — ' + failed + ' failed' : '');
-        if (p.errors && p.errors.length) {
-          errorsEl.textContent = 'Errors: ' + p.errors.slice(-5).map(e=>e.ticker + ' ' + (e.error||'')).join(' | ');
+        if ((p.errors && p.errors.length) || (qProg.errors && qProg.errors.length)) {
+          const errs = (p.errors && p.errors.length ? p.errors : qProg.errors || []).slice(-5).map(e=>e.ticker + ' ' + (e.error||'')).join(' | ');
+          errorsEl.textContent = 'Errors: ' + errs;
         }
       } else {
         progressEl.textContent = 'Progress: —';
