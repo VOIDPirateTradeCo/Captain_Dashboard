@@ -216,6 +216,18 @@ async function loadDataSources(){
     setCell('ds-alpaca', 'Alpaca Daily');
     setCell('ds-yfinance', 'yfinance');
     setCell('ds-fred', 'FRED Macro');
+    try {
+      const sr = await fetch('/api/schwab/oauth/status');
+      const sd = await sr.json();
+      const el = document.getElementById('ds-schwab-auth');
+      if (el) {
+        const connected = !!sd.connected;
+        const hasKeys = !!sd.has_keys;
+        const badgeClass = connected ? 'ok' : (hasKeys ? 'warn' : 'bad');
+        const label = connected ? 'connected' : (hasKeys ? 'keys only' : 'no keys');
+        el.innerHTML = '<span class="badge ' + badgeClass + '">' + esc(label) + '</span>' + (sd.status ? ' <span style="color:#94a3b8;">' + esc(sd.status) + '</span>' : '');
+      }
+    } catch (_e) {}
   } catch(e) {
     const el = document.getElementById('dataset-status');
     if (el) el.innerHTML = '<span style="color:#f87171;">Source status error: ' + esc(e.message) + '</span>';

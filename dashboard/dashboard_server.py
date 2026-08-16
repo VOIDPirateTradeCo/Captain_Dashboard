@@ -1592,6 +1592,12 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.handle_ticketing_api()
         elif path == '/api/rig-report' or path == '/api/rig-report/':
             self.handle_rig_report_api()
+        elif path == '/api/data/sources/status':
+            self.handle_local_data_source_status_api()
+        elif path.startswith('/api/data/sources'):
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/data/sources', keep_path=True)
+        elif path.startswith('/api/schwab'):
+            self.handle_local_schwab_status_api()
         elif path == '/api/hw' or path == '/api/hw/':
             self.handle_hw_api()
         elif path == '/api/fleet/legacy':
@@ -1936,6 +1942,73 @@ class DashboardHandler(BaseHTTPRequestHandler):
                 presets.append({'id': r['id'], 'name': r['name'], 'description': r['description'], 'discipline': r['discipline'], 'direction': r['direction'], 'archetype_id': rules.get('archetype_id'), 'genome_json': rules.get('genome'), 'ticker': rules.get('ticker'), 'notes': rules.get('notes', ''), 'created_at': r['created_at']})
             con.close()
             self._json_ok({'presets': presets})
+        except Exception as exc:
+            self._json_err(500, str(exc))
+
+    def handle_local_data_source_status_api(self):
+        try:
+            import sqlite3
+            db_path = str(_BACKEND_DIR / 'data' / 'treasure_map.db')
+            con = sqlite3.connect(db_path, timeout=30)
+            con.row_factory = sqlite3.Row
+            queries = [
+                ('Schwab Daily', "SELECT COUNT(*), MAX(date), COUNT(DISTINCT ticker) FROM price_history WHERE source='schwab'"),
+                ('Alpaca Daily', "SELECT COUNT(*), MAX(date), COUNT(DISTINCT ticker) FROM price_history WHERE source='alpaca_daily'"),
+                ('Alpaca 1-Min', "SELECT COUNT(*), MAX(date), COUNT(DISTINCT ticker) FROM price_history_1min"),
+                ('yfinance', "SELECT COUNT(*), MAX(date), COUNT(DISTINCT ticker) FROM price_history WHERE source LIKE 'yfinance%'"),
+                ('FRED Macro', "SELECT COUNT(*), MAX(date), NULL FROM fred_macro"),
+                ('Dividends', "SELECT COUNT(*), MAX(ex_date), COUNT(DISTINCT ticker) FROM dividends"),
+            ]
+            from datetime import datetime as _dt, timedelta as _td
+            stale_cutoff = (_dt.now() - _td(days=7)).strftime('%Y-%m-%d')
+            sources = []
+            for name, sql in queries:
+                try:
+                    row = con.execute(sql).fetchone()
+                    count, last_date, coverage = row if row else (0, None, None)
+                    if last_date is None:
+                        status = 'empty'
+                    elif last_date < stale_cutoff:
+                        status = 'stale'
+                    else:
+                        status = 'good'
+                    sources.append({
+                        'name': name,
+                        'rows': count or 0,
+                        'last_date': last_date,
+                        'coverage': coverage or 0,
+                        'status': status,
+                    })
+                except Exception:
+                    sources.append({'name': name, 'rows': 0, 'last_date': None, 'coverage': 0, 'status': 'empty'})
+            con.close()
+            self._json_ok({'sources': sources, 'stale_cutoff': stale_cutoff})
+        except Exception as exc:
+            self._json_err(500, str(exc))
+
+    def handle_local_schwab_status_api(self):
+        try:
+            connected = False
+            status = 'disconnected'
+            try:
+                from schwab_client import get_schwab_status
+                connected = bool(get_schwab_status().get('connected'))
+                status = get_schwab_status().get('status', 'disconnected')
+            except Exception:
+                pass
+            try:
+                env_path = _BACKEND_DIR / 'treasure_map_keys.env'
+                has_keys = False
+                if env_path.exists():
+                    txt = env_path.read_text(encoding='utf-8', errors='ignore')
+                    has_keys = all(k in txt for k in ['SCHWAB_APP_KEY', 'SCHWAB_APP_SECRET', 'SCHWAB_CALLBACK_URL'])
+            except Exception:
+                has_keys = False
+            self._json_ok({
+                'connected': connected,
+                'status': status,
+                'has_keys': has_keys,
+            })
         except Exception as exc:
             self._json_err(500, str(exc))
 
