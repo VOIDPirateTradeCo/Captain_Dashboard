@@ -1613,35 +1613,35 @@ class DashboardHandler(BaseHTTPRequestHandler):
         elif path.startswith('/api/tools/classification') or path == '/api/tools':
             self.handle_tools_classification_api()
         elif path == '/api/signals' or path.startswith('/api/signals/'):
-            self.handle_proxy_api('http://127.0.0.1:5000/api/signals')
+            self.handle_proxy_api('http://127.0.0.1:5001/api/signals')
         elif path.startswith('/api/augur/scan/status'):
-            self.handle_local_proxy_json('http://127.0.0.1:5000/api/augur/scan/status')
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/augur/scan/status')
         elif path.startswith('/api/augur/augmented_signals'):
-            self.handle_local_proxy_json('http://127.0.0.1:5000/api/augur/augmented_signals')
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/augur/augmented_signals')
         elif path.startswith('/api/augur/bracket'):
             self.handle_local_bracket_info_api(path.split('/')[-1] if len(path.split('/')) > 3 else '')
         elif path.startswith('/api/augur/manual_signal'):
             self.handle_local_manual_signal_api()
         elif path.startswith('/api/augur'):
-            self.handle_local_proxy_json('http://127.0.0.1:5000/api/augur', keep_path=True)
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/augur', keep_path=True)
         elif path.startswith('/api/alpaca'):
-            self.handle_local_proxy_json('http://127.0.0.1:5000/api/alpaca', keep_path=True)
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/alpaca', keep_path=True)
         elif path.startswith('/api/trades'):
-            self.handle_local_proxy_json('http://127.0.0.1:5000/api/trades', keep_path=True)
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/trades', keep_path=True)
         elif path.startswith('/api/settings'):
-            self.handle_local_proxy_json('http://127.0.0.1:5000/api/settings', keep_path=True)
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/settings', keep_path=True)
         elif path.startswith('/api/ticker_fundamentals'):
-            self.handle_local_proxy_json('http://127.0.0.1:5000/api/ticker_fundamentals', keep_path=True)
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/ticker_fundamentals', keep_path=True)
         elif path == '/api/fundamentals' or path == '/api/fundamentals/':
             self.handle_fundamentals_index()
         elif path.startswith('/api/fundamentals'):
-            self.handle_local_proxy_json('http://127.0.0.1:5000/api/fundamentals', keep_path=True)
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/fundamentals', keep_path=True)
         elif path.startswith('/api/positions'):
-            self.handle_local_proxy_json('http://127.0.0.1:5000/api/positions', keep_path=True)
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/positions', keep_path=True)
         elif path.startswith('/api/paper_trades'):
-            self.handle_local_proxy_json('http://127.0.0.1:5000/api/paper_trades', keep_path=True)
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/paper_trades', keep_path=True)
         elif path.startswith('/api/tailscale'):
-            self.handle_local_proxy_json('http://127.0.0.1:5000/api/tailscale')
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/tailscale')
         elif path.startswith('/api/git-sync'):
             self.handle_git_sync_status()
         elif path == '/api/netbox/status' or path == '/api/netbox/status/':
@@ -1667,7 +1667,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
         elif path.startswith('/api/download'):
             self.handle_local_download_api()
         elif path.startswith('/api/'):
-            self.handle_proxy_api('http://127.0.0.1:5000', keep_path=True)
+            self.handle_proxy_api('http://127.0.0.1:5001', keep_path=True)
         else:
             self.send_response(404)
             self.end_headers()
@@ -2345,11 +2345,11 @@ class DashboardHandler(BaseHTTPRequestHandler):
             try:
                 import urllib.request as _u
                 live_endpoints = [
-                    ('augur_status', 'http://127.0.0.1:5000/api/augur/status'),
-                    ('signals', 'http://127.0.0.1:5000/api/signals'),
-                    ('last_signal', 'http://127.0.0.1:5000/api/augur/last_signal'),
-                    ('alpaca_status', 'http://127.0.0.1:5000/api/data/alpaca/status'),
-                    ('alpaca_smoke', 'http://127.0.0.1:5000/api/alpaca/smoke_test'),
+                    ('augur_status', 'http://127.0.0.1:5001/api/augur/status'),
+                    ('signals', 'http://127.0.0.1:5001/api/signals'),
+                    ('last_signal', 'http://127.0.0.1:5001/api/augur/last_signal'),
+                    ('alpaca_status', 'http://127.0.0.1:5001/api/data/alpaca/status'),
+                    ('alpaca_smoke', 'http://127.0.0.1:5001/api/alpaca/smoke_test'),
                 ]
                 for name, url in live_endpoints:
                     try:
@@ -2405,7 +2405,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
                 self.wfile.write(json.dumps(payload, indent=2).encode('utf-8'))
                 return
             import urllib.request as _u
-            req = _u.Request(f"http://127.0.0.1:5000/api/bots/{bot_id}/graduation_status",
+            req = _u.Request(f"http://127.0.0.1:5001/api/bots/{bot_id}/graduation_status",
                              method="GET")
             with _u.urlopen(req, timeout=10) as r:
                 payload = json.loads(r.read())
@@ -2425,9 +2425,9 @@ class DashboardHandler(BaseHTTPRequestHandler):
         self.end_headers()
         try:
             endpoints = [
-                ("portfolio", "http://127.0.0.1:5000/api/portfolio/paper"),
-                ("scheduler", "http://127.0.0.1:5000/api/scheduler/state"),
-                ("risk",      "http://127.0.0.1:5000/api/risk/daily"),
+                ("portfolio", "http://127.0.0.1:5001/api/portfolio/paper"),
+                ("scheduler", "http://127.0.0.1:5001/api/scheduler/state"),
+                ("risk",      "http://127.0.0.1:5001/api/risk/daily"),
             ]
             import urllib.request as _u
             result = {"generated": datetime.datetime.now(datetime.timezone.utc).isoformat()}
@@ -3807,8 +3807,8 @@ class DashboardHandler(BaseHTTPRequestHandler):
             import urllib.request as _u
             statuses = {}
             endpoints = [
-                ('sectors', 'http://127.0.0.1:5000/api/fundamentals/sectors'),
-                ('progress', 'http://127.0.0.1:5000/api/fundamentals/progress'),
+                ('sectors', 'http://127.0.0.1:5001/api/fundamentals/sectors'),
+                ('progress', 'http://127.0.0.1:5001/api/fundamentals/progress'),
             ]
             for name, url in endpoints:
                 try:
@@ -3818,7 +3818,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
                     statuses[name] = {'status': 'unavailable', 'error': str(exc)}
             payload = {
                 'endpoint': '/api/fundamentals',
-                'backend': 'http://127.0.0.1:5000',
+                'backend': 'http://127.0.0.1:5001',
                 'available_paths': [
                     '/api/fundamentals/<ticker>',
                     '/api/fundamentals/download',
@@ -4148,6 +4148,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Content-Type', 'text/html')
         self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
         self.end_headers()
         self.wfile.write(payload)
 
