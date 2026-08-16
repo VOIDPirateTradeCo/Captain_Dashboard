@@ -1564,6 +1564,8 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.handle_fleet_version_api()
         elif path == '/api/fleet/verify' or path == '/api/fleet/verify/':
             self.handle_fleet_verify_api()
+        elif path.startswith('/api/fleet/compute'):
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/fleet/compute', keep_path=True)
         elif path == '/api/network/alerts' or path == '/api/network/alerts/':
             self.handle_network_alerts_api()
         elif path == '/api/security' or path == '/api/security/':
