@@ -6,7 +6,7 @@ nav{background:#081726;padding:10px 20px;border-bottom:1px solid #1f3a55;margin:
 nav a{color:#00aaff;text-decoration:none;margin-right:14px;font-size:14px}nav a:hover{color:#ffd700}
 h1{color:#ffd700}.card{background:#122a3d;border:1px solid #1f3a55;border-radius:10px;padding:14px;margin:8px 0}
 .scope{display:inline-block;background:#0a1f30;border:1px solid #56fb88;color:#56fb88;border-radius:6px;padding:4px 10px;margin:3px}
-input{background:#0a1f30;color:#9fe7ff;border:1px solid #1f3a55;padding:6px;border-radius:6px;width:240px}
+input{background:#0a1f30;color:#9fe7ff;border:1px solid #1f3a55;padding:6px;border-radius:6px;width:320px}
 button{background:#5a1020;color:#ffd700;border:1px solid #ffd700;padding:6px 12px;border-radius:6px;cursor:pointer}
 .status{color:#9fe7ff;font-size:.85em;margin-top:8px}
 .row{display:flex;gap:8px;align-items:center;margin:6px 0}
@@ -16,8 +16,8 @@ button{background:#5a1020;color:#ffd700;border:1px solid #ffd700;padding:6px 12p
 <h1>🔑 CREW AUTH & SCOPES — White Whale Gating</h1>
 
 <div class="card">
-  <h2>Login</h2>
-  <div class="row"><input id="username" placeholder="username"><input id="password" placeholder="password" type="password"><button onclick="doLogin()">Login</button></div>
+  <h2>Token Login</h2>
+  <div class="row"><input id="token" placeholder="captain token (green_tide / pink_wave / azure_storm)"><button onclick="doLogin()">Verify Token</button></div>
   <div class="status" id="loginStatus"></div>
 </div>
 
@@ -36,13 +36,12 @@ button{background:#5a1020;color:#ffd700;border:1px solid #ffd700;padding:6px 12p
 <script>
 async function api(path, opts){const r=await fetch(path, opts);let j;try{j=await r.json()}catch{j=null}return {status:r.status,data:j}}
 async function doLogin(){
-  const u=document.getElementById('username').value.trim();
-  const p=document.getElementById('password').value;
+  const t=document.getElementById('token').value.trim();
   const el=document.getElementById('loginStatus');
-  if(!u||!p){el.textContent='username/password required';return}
-  el.textContent='logging in...';
-  const res=await api('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:u,password:p})});
-  if(res.status===200 && res.data && res.data.token){sessionStorage.setItem('token', res.data.token);el.textContent='login ok';whoami()}else{el.textContent='login failed: '+(res.data&&res.data.error?res.data.error:'unknown')}
+  if(!t){el.textContent='token required';return}
+  el.textContent='verifying...';
+  const res=await api('/api/auth/verify?token='+encodeURIComponent(t));
+  if(res.status===200 && res.data && res.data.authenticated){sessionStorage.setItem('token', t);el.textContent='authenticated: '+JSON.stringify(res.data);whoami()}else{el.textContent='auth failed: '+(res.data&&res.data.error?res.data.error:'unknown')}
 }
 async function doLogout(){
   const t=sessionStorage.getItem('token');
