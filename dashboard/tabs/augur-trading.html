@@ -72,6 +72,7 @@
   <div style="margin-top:10px;">
     <button id="btn-verify-dataset" style="background:#0f172a;color:#e2e8f0;border:1px solid #1e293b;padding:6px 12px;border-radius:6px;cursor:pointer;margin-right:6px;">Verify Offline Dataset</button>
     <button id="btn-refresh-sources" style="background:#0f172a;color:#e2e8f0;border:1px solid #1e293b;padding:6px 12px;border-radius:6px;cursor:pointer;">Refresh Sources</button>
+    <button id="btn-schwab-auth-url" style="background:#0f172a;color:#e2e8f0;border:1px solid #1e293b;padding:6px 12px;border-radius:6px;cursor:pointer;">Open Schwab Login</button>
   </div>
   <div id="dataset-status" style="margin-top:8px;font-size:0.85em;color:#9fb3d0;"></div>
 </div>
@@ -345,6 +346,20 @@ async function loadDatasetVerify(){
 
 document.getElementById('btn-verify-dataset')?.addEventListener('click', loadDatasetVerify);
 document.getElementById('btn-refresh-sources')?.addEventListener('click', loadDataSources);
+document.getElementById('btn-schwab-auth-url')?.addEventListener('click', async () => {
+  try {
+    const res = await fetch('/api/schwab/auth-url');
+    const data = await res.json();
+    if (!data.auth_url) {
+      alert('Missing auth_url');
+      return;
+    }
+    localStorage.setItem('schwab_code_verifier', data.verifier);
+    window.open(data.auth_url, '_blank');
+  } catch (e) {
+    alert('Schwab auth URL failed: ' + e.message);
+  }
+});
 loadDataSources();
 load();
 setInterval(load, 15000);

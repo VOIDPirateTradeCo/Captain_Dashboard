@@ -1662,6 +1662,8 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.handle_local_proxy_json('http://127.0.0.1:5001/api/fundamentals', keep_path=True)
         elif path.startswith('/api/positions'):
             self.handle_local_proxy_json('http://127.0.0.1:5001/api/positions', keep_path=True)
+        elif path == '/api/schwab/auth-url':
+            return self.handle_local_schwab_auth_url_api()
         elif path.startswith('/api/paper_trades'):
             self.handle_local_proxy_json('http://127.0.0.1:5001/api/paper_trades', keep_path=True)
         elif path.startswith('/api/tailscale'):
@@ -2002,6 +2004,41 @@ class DashboardHandler(BaseHTTPRequestHandler):
                 'status': status,
                 'has_keys': has_keys,
             })
+        except Exception as exc:
+            self._json_err(500, str(exc))
+
+    def handle_local_schwab_auth_url_api(self):
+        try:
+            import secrets, hashlib, base64, urllib.parse
+            env_path = _BACKEND_DIR.parent / 'treasure_map_keys.env'
+            if not env_path.exists():
+                self._json_err(500, 'treasure_map_keys.env not found')
+                return
+            env = {}
+            for line in env_path.read_text(encoding='utf-8', errors='ignore').splitlines():
+                line = line.strip()
+                if not line or line.startswith('#'):
+                    continue
+                if '=' in line:
+                    k, v = line.split('=', 1)
+                    env[k.strip()] = v.strip()
+            app_key = env.get('SCHWAB_APP_KEY', '')
+            redirect = env.get('SCHWAB_CALLBACK_URL', 'https://127.0.0.1')
+            if not app_key:
+                self._json_err(500, 'SCHWAB_APP_KEY missing')
+                return
+            verifier = secrets.token_urlsafe(64)
+            challenge = base64.urlsafe_b64encode(hashlib.sha256(verifier.encode()).digest()).decode().rstrip('=')
+            params = {
+                'client_id': app_key,
+                'redirect_uri': redirect,
+                'response_type': 'code',
+                'code_challenge': challenge,
+                'code_challenge_method': 'S256',
+                'state': secrets.token_hex(16),
+            }
+            auth_url = 'https://api.schwabapi.com/v1/oauth/authorize' + '?' + urllib.parse.urlencode(params)
+            self._json_ok({'auth_url': auth_url, 'verifier': verifier})
         except Exception as exc:
             self._json_err(500, str(exc))
 
