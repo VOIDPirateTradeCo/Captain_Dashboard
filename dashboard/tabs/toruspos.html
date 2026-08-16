@@ -9,8 +9,11 @@
   html,body { height:100%; background:#05070d; color:#9fe7ff; font-family:'Courier New',monospace; }
   header { padding:10px 16px; background:linear-gradient(90deg,#0a1a2a,#06121f); border-bottom:1px solid #1b3a52; display:flex; justify-content:space-between; align-items:center; }
   header h1 { font-size:15px; letter-spacing:2px; color:#5fd0ff; text-shadow:0 0 8px #1b6fa8; }
-  header .status { font-size:12px; color:#3fe08a; }
-  iframe { width:100%; height:calc(100vh - 44px); border:0; background:#0a0f17; }
+  header .status { font-size:12px; color:#e0c039; }
+  .wrap { padding:16px; }
+  .card { background:rgba(10,20,30,.6); border:1px solid #1b3a52; border-radius:8px; padding:14px; margin-bottom:12px; }
+  .card h2 { font-size:13px; color:#5fd0ff; margin-bottom:8px; }
+  .metric { font-size:12px; color:#9fe7ff; line-height:1.6; }
   .bar { position:fixed; bottom:0; width:100%; height:3px; background:linear-gradient(90deg,#0af,#0ff,#0af); animation:pulse 2s infinite; }
   @keyframes pulse { 0%,100%{opacity:.4} 50%{opacity:1} }
 </style>
@@ -18,9 +21,22 @@
 <body>
 <header>
   <h1>🏴‍☠️ PIRATE CAPTAIN'S DASHBOARD — TORUSPOS COMMERCE</h1>
-  <span class="status">● LIVE · http://localhost:3100/</span>
+  <span class="status">● OFFLINE — AWAITING DEPLOYMENT</span>
 </header>
-<iframe src="http://localhost:3100/" title="TorusPOS Commerce"></iframe>
+<div class="wrap">
+  <div class="card">
+    <h2>Service Status</h2>
+    <div class="metric">TorusPOS is not running on this host.</div>
+    <div class="metric">Expected endpoint: <code>http://localhost:3100/</code></div>
+    <div class="metric">Current result: connection timed out.</div>
+  </div>
+  <div class="card">
+    <h2>Next Actions</h2>
+    <div class="metric">1) Deploy TorusPOS container/service on SQUIDSTATION or PINKCADY.</div>
+    <div class="metric">2) Expose port 3100 on the target host.</div>
+    <div class="metric">3) Update this tab to point to the live host IP.</div>
+  </div>
+</div>
 <div class="bar"></div>
 </body>
 </html>
