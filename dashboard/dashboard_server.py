@@ -1762,7 +1762,11 @@ class DashboardHandler(BaseHTTPRequestHandler):
 
     def handle_local_download_api(self):
         try:
-            from data_downloader import get_download_status, get_progress, stop_current_download, download_watchlist_quick, download_new_ticker, is_download_active
+            from data_downloader import (
+                get_download_status, get_progress, get_quick_progress,
+                stop_current_download, download_watchlist_quick,
+                download_new_ticker, is_download_active, quick_update
+            )
             path = urlparse(self.path).path
             query = parse_qs(urlparse(self.path).query)
             if self.command == 'POST':
@@ -1775,34 +1779,50 @@ class DashboardHandler(BaseHTTPRequestHandler):
                     if not tickers:
                         self._json_err(400, 'tickers required')
                         return
-                    res = download_watchlist_quick([t.strip().upper() for t in tickers if t.strip()])
-                    self._json_ok(res)
+                    def _run():
+                        try:
+                            download_watchlist_quick([t.strip().upper() for t in tickers if t.strip()])
+                        except Exception:
+                            pass
+                    threading.Thread(target=_run, daemon=True, name='watchlist_local').start()
+                    self._json_ok({'status': 'started'})
                     return
                 if path.endswith('/new_ticker'):
                     ticker = (query.get('ticker', [''])[0] or '').strip().upper()
                     if not ticker:
                         self._json_err(400, 'ticker required')
                         return
-                    res = download_new_ticker(ticker, force_full=query.get('force_full', ['0'])[0] in ('1', 'true', 'yes'))
-                    self._json_ok(res)
-                    return
-                if path.endswith('/quick_update'):
-                    from data_downloader import quick_update as _quick_update
-                    def _run_quick():
+                    def _run():
                         try:
-                            _quick_update()
+                            download_new_ticker(ticker, force_full=query.get('force_full', ['0'])[0] in ('1', 'true', 'yes'))
                         except Exception:
                             pass
-                    threading.Thread(target=_run_quick, daemon=True, name='quick_update_local').start()
+                    threading.Thread(target=_run, daemon=True, name='new_ticker_local').start()
+                    self._json_ok({'status': 'started'})
+                    return
+                if path.endswith('/quick_update'):
+                    def _run():
+                        try:
+                            quick_update()
+                        except Exception:
+                            pass
+                    threading.Thread(target=_run, daemon=True, name='quick_update_local').start()
                     self._json_ok({'status': 'started'})
                     return
                 self._json_err(404, 'unknown POST action')
                 return
-            # GET status: return cached snapshot to avoid slow DB reads on every poll
-            if not hasattr(self, '_dl_cache') or not hasattr(self, '_dl_cache_ts') or (__import__('time').time() - getattr(self, '_dl_cache_ts', 0) > 5):
+            # GET: return cached status to avoid slow DB reads
+            if path.endswith('/progress'):
+                self._json_ok({'progress': get_progress()})
+                return
+            if path.endswith('/quick_update/progress'):
+                self._json_ok(get_quick_progress())
+                return
+            if not hasattr(self, '_dl_cache') or not hasattr(self, '_dl_cache_ts') or (__import__('time').time() - getattr(self, '_dl_cache_ts', 0) > 2):
                 self._dl_cache = {
                     'status': get_download_status(),
                     'progress': get_progress(),
+                    'quick_progress': get_quick_progress(),
                     'active': is_download_active(),
                 }
                 self._dl_cache_ts = __import__('time').time()
