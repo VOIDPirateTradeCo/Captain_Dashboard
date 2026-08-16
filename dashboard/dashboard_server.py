@@ -1650,6 +1650,8 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.handle_local_proxy_json('http://127.0.0.1:5001/api/auth/profiles')
         elif path.startswith('/api/auth/profile'):
             self.handle_local_proxy_json('http://127.0.0.1:5001/api/auth/profile', methods=['PATCH'])
+        elif path.startswith('/api/auth/verify'):
+            self.handle_local_auth_verify_api()
         elif path.startswith('/api/auth/register'):
             self.handle_local_proxy_json('http://127.0.0.1:5001/api/auth/register', methods=['POST'])
         elif path.startswith('/api/auth'):
