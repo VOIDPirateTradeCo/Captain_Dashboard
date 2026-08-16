@@ -48,6 +48,20 @@
     <div id="banner" class="banner partial">Loading hive state…</div>
     <div class="grid" id="ships"></div>
     <div id="pending"></div>
+    <div class="grid" style="margin-top:14px;">
+        <div class="card">
+            <h3>Dataset</h3>
+            <pre id="dataset-status">Loading...</pre>
+        </div>
+        <div class="card">
+            <h3>Compute</h3>
+            <pre id="compute-status">Loading...</pre>
+        </div>
+        <div class="card">
+            <h3>Data Manager</h3>
+            <pre id="data-status">Loading...</pre>
+        </div>
+    </div>
 
     <script>
         function age(sec) {
@@ -123,7 +137,7 @@
                         <b style="color:#fbbf24;">Pending rigs: ${pend.join(', ')}</b><br>
                         Run on each rig (PowerShell, no admin needed):
                         <code>mkdir "$env:USERPROFILE\\void_hive" -Force</code>
-                        <code>curl.exe -o "$env:USERPROFILE\\void_hive\\hive_agent.py" http://192.168.0.39:9000/agent</code>
+                        <code>curl.exe -o "$env:USERPROFILE\\void_hive\\hive_agent.py" http://192.168.0.39:8080/agent</code>
                         <code>python "$env:USERPROFILE\\void_hive\\hive_agent.py" once</code>
                         <code>python "$env:USERPROFILE\\void_hive\\hive_agent.py" install</code>
                     </div>` : '';
@@ -135,6 +149,23 @@
 
         loadFleet();
         setInterval(loadFleet, 10000);
+
+        async function loadFleetData(){
+            try {
+                const [ds, dc, dm] = await Promise.all([
+                    fetch('/api/fleet/offline-dataset/verify').then(r=>r.json()).catch(()=>({})),
+                    fetch('/api/fleet/compute').then(r=>r.json()).catch(()=>({})),
+                    fetch('/api/fleet/data').then(r=>r.json()).catch(()=>({})),
+                ]);
+                document.getElementById('dataset-status').textContent = JSON.stringify(ds, null, 2);
+                document.getElementById('compute-status').textContent = JSON.stringify(dc, null, 2);
+                document.getElementById('data-status').textContent = JSON.stringify(dm, null, 2);
+            } catch (e) {
+                // non-fatal
+            }
+        }
+        loadFleetData();
+        setInterval(loadFleetData, 10000);
     </script>
 </body>
 </html>
