@@ -1,23 +1,63 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><title>Auth & Scopes</title>
-<style>body{background:#0b1d2e;color:#ffd700;font-family:'Segoe UI',sans-serif;padding:20px;margin:0}
+<style>
+body{background:#0b1d2e;color:#ffd700;font-family:'Segoe UI',sans-serif;padding:20px;margin:0}
 nav{background:#081726;padding:10px 20px;border-bottom:1px solid #1f3a55;margin:-20px -20px 18px}
 nav a{color:#00aaff;text-decoration:none;margin-right:14px;font-size:14px}nav a:hover{color:#ffd700}
 h1{color:#ffd700}.card{background:#122a3d;border:1px solid #1f3a55;border-radius:10px;padding:14px;margin:8px 0}
 .scope{display:inline-block;background:#0a1f30;border:1px solid #56fb88;color:#56fb88;border-radius:6px;padding:4px 10px;margin:3px}
 input{background:#0a1f30;color:#9fe7ff;border:1px solid #1f3a55;padding:6px;border-radius:6px;width:240px}
 button{background:#5a1020;color:#ffd700;border:1px solid #ffd700;padding:6px 12px;border-radius:6px;cursor:pointer}
-.status{color:#9fe7ff;font-size:.85em;margin-top:8px}</style></head>
+.status{color:#9fe7ff;font-size:.85em;margin-top:8px}
+.row{display:flex;gap:8px;align-items:center;margin:6px 0}
+</style></head>
 <body>
 <nav><a href="/">🏠 HQ</a><a href="/tab/fleet">🛰️ Fleet</a><a href="/tab/crew">👥 Crew</a><a href="/tab/dataview">📊 Dataview</a><a href="/tab/auth">🔑 Auth</a><a href="/tab/diagram">📐 Diagram</a></nav>
 <h1>🔑 CREW AUTH & SCOPES — White Whale Gating</h1>
-<p class="status">Verify a crew bot token (White Whale passphrase-gated tools). Endpoint: <code>/api/auth/verify?token=</code></p>
-<div class="card"><span class="scope">green_tide → Sir Green</span><span class="scope">pink_wave → Miss Pink</span><span class="scope">azure_storm → Sir Azure</span></div>
-<div class="card"><input id="tok" placeholder="enter crew token"><button onclick="verify()">Verify</button><div class="status" id="st"></div></div>
+
+<div class="card">
+  <h2>Login</h2>
+  <div class="row"><input id="username" placeholder="username"><input id="password" placeholder="password" type="password"><button onclick="doLogin()">Login</button></div>
+  <div class="status" id="loginStatus"></div>
+</div>
+
+<div class="card">
+  <h2>Session</h2>
+  <div class="row"><button onclick="whoami()">Whoami</button><button onclick="doLogout()">Logout</button></div>
+  <div class="status" id="sessionStatus"></div>
+</div>
+
+<div class="card">
+  <h2>Scopes</h2>
+  <div><span class="scope">green_tide → Sir Green</span><span class="scope">pink_wave → Miss Pink</span><span class="scope">azure_storm → Sir Azure</span></div>
+  <div class="status" id="scopesStatus"></div>
+</div>
+
 <script>
-async function loadScopes(){try{const d=await(await fetch('/api/auth/scopes')).json();
-document.getElementById('st').textContent='valid tokens: '+(d.valid_tokens||[]).join(', ');}catch(e){}}
-async function verify(){const t=document.getElementById('tok').value;
-try{const d=await(await fetch('/api/auth/verify?token='+encodeURIComponent(t))).json();
-document.getElementById('st').textContent=JSON.stringify(d);}catch(e){document.getElementById('st').textContent='ERR '+e.message;}}
-loadScopes();</script></body></html>
+async function api(path, opts){const r=await fetch(path, opts);let j;try{j=await r.json()}catch{j=null}return {status:r.status,data:j}}
+async function doLogin(){
+  const u=document.getElementById('username').value.trim();
+  const p=document.getElementById('password').value;
+  const el=document.getElementById('loginStatus');
+  if(!u||!p){el.textContent='username/password required';return}
+  el.textContent='logging in...';
+  const res=await api('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:u,password:p})});
+  if(res.status===200 && res.data && res.data.token){sessionStorage.setItem('token', res.data.token);el.textContent='login ok';whoami()}else{el.textContent='login failed: '+(res.data&&res.data.error?res.data.error:'unknown')}
+}
+async function doLogout(){
+  const t=sessionStorage.getItem('token');
+  if(!t){document.getElementById('sessionStatus').textContent='no session';return}
+  const res=await api('/api/auth/logout',{method:'POST',headers:{'Authorization':'Bearer '+t}});
+  sessionStorage.removeItem('token');
+  document.getElementById('sessionStatus').textContent='logged out: '+JSON.stringify(res.data||{});
+}
+async function whoami(){
+  const t=sessionStorage.getItem('token');
+  const el=document.getElementById('sessionStatus');
+  if(!t){el.textContent='no session';return}
+  const res=await api('/api/auth/whoami',{headers:{'Authorization':'Bearer '+t}});
+  el.textContent='status '+res.status+' '+(res.data?JSON.stringify(res.data):'');
+}
+async function loadScopes(){try{const d=await(await fetch('/api/auth/scopes')).json();document.getElementById('scopesStatus').textContent='valid tokens: '+(d.valid_tokens||[]).join(', ')}catch(e){document.getElementById('scopesStatus').textContent='ERR '+e.message}}
+loadScopes();
+</script></body></html>

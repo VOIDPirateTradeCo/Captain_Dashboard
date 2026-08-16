@@ -1630,6 +1630,22 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.handle_local_bracket_info_api(path.split('/')[-1] if len(path.split('/')) > 3 else '')
         elif path.startswith('/api/augur/manual_signal'):
             self.handle_local_manual_signal_api()
+        elif path.startswith('/api/auth/login'):
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/auth/login', methods=['POST'])
+        elif path.startswith('/api/auth/logout'):
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/auth/logout', methods=['POST'])
+        elif path.startswith('/api/auth/status'):
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/auth/status')
+        elif path.startswith('/api/auth/whoami'):
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/auth/whoami')
+        elif path.startswith('/api/auth/profiles'):
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/auth/profiles')
+        elif path.startswith('/api/auth/profile'):
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/auth/profile', methods=['PATCH'])
+        elif path.startswith('/api/auth/register'):
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/auth/register', methods=['POST'])
+        elif path.startswith('/api/auth'):
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/auth', keep_path=True)
         elif path.startswith('/api/augur'):
             self.handle_local_proxy_json('http://127.0.0.1:5001/api/augur', keep_path=True)
         elif path.startswith('/api/alpaca'):
