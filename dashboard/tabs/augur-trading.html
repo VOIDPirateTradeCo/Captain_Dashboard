@@ -259,6 +259,7 @@ async function loadDatasetVerify(){
       const current = p.current_ticker || qProg.current_ticker || '';
       const bars = p.bars_written || 0;
       const failed = p.failed || qProg.failed || 0;
+      console.log('[pollDownload] running='+running+' phase='+phase+' completed='+completed+' total='+total+' bars='+bars+' current='+current);
       statusEl.textContent = 'Status: ' + (running ? 'RUNNING' : phase || 'idle') + (status.locked ? ' (DB locked)' : '');
       if (running || phase) {
         progressEl.textContent = 'Progress: ' + completed + '/' + total + ' tickers — ' + bars.toLocaleString() + ' bars written — current: ' + current + (failed ? ' — ' + failed + ' failed' : '');
