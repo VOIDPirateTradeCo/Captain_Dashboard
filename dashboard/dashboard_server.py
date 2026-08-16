@@ -1994,7 +1994,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
             except Exception:
                 pass
             try:
-                env_path = _BACKEND_DIR / 'treasure_map_keys.env'
+                env_path = _BACKEND_DIR.parent / 'treasure_map_keys.env'
                 has_keys = False
                 if env_path.exists():
                     txt = env_path.read_text(encoding='utf-8', errors='ignore')
