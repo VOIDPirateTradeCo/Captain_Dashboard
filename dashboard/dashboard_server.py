@@ -1604,6 +1604,8 @@ class DashboardHandler(BaseHTTPRequestHandler):
             return self.handle_local_schwab_auth_url_api()
         elif path == '/api/schwab/oauth/callback':
             return self.handle_local_schwab_oauth_callback_api()
+        elif path == '/api/schwab/account_snapshot':
+            return self.handle_local_proxy_json('http://127.0.0.1:5001/api/schwab/account_snapshot')
         elif path.startswith('/api/schwab'):
             self.handle_local_schwab_status_api()
         elif path == '/api/hw' or path == '/api/hw/':
