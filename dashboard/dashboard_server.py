@@ -1947,17 +1947,14 @@ class DashboardHandler(BaseHTTPRequestHandler):
 
     def handle_local_data_source_status_api(self):
         try:
-            import sqlite3
-            db_path = str(_BACKEND_DIR / 'data' / 'treasure_map.db')
-            con = sqlite3.connect(db_path, timeout=30)
+            from db_manager import DB_PATH as _db_path, get_connection as _get_conn
+            con = _get_conn()
             con.row_factory = sqlite3.Row
             queries = [
-                ('Schwab Daily', "SELECT COUNT(*), MAX(date), COUNT(DISTINCT ticker) FROM price_history WHERE source='schwab'"),
-                ('Alpaca Daily', "SELECT COUNT(*), MAX(date), COUNT(DISTINCT ticker) FROM price_history WHERE source='alpaca_daily'"),
-                ('Alpaca 1-Min', "SELECT COUNT(*), MAX(date), COUNT(DISTINCT ticker) FROM price_history_1min"),
-                ('yfinance', "SELECT COUNT(*), MAX(date), COUNT(DISTINCT ticker) FROM price_history WHERE source LIKE 'yfinance%'"),
-                ('FRED Macro', "SELECT COUNT(*), MAX(date), NULL FROM fred_macro"),
-                ('Dividends', "SELECT COUNT(*), MAX(ex_date), COUNT(DISTINCT ticker) FROM dividends"),
+                ('Historical Prices', "SELECT COUNT(*), MAX(date), COUNT(DISTINCT ticker) FROM historical_prices"),
+                ('Fundamentals', "SELECT COUNT(*), MAX(fetched_at), COUNT(DISTINCT ticker) FROM fundamentals"),
+                ('Watchlist', "SELECT COUNT(*), MAX(updated_at), COUNT(DISTINCT ticker) FROM ai_watchlist"),
+                ('Trades', "SELECT COUNT(*), MAX(created_at), COUNT(DISTINCT ticker) FROM trades"),
             ]
             from datetime import datetime as _dt, timedelta as _td
             stale_cutoff = (_dt.now() - _td(days=7)).strftime('%Y-%m-%d')

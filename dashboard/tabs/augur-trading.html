@@ -212,10 +212,10 @@ async function loadDataSources(){
       const rows = s ? s.rows : 0;
       el.innerHTML = '<span class="badge ' + (status === 'good' ? 'ok' : (status === 'stale' ? 'warn' : 'bad')) + '">' + esc(status) + '</span> <span style="color:#94a3b8;">' + esc(rows) + ' rows</span>';
     };
-    setCell('ds-schwab', 'Schwab Daily');
-    setCell('ds-alpaca', 'Alpaca Daily');
-    setCell('ds-yfinance', 'yfinance');
-    setCell('ds-fred', 'FRED Macro');
+    setCell('ds-schwab', 'Historical Prices');
+    setCell('ds-alpaca', 'Fundamentals');
+    setCell('ds-yfinance', 'Watchlist');
+    setCell('ds-fred', 'Trades');
     try {
       const sr = await fetch('/api/schwab/oauth/status');
       const sd = await sr.json();
