@@ -2003,6 +2003,37 @@ class DashboardHandler(BaseHTTPRequestHandler):
             {'name': 'Watchlist', 'rows': 0, 'last_date': None, 'coverage': 0, 'status': 'empty'},
             {'name': 'Trades', 'rows': 0, 'last_date': None, 'coverage': 0, 'status': 'empty'},
         ]
+        try:
+            db_path = _BACKEND_DIR.parent / 'data' / 'treasure_map.db'
+            if db_path.exists():
+                import sqlite3
+                con = sqlite3.connect(str(db_path), timeout=2)
+                con.execute('PRAGMA journal_mode=WAL')
+                rows = con.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall()
+                tables = [r[0] for r in rows]
+                def q(sql):
+                    try:
+                        return con.execute(sql).fetchone()[0]
+                    except Exception:
+                        return None
+                count_price = q('SELECT COUNT(*) FROM price_history')
+                count_1min = q('SELECT COUNT(*) FROM price_history_1min')
+                count_fred = q('SELECT COUNT(*) FROM fred_series')
+                count_trades = q('SELECT COUNT(*) FROM trades')
+                last_price = q('SELECT MAX(date) FROM price_history')
+                last_1min = q('SELECT MAX(date) FROM price_history_1min')
+                last_fred = q('SELECT MAX(date) FROM fred_series')
+                con.close()
+                sources = [
+                    {'name': 'Historical Prices', 'rows': count_price, 'last_date': last_price, 'coverage': count_price, 'status': 'good'},
+                    {'name': '1min Bars', 'rows': count_1min, 'last_date': last_1min, 'coverage': count_1min, 'status': 'good'},
+                    {'name': 'FRED Macro', 'rows': count_fred, 'last_date': last_fred, 'coverage': count_fred, 'status': 'stale' if (last_fred or '') < stale_cutoff else 'good'},
+                    {'name': 'Fundamentals', 'rows': None, 'last_date': None, 'coverage': 0, 'status': 'empty'},
+                    {'name': 'Watchlist', 'rows': None, 'last_date': None, 'coverage': 0, 'status': 'empty'},
+                    {'name': 'Trades', 'rows': count_trades, 'last_date': None, 'coverage': count_trades, 'status': 'empty'},
+                ]
+        except Exception:
+            pass
         self._json_ok({'sources': sources, 'stale_cutoff': stale_cutoff})
 
     def handle_local_schwab_status_api(self):
