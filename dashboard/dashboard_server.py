@@ -1868,11 +1868,11 @@ class DashboardHandler(BaseHTTPRequestHandler):
                 self._json_err(404, 'unknown POST action')
                 return
             # GET: return cached status to avoid slow DB reads
-            if path.endswith('/progress'):
-                self._json_ok({'progress': get_progress()})
-                return
             if path.endswith('/quick_update/progress'):
                 self._json_ok(get_quick_progress())
+                return
+            if path.endswith('/progress'):
+                self._json_ok({'progress': get_progress()})
                 return
             if not hasattr(self, '_dl_cache') or not hasattr(self, '_dl_cache_ts') or (__import__('time').time() - getattr(self, '_dl_cache_ts', 0) > 2):
                 self._dl_cache = {
