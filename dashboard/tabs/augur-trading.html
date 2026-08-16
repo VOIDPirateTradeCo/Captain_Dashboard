@@ -144,29 +144,6 @@
 </div>
 
 <div class="card">
-  <h3 class="section-title">Bracket / OCO Order</h3>
-  <p class="metric">Manual bracket with stop-loss and target. Paper by default.</p>
-  <div class="row">
-    <input id="bracket-ticker" placeholder="TICKER" style="background:#000;color:#e2e8f0;border:1px solid #1e293b;padding:6px 8px;border-radius:6px;width:90px;">
-    <select id="bracket-side" style="background:#000;color:#e2e8f0;border:1px solid #1e293b;padding:6px 8px;border-radius:6px;width:90px;">
-      <option value="long">LONG</option>
-      <option value="short">SHORT</option>
-    </select>
-    <input id="bracket-entry" placeholder="entry" style="background:#000;color:#e2e8f0;border:1px solid #1e293b;padding:6px 8px;border-radius:6px;width:80px;">
-    <input id="bracket-stop" placeholder="stop" style="background:#000;color:#e2e8f0;border:1px solid #1e293b;padding:6px 8px;border-radius:6px;width:80px;">
-    <input id="bracket-target" placeholder="target" style="background:#000;color:#e2e8f0;border:1px solid #1e293b;padding:6px 8px;border-radius:6px;width:80px;">
-    <input id="bracket-qty" placeholder="qty" style="background:#000;color:#e2e8f0;border:1px solid #1e293b;padding:6px 8px;border-radius:6px;width:60px;">
-    <select id="bracket-mode" style="background:#000;color:#e2e8f0;border:1px solid #1e293b;padding:6px 8px;border-radius:6px;width:80px;">
-      <option value="paper">PAPER</option>
-      <option value="live">LIVE</option>
-    </select>
-    <button id="btn-bracket-submit" class="btn">Submit Bracket</button>
-    <button id="btn-bracket-info" class="btn btn-secondary">Get Info</button>
-  </div>
-  <pre id="bracket-result" class="metric">Idle.</pre>
-</div>
-
-<div class="card">
   <h3 class="section-title">Signals</h3>
   <pre id="signals">Loading...</pre>
 </div>
@@ -257,10 +234,9 @@ async function loadDatasetVerify(){
 }
 
 (function(){
-  const $=s=>document.querySelector(s);
-  const statusEl=$('#download-status');
-  const progressEl=$('#download-progress');
-  const errorsEl=$('#download-errors');
+  const statusEl=document.getElementById('download-status');
+  const progressEl=document.getElementById('download-progress');
+  const errorsEl=document.getElementById('download-errors');
 
   async function api(path, opts){
     const r=await fetch('/api'+path, Object.assign({headers:{'Content-Type':'application/json'}}, opts||{}));
@@ -296,24 +272,24 @@ async function loadDatasetVerify(){
     }
   }
 
-  $('#btn-start-download').onclick = async ()=>{
+  document.getElementById('btn-start-download')?.addEventListener('click', async ()=>{
     const body = {
-      use_schwab: $('#dl-schwab').checked,
-      use_alpaca: $('#dl-alpaca').checked,
-      use_yfinance: $('#dl-yfinance').checked,
-      use_fred: $('#dl-fred').checked,
+      use_schwab: document.getElementById('dl-schwab').checked,
+      use_alpaca: document.getElementById('dl-alpaca').checked,
+      use_yfinance: document.getElementById('dl-yfinance').checked,
+      use_fred: document.getElementById('dl-fred').checked,
     };
     const res = await api('/download', {method:'POST', body: JSON.stringify(body)});
     statusEl.textContent = 'Status: ' + (res.message || res.status || 'requested');
-  };
-  $('#btn-quick-update').onclick = async ()=>{
+  });
+  document.getElementById('btn-quick-update')?.addEventListener('click', async ()=>{
     const res = await api('/download/quick_update', {method:'POST'});
     statusEl.textContent = 'Status: ' + (res.message || res.status || 'requested');
-  };
-  $('#btn-stop-download').onclick = async ()=>{
+  });
+  document.getElementById('btn-stop-download')?.addEventListener('click', async ()=>{
     await api('/download/stop', {method:'POST'}).catch(()=>({}));
     statusEl.textContent = 'Status: stop requested';
-  };
+  });
 
   setInterval(pollDownload, 1500);
   pollDownload();
@@ -420,7 +396,8 @@ setInterval(load, 15000);
       out.textContent = 'Error: ' + e.message;
     }
   }
-  async function submitBracket(){
+  document.getElementById('btn-bracket-info')?.addEventListener('click', getBracketInfo);
+  document.getElementById('btn-bracket-submit')?.addEventListener('click', async ()=>{
     const ticker = (document.getElementById('bracket-ticker').value || '').trim().toUpperCase();
     const side = document.getElementById('bracket-side').value;
     const entry = parseFloat(document.getElementById('bracket-entry').value);
@@ -438,9 +415,7 @@ setInterval(load, 15000);
     } catch(e) {
       out.textContent = 'Error: ' + e.message;
     }
-  }
-  document.getElementById('btn-bracket-info')?.addEventListener('click', getBracketInfo);
-  document.getElementById('btn-bracket-submit')?.addEventListener('click', submitBracket);
+  });
 })();
 </script>
 </body>
