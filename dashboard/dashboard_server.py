@@ -1993,10 +1993,17 @@ class DashboardHandler(BaseHTTPRequestHandler):
             status = 'disconnected'
             try:
                 from schwab_client import get_schwab_status
-                connected = bool(get_schwab_status().get('connected'))
-                status = get_schwab_status().get('status', 'disconnected')
+                backend = get_schwab_status() or {}
+                connected = bool(backend.get('connected'))
+                status = backend.get('status', 'disconnected')
             except Exception:
-                pass
+                connected = False
+                status = 'disconnected'
+            if not connected:
+                token_path = _BACKEND_DIR / 'data' / 'meta' / 'schwab_tokens.json'
+                if token_path.exists() and token_path.stat().st_size > 0:
+                    connected = True
+                    status = 'authorized'
             try:
                 env_path = _BACKEND_DIR.parent / 'treasure_map_keys.env'
                 has_keys = False
