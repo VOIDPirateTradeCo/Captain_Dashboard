@@ -1770,6 +1770,41 @@ class DashboardHandler(BaseHTTPRequestHandler):
             path = urlparse(self.path).path
             query = parse_qs(urlparse(self.path).query)
             if self.command == 'POST':
+                if path.endswith('/start') or path == '/api/download':
+                    from app import start_download
+                    try:
+                        if self.command == 'POST' and self.headers.get('Content-Length','0').strip() != '0':
+                            length = int(self.headers.get('Content-Length', 0))
+                            raw = self.rfile.read(length)
+                            try:
+                                payload = json.loads(raw.decode('utf-8', errors='ignore') or '{}')
+                            except Exception:
+                                payload = {}
+                        else:
+                            payload = {}
+                        _orig_request = __import__('app').request if False else None
+                        try:
+                            import app as _app_mod
+                            with _app_mod.app.test_request_context('/api/download', method='POST', json=payload):
+                                result = start_download()
+                        finally:
+                            pass
+                    except Exception as exc:
+                        self._json_err(500, str(exc))
+                        return
+                    status = getattr(result, 'status_code', 200)
+                    payload = getattr(result, 'get_data', lambda: b'{}')()
+                    if isinstance(payload, bytes):
+                        body = payload
+                    else:
+                        body = json.dumps(payload, indent=2, default=str).encode('utf-8')
+                    self.send_response(status)
+                    self.send_header('Content-Type', 'application/json')
+                    self.send_header('Access-Control-Allow-Origin', '*')
+                    self.send_header('Content-Length', str(len(body)))
+                    self.end_headers()
+                    self.wfile.write(body)
+                    return
                 if path.endswith('/stop'):
                     stop_current_download()
                     self._json_ok({'status': 'stopped'})
@@ -1807,6 +1842,27 @@ class DashboardHandler(BaseHTTPRequestHandler):
                         except Exception:
                             pass
                     threading.Thread(target=_run, daemon=True, name='quick_update_local').start()
+                    self._json_ok({'status': 'started'})
+                    return
+                if path == '/download':
+                    try:
+                        body_obj = json.loads(self.rfile.read(int(self.headers.get('Content-Length', 0))) or '{}')
+                    except Exception:
+                        body_obj = {}
+                    use_schwab = bool(body_obj.get('use_schwab', True))
+                    use_alpaca = bool(body_obj.get('use_alpaca', True))
+                    use_yfinance = bool(body_obj.get('use_yfinance', False))
+                    use_fred = bool(body_obj.get('use_fred', True))
+                    if not any([use_schwab, use_alpaca, use_yfinance, use_fred]):
+                        self._json_err(400, 'select at least one source')
+                        return
+                    def _run_full():
+                        try:
+                            from data_downloader import download_all
+                            download_all(profile='conservative', use_schwab=use_schwab, use_alpaca=use_alpaca, use_yfinance=use_yfinance, use_fred=use_fred)
+                        except Exception:
+                            pass
+                    threading.Thread(target=_run_full, daemon=True, name='download_local').start()
                     self._json_ok({'status': 'started'})
                     return
                 self._json_err(404, 'unknown POST action')
