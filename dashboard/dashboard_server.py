@@ -1951,10 +1951,12 @@ class DashboardHandler(BaseHTTPRequestHandler):
             con = _get_conn()
             con.row_factory = sqlite3.Row
             queries = [
-                ('Historical Prices', "SELECT COUNT(*), MAX(date), COUNT(DISTINCT ticker) FROM historical_prices"),
-                ('Fundamentals', "SELECT COUNT(*), MAX(fetched_at), COUNT(DISTINCT ticker) FROM fundamentals"),
-                ('Watchlist', "SELECT COUNT(*), MAX(updated_at), COUNT(DISTINCT ticker) FROM ai_watchlist"),
-                ('Trades', "SELECT COUNT(*), MAX(created_at), COUNT(DISTINCT ticker) FROM trades"),
+                ('Historical Prices', "SELECT COUNT(*), MAX(date), COUNT(DISTINCT ticker) FROM price_history"),
+                ('1min Bars', "SELECT COUNT(*), MAX(date), COUNT(DISTINCT ticker) FROM price_history_1min"),
+                ('FRED Macro', "SELECT COUNT(*), MAX(date), COUNT(DISTINCT date) FROM fred_macro"),
+                ('Fundamentals', "SELECT COUNT(*), NULL, COUNT(DISTINCT ticker) FROM fundamentals"),
+                ('Watchlist', "SELECT COUNT(*), NULL, COUNT(DISTINCT ticker) FROM ai_watchlist"),
+                ('Trades', "SELECT COUNT(*), MAX(entry_date), COUNT(DISTINCT ticker) FROM trades"),
             ]
             from datetime import datetime as _dt, timedelta as _td
             stale_cutoff = (_dt.now() - _td(days=7)).strftime('%Y-%m-%d')
