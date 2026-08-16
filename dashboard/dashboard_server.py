@@ -2614,7 +2614,8 @@ class DashboardHandler(BaseHTTPRequestHandler):
             stale_after = 300
             live = {}
             heartbeat_entries = 0
-            for name in ships:
+            ship_names = set(ships.keys()) | set(CREW_HEARTBEATS.keys())
+            for name in ship_names:
                 entry = CREW_HEARTBEATS.get(name)
                 if not entry:
                     # Preserve source-of-record status when no heartbeat exists yet.
@@ -2636,11 +2637,11 @@ class DashboardHandler(BaseHTTPRequestHandler):
             if all(age is not None and age >= stale_after for age in [
                 (now - datetime.datetime.fromisoformat(CREW_HEARTBEATS.get(name, {}).get('last_seen', now.isoformat()))).total_seconds()
                 if CREW_HEARTBEATS.get(name) else None
-                for name in ships
+                for name in ship_names
             ] if age is not None):
                 live = {
-                    name: ((ships.get(name) or {}).get('status', 'online') if isinstance(ships.get(name), dict) else 'online')
-                    for name in ships
+                    name: ((ships.get(name) or {}).get('status', 'stale') if isinstance(ships.get(name), dict) else 'stale')
+                    for name in ship_names
                 }
             # Suppress false death-loop alerts: the alert generator marks
             # ping-alive hosts with "ping-alive but crew_api:8090 DOWN".
@@ -2654,15 +2655,18 @@ class DashboardHandler(BaseHTTPRequestHandler):
                         continue
                     cleaned.append(alert)
                 mesh_state['alerts'] = cleaned
-            # merge live status into each ship
-            for name, info in ships.items():
+            # merge live status into each ship, including heartbeat-only ships
+            for name in ship_names:
+                info = ships.get(name)
                 if isinstance(info, dict):
                     info = dict(info)
                     info['status'] = live.get(name, 'unknown')
                     ships[name] = info
+                elif live.get(name):
+                    ships[name] = {'status': live.get(name, 'unknown'), 'source': 'heartbeat'}
             mesh_state['ships'] = ships
             mesh_state['live_status'] = live
-            mesh_state['ships_online'] = sum(1 for v in live.values() if v == 'online')
+            mesh_state['ships_online'] = sum(1 for name in ship_names if live.get(name) == 'online' or (isinstance(ships.get(name), dict) and ships.get(name).get('status') == 'online'))
             mesh_state['generated'] = now.isoformat()
             data = {
                 "fleet_mesh_state": mesh_state,
