@@ -1600,6 +1600,8 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.handle_local_proxy_json('http://127.0.0.1:5001/api/data/sources', keep_path=True)
         elif path == '/api/schwab/auth-url':
             return self.handle_local_schwab_auth_url_api()
+        elif path == '/api/schwab/oauth/callback':
+            return self.handle_local_schwab_oauth_callback_api()
         elif path.startswith('/api/schwab'):
             self.handle_local_schwab_status_api()
         elif path == '/api/hw' or path == '/api/hw/':
@@ -2040,7 +2042,54 @@ class DashboardHandler(BaseHTTPRequestHandler):
                 'state': secrets.token_hex(16),
             }
             auth_url = 'https://api.schwabapi.com/v1/oauth/authorize' + '?' + urllib.parse.urlencode(params)
-            self._json_ok({'auth_url': auth_url, 'verifier': verifier})
+            self._json_ok({'auth_url': auth_url, 'verifier': verifier, 'app_secret': env.get('SCHWAB_APP_SECRET', ''), 'redirect': redirect})
+        except Exception as exc:
+            self._json_err(500, str(exc))
+
+    def handle_local_schwab_oauth_callback_api(self):
+        try:
+            if self.command != 'POST':
+                self._json_err(405, 'POST only')
+                return
+            length = int(self.headers.get('Content-Length', '0'))
+            body = self.rfile.read(length).decode('utf-8', errors='ignore')
+            params = urllib.parse.parse_qs(body)
+            redirect_url = params.get('redirect_url', [''])[0]
+            verifier = params.get('verifier', [''])[0]
+            if not redirect_url or not verifier:
+                self._json_err(400, 'redirect_url and verifier required')
+                return
+            parsed = urllib.parse.urlparse(redirect_url)
+            qs = urllib.parse.parse_qs(parsed.query)
+            auth_code = qs.get('code', [None])[0]
+            if not auth_code:
+                self._json_err(400, 'No authorization code found in redirect URL')
+                return
+            env_path = _BACKEND_DIR.parent / 'treasure_map_keys.env'
+            env = {}
+            for line in env_path.read_text(encoding='utf-8', errors='ignore').splitlines():
+                line = line.strip()
+                if not line or line.startswith('#'):
+                    continue
+                if '=' in line:
+                    k, v = line.split('=', 1)
+                    env[k.strip()] = v.strip()
+            token_url = 'https://api.schwabapi.com/v1/oauth/token'
+            data = urllib.parse.urlencode({
+                'grant_type': 'authorization_code',
+                'code': auth_code,
+                'redirect_uri': env.get('SCHWAB_CALLBACK_URL', 'https://127.0.0.1'),
+                'code_verifier': verifier,
+                'client_id': env.get('SCHWAB_APP_KEY', ''),
+                'client_secret': env.get('SCHWAB_APP_SECRET', ''),
+            }).encode()
+            req = urllib.request.Request(token_url, data=data, headers={'Content-Type': 'application/x-www-form-urlencoded'}, method='POST')
+            with urllib.request.urlopen(req, timeout=15) as r:
+                tokens = json.loads(r.read().decode())
+            token_path = _BACKEND_DIR / 'data' / 'meta' / 'schwab_tokens.json'
+            token_path.parent.mkdir(parents=True, exist_ok=True)
+            token_path.write_text(json.dumps(tokens, indent=2), encoding='utf-8')
+            self._json_ok(200, {'saved': True, 'token_path': str(token_path)})
         except Exception as exc:
             self._json_err(500, str(exc))
 
