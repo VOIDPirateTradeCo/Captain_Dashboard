@@ -1619,9 +1619,9 @@ class DashboardHandler(BaseHTTPRequestHandler):
         elif path.startswith('/api/augur/augmented_signals'):
             self.handle_local_proxy_json('http://127.0.0.1:5000/api/augur/augmented_signals')
         elif path.startswith('/api/augur/bracket'):
-            self.handle_local_proxy_json('http://127.0.0.1:5000/api/augur/bracket/info/' + path.split('/')[-1] if len(path.split('/')) > 3 else 'http://127.0.0.1:5000/api/augur/bracket/info/')
+            self.handle_local_bracket_info_api(path.split('/')[-1] if len(path.split('/')) > 3 else '')
         elif path.startswith('/api/augur/manual_signal'):
-            self.handle_local_proxy_json('http://127.0.0.1:5000/api/augur/manual_signal', methods=['POST'])
+            self.handle_local_manual_signal_api()
         elif path.startswith('/api/augur'):
             self.handle_local_proxy_json('http://127.0.0.1:5000/api/augur', keep_path=True)
         elif path.startswith('/api/alpaca'):
@@ -1787,8 +1787,14 @@ class DashboardHandler(BaseHTTPRequestHandler):
                     self._json_ok(res)
                     return
                 if path.endswith('/quick_update'):
-                    res = download_watchlist_quick([], quick_update=True)
-                    self._json_ok(res)
+                    from data_downloader import quick_update as _quick_update
+                    def _run_quick():
+                        try:
+                            _quick_update()
+                        except Exception:
+                            pass
+                    threading.Thread(target=_run_quick, daemon=True, name='quick_update_local').start()
+                    self._json_ok({'status': 'started'})
                     return
                 self._json_err(404, 'unknown POST action')
                 return
@@ -1883,6 +1889,55 @@ class DashboardHandler(BaseHTTPRequestHandler):
             prefs = [{'source_name': r['source_name'], 'enabled': bool(r['enabled']), 'priority': r['priority'], 'last_used': r['last_used'], 'updated_at': r['updated_at']} for r in rows]
             con.close()
             self._json_ok({'preferences': prefs})
+        except Exception as exc:
+            self._json_err(500, str(exc))
+
+    def handle_local_bracket_info_api(self, ticker):
+        try:
+            from schwab_streamer import get_live_quote
+            from db_manager import _conn as _bconn
+            t = (ticker or '').upper().strip()
+            price = 0.0
+            atr = None
+            source = 'unknown'
+            live = get_live_quote(t)
+            if live:
+                price = float(live.get('last', live.get('last_price', 0)) or 0)
+                source = 'schwab_ws'
+            with _bconn() as con:
+                if price <= 0:
+                    row = con.execute('SELECT close FROM price_history WHERE ticker=? AND close IS NOT NULL ORDER BY date DESC LIMIT 1', (t,)).fetchone()
+                    if row:
+                        price = float(row[0])
+                        source = 'db_close'
+                atr_row = con.execute('SELECT atr FROM price_history WHERE ticker=? AND atr IS NOT NULL ORDER BY date DESC LIMIT 1', (t,)).fetchone()
+                if atr_row:
+                    atr = round(float(atr_row[0]), 4)
+            if price <= 0:
+                self._json_err(404, f'No price data for {t}')
+                return
+            self._json_ok({'ticker': t, 'price': round(price, 4), 'atr': atr, 'source': source})
+        except Exception as exc:
+            self._json_err(500, str(exc))
+
+    def handle_local_manual_signal_api(self):
+        try:
+            import json as _json
+            from trade_executor import captain_place_trade
+            length = int(self.headers.get('Content-Length', '0'))
+            data = _json.loads(self.rfile.read(length).decode('utf-8') or '{}') if length else {}
+            ticker = (data.get('ticker') or '').upper().strip()
+            side = (data.get('side') or 'long').lower()
+            entry_price = float(data.get('entry_price') or 0)
+            stop_price = float(data.get('stop_price') or 0)
+            target_price = float(data.get('target_price') or 0)
+            qty = int(data.get('qty') or 0)
+            mode = (data.get('mode') or 'paper').lower()
+            if not ticker or side not in ('long', 'short') or mode not in ('paper', 'live') or entry_price <= 0 or stop_price <= 0 or target_price <= 0 or qty <= 0:
+                self._json_err(400, f'Invalid input: ticker={ticker}, side={side}, mode={mode}, entry={entry_price}, stop={stop_price}, target={target_price}, qty={qty}')
+                return
+            res = captain_place_trade(ticker=ticker, action='BUY' if side == 'long' else 'SELL', shares=qty, order_type='MARKET', limit_price=entry_price, stop_price=stop_price, note='Captain manual bracket', live=(mode == 'live'))
+            self._json_ok(res)
         except Exception as exc:
             self._json_err(500, str(exc))
 
