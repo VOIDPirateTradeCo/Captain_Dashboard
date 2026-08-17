@@ -37,7 +37,8 @@ async function loadSec(sec, el){
     } catch(e){ document.getElementById(el).textContent='ERR '+e.message; }
 }
 async function load(){
-    for (const [s,e] of [['status','status'],['vms','vms'],['hardware','hardware'],['network','network'],['docker','docker']]) await loadSec(s,e);
+    const sections = [['status','status'],['vms','vms'],['hardware','hardware'],['network','network'],['docker','docker']];
+    await Promise.all(sections.map(([s,e]) => loadSec(s,e)));
 }
 load(); setInterval(load, 15000);
 </script>

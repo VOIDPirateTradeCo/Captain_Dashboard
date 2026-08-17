@@ -2,7 +2,7 @@
 """OODA batch 4: close the 5 Discord bot cards (build complete + dry-run verified)."""
 import urllib.request as u, urllib.parse as p, json
 
-SRC = r"C:\Users\kidsm\Documents\My Docs\VOID Pirate Trading Co\SECRETS_ENV"
+SRC = r"C:\Users\kidsm\Documents\My Docs\VOID Pirate Trading Co\PROJECT_tr3asure_mAp\treasure_map_keys.env"
 env={}
 for line in open(SRC,encoding='utf-8'):
     if line.strip().startswith('TRELLO_') and '=' in line:

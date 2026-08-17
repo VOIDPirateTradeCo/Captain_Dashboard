@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suricata IDS Alerts</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0a0e17; color: #e0e6ed; font-family: 'Courier New', monospace; padding: 20px; }
+        .header { border-bottom: 2px solid #ff4444; padding-bottom: 10px; margin-bottom: 20px; }
+        .header h1 { color: #ff4444; font-size: 24px; }
+        .status { color: #4ade80; margin-top: 5px; }
+        .controls { margin: 20px 0; }
+        .controls button { background: #ff4444; color: white; border: none; padding: 8px 16px; cursor: pointer; margin-right: 10px; }
+        .controls button:hover { background: #cc3333; }
+        #alerts { max-height: 600px; overflow-y: auto; }
+        .alert { background: #1a1f2e; border-left: 4px solid #ff4444; padding: 10px; margin-bottom: 8px; font-size: 12px; }
+        .alert.high { border-left-color: #ff4444; }
+        .alert.medium { border-left-color: #ffaa00; }
+        .alert.low { border-left-color: #ffdd00; }
+        .alert-header { display: flex; justify-content: space-between; margin-bottom: 5px; }
+        .timestamp { color: #8b9dc3; font-size: 11px; }
+        .signature { color: #e0e6ed; font-weight: bold; }
+        .category { color: #ffaa00; font-size: 11px; }
+        .ip-info { color: #6b7b8c; font-size: 11px; margin-top: 4px; }
+        .no-alerts { text-align: center; padding: 40px; color: #6b7b8c; }
+        .loading { text-align: center; padding: 20px; color: #ffaa00; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔴 Suricata IDS Alerts</h1>
+        <div class="status" id="status">Loading...</div>
+    </div>
+
+    <div class="controls">
+        <button onclick="loadAlerts()">🔄 Refresh</button>
+        <span id="alert-count" style="color: #8b9dc3; margin-left: 10px;"></span>
+    </div>
+
+    <div id="alerts">
+        <div class="loading">Loading alerts...</div>
+    </div>
+
+    <script>
+        async function loadAlerts() {
+            const container = document.getElementById('alerts');
+            const statusEl = document.getElementById('status');
+            const countEl = document.getElementById('alert-count');
+
+            try {
+                const response = await fetch('/api/suricata/alerts');
+                const data = await response.json();
+
+                if (data.suricata === 'enabled') {
+                    statusEl.textContent = '✅ Suricata Active';
+                    statusEl.style.color = '#4ade80';
+                    countEl.textContent = `${data.alert_count} alerts loaded`;
+                } else {
+                    statusEl.textContent = '⚠️ Suricata Disabled';
+                    statusEl.style.color = '#ffaa00';
+                }
+
+                const alerts = data.alerts || [];
+                if (alerts.length === 0) {
+                    container.innerHTML = '<div class="no-alerts">No alerts detected. Suricata is running in IPS mode.</div>';
+                    return;
+                }
+
+                container.innerHTML = alerts.reverse().map(alert => {
+                    const severity = alert.severity || 2;
+                    const severityClass = severity <= 1 ? 'high' : severity <= 3 ? 'medium' : 'low';
+                    return `
+                        <div class="alert ${severityClass}">
+                            <div class="alert-header">
+                                <span class="signature">${alert.signature || 'Unknown'}</span>
+                                <span class="timestamp">${alert.timestamp || 'N/A'}</span>
+                            </div>
+                            <div class="category">${alert.category || 'N/A'}</div>
+                            <div class="ip-info">${alert.src_ip || '?'} → ${alert.dest_ip || '?'} | ${alert.proto || '?'}</div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (error) {
+                container.innerHTML = '<div class="no-alerts">Failed to load alerts</div>';
+                statusEl.textContent = '❌ Error loading alerts';
+                statusEl.style.color = '#ff4444';
+            }
+        }
+
+        // Auto-refresh every 10 seconds
+        setInterval(loadAlerts, 10000);
+        loadAlerts();
+    </script>
+</body>
+</html>

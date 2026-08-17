@@ -4263,7 +4263,47 @@ class DashboardHandler(BaseHTTPRequestHandler):
                 "trello": audit,
                 "smart": smart.get("smart_sort", lan.get("smart_sort", {})),
                 "ownership": smart.get("smart_sort", lan.get("smart_sort", {})).get("ticketing_owner", {}),
+                "cards": [],
+                "trello_error": None,
             }
+
+            # Live Trello fallback when local state has no ownership/cards
+            try:
+                import urllib.request as _urllib_request
+                try:
+                    import win32cred
+                    cred = win32cred.CredRead('TRELLO_KEY@VOID_Pirate_Secrets', win32cred.CRED_TYPE_GENERIC)
+                    key = cred.get('CredentialBlob', b'').decode('utf-16-le', errors='ignore').strip(chr(0))
+                    cred2 = win32cred.CredRead('TRELLO_TOKEN@VOID_Pirate_Secrets', win32cred.CRED_TYPE_GENERIC)
+                    token = cred2.get('CredentialBlob', b'').decode('utf-16-le', errors='ignore').strip(chr(0))
+                except Exception:
+                    key, token = None, None
+
+                if not key or not token:
+                    payload["trello_error"] = "missing_trello_credentials"
+                else:
+                    board_id = '6a595669b8f8f99c93392f4f'
+                    url = 'https://api.trello.com/1/boards/{}/cards/open?fields=id,name,labels,members,idList,url&key={}&token={}'.format(board_id, key, token)
+                    cards = _json.loads(_urllib_request.urlopen(url, timeout=20).read().decode())
+                    payload["cards"] = [
+                        {
+                            "id": c.get("id"),
+                            "name": c.get("name"),
+                            "url": c.get("url"),
+                            "labels": [l.get("name") for l in (c.get("labels") or [])],
+                            "members": [m.get("fullName") or m.get("username") for m in (c.get("members") or [])],
+                            "owner": (c.get("members") or [{}])[0].get("fullName") or (c.get("members") or [{}])[0].get("username") or "unassigned",
+                        }
+                        for c in cards
+                    ]
+                    if not payload.get("ownership"):
+                        payload["ownership"] = {
+                            c.get("name"): (c.get("members") or [{}])[0].get("fullName") or (c.get("members") or [{}])[0].get("username") or "unassigned"
+                            for c in cards
+                        }
+            except Exception as e:
+                payload["trello_error"] = str(e)
+
             self.wfile.write(_json.dumps(payload, indent=2).encode('utf-8'))
         except Exception as e:
             self.wfile.write(json.dumps({"error": str(e)}).encode('utf-8'))

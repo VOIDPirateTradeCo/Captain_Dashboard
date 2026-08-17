@@ -2,7 +2,7 @@
 """OODA batch 3: board hygiene tracking cards + bot-card progress comments."""
 import urllib.request as u, urllib.parse as p, json
 
-SRC = r"C:\Users\kidsm\Documents\My Docs\VOID Pirate Trading Co\SECRETS_ENV"
+SRC = r"C:\Users\kidsm\Documents\My Docs\VOID Pirate Trading Co\PROJECT_tr3asure_mAp\treasure_map_keys.env"
 env={}
 for line in open(SRC,encoding='utf-8'):
     line=line.strip()
