@@ -315,8 +315,16 @@ async function loadDatasetVerify(){
       use_yfinance: document.getElementById('dl-yfinance').checked,
       use_fred: document.getElementById('dl-fred').checked,
     };
-    const res = await api('/download', {method:'POST', body: JSON.stringify(body)});
-    statusEl.textContent = 'Status: ' + (res.message || res.status || 'requested');
+    setButtonLoading('btn-start-download', true);
+    try {
+      const res = await api('/download', {method:'POST', body: JSON.stringify(body)});
+      statusEl.textContent = 'Status: ' + (res.message || res.status || 'requested');
+    } catch(e) {
+      console.error('download start failed', e);
+      statusEl.textContent = 'Status: start failed';
+    } finally {
+      setButtonLoading('btn-start-download', false);
+    }
   });
   document.getElementById('btn-quick-update')?.addEventListener('click', async ()=>{
     const res = await api('/download/quick_update', {method:'POST'});
@@ -328,6 +336,13 @@ async function loadDatasetVerify(){
   });
 
   setInterval(pollDownload, 1500);
+
+  function setButtonLoading(id, loading){
+    const btn = document.getElementById(id);
+    if(!btn) return;
+    btn.disabled = loading;
+    btn.textContent = loading ? 'Working...' : btn.textContent.replace('Working...', '').trim();
+  }
   pollDownload();
 })();
 
