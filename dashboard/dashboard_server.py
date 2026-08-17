@@ -1801,7 +1801,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
         self.send_header('X-Frame-Options', 'DENY')
         self.send_header('X-XSS-Protection', '1; mode=block')
         self.send_header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains')
-        self.send_header('Content-Security-Policy', 'default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'')
+        self.send_header('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'")
         self.end_headers()
         self.wfile.write(body)
 
