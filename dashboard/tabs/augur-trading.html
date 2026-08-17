@@ -74,6 +74,14 @@
     <button id="btn-refresh-sources" style="background:#0f172a;color:#e2e8f0;border:1px solid #1e293b;padding:6px 12px;border-radius:6px;cursor:pointer;">Refresh Sources</button>
     <button id="btn-schwab-auth-url" style="background:#0f172a;color:#e2e8f0;border:1px solid #1e293b;padding:6px 12px;border-radius:6px;cursor:pointer;">Open Schwab Login</button>
   </div>
+  <div style="margin-top:10px;">
+    <select id="preferred-source" style="background:#0f172a;color:#e2e8f0;border:1px solid #1e293b;padding:6px;border-radius:6px;">
+      <option value="schwab">Schwab</option>
+      <option value="yfinance">yfinance</option>
+      <option value="fred">FRED</option>
+    </select>
+    <button id="btn-save-source" style="background:#0f172a;color:#e2e8f0;border:1px solid #1e293b;padding:6px 12px;border-radius:6px;cursor:pointer;margin-left:6px;">Save Preferred</button>
+  </div>
   <div id="dataset-status" style="margin-top:8px;font-size:0.85em;color:#9fb3d0;"></div>
 </div>
 
@@ -360,6 +368,32 @@ document.getElementById('btn-schwab-auth-url')?.addEventListener('click', async 
     alert('Schwab auth URL failed: ' + e.message);
   }
 });
+(async () => {
+  try {
+    const res = await fetch('/api/data/sources/preferences');
+    const data = await res.json();
+    const pref = data.preferences && data.preferences.find(p => ['schwab','yfinance','fred','alpaca','alpha_vantage'].includes(p.source_name));
+    if (pref && pref.priority) {
+      const sel = document.getElementById('preferred-source');
+      if (sel) sel.value = pref.priority > 0 ? pref.source_name : sel.value;
+    }
+  } catch (_e) {}
+  document.getElementById('btn-save-source')?.addEventListener('click', async () => {
+    const sel = document.getElementById('preferred-source');
+    const source = sel ? sel.value : 'yfinance';
+    try {
+      const res = await fetch('/api/data/sources/preferences', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({source_name: source, enabled: true, priority: 10})
+      });
+      const data = await res.json();
+      alert(data.status === 'saved' ? 'Preferred source saved' : 'Error saving preference');
+    } catch (e) {
+      alert('Save failed: ' + e.message);
+    }
+  });
+})();
 loadDataSources();
 load();
 setInterval(load, 15000);
