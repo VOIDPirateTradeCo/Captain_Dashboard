@@ -4519,6 +4519,13 @@ class DashboardHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(json.dumps(payload, indent=2).encode())
 
+    def handle_tornado_inventory_api(self):
+        self._json_ok({
+            'updated_at': __import__('datetime').datetime.utcnow().isoformat() + 'Z',
+            'items': [],
+            'note': 'tornado-inventory widget stub; backend integration pending',
+        })
+
     def handle_white_whale_api(self):
         payload = {
             "status": "monitoring",
@@ -4664,13 +4671,6 @@ def main():
             server.shutdown()
         except Exception:
             pass
-
-    def handle_tornado_inventory_api(self):
-        self._json_ok({
-            'updated_at': __import__('datetime').datetime.utcnow().isoformat() + 'Z',
-            'items': [],
-            'note': 'tornado-inventory widget stub; backend integration pending',
-        })
 
 def _prewarm_cache():
     """Background cache pre-warming — runs fast operations then caches.
