@@ -1694,6 +1694,8 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.handle_local_proxy_json('http://127.0.0.1:5000/api/fundamentals', keep_path=True)
         elif path == '/api/sectors' or path == '/api/sectors/':
             self.handle_sectors_api()
+        elif path in ('/api/killswitch/trading','/api/killswitch/trading/','/api/killswitch/learning','/api/killswitch/learning/'):
+            self.handle_killswitch_api(path)
         elif path.startswith('/api/positions'):
             self.handle_local_proxy_json('http://127.0.0.1:5000/api/positions', keep_path=True)
         elif path == '/api/schwab/auth-url':
@@ -4548,6 +4550,15 @@ class DashboardHandler(BaseHTTPRequestHandler):
             'artists': ['sir-azure'],
             'generators': ['flux', 'stable-diffusion'],
         })
+
+    def handle_killswitch_api(self, path):
+        body = {
+            'endpoint': path,
+            'trading': False,
+            'learning': False,
+            'note': 'killswitch state; local dashboard default',
+        }
+        self._json_ok(body)
 
     def handle_white_whale_api(self):
         payload = {
