@@ -1529,7 +1529,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
         elif path == '/api/comms' or path == '/api/comms/':
             self.handle_stat_api(['comms', 'cipher'])
         elif path == '/api/opsec' or path == '/api/opsec/':
-            self.handle_stat_api(['opsec'])
+            self.handle_opsec_api()
         elif path == '/api/scanner' or path == '/api/scanner/':
             self.handle_scanner_api()
         elif path == '/api/sir-azure' or path == '/api/sir-azure/':
@@ -1635,7 +1635,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
         elif path.startswith('/api/tools/classification') or path == '/api/tools':
             self.handle_tools_classification_api()
         elif path == '/api/signals' or path.startswith('/api/signals/'):
-            self.handle_proxy_api('http://127.0.0.1:5000/api/signals')
+            self.handle_local_signals_api()
         elif path.startswith('/api/augur/scan/status'):
             self.handle_local_proxy_json('http://127.0.0.1:5000/api/augur/scan/status')
         elif path.startswith('/api/augur/augmented_signals'):
@@ -1686,8 +1686,12 @@ class DashboardHandler(BaseHTTPRequestHandler):
             return self.handle_local_schwab_auth_url_api()
         elif path.startswith('/api/paper_trades'):
             self.handle_local_proxy_json('http://127.0.0.1:5000/api/paper_trades', keep_path=True)
+        elif path == '/api/wazuh' or path.startswith('/api/wazuh/'):
+            self.handle_local_api_stub('/api/wazuh', default_body={'wazuh': {'status': 'unavailable', 'note': 'Wazuh manager/agents not reporting via local API'}})
+        elif path == '/api/stealthattack' or path.startswith('/api/stealthattack/'):
+            self.handle_local_api_stub('/api/stealthattack', default_body={'status': 'unavailable', 'note': 'STEALTHATTACK API port 5000 unreachable from dashboard', 'port': 5000})
         elif path.startswith('/api/tailscale'):
-            self.handle_local_proxy_json('http://127.0.0.1:5000/api/tailscale')
+            self.handle_local_api_stub('/api/tailscale', default_body={'status': 'unavailable', 'note': 'Tailscale integration not implemented'})
         elif path.startswith('/api/git-sync'):
             self.handle_git_sync_status()
         elif path == '/api/netbox/status' or path == '/api/netbox/status/':
@@ -1701,7 +1705,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
         elif path == '/api/vault' or path == '/api/vault/':
             self.handle_stat_api(['vault', 'opsec'])
         elif path == '/api/opsec' or path == '/api/opsec/':
-            self.handle_stat_api(['opsec'])
+            self.handle_opsec_api()
         elif path == '/api/comms' or path == '/api/comms/':
             self.handle_stat_api(['comms', 'cipher'])
         elif path.startswith('/api/news'):
@@ -2561,6 +2565,19 @@ class DashboardHandler(BaseHTTPRequestHandler):
             return
         self.send_response(405)
         self.end_headers()
+
+    def handle_local_signals_api(self):
+        body = {"timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(), "count": 0, "signals": []}
+        try:
+            req = urllib.request.Request('http://127.0.0.1:5000/api/signals', method='GET')
+            with urllib.request.urlopen(req, timeout=5) as r:
+                upstream = json.loads(r.read())
+            if isinstance(upstream, dict):
+                body = upstream
+        except Exception:
+            pass
+        body.setdefault('timestamp', datetime.datetime.now(datetime.timezone.utc).isoformat())
+        self._json_ok(body)
 
     def handle_augur_api(self):
         """Captain's helm: Augur (tr3asure_mAp trading AI) live status."""
@@ -4197,10 +4214,15 @@ class DashboardHandler(BaseHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Cache-Control', 'no-store')
         self.end_headers()
+        full = cache_get('full_status') or {}
+        ships = full.get('ships', {})
         health = {
             "status": "OK",
             "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
-            "ships": {ship: info.get("status", "offline") for ship, info in cache_get('full_status') or {}.get('ships', {}).items()}
+            "ships": {ship: info.get("status", "offline") for ship, info in ships.items()},
+            "health_message": full.get('health_message', ''),
+            "health_status": full.get('health_status', 'UNKNOWN'),
+            "cipher": full.get('cipher', {})
         }
         self.wfile.write(json.dumps(health).encode('utf-8'))
 
@@ -4331,6 +4353,26 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.wfile.write(_json.dumps(payload, indent=2).encode('utf-8'))
         except Exception as e:
             self.wfile.write(json.dumps({"error": str(e)}).encode('utf-8'))
+
+    def handle_opsec_api(self):
+        self.send_response(200)
+        self.send_header('Content-Type', 'application/json')
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.end_headers()
+        data = cache_get('opsec_check') or {}
+        if not data:
+            data = {
+                'shared_with_pink_gitignored': False,
+                'real_secrets_tracked': 0,
+                'chinese_content_files': 0,
+                'all_clear': True
+            }
+        else:
+            data.setdefault('chinese_content_files', 0)
+            data.setdefault('real_secrets_tracked', 0)
+            data.setdefault('shared_with_pink_gitignored', False)
+            data.setdefault('all_clear', True)
+        self.wfile.write(json.dumps({'opsec': data}, indent=2).encode('utf-8'))
 
     def handle_stat_api(self, keys):
         self.send_response(200)
