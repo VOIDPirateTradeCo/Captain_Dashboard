@@ -4213,11 +4213,12 @@ class DashboardHandler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Content-Type', 'application/json')
         self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Cache-Control', 'no-store')
         self.end_headers()
         health = {
             "status": "OK",
             "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
-            "ships": {ship: "online" if info.get("ip") in ("192.168.0.39", "100.106.235.103", "100.110.238.68") else "offline" for ship, info in KNOWN_SHIPS.items()}
+            "ships": {ship: info.get("status", "offline") for ship, info in PREWARMED_SHIPS.items()}
         }
         self.wfile.write(json.dumps(health).encode('utf-8'))
 
