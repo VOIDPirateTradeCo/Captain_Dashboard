@@ -2004,7 +2004,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
             {'name': 'Trades', 'rows': 0, 'last_date': None, 'coverage': 0, 'status': 'empty'},
         ]
         try:
-            db_path = _BACKEND_DIR.parent / 'data' / 'treasure_map.db'
+            db_path = _BACKEND_DIR / 'data' / 'treasure_map.db'
             if db_path.exists():
                 import sqlite3
                 con = sqlite3.connect(str(db_path), timeout=2)
@@ -2018,11 +2018,18 @@ class DashboardHandler(BaseHTTPRequestHandler):
                         return None
                 count_price = q('SELECT COUNT(*) FROM price_history')
                 count_1min = q('SELECT COUNT(*) FROM price_history_1min')
-                count_fred = q('SELECT COUNT(*) FROM fred_series')
+                count_fred = q('SELECT COUNT(*) FROM fred_macro')
                 count_trades = q('SELECT COUNT(*) FROM trades')
                 last_price = q('SELECT MAX(date) FROM price_history')
                 last_1min = q('SELECT MAX(date) FROM price_history_1min')
-                last_fred = q('SELECT MAX(date) FROM fred_series')
+                last_fred = q('SELECT MAX(date) FROM fred_macro')
+                # Fallbacks for alternate table names/schemas
+                if count_price is None:
+                    count_price = q('SELECT COUNT(*) FROM historical_prices')
+                if count_1min is None:
+                    count_1min = q('SELECT COUNT(*) FROM price_history_1min')
+                if count_fred is None:
+                    count_fred = q('SELECT COUNT(*) FROM fred_series')
                 con.close()
                 sources = [
                     {'name': 'Historical Prices', 'rows': count_price, 'last_date': last_price, 'coverage': count_price, 'status': 'good'},
