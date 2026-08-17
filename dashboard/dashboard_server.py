@@ -2076,6 +2076,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
                 ]
         except Exception:
             pass
+        stale_cutoff = None
         self._json_ok({'sources': sources, 'stale_cutoff': stale_cutoff})
 
     def handle_local_schwab_status_api(self):
