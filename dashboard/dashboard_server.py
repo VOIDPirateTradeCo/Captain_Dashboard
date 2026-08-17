@@ -1522,6 +1522,8 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.handle_stat_api(['services'])
         elif path == '/api/services' or path == '/api/services/':
             self.handle_services_api()
+        elif path == '/api/tornado-inventory' or path == '/api/tornado-inventory/':
+            self.handle_tornado_inventory_api()
         elif path == '/api/stat/network':
             self.handle_stat_api(['network', 'ship_details'])
         elif path == '/api/stat/tools':
@@ -1686,6 +1688,8 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.handle_fundamentals_index()
         elif path.startswith('/api/fundamentals'):
             self.handle_local_proxy_json('http://127.0.0.1:5000/api/fundamentals', keep_path=True)
+        elif path == '/api/sectors' or path == '/api/sectors/':
+            self.handle_sectors_api()
         elif path.startswith('/api/positions'):
             self.handle_local_proxy_json('http://127.0.0.1:5000/api/positions', keep_path=True)
         elif path == '/api/schwab/auth-url':
@@ -4121,6 +4125,14 @@ class DashboardHandler(BaseHTTPRequestHandler):
         except Exception as e:
             self.wfile.write(json.dumps({'error': str(e)}).encode('utf-8'))
 
+    def handle_sectors_api(self):
+        self._json_ok({
+            'endpoint': '/api/sectors',
+            'backend': 'http://127.0.0.1:5000',
+            'status': 'unavailable',
+            'note': 'backend /api/fundamentals/sectors returned 404; safe stub active',
+        })
+
 
     def handle_sync_status_api(self):
         data = cache_get('full_status') or {}
@@ -4653,6 +4665,13 @@ def main():
         except Exception:
             pass
 
+    def handle_tornado_inventory_api(self):
+        self._json_ok({
+            'updated_at': __import__('datetime').datetime.utcnow().isoformat() + 'Z',
+            'items': [],
+            'note': 'tornado-inventory widget stub; backend integration pending',
+        })
+
 def _prewarm_cache():
     """Background cache pre-warming — runs fast operations then caches.
     
@@ -4807,3 +4826,7 @@ def _prewarm_cache():
 
 if __name__ == '__main__':
     main()
+
+
+class _TornadoInventoryHandler:
+    pass
