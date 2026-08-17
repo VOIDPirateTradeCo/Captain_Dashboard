@@ -1749,9 +1749,11 @@ class DashboardHandler(BaseHTTPRequestHandler):
             with _u.urlopen(req, timeout=20) as r:
                 body = r.read()
                 ctype = r.headers.get('Content-Type', 'application/json')
+                cache = r.headers.get('Cache-Control', 'no-store')
                 self.send_response(r.status)
                 self.send_header('Content-Type', ctype)
                 self.send_header('Access-Control-Allow-Origin', '*')
+                self.send_header('Cache-Control', cache)
                 self.send_header('Content-Length', str(len(body)))
                 self.end_headers()
                 self.wfile.write(body)
@@ -1760,6 +1762,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.send_response(502)
             self.send_header('Content-Type', 'application/json')
             self.send_header('Access-Control-Allow-Origin', '*')
+            self.send_header('Cache-Control', 'no-store')
             self.send_header('Content-Length', str(len(payload)))
             self.end_headers()
             self.wfile.write(payload.encode('utf-8'))
@@ -1781,6 +1784,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Content-Type', 'application/json')
         self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
         self.send_header('Content-Length', str(len(body)))
         self.end_headers()
         self.wfile.write(body)
@@ -2350,6 +2354,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Content-Type', 'application/json')
         self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
         self.end_headers()
         try:
             # Return cached data immediately if available
@@ -3998,6 +4003,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
                 self.send_response(200)
                 self.send_header('Content-Type', 'application/json')
                 self.send_header('Access-Control-Allow-Origin', '*')
+                self.send_header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
                 self.end_headers()
                 self.wfile.write(_j.dumps(payload, indent=2, default=str).encode())
                 return
