@@ -1449,7 +1449,7 @@ def _collect_full_data():
         "opsec": opsec,
         "cipher": cipher,
         "latency": latency,
-        "sync_status": {"last_sync": time.time(), "trello_synced": bool(self._cache_get("tickets")), "augur_synced": bool(self._cache_get("augur"))},
+        "sync_status": {"last_sync": time.time(), "trello_synced": bool(cache_get("tickets")), "augur_synced": bool(cache_get("augur"))},
         "health_message": health.get("message", ""),
         "health_status": health.get("status", "UNKNOWN"),
     }
@@ -1695,6 +1695,8 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.handle_local_api_stub('/api/stealthattack', default_body={'status': 'unavailable', 'note': 'STEALTHATTACK API port 5000 unreachable from dashboard', 'port': 5000})
         elif path.startswith('/api/tailscale'):
             self.handle_local_api_stub('/api/tailscale', default_body={'status': 'unavailable', 'note': 'Tailscale integration not implemented'})
+        elif path in ('/api/sync_status', '/api/sync_status/'):
+            self.handle_sync_status_api()
         elif path.startswith('/api/git-sync'):
             self.handle_git_sync_status()
         elif path == '/api/netbox/status' or path == '/api/netbox/status/':
@@ -4116,6 +4118,16 @@ class DashboardHandler(BaseHTTPRequestHandler):
         except Exception as e:
             self.wfile.write(json.dumps({'error': str(e)}).encode('utf-8'))
 
+
+    def handle_sync_status_api(self):
+        data = cache_get('full_status') or {}
+        self._json_ok({
+            'sync_status': data.get('sync_status', {
+                'last_sync': None,
+                'trello_synced': bool(cache_get('tickets')),
+                'augur_synced': bool(cache_get('augur'))
+            })
+        })
 
     def handle_git_sync_status(self):
         """Git sync status for all tracked repos."""
