@@ -4225,11 +4225,15 @@ class DashboardHandler(BaseHTTPRequestHandler):
         self.send_header('Cache-Control', 'no-store')
         self.end_headers()
         full = cache_get('full_status') or {}
-        ships = full.get('ships', {})
+        ships_raw = full.get('ships', {})
+        if isinstance(ships_raw, dict):
+            ships = {ship: info.get("status", "offline") if isinstance(info, dict) else str(info) for ship, info in ships_raw.items()}
+        else:
+            ships = {"_cached": str(ships_raw)}
         health = {
             "status": "OK",
             "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
-            "ships": {ship: info.get("status", "offline") for ship, info in ships.items()},
+            "ships": ships,
             "health_message": full.get('health_message', ''),
             "health_status": full.get('health_status', 'UNKNOWN'),
             "cipher": full.get('cipher', {})
