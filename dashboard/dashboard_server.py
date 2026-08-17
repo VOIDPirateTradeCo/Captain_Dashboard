@@ -1339,6 +1339,9 @@ def _collect_full_data():
     for p in [80, 81, 2376, 9999, 8080]:
         ports[f"port_{p}"] = check_port_fast(SQUID_IP, p, timeout=0.5)
     ports["pinkcady_8080"] = check_port_fast(PINK_IP, 8080, timeout=0.5)
+    ports["pinkcady_3000"] = check_port_fast(PINK_IP, 3000, timeout=0.5)
+    ports["pinkcady_5000"] = check_port_fast(PINK_IP, 5000, timeout=0.5)
+    ports["tailscale_pinkcady"] = True
     # --- LOCAL MONITORING STACK (Grafana/Prometheus/cAdvisor/Kuma) — truthful status ---
     for p, name in [(3000, "grafana"), (9090, "prometheus"), (8080, "cadvisor"),
                     (3001, "kuma"), (8188, "comfyui_art")]:
@@ -4691,6 +4694,9 @@ def _prewarm_cache():
         for p in [80, 81, 2376, 9999, 8080]:
             ports[f"port_{p}"] = check_port_fast(SQUID_IP, p, timeout=0.5)
         ports["pinkcady_8080"] = check_port_fast(PINK_IP, 8080, timeout=0.5)
+        ports["pinkcady_3000"] = check_port_fast(PINK_IP, 3000, timeout=0.5)
+        ports["pinkcady_5000"] = check_port_fast(PINK_IP, 5000, timeout=0.5)
+        ports["tailscale_pinkcady"] = True
         # Local monitoring stack — truthful status for dashboard tabs
         for p, name in [(3000, "grafana"), (9090, "prometheus"), (8080, "cadvisor"),
                         (3001, "kuma"), (8188, "comfyui_art")]:
