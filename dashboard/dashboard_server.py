@@ -1662,6 +1662,10 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.handle_local_proxy_json('http://127.0.0.1:5000/api/augur', keep_path=True)
         elif path.startswith('/api/alpaca'):
             self.handle_local_proxy_json('http://127.0.0.1:5000/api/alpaca', keep_path=True)
+        elif path == '/api/trade' or path == '/api/trade/':
+            self.handle_local_api_stub(path, default_body={'error':'trade endpoint not implemented'})
+        elif path == '/api/execute' or path == '/api/execute/':
+            self.handle_local_api_stub(path, default_body={'error':'execute endpoint not implemented'})
         elif path.startswith('/api/trades'):
             self.handle_local_proxy_json('http://127.0.0.1:5000/api/trades', keep_path=True)
         elif path.startswith('/api/settings'):
@@ -1994,17 +1998,42 @@ class DashboardHandler(BaseHTTPRequestHandler):
         except Exception as exc:
             self._json_err(500, str(exc))
 
+    def handle_local_api_stub(self, path, default_body=None):
+        if default_body is None:
+            default_body = {'error': 'not implemented'}
+        self._json_ok(default_body)
+
+    def handle_local_api_stub(self, path, default_body=None):
+        if default_body is None:
+            default_body = {'error': 'not implemented'}
+        self._json_ok(default_body)
+
     def handle_local_data_source_status_api(self):
-        from datetime import datetime as _dt, timedelta as _td
-        stale_cutoff = (_dt.now() - _td(days=7)).strftime('%Y-%m-%d')
-        sources = [
-            {'name': 'Historical Prices', 'rows': 3016004, 'last_date': '2026-08-14', 'coverage': 1223, 'status': 'good'},
-            {'name': '1min Bars', 'rows': 24857270, 'last_date': '2026-08-14', 'coverage': 1172, 'status': 'good'},
-            {'name': 'FRED Macro', 'rows': 16590, 'last_date': '2026-03-06', 'coverage': 16590, 'status': 'stale'},
-            {'name': 'Fundamentals', 'rows': 117, 'last_date': None, 'coverage': 117, 'status': 'empty'},
-            {'name': 'Watchlist', 'rows': 0, 'last_date': None, 'coverage': 0, 'status': 'empty'},
-            {'name': 'Trades', 'rows': 0, 'last_date': None, 'coverage': 0, 'status': 'empty'},
-        ]
+        sources = []
+        try:
+            db_path = _BACKEND_DIR / 'data' / 'treasure_map.db'
+            if db_path.exists():
+                import sqlite3
+                con = sqlite3.connect(str(db_path), timeout=2)
+                con.execute('PRAGMA journal_mode=WAL')
+                def q(sql):
+                    try:
+                        return con.execute(sql).fetchone()[0]
+                    except Exception:
+                        return None
+                sources = [
+                    {'name': 'Historical Prices', 'rows': q('SELECT COUNT(*) FROM price_history') or 0, 'last_date': q('SELECT MAX(date) FROM price_history'), 'coverage': 0, 'status': 'good'},
+                    {'name': '1min Bars', 'rows': q('SELECT COUNT(*) FROM price_history_1min') or 0, 'last_date': q('SELECT MAX(date) FROM price_history_1min'), 'coverage': 0, 'status': 'good'},
+                    {'name': 'FRED Macro', 'rows': q('SELECT COUNT(*) FROM fred_macro') or 0, 'last_date': q('SELECT MAX(date) FROM fred_macro'), 'coverage': 0, 'status': 'good'},
+                    {'name': 'Fundamentals', 'rows': q('SELECT COUNT(*) FROM fundamentals') or 0, 'last_date': q('SELECT MAX(added_at) FROM fundamentals'), 'coverage': 0, 'status': 'good'}
+                ]
+                for src in sources:
+                    src['coverage'] = src['rows']
+                con.close()
+        except Exception as exc:
+            sources = [{'name': 'db_error', 'rows': 0, 'last_date': 'error', 'coverage': 0, 'status': str(exc)}]
+        self._json_ok({'sources': sources})
+
         try:
             db_path = _BACKEND_DIR / 'data' / 'treasure_map.db'
             if db_path.exists():
