@@ -278,9 +278,9 @@ async function loadDatasetVerify(){
   async function pollDownload(){
     try {
       const [prog, qProg, status] = await Promise.all([
-        fetch('/api/download/progress').then(r=>r.json()).catch(()=>({progress:{running:false}})),
-        fetch('/api/download/quick_update/progress').then(r=>r.json()).catch(()=>({running:false})),
-        fetch('/api/download/status').then(r=>r.json()).catch(()=>({}))
+        fetch('/api/download/progress', {cache:'no-store'}).then(r=>r.json()).catch(()=>({progress:{running:false}})),
+        fetch('/api/download/quick_update/progress', {cache:'no-store'}).then(r=>r.json()).catch(()=>({running:false})),
+        fetch('/api/download/status', {cache:'no-store'}).then(r=>r.json()).catch(()=>({}))
       ]);
       const p = prog.progress || {};
       const qRunning = typeof qProg.running === 'boolean' ? qProg.running : (qProg.progress ? qProg.progress.running : false);
