@@ -1524,6 +1524,10 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.handle_services_api()
         elif path == '/api/tornado-inventory' or path == '/api/tornado-inventory/':
             self.handle_tornado_inventory_api()
+        elif path == '/api/tabs' or path == '/api/tabs/' or path == '/api/dashboard/tabs' or path == '/api/dashboard/tabs/':
+            self.handle_tabs_api()
+        elif path == '/api/art' or path == '/api/art/':
+            self.handle_art_api()
         elif path == '/api/stat/network':
             self.handle_stat_api(['network', 'ship_details'])
         elif path == '/api/stat/tools':
@@ -4524,6 +4528,25 @@ class DashboardHandler(BaseHTTPRequestHandler):
             'updated_at': __import__('datetime').datetime.utcnow().isoformat() + 'Z',
             'items': [],
             'note': 'tornado-inventory widget stub; backend integration pending',
+        })
+
+    def handle_tabs_api(self):
+        tabs = [
+            {'id': 'dashboard', 'name': 'Dashboard', 'url': '/'},
+            {'id': 'tickets', 'name': 'Tickets', 'url': '/tab/tickets'},
+            {'id': 'monitoring', 'name': 'Monitoring', 'url': '/tab/monitoring'},
+            {'id': 'augur-trading', 'name': 'Augur Trading', 'url': '/tab/augur-trading'},
+            {'id': 'fleet', 'name': 'Fleet', 'url': '/tab/fleet'},
+            {'id': 'art', 'name': 'AI Art', 'url': '/tab/art'},
+        ]
+        self._json_ok({'tabs': tabs, 'count': len(tabs)})
+
+    def handle_art_api(self):
+        self._json_ok({
+            'endpoint': '/api/art',
+            'status': 'ok',
+            'artists': ['sir-azure'],
+            'generators': ['flux', 'stable-diffusion'],
         })
 
     def handle_white_whale_api(self):
