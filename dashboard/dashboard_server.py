@@ -4219,7 +4219,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
         health = {
             "status": "OK",
             "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
-            "ships": {ship: info.get("status", "offline") for ship, info in PREWARMED_SHIPS.items()}
+            "ships": {ship: info.get("status", "offline") for ship, info in cache_get('full_status', {}).get('ships', {}).items()}
         }
         self.wfile.write(json.dumps(health).encode('utf-8'))
 
