@@ -37,6 +37,7 @@
     <a href="/tab/whitewhale">🐋 White Whale</a><a href="/tab/monitoring">📡 Monitoring</a>
 </nav>
 <h1>🧠 AUGUR TRADING — Live Alpaca + AI Status</h1>
+<div id="augur-ui-errors" style="font-size:0.85em;color:#ff6b6b;white-space:pre-wrap;"></div>
 <p class="metric">Augur training status, Alpaca paper account, open orders, positions, and signals.</p>
 
 <div class="card">
@@ -174,7 +175,9 @@
 </div>
 
 <script>
+window._augurErrors = window._augurErrors || [];
 function esc(s){ return String(s==null?'':s); }
+function logAugur(msg){ const ts = new Date().toISOString(); window._augurErrors.push(ts+' '+msg); console.log('[AUGUR UI]', ts, msg); }
 function boolBadge(v){
   if(v===true) return '<span class="badge ok">true</span>';
   if(v===false) return '<span class="badge bad">false</span>';
