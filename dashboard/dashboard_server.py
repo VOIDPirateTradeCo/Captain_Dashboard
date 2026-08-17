@@ -4181,7 +4181,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
         health = {
             "status": "OK",
             "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
-            "ships": {ship: info.get("status", "offline") for ship, info in cache_get('full_status', {}).get('ships', {}).items()}
+            "ships": {ship: info.get("status", "offline") for ship, info in cache_get('full_status') or {}.get('ships', {}).items()}
         }
         self.wfile.write(json.dumps(health).encode('utf-8'))
 
@@ -4273,9 +4273,9 @@ class DashboardHandler(BaseHTTPRequestHandler):
                 try:
                     import win32cred
                     cred = win32cred.CredRead('TRELLO_KEY@VOID_Pirate_Secrets', win32cred.CRED_TYPE_GENERIC)
-                    key = cred.get('CredentialBlob', b'').decode('utf-16-le', errors='ignore').strip(chr(0))
+                    key = (cred.get('CredentialBlob') or b'').decode('utf-16-le', errors='ignore').strip(chr(0))
                     cred2 = win32cred.CredRead('TRELLO_TOKEN@VOID_Pirate_Secrets', win32cred.CRED_TYPE_GENERIC)
-                    token = cred2.get('CredentialBlob', b'').decode('utf-16-le', errors='ignore').strip(chr(0))
+                    token = (cred2.get('CredentialBlob') or b'').decode('utf-16-le', errors='ignore').strip(chr(0))
                 except Exception:
                     key, token = None, None
 
