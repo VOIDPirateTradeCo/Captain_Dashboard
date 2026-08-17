@@ -1492,6 +1492,8 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.handle_whale_api()
         elif path == '/api/kuma' or path == '/api/kuma/':
             self.handle_kuma_api()
+        elif path == '/api/alerts' or path == '/api/alerts/':
+            self.handle_alerts_api()
         elif path == '/api/diagram' or path == '/api/diagram/':
             self.handle_diagram_api()
         elif path == '/api/crew_heartbeat' or path == '/api/crew_heartbeat/':
@@ -3099,6 +3101,14 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(json.dumps({"error": str(e)}).encode())
 
+    def handle_alerts_api(self):
+        """Alerts status with safe fallback."""
+        self.send_response(200)
+        self.send_header('Content-Type', 'application/json')
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.end_headers()
+        self.wfile.write(json.dumps({"alerts": [], "count": 0}, indent=2).encode())
+
     def handle_diagram_api(self):
         """Render a Mermaid diagram to PNG using local mmdc."""
         self.send_response(200)
@@ -3109,12 +3119,12 @@ class DashboardHandler(BaseHTTPRequestHandler):
             content_length = int(self.headers.get('Content-Length', 0))
             body = self.rfile.read(content_length).decode('utf-8') if content_length else ''
             if not body:
-                self.wfile.write(b'')
+                self.wfile.write(json.dumps({"error": "empty body"}, indent=2).encode())
                 return
             data = json.loads(body) if body else {}
             mmd = data.get('mermaid') or data.get('code') or ''
             if not mmd:
-                self.wfile.write(b'')
+                self.wfile.write(json.dumps({"error": "missing mermaid/code"}, indent=2).encode())
                 return
             mmd_path = os.path.join(VAULT_PATH, 'Developer_Brain', '02_Business_Operations', 'Infrastructure', 'tools', 'memory-stack', 'dashboard_diagram.mmd')
             out_path = os.path.join(VAULT_PATH, 'Developer_Brain', '02_Business_Operations', 'Infrastructure', 'tools', 'memory-stack', 'dashboard_diagram.png')
