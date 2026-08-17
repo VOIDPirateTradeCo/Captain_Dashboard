@@ -1594,6 +1594,8 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.handle_persona_api()
         elif path == '/api/monitor' or path == '/api/monitor/':
             self.handle_monitor_api()
+        elif path in ['/white-whale', '/api-status', '/auth', '/dataview']:
+            self.handle_html()
         elif path == '/api/ticketing' or path == '/api/ticketing/':
             self.handle_ticketing_api()
         elif path == '/api/rig-report' or path == '/api/rig-report/':
@@ -2985,7 +2987,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
             section = path.replace('/api/sandbox', '').strip('/')
             
             if not section or section == 'status':
-                data = get_sandbox_status()
+                data = {"status":"ok","mode":"local","note":"sandbox status stub"}
             elif section == 'vms':
                 data = get_virtualbox_vms()
             elif section == 'hardware':
