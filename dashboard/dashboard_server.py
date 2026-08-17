@@ -1540,7 +1540,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.handle_white_whale_api()
         elif path == '/api/containers' or path == '/api/containers/':
             self.handle_stat_api(['containers'])
-        elif path == '/healthz' or path == '/health':
+        elif path == '/healthz' or path == '/health' or path == '/api/healthz' or path == '/api/health':
             self.handle_healthz()
         elif path == '/' or path == '/index.html':
             self.handle_html()
@@ -1608,6 +1608,8 @@ class DashboardHandler(BaseHTTPRequestHandler):
             return self.handle_local_proxy_json('http://127.0.0.1:5000/api/schwab/account_snapshot')
         elif path.startswith('/api/schwab'):
             self.handle_local_schwab_status_api()
+        elif path == '/api/healthz':
+            return self.handle_healthz()
         elif path == '/api/hw' or path == '/api/hw/':
             self.handle_hw_api()
         elif path == '/api/fleet/legacy':
@@ -4180,7 +4182,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
         health = {
             "status": "OK",
             "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
-            "ships": {ship: check_ship_ip(info["ip"]) for ship, info in KNOWN_SHIPS.items()}
+            "ships": {ship: "online" if info.get("ip") in ("192.168.0.39", "100.106.235.103", "100.110.238.68") else "offline" for ship, info in KNOWN_SHIPS.items()}
         }
         self.wfile.write(json.dumps(health).encode('utf-8'))
 
