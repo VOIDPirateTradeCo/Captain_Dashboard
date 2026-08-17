@@ -205,6 +205,17 @@ async function load(){
   try {
     const r = await fetch('/api/augur');
     const data = await r.json();
+    if (!data || data.deployed === false || data.status === 'PENDING_DEPLOY') {
+      const msg = 'Backend not deployed: ' + esc((data && data.status) || 'PENDING_DEPLOY') + ' — ' + esc((data && data.note) || '');
+      document.getElementById('account').innerHTML = '<span class="badge bad">' + esc(msg) + '</span>';
+      document.getElementById('orders').textContent = msg;
+      document.getElementById('positions').textContent = '';
+      document.getElementById('signals').textContent = '';
+      document.getElementById('raw').textContent = JSON.stringify(data, null, 2);
+      document.getElementById('augur-ui-errors').textContent = (document.getElementById('augur-ui-errors').textContent || '') + '
+[' + new Date().toLocaleTimeString() + '] ' + msg;
+      return;
+    }
     const bridge = data.alpaca_bridge || {};
     const account = (bridge.account || {});
     renderAccount(account);
@@ -216,12 +227,15 @@ async function load(){
     document.getElementById('raw').textContent = JSON.stringify(data, null, 2);
   } catch(e) {
     document.getElementById('account').innerHTML = '<span class="badge bad">ERR ' + esc(e.message) + '</span>';
+    document.getElementById('augur-ui-errors').textContent = (document.getElementById('augur-ui-errors').textContent || '') + '
+[' + new Date().toLocaleTimeString() + '] load() failed: ' + esc(e.message);
   }
 }
 
 async function loadDataSources(){
   try {
     const r = await fetch('/api/data/sources/status');
+    if (!r.ok) throw new Error('HTTP ' + r.status);
     const data = await r.json();
     const sources = data.sources || [];
     const map = {};
@@ -253,6 +267,8 @@ async function loadDataSources(){
   } catch(e) {
     const el = document.getElementById('dataset-status');
     if (el) el.innerHTML = '<span style="color:#f87171;">Source status error: ' + esc(e.message) + '</span>';
+    document.getElementById('augur-ui-errors').textContent = (document.getElementById('augur-ui-errors').textContent || '') + '
+[' + new Date().toLocaleTimeString() + '] loadDataSources failed: ' + esc(e.message);
   }
 }
 async function loadDatasetVerify(){
