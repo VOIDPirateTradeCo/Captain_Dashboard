@@ -1592,6 +1592,8 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.handle_game_api()
         elif path == '/api/persona' or path == '/api/persona/':
             self.handle_persona_api()
+        elif path == '/api/monitor' or path == '/api/monitor/':
+            self.handle_monitor_api()
         elif path == '/api/ticketing' or path == '/api/ticketing/':
             self.handle_ticketing_api()
         elif path == '/api/rig-report' or path == '/api/rig-report/':
@@ -2343,6 +2345,23 @@ class DashboardHandler(BaseHTTPRequestHandler):
         except Exception as e:
             error_detail = traceback.format_exc()
             self.wfile.write(json.dumps({"error": str(e), "traceback": error_detail}).encode('utf-8'))
+
+    def handle_monitor_api(self):
+        """Monitoring status summary for the Captain Dashboard."""
+        self.send_response(200)
+        self.send_header('Content-Type', 'application/json')
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.end_headers()
+        try:
+            summary = {
+                "grafana": {"url": "http://192.168.0.39:3002", "status": "unknown"},
+                "prometheus": {"url": "http://192.168.0.39:9090", "status": "unknown"},
+                "cadvisor": {"url": "http://192.168.0.39:8081", "status": "unknown"},
+                "kuma": {"url": "http://192.168.0.39:3001", "status": "unknown"},
+            }
+            self.wfile.write(json.dumps(summary, indent=2, default=str).encode('utf-8'))
+        except Exception as e:
+            self.wfile.write(json.dumps({"error": str(e)}).encode('utf-8'))
 
     def handle_kuma_api(self):
         """Kuma status panel proxy — shells out to Kuma DB via docker cp."""
@@ -4281,22 +4300,27 @@ class DashboardHandler(BaseHTTPRequestHandler):
                     payload["trello_error"] = "missing_trello_credentials"
                 else:
                     board_id = '6a595669b8f8f99c93392f4f'
-                    url = 'https://api.trello.com/1/boards/{}/cards/open?fields=id,name,labels,members,idList,url&key={}&token={}'.format(board_id, key, token)
+                    url = 'https://api.trello.com/1/boards/{}/cards/open?fields=id,name,labels,members,idList,url,idMembers&key={}&token={}'.format(board_id, key, token)
                     cards = _json.loads(_urllib_request.urlopen(url, timeout=20).read().decode())
+                    members_list = json.loads(_urllib_request.urlopen(_urllib_request.Request('https://api.trello.com/1/boards/{}/members?key={}&token={}&fields=id,fullName,username'.format(board_id, key, token))).read().decode())
+                    member_names = {m["id"]: (m.get("fullName") or m.get("username") or "?") for m in (members_list or [])}
+                    board_members = json.loads(_urllib_request.urlopen(_urllib_request.Request('https://api.trello.com/1/boards/{}/members?key={}&token={}&fields=id,fullName,username'.format(board_id, key, token))).read().decode())
+                    member_names = {m["id"]: (m.get("fullName") or m.get("username") or "?") for m in (board_members or [])}
                     payload["cards"] = [
                         {
                             "id": c.get("id"),
                             "name": c.get("name"),
                             "url": c.get("url"),
                             "labels": [l.get("name") for l in (c.get("labels") or [])],
-                            "members": [m.get("fullName") or m.get("username") for m in (c.get("members") or [])],
-                            "owner": (c.get("members") or [{}])[0].get("fullName") or (c.get("members") or [{}])[0].get("username") or "unassigned",
+                            "members": [member_names.get(mid) for mid in (c.get("idMembers") or []) if member_names.get(mid)],
+                            "idMembers": c.get("idMembers") or [],
+                            "owner": next((member_names.get(mid) for mid in (c.get("idMembers") or []) if member_names.get(mid)), None) or "unassigned",
                         }
                         for c in cards
                     ]
                     if not payload.get("ownership"):
                         payload["ownership"] = {
-                            c.get("name"): (c.get("members") or [{}])[0].get("fullName") or (c.get("members") or [{}])[0].get("username") or "unassigned"
+                            c.get("name"): next((member_names.get(mid) for mid in (c.get("idMembers") or []) if member_names.get(mid)), "unassigned")
                             for c in cards
                         }
             except Exception as e:

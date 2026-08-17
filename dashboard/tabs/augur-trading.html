@@ -205,30 +205,35 @@ async function load(){
   try {
     const r = await fetch('/api/augur');
     const data = await r.json();
-    if (!data || data.deployed === false || data.status === 'PENDING_DEPLOY') {
-      const msg = 'Backend not deployed: ' + esc((data && data.status) || 'PENDING_DEPLOY') + ' — ' + esc((data && data.note) || '');
-      document.getElementById('account').innerHTML = '<span class="badge bad">' + esc(msg) + '</span>';
-      document.getElementById('orders').textContent = msg;
-      document.getElementById('positions').textContent = '';
-      document.getElementById('signals').textContent = '';
-      document.getElementById('raw').textContent = JSON.stringify(data, null, 2);
-      document.getElementById('augur-ui-errors').textContent = (document.getElementById('augur-ui-errors').textContent || '') + '
-[' + new Date().toLocaleTimeString() + '] ' + msg;
-      return;
+    const liveBackend = (data && data.live_backend) ? data.live_backend : {};
+    let bridge = (data && data.alpaca_bridge) ? data.alpaca_bridge : {};
+    if (!bridge || !Object.keys(bridge).length) {
+      const alpaca = (liveBackend.alpaca_status && liveBackend.alpaca_status.data) ? liveBackend.alpaca_status.data : {};
+      bridge = {
+        account: alpaca.account || {},
+        positions: Array.isArray(alpaca.positions) ? alpaca.positions : [],
+        open_orders: Array.isArray(alpaca.open_orders) ? alpaca.open_orders : [],
+      };
     }
-    const bridge = data.alpaca_bridge || {};
     const account = (bridge.account || {});
-    renderAccount(account);
+    try { renderAccount(account); } catch(_e) { document.getElementById('account').textContent = JSON.stringify(account, null, 2); }
     document.getElementById('orders').textContent = JSON.stringify(bridge.open_orders || [], null, 2);
     document.getElementById('positions').textContent = JSON.stringify(bridge.positions || [], null, 2);
-    const augur = ((data.live_backend && data.live_backend.augur_status && data.live_backend.augur_status.data) || {});
-    renderAugurStatus(augur);
-    document.getElementById('signals').textContent = JSON.stringify(((data.live_backend && data.live_backend.signals && data.live_backend.signals.data) || {}), null, 2);
+    const augur = ((liveBackend.augur_status && liveBackend.augur_status.data) || {});
+    try { renderAugurStatus(augur); } catch(_e) { document.getElementById('augur').textContent = JSON.stringify(augur, null, 2); }
+    const signals = ((liveBackend.signals && liveBackend.signals.data) || {});
+    document.getElementById('signals').textContent = Object.keys(signals).length ? JSON.stringify(signals, null, 2) : (data && data.status === 'PENDING_DEPLOY' ? 'Backend not deployed: PENDING_DEPLOY' : 'No signals');
     document.getElementById('raw').textContent = JSON.stringify(data, null, 2);
   } catch(e) {
-    document.getElementById('account').innerHTML = '<span class="badge bad">ERR ' + esc(e.message) + '</span>';
+    const msg = 'load() failed: ' + esc(e.message);
+    ['account','orders','positions','augur','signals','raw'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (id === 'account') el.innerHTML = '<span class="badge bad">ERR ' + esc(e.message) + '</span>';
+      else el.textContent = msg;
+    });
     document.getElementById('augur-ui-errors').textContent = (document.getElementById('augur-ui-errors').textContent || '') + '
-[' + new Date().toLocaleTimeString() + '] load() failed: ' + esc(e.message);
+[' + new Date().toLocaleTimeString() + '] ' + msg;
   }
 }
 
@@ -236,7 +241,13 @@ async function loadDataSources(){
   try {
     const r = await fetch('/api/data/sources/status');
     if (!r.ok) throw new Error('HTTP ' + r.status);
-    const data = await r.json();
+    let data = await r.json();
+    if (data && data.status === 'disabled') {
+      const msg = 'Data sources disabled on backend: ' + esc(data.note || '');
+      document.getElementById('augur-ui-errors').textContent = (document.getElementById('augur-ui-errors').textContent || '') + '
+[' + new Date().toLocaleTimeString() + '] ' + msg;
+      return;
+    }
     const sources = data.sources || [];
     const map = {};
     sources.forEach(s => { map[s.name] = s; });
