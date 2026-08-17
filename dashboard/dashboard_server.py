@@ -1606,7 +1606,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.handle_persona_api()
         elif path == '/api/monitor' or path == '/api/monitor/':
             self.handle_monitor_api()
-        elif path in ['/white-whale', '/api-status', '/auth', '/dataview']:
+        elif path in ['/white-whale', '/api-status', '/auth', '/dataview', '/tools', '/services', '/sandbox']:
             self.handle_html()
         elif path == '/api/ticketing' or path == '/api/ticketing/':
             self.handle_ticketing_api()
