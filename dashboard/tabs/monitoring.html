@@ -5,6 +5,9 @@
     <title>Monitoring Tab</title>
     <style>
         body { background:#0b1d2e; color:#ffd700; font-family:sans-serif; padding:20px; }
+        .status-dot { display:inline-block; width:10px; height:10px; border-radius:50%; background:#555; margin-left:8px; }
+        .online { color:#3fe08a; }
+        .offline { color:#ff5555; }
         .card { background:#122a3d; border:1px solid #1f3a55; padding:15px; margin:10px 0; border-radius:8px; }
         .metric { color:#4da6ff; }
         .online { color:#56fb88; }
@@ -35,22 +38,22 @@
         <h2>Panels</h2>
         <div class="grid col-2">
             <div>
-                <h3>Grafana</h3>
-                <iframe src="http://192.168.0.39:3002" sandbox="allow-scripts allow-same-origin allow-forms"></iframe>
+                <h3>Grafana <span id="grafana-status" class="status-dot"></span></h3>
+                <div id="grafana-panel">Checking...</div>
             </div>
             <div>
-                <h3>Uptime Kuma</h3>
-                <iframe src="http://192.168.0.39:3001" sandbox="allow-scripts allow-same-origin allow-forms"></iframe>
+                <h3>Uptime Kuma <span id="kuma-status" class="status-dot"></span></h3>
+                <div id="kuma-panel">Checking...</div>
             </div>
         </div>
         <div class="grid col-3" style="margin-top:12px;">
             <div>
-                <h3>Prometheus</h3>
-                <iframe src="http://192.168.0.39:9090" sandbox="allow-scripts allow-same-origin allow-forms"></iframe>
+                <h3>Prometheus <span id="prometheus-status" class="status-dot"></span></h3>
+                <div id="prometheus-panel">Checking...</div>
             </div>
             <div>
-                <h3>cAdvisor</h3>
-                <iframe src="http://192.168.0.39:8081" sandbox="allow-scripts allow-same-origin allow-forms"></iframe>
+                <h3>cAdvisor <span id="cadvisor-status" class="status-dot"></span></h3>
+                <div id="cadvisor-panel">Checking...</div>
             </div>
             <div>
                 <h3>Captain API Status</h3>
@@ -66,10 +69,14 @@
                 const services = data.services || {};
                 const internal = data.internal_services || {};
                 const lines = [];
-                const names = {grafana:'Grafana', prometheus:'Prometheus', cadvisor:'cAdvisor', kuma:'Uptime Kuma'};
-                for (const [key, label] of Object.entries(names)) {
+                const ports = {grafana: 3002, prometheus: 9090, cadvisor: 8081, kuma: 3001};
+                for (const [key, label] of Object.entries(ports)) {
                     const ok = !!internal[key];
-                    lines.push(`<span class="${ok ? 'online' : 'offline'}">${label}: ${ok ? 'UP' : 'DOWN'}</span>`);
+                    lines.push(`<span class="${ok ? 'online' : 'offline'}">${key.toUpperCase()}: ${ok ? 'UP' : 'DOWN'}</span>`);
+                    const dot = document.getElementById(key+'-status');
+                    if (dot) dot.style.background = ok ? '#3fe08a' : '#ff5555';
+                    const panel = document.getElementById(key+'-panel');
+                    if (panel) panel.innerHTML = ok ? '<span class="online">UP — dashboard routed</span>' : '<span class="offline">DOWN</span>';
                 }
                 document.getElementById('status').innerHTML = lines.join('<br>');
             } catch (e) {

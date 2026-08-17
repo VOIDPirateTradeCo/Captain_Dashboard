@@ -1948,6 +1948,8 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self._json_ok(self._dl_cache)
         except Exception as exc:
             self._json_err(500, str(exc))
+        except Exception as exc:
+            self._json_err(500, str(exc))
 
     def handle_local_presets_api(self):
         try:
