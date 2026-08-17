@@ -117,6 +117,16 @@
 </div>
 
 <div class="card">
+  <h3 class="section-title">Time & Sales / Level II</h3>
+  <p class="metric">Recent bid/ask tape for the selected ticker. Data is local demo.</p>
+  <div class="row">
+    <input id="depth-ticker" placeholder="TICKER" value="SPY" style="background:#000;color:#e2e8f0;border:1px solid #1e293b;padding:6px 8px;border-radius:6px;width:90px;">
+    <button id="btn-depth-refresh" class="btn">Refresh</button>
+  </div>
+  <pre id="market-depth" class="metric">Loading...</pre>
+</div>
+
+<div class="card">
   <h3 class="section-title">Study / Scan Presets</h3>
   <p class="metric">Save indicator combinations and genome parameter sets for quick reuse.</p>
   <div class="row">
@@ -482,6 +492,28 @@ setInterval(load, 15000);
       out.textContent = 'Error: ' + e.message;
     }
   });
+})();
+(function(){
+  const out = document.getElementById('market-depth');
+  const tickerEl = document.getElementById('depth-ticker');
+  const btn = document.getElementById('btn-depth-refresh');
+  async function loadDepth(){
+    const t = (tickerEl?.value || 'SPY').trim().toUpperCase();
+    if(!t) return;
+    out.textContent = 'Loading...';
+    try {
+      const r = await fetch('/api/market_depth?ticker=' + encodeURIComponent(t));
+      const data = await r.json();
+      const rows = data.rows || [];
+      if (!rows.length) { out.textContent = 'No depth data'; return; }
+      out.textContent = rows.map(row => `${row.time} ${row.side} ${row.price} x${row.size} ${row.exchange}`).join('
+');
+    } catch(e) {
+      out.textContent = 'Error: ' + e.message;
+    }
+  }
+  btn?.addEventListener('click', loadDepth);
+  loadDepth();
 })();
 </script>
 </body>
