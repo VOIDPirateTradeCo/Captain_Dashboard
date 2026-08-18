@@ -3673,7 +3673,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
     def handle_fleet_verify_api(self):
         """Cross-PC mutual verification store (checks & balances).
         POST: a rig reports which OTHER rigs it independently probed.
-        GET: returns the mutual-check matrix (who verified whom, when, pass/fail)."""
+        GET: returns the mutual-check matrix augmented with lightweight live probes."""
         import os as _os
         state_path = _os.path.join(SCRIPT_DIR, "fleet_verify_state.json")
         if self.command == "POST":
@@ -3707,12 +3707,35 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.send_header('Access-Control-Allow-Origin', '*'); self.end_headers()
             self.wfile.write(json.dumps({"ok": True, "stored": len(results)}).encode())
             return
-        # GET -> matrix
+        # GET -> matrix with lightweight live probes
         try:
             with open(state_path, encoding="utf-8") as f:
                 state = json.load(f)
         except Exception:
             state = {}
+        known_hosts = {
+            "PINKCADY": "100.106.235.103",
+            "STEALTHATTACK": "100.110.238.68",
+            "TORUSLAPTOP": "100.71.174.28",
+            "SQUIDSTATION": "127.0.0.1",
+        }
+        for host, ip in known_hosts.items():
+            entry = state.setdefault(host, {})
+            checks = entry.get("checks", {})
+            try:
+                req = urllib.request.Request(f"http://{ip}:8080/api/health", headers={"User-Agent": "CaptainDashboard", "Accept": "application/json"})
+                with urllib.request.urlopen(req, timeout=1) as r:
+                    checks["dashboard:8080"] = str(r.status)
+            except Exception as e:
+                checks["dashboard:8080"] = f"error: {type(e).__name__}"
+            try:
+                req = urllib.request.Request(f"http://{ip}:5000/", headers={"User-Agent": "CaptainDashboard"})
+                with urllib.request.urlopen(req, timeout=1) as r:
+                    checks["treasuremap:5000"] = str(r.status)
+            except Exception as e:
+                checks["treasuremap:5000"] = f"error: {type(e).__name__}"
+            entry["checks"] = checks
+            entry["ts"] = __import__('datetime').datetime.now(__import__('datetime').timezone.utc).isoformat()
         self.send_response(200); self.send_header('Content-Type', 'application/json')
         self.send_header('Access-Control-Allow-Origin', '*'); self.end_headers()
         self.wfile.write(json.dumps({"verify_matrix": state}, indent=2).encode())
