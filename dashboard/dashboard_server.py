@@ -2992,6 +2992,20 @@ class DashboardHandler(BaseHTTPRequestHandler):
             parsed = urlparse(path)
             query = parse_qs(parsed.query)
             token = query.get('token', [None])[0]
+            if not token:
+                # Try JSON body
+                content_len = int(self.headers.get('Content-Length', '0'))
+                body = self.rfile.read(content_len).decode('utf-8', errors='replace') if content_len else ''
+                try:
+                    data = json.loads(body) if body else {}
+                    token = data.get('token')
+                except Exception:
+                    token = None
+            if not token:
+                # Try Authorization header
+                auth = self.headers.get('Authorization') or self.headers.get('X-Auth-Token')
+                if auth:
+                    token = auth.split(' ', 1)[-1] if ' ' in auth else auth
 
             # Crew auth tokens — share with Miss Pink via Dataview
             # Each crew bot has a token that maps to their allowed scopes
@@ -3021,7 +3035,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
                     "authenticated": False,
                     "error": "Invalid or missing token",
                     "valid_tokens": list(CREW_AUTH_TOKENS.keys()),
-                    "usage": "POST /api/auth/verify?token=<token>",
+                    "usage": "POST /api/auth/verify?token=<token> or POST with JSON body {\"token\":\"<token>\"}",
                 }
             self.wfile.write(json.dumps(response, indent=2, default=str).encode('utf-8'))
         except Exception as e:
