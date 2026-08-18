@@ -3162,7 +3162,31 @@ class DashboardHandler(BaseHTTPRequestHandler):
         self.wfile.write(json.dumps({"alerts": [], "count": 0}, indent=2).encode())
 
     def handle_diagram_api(self):
-        """Render a Mermaid diagram to PNG using local mmdc."""
+        """Render a Mermaid diagram to PNG using local mmdc, or return diagram metadata on GET."""
+        if self.command == 'GET':
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            try:
+                req = urllib.request.Request(f"http://127.0.0.1:8080/api/fleet", headers={"User-Agent": "CaptainDashboard", "Accept": "application/json"})
+                with urllib.request.urlopen(req, timeout=2) as r:
+                    fleet = json.loads(r.read())
+                    ships = fleet.get("ships", {})
+            except Exception:
+                ships = {}
+            diagram = {
+                "nodes": [{"id": name, "type": "ship", "status": ship.get("status", "unknown")} for name, ship in ships.items()],
+                "edges": [],
+                "updated_at": __import__('datetime').datetime.now(__import__('datetime').timezone.utc).isoformat(),
+                "source": "fleet_status_snapshot",
+                "render_endpoint": "POST /api/diagram with {mermaid: '<code>'} to render PNG",
+            }
+            for ship_name, ship in ships.items():
+                for peer in ship.get("peers", []):
+                    diagram["edges"].append({"from": ship_name, "to": peer})
+            self.wfile.write(json.dumps(diagram, indent=2, default=str).encode('utf-8'))
+            return
         self.send_response(200)
         self.send_header('Content-Type', 'image/png')
         self.send_header('Access-Control-Allow-Origin', '*')
