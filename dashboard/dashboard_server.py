@@ -4630,13 +4630,31 @@ class DashboardHandler(BaseHTTPRequestHandler):
         })
 
     def handle_killswitch_api(self, path):
-        body = {
-            'endpoint': path,
-            'trading': False,
-            'learning': False,
-            'note': 'killswitch state; local dashboard default',
-        }
-        self._json_ok(body)
+        state_path = Path(SCRIPT_DIR) / 'state' / 'killswitch.json'
+        try:
+            if self.command == 'POST':
+                length = int(self.headers.get('Content-Length', '0'))
+                body = json.loads(self.rfile.read(length).decode('utf-8') or '{}') if length else {}
+                state = {
+                    'trading': bool(body.get('trading', False)),
+                    'learning': bool(body.get('learning', False)),
+                }
+                state_path.write_text(json.dumps(state, indent=2))
+                self._json_ok({'status': 'updated', 'state': state})
+                return
+            if state_path.exists():
+                state = json.loads(state_path.read_text())
+            else:
+                state = {'trading': False, 'learning': False}
+                state_path.write_text(json.dumps(state, indent=2))
+            body = {
+                'endpoint': path,
+                'trading': state.get('trading', False),
+                'learning': state.get('learning', False),
+            }
+            self._json_ok(body)
+        except Exception as exc:
+            self._json_err(500, str(exc))
 
     def handle_white_whale_api(self):
         payload = {
