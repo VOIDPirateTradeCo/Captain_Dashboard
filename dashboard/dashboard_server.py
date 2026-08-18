@@ -4275,16 +4275,25 @@ class DashboardHandler(BaseHTTPRequestHandler):
         ])
 
     def handle_services_api(self):
+        targets = {
+            'dashboard': 'http://127.0.0.1:8080/api/health',
+            'api': 'http://127.0.0.1:8080/api/health',
+            'trello': 'https://api.trello.com/1/members/me/boards',
+            'augur_sandbox': 'http://127.0.0.1:7679',
+            'grafana': 'http://127.0.0.1:3002',
+            'prometheus': 'http://127.0.0.1:9090',
+        }
+        services = {}
+        for name, url in targets.items():
+            try:
+                req = urllib.request.Request(url, headers={"User-Agent": "CaptainDashboard", "Accept": "application/json"})
+                with urllib.request.urlopen(req, timeout=3) as r:
+                    services[name] = str(r.status)
+            except Exception as e:
+                services[name] = f"error: {type(e).__name__}"
         payload = {
             'status': 'OK',
-            'services': {
-                'dashboard': 'LIVE',
-                'api': 'LIVE',
-                'trello': 'CONNECTED',
-                'augur_sandbox': 'RUNNING',
-                'grafana': 'RUNNING',
-                'prometheus': 'RUNNING'
-            },
+            'services': services,
             'timestamp': __import__('datetime').datetime.now(__import__('datetime').timezone.utc).isoformat()
         }
         self.send_response(200)
