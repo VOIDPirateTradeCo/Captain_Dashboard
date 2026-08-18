@@ -1606,7 +1606,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.handle_persona_api()
         elif path == '/api/monitor' or path == '/api/monitor/':
             self.handle_monitor_api()
-        elif path in ['/white-whale', '/api-status', '/auth', '/dataview', '/tools', '/services', '/sandbox']:
+        elif path in ['/white-whale', '/api-status', '/auth', '/dataview', '/tools', '/services', '/sandbox', '/tabs', '/art']:
             self.handle_html()
         elif path == '/api/ticketing' or path == '/api/ticketing/':
             self.handle_ticketing_api()
@@ -2391,12 +2391,20 @@ class DashboardHandler(BaseHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Origin', '*')
         self.end_headers()
         try:
-            summary = {
-                "grafana": {"url": "http://192.168.0.39:3002", "status": "unknown"},
-                "prometheus": {"url": "http://192.168.0.39:9090", "status": "unknown"},
-                "cadvisor": {"url": "http://192.168.0.39:8081", "status": "unknown"},
-                "kuma": {"url": "http://192.168.0.39:3001", "status": "unknown"},
+            targets = {
+                "grafana": "http://192.168.0.39:3002",
+                "prometheus": "http://192.168.0.39:9090",
+                "cadvisor": "http://192.168.0.39:8081",
+                "kuma": "http://192.168.0.39:3001",
             }
+            summary = {}
+            for name, url in targets.items():
+                try:
+                    req = urllib.request.Request(url, headers={"User-Agent": "CaptainDashboard"})
+                    with urllib.request.urlopen(req, timeout=3) as r:
+                        summary[name] = {"url": url, "status": str(r.status)}
+                except Exception as e:
+                    summary[name] = {"url": url, "status": f"error: {type(e).__name__}"}
             self.wfile.write(json.dumps(summary, indent=2, default=str).encode('utf-8'))
         except Exception as e:
             self.wfile.write(json.dumps({"error": str(e)}).encode('utf-8'))
