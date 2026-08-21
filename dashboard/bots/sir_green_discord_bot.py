@@ -1,4 +1,4 @@
-"""Standalone Sir Green Discord bot — containerized, restart:always."""
+"""Standalone Sir Green Discord bot — containerized, restart:unless-stopped."""
 
 import asyncio
 import datetime as dt
@@ -6,7 +6,9 @@ import json
 import os
 import pathlib
 import random
+import subprocess
 import urllib.parse
+import time
 import urllib.request
 from typing import Any
 
@@ -23,6 +25,7 @@ HOME_CHANNEL_ID = os.environ.get("DISCORD_HOME_CHANNEL_ID", "")
 GUILD_IDS = [g.strip() for g in os.environ.get("DISCORD_GUILD_IDS", "").split(",") if g.strip()]
 STATE_PATH = pathlib.Path(os.environ.get("STATE_PATH", "/state/sir_green_bot_state.json"))
 STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
+HERMES = os.environ.get("HERMES_CMD", "hermes")
 
 if not TOKEN:
     raise SystemExit("Missing DISCORD_BOT_TOKEN or DISCORD_SIR_GREEN_TOKEN")
@@ -58,15 +61,40 @@ async def _post_cycle(channel: discord.abc.Messageable) -> None:
     _save_state(state)
 
     cycle = state["cycle_count"]
-    await channel.send(
-        f"🦜 **OODA Cycle #{cycle}** — Status Report\n"
-        f"• Status: Online\n"
-        f"• Next action: Continue processing VOID Ops queue."
+    msg = (
+        "🦜 **OODA Cycle #" + str(cycle) + "** — Status Report\n"
+        "• Status: Online\n"
+        "• Next action: Continue processing VOID Ops queue."
     )
+    await channel.send(msg)
 
 
 async def _post_gordon(channel: discord.abc.Messageable, message: str) -> None:
     await channel.send(f"🐳 **Gordon Stack Guard**: {message}")
+
+
+def _call_hermes(prompt: str) -> str:
+    try:
+        base = pathlib.Path(os.environ.get("RELAY_BASE", "/relay"))
+        ts = int(dt.datetime.now(dt.timezone.utc).timestamp() * 1000)
+        fname = f"{ts}_sir_green.json"
+        data = {"prompt": prompt, "created_at": time.strftime("%Y%m%dT%H%M%S")}
+        (base / "inbound" / "sir_green" / fname).write_text(
+            json.dumps(data, indent=2), encoding="utf-8"
+        )
+        out_path = base / "outbound" / "sir_green" / fname.replace(".json", "_reply.json")
+        deadline = time.time() + int(os.environ.get("HERMES_TIMEOUT", "1800"))
+        while time.time() < deadline:
+            if out_path.exists():
+                try:
+                    reply = json.loads(out_path.read_text(encoding="utf-8")).get("reply")
+                    return reply if reply else "(no reply)"
+                except Exception:
+                    return "(reply read error)"
+            time.sleep(0.5)
+        return "Relay timeout"
+    except Exception as e:
+        return f"Relay error: {e}"
 
 
 @bot.event
@@ -99,31 +127,42 @@ async def repair(interaction: discord.Interaction, message: str) -> None:
     await interaction.followup.send("Repair notice posted.")
 
 
-async def _scheduler() -> None:
-    await bot.wait_until_ready()
-    channel = None
-    if HOME_CHANNEL_ID:
-        try:
-            channel = bot.get_channel(int(HOME_CHANNEL_ID)) or await bot.fetch_channel(int(HOME_CHANNEL_ID))
-        except Exception as e:
-            print(f"[SCHEDULER] Cannot resolve home channel: {e}", flush=True)
-
-    while not bot.is_closed():
-        try:
-            if channel:
-                await _post_cycle(channel)
-        except Exception as e:
-            print(f"[SCHEDULER] Cycle error: {e}", flush=True)
-        await asyncio.sleep(int(os.environ.get("CYCLE_SECONDS", "1800")))
-
-
 @bot.event
-async def setup_hook() -> None:
-    bot.loop.create_task(_scheduler())
+async def on_message(message: discord.Message) -> None:
+    if message.author.id == bot.user.id:
+        return
+
+    # DM relay
+    if message.guild is None and message.channel.type == discord.ChannelType.private:
+        reply = _call_hermes(message.content)
+        try:
+            await message.channel.send(reply)
+        except Exception as e:
+            print(f"[DM] send failed: {e}", flush=True)
+        return
+
+    # Mention relay in guild
+    if message.guild is not None and bot.user in message.mentions:
+        cleaned = message.content.replace(f"<@{bot.user.id}>", "").replace(f"<@!{bot.user.id}>", "").strip()
+        if cleaned:
+            reply = _call_hermes(cleaned)
+            try:
+                await message.reply(reply, mention_author=False)
+            except Exception as e:
+                print(f"[MENTION] reply failed: {e}", flush=True)
+        else:
+            try:
+                await message.reply("Acknowledged. Send a task after the @Sir Green mention.", mention_author=False)
+            except Exception as e:
+                print(f"[MENTION] empty reply failed: {e}", flush=True)
+
+
+# OODA cycle posting is now manual-only via /cycle command.
+# No automatic scheduler to avoid spam.
 
 
 def main() -> None:
-    print("[START] Launching Sir Green Discord bot...")
+    print("[START] Launching Sir Green Discord bot...", flush=True)
     bot.run(TOKEN, log_handler=None)
 
 

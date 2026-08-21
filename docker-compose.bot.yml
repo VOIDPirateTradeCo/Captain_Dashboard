@@ -8,8 +8,9 @@ services:
     env_file:
       - ./dashboard/bots/.env.sirgreen
     environment:
-      - DISCORD_CYCLE_SECONDS=${DISCORD_CYCLE_SECONDS:-1800}
+      - RELAY_BASE=/relay
     volumes:
+      - ./dashboard/bots/relay:/relay
       - sir_green_bot_state:/state
     networks:
       - void-net
