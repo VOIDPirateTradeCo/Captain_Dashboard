@@ -1,6 +1,8 @@
 """Host-side relay worker: reads prompts from Docker volume, runs hermes, writes reply."""
 import json
 import os
+from dotenv import load_dotenv
+load_dotenv(str(Path(__file__).with_name(".env.sirgreen")))
 import subprocess
 import time
 from pathlib import Path
