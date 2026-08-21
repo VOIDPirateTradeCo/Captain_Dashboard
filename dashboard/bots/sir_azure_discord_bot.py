@@ -1,4 +1,4 @@
-"""Standalone Sir Green Discord bot — containerized, restart:unless-stopped."""
+"""Standalone Sir Azure Discord bot — containerized, restart:unless-stopped."""
 
 import asyncio
 import datetime as dt
@@ -22,10 +22,10 @@ except ImportError:
     raise SystemExit("discord.py not installed")
 
 # === CONFIG ===
-TOKEN = os.environ.get("DISCORD_BOT_TOKEN") or os.environ.get("DISCORD_SIR_GREEN_TOKEN")
+TOKEN = os.environ.get("DISCORD_SIR_AZURE_TOKEN") or os.environ.get("DISCORD_SIR_AZURE_TOKEN")
 HOME_CHANNEL_ID = os.environ.get("DISCORD_HOME_CHANNEL_ID", "")
 GUILD_IDS = [g.strip() for g in os.environ.get("DISCORD_GUILD_IDS", "").split(",") if g.strip()]
-STATE_PATH = pathlib.Path(os.environ.get("STATE_PATH", "/state/sir_green_bot_state.json"))
+STATE_PATH = pathlib.Path(os.environ.get("STATE_PATH", "/state/sir_azure_bot_state.json"))
 STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
 HERMES = os.environ.get("HERMES_CMD", "hermes")
 ALLOWED_CHANNEL_IDS = {
@@ -37,7 +37,7 @@ if not ALLOWED_CHANNEL_IDS and HOME_CHANNEL_ID:
     ALLOWED_CHANNEL_IDS.add(HOME_CHANNEL_ID)
 
 if not TOKEN:
-    raise SystemExit("Missing DISCORD_BOT_TOKEN or DISCORD_SIR_GREEN_TOKEN")
+    raise SystemExit("Missing DISCORD_SIR_AZURE_TOKEN or DISCORD_SIR_AZURE_TOKEN")
 
 # === INTENTS ===
 intents = discord.Intents.default()
@@ -86,12 +86,12 @@ def _call_hermes(prompt: str) -> str:
     try:
         base = pathlib.Path(os.environ.get("RELAY_BASE", "/relay"))
         ts = int(dt.datetime.now(dt.timezone.utc).timestamp() * 1000)
-        fname = f"{ts}_sir_green.json"
+        fname = f"{ts}_sir_azure.json"
         data = {"prompt": prompt, "created_at": time.strftime("%Y%m%dT%H%M%S")}
-        (base / "inbound" / "sir_green" / fname).write_text(
+        (base / "inbound" / "sir_azure" / fname).write_text(
             json.dumps(data, indent=2), encoding="utf-8"
         )
-        out_path = base / "outbound" / "sir_green" / fname.replace(".json", "_reply.json")
+        out_path = base / "outbound" / "sir_azure" / fname.replace(".json", "_reply.json")
         deadline = time.time() + int(os.environ.get("HERMES_TIMEOUT", "1800"))
         while time.time() < deadline:
             if out_path.exists():
@@ -108,7 +108,7 @@ def _call_hermes(prompt: str) -> str:
 
 @bot.event
 async def on_ready() -> None:
-    print(f"[READY] Sir Green bot online as {bot.user}", flush=True)
+    print(f"[READY] Sir Azure bot online as {bot.user}", flush=True)
     try:
         synced = await bot.tree.sync()
         print(f"[SYNC] Slash commands synced: {len(synced)}", flush=True)
@@ -116,7 +116,7 @@ async def on_ready() -> None:
         print(f"[SYNC] Failed: {e}", flush=True)
 
 
-@bot.tree.command(name="ping", description="Check Sir Green bot latency")
+@bot.tree.command(name="ping", description="Check Sir Azure bot latency")
 async def ping(interaction: discord.Interaction) -> None:
     await interaction.response.send_message(f"Pong! {round(bot.latency*1000)}ms")
 
@@ -165,7 +165,7 @@ async def on_message(message: discord.Message) -> None:
                 print(f"[MENTION] reply failed: {e}", flush=True)
         else:
             try:
-                await message.reply("Acknowledged. Send a task after the @Sir Green mention.", mention_author=False)
+                await message.reply("Acknowledged. Send a task after the @Sir Azure mention.", mention_author=False)
             except Exception as e:
                 print(f"[MENTION] empty reply failed: {e}", flush=True)
 
@@ -175,7 +175,7 @@ async def on_message(message: discord.Message) -> None:
 
 
 def main() -> None:
-    print("[START] Launching Sir Green Discord bot...", flush=True)
+    print("[START] Launching Sir Azure Discord bot...", flush=True)
     bot.run(TOKEN, log_handler=None)
 
 
