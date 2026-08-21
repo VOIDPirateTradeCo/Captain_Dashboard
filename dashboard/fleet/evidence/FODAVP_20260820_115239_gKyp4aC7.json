@@ -1,0 +1,62 @@
+{
+  "cycle_id": "FODAVP_20260820_115239",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:52:39.534808",
+  "target": {
+    "card_id": "6a78b288fb11559019eec2f2",
+    "shortLink": "gKyp4aC7",
+    "name": "[RULE] G11 Disk Space Watch",
+    "url": "https://trello.com/c/gKyp4aC7/6825-rule-g11-disk-space-watch"
+  },
+  "decision": {
+    "action_type": "generic",
+    "target_card": "gKyp4aC7",
+    "target_name": "[RULE] G11 Disk Space Watch",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card requirements",
+      "Execute objective",
+      "Verify completion",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "generic",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card gKyp4aC7 \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:52:39.534214",
+    "fix_applied": false,
+    "note": "No real handler for gKyp4aC7 \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for gKyp4aC7 \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:52:39.534400",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

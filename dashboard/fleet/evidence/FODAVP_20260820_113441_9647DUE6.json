@@ -1,0 +1,65 @@
+{
+  "cycle_id": "FODAVP_20260820_113441",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:34:41.641040",
+  "target": {
+    "card_id": "6a7c0e5e6146f097413a15d5",
+    "shortLink": "9647DUE6",
+    "name": "\ud83d\udc1b [BUG] Vault structure changed \u2014 vault.json missing, INBOX paths moved \u2014 scripts broken",
+    "url": "https://trello.com/c/9647DUE6/10838-%F0%9F%90%9B-bug-vault-structure-changed-vaultjson-missing-inbox-paths-moved-scripts-broken"
+  },
+  "decision": {
+    "action_type": "bug_fix",
+    "target_card": "9647DUE6",
+    "target_name": "\ud83d\udc1b [BUG] Vault structure changed \u2014 vault.json missing, INBOX paths moved \u2014 script",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card description + any linked resources",
+      "Locate affected code/config",
+      "Apply minimal targeted fix",
+      "Run verification command",
+      "Post evidence comment to Trello"
+    ]
+  },
+  "action": {
+    "status": "completed",
+    "action_type": "bug_fix",
+    "steps_completed": [
+      "no_handler_available"
+    ],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card 9647DUE6 \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:34:41.640230",
+    "fix_applied": false,
+    "note": "No real handler for 9647DUE6 \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "execution_completed",
+        "result": "FAIL",
+        "details": "No fix applied: No real handler for 9647DUE6 \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:34:41.640566",
+    "verdict": "FAIL"
+  },
+  "result": "FAIL"
+}

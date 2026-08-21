@@ -1,0 +1,50 @@
+{
+  "timestamp": "2026-08-19T18:29:36.119439",
+  "operation": "BUG-3 COMPREHENSIVE FIX",
+  "db_path": "C:/Users/kidsm/Documents/My Docs/VOID Pirate Trading Co/PROJECT_tr3asure_mAp/tr3asure_mAp/data/treasure_map.db",
+  "schema_changes": {
+    "price_history_table": {
+      "added_columns": [
+        "date",
+        "atr",
+        "rsi"
+      ],
+      "date_populated_from": "valid_time column",
+      "query_fix": "Added ORDER BY date DESC compatibility"
+    },
+    "new_tables": [
+      "instruments",
+      "live_price",
+      "ai_training_labels",
+      "schwab_universe",
+      "schwab_stream_state"
+    ],
+    "compatibility_view": "historical_prices"
+  },
+  "endpoint_results": {
+    "Health Check": {
+      "status": "OK",
+      "code": 200,
+      "data": "{\"status\":\"ok\",\"timestamp\":\"2026-08-19T23:29:36.007784\",\"version\":\"0.5.33.28.38\"}\n"
+    },
+    "System Status": {
+      "status": "OK",
+      "code": 200,
+      "data": "{\"account\":{\"balance\":200.0,\"daily_pnl\":0,\"open_trades\":0,\"total_pnl\":0},\"download_status\":{},\"fund_progress\":{\"completed\":0,\"current_ticker\":\"\",\"last_updated\":null,\"percent\":0.0,\"phase\":\"\",\"running\":false,\"total\":0},\"hardware\":{\"cpu_pct\":0.0,\"disk_free_gb\":921.3,\"net_recv_kbps\":0,\"net_send_kbps\":0,"
+    },
+    "BUG-3 Fixed Endpoint": {
+      "status": "ERROR",
+      "code": 404
+    },
+    "Dashboard Proxy": {
+      "status": "ERROR",
+      "code": 502
+    }
+  },
+  "bug_3_status": "PARTIAL",
+  "fleet_status": {
+    "port_3000": "LISTENING",
+    "port_5000": "RESPONSIVE",
+    "container": "void-treasuremap:running"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "cycle_id": "FODAVP_20260820_115252",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:52:52.692520",
+  "target": {
+    "card_id": "6a752ce4ca0dd8765a65e9b4",
+    "shortLink": "Hd4yZ4hB",
+    "name": "\ud83d\udce8 SIR GREEN BOT AND WATCHER BOTH RUNNING END TO END BRIDGE VERIFIED 20260806T041200Z sirgreen.msg",
+    "url": "https://trello.com/c/Hd4yZ4hB/614-%F0%9F%93%A8-sir-green-bot-and-watcher-both-running-end-to-end-bridge-verified-20260806t041200z-sirgreenmsg"
+  },
+  "decision": {
+    "action_type": "generic",
+    "target_card": "Hd4yZ4hB",
+    "target_name": "\ud83d\udce8 SIR GREEN BOT AND WATCHER BOTH RUNNING END TO END BRIDGE VERIFIED 20260806T041",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card requirements",
+      "Execute objective",
+      "Verify completion",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "generic",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card Hd4yZ4hB \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:52:52.691689",
+    "fix_applied": false,
+    "note": "No real handler for Hd4yZ4hB \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for Hd4yZ4hB \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:52:52.691951",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

@@ -1,0 +1,62 @@
+{
+  "cycle_id": "FODAVP_20260820_115819",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:58:19.213704",
+  "target": {
+    "card_id": "6a7378171fb795b2b0f61f1f",
+    "shortLink": "3OiWivqj",
+    "name": "Avatar design: Sir Green",
+    "url": "https://trello.com/c/3OiWivqj/280-avatar-design-sir-green"
+  },
+  "decision": {
+    "action_type": "generic",
+    "target_card": "3OiWivqj",
+    "target_name": "Avatar design: Sir Green",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card requirements",
+      "Execute objective",
+      "Verify completion",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "generic",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card 3OiWivqj \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:58:19.213172",
+    "fix_applied": false,
+    "note": "No real handler for 3OiWivqj \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for 3OiWivqj \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:58:19.213350",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

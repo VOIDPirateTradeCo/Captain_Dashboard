@@ -1,0 +1,62 @@
+{
+  "cycle_id": "FODAVP_20260820_115432",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:54:32.569635",
+  "target": {
+    "card_id": "6a77c582444a1e73da262449",
+    "shortLink": "DpCOemra",
+    "name": "[G8] Deploy NPM auth proxy (:81) + uptime-kuma crew monitors",
+    "url": "https://trello.com/c/DpCOemra/3922-g8-deploy-npm-auth-proxy-81-uptime-kuma-crew-monitors"
+  },
+  "decision": {
+    "action_type": "deployment",
+    "target_card": "DpCOemra",
+    "target_name": "[G8] Deploy NPM auth proxy (:81) + uptime-kuma crew monitors",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card requirements",
+      "Execute objective",
+      "Verify completion",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "deployment",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card DpCOemra \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:54:32.569085",
+    "fix_applied": false,
+    "note": "No real handler for DpCOemra \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for DpCOemra \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:54:32.569267",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

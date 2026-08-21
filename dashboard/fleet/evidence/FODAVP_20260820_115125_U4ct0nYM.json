@@ -1,0 +1,62 @@
+{
+  "cycle_id": "FODAVP_20260820_115125",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:51:25.716623",
+  "target": {
+    "card_id": "6a7230651cff6688b1268503",
+    "shortLink": "U4ct0nYM",
+    "name": "Sir Green Discord Bot: token env wiring",
+    "url": "https://trello.com/c/U4ct0nYM/79-sir-green-discord-bot-token-env-wiring"
+  },
+  "decision": {
+    "action_type": "generic",
+    "target_card": "U4ct0nYM",
+    "target_name": "Sir Green Discord Bot: token env wiring",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card requirements",
+      "Execute objective",
+      "Verify completion",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "generic",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card U4ct0nYM \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:51:25.716097",
+    "fix_applied": false,
+    "note": "No real handler for U4ct0nYM \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for U4ct0nYM \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:51:25.716270",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

@@ -1,0 +1,63 @@
+{
+  "cycle_id": "FODAVP_20260820_115249",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:52:49.247045",
+  "target": {
+    "card_id": "6a752ce6e99a5f0447804101",
+    "shortLink": "B1qKz9QS",
+    "name": "\ud83d\udce8 STATUS ACK TORUS DOCKER BUILD IN PROGRESS DASHBOARD 8089 VERIFIED 20260806T042400Z sirgreen.msg",
+    "url": "https://trello.com/c/B1qKz9QS/616-%F0%9F%93%A8-status-ack-torus-docker-build-in-progress-dashboard-8089-verified-20260806t042400z-sirgreenmsg"
+  },
+  "decision": {
+    "action_type": "docker",
+    "target_card": "B1qKz9QS",
+    "target_name": "\ud83d\udce8 STATUS ACK TORUS DOCKER BUILD IN PROGRESS DASHBOARD 8089 VERIFIED 20260806T042",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Check container status via docker ps",
+      "Identify issue",
+      "Restart or reconfigure",
+      "Verify health",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "docker",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card B1qKz9QS \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:52:49.246187",
+    "fix_applied": false,
+    "note": "No real handler for B1qKz9QS \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for B1qKz9QS \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:52:49.246493",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

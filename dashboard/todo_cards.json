@@ -1,0 +1,252 @@
+[
+  {
+    "id": "6a83339809ed4871937c870c",
+    "name": "P0: No SPA catch-all \u2014 17 dashboard routes return 404 (need fallback to index.html)",
+    "desc": "**Bug: Dashboard SPA routes return 404 for direct access**\n\nAll 17 client-side routes return 404 when visited directly:\n/crew, /monitoring, /diagram, /sandbox, /auth, /dataview, /comms, /tools,\n/tailscale, /vault, /containers, /services, /ships, /opsec, /alerts,\n/white-whale, /api-status\n\n**Evidence:**\n```\n$ curl http://192.168.0.39:8080/crew \u2192 HTTP 404\n$ curl http://192.168.0.39:8080/#crew \u2192 HTTP 200 (hash routing works)\n```\n\n**Root cause:** BaseHTTP `do_GET` has no catch-all fallback.\nOnly `/` and `/api/*` paths are handled. All other paths 404.\n\n**Fix for Sir Green:**\n```python\ndef do_GET(self):\n    path = urlparse(self.path).path\n    if path == '/' or path == '/index.html':\n        self.serve_index()\n    elif path.startswith('/api/'):\n        self.handle_api(path)\n    else:\n        self.serve_index()  # SPA catch-all \u2014 MISSING\n\ndef serve_index(self):\n    try:\n        with open('templates/index.html', 'rb') as f:\n            html = f.read()\n        self.send_response(200)\n        self.send_header('Content-Type', 'text/html')\n        self.send_header('Content-Length', str(len(html)))\n        self.end_headers()\n        self.wfile.write(html)\n    except FileNotFoundError:\n        self.send_error(500, 'index.html not found')\n```\n\n**Priority: P0** \u2014 all dashboard navigation broken\n"
+  },
+  {
+    "id": "6a833393ae3649fa976f36f2",
+    "name": "P0: Dashboard root returns HTTP 200 but 0-byte body \u2014 SPA HTML never delivered",
+    "desc": "**Bug: Dashboard root returns 200 OK but empty body**\n\nWhen visiting http://192.168.0.39:8080/ the server responds:\n```\nHTTP/1.0 200 OK\nServer: BaseHTTP/0.6 Python/3.11.15\nContent-Type: text/html\nContent-Length: 0  \u2190 EMPTY BODY\n```\n\n**Evidence:** curl gets HTTP 200 but `body=0 bytes`. No HTML is served.\nBrowser may have cached version \u2014 hard refresh (Ctrl+Shift+R) shows blank page.\n\n**Root cause candidates:**\n1. `open('templates/index.html')` fails silently \u2014 file missing or wrong path\n2. Handler returns early before `self.wfile.write()`\n3. BaseHTTP `send_head()` returns None, never writes body\n4. File handle opened but bytes never read/written\n\n**Fix checklist for Sir Green:**\n- Check the `do_GET` method in the dashboard server\n- Verify `templates/index.html` exists at expected path\n- Ensure response flow: send_response(200) \u2192 send_header() \u2192 end_headers() \u2192 wfile.write(html)\n- Add error handling: if file not found, return 500 not 200 with empty body\n- Test locally: `python -c \"print(open('templates/index.html').read()[:50])\"`\n\n**Priority: P0** \u2014 dashboard completely unusable without HTML\n"
+  },
+  {
+    "id": "6a83cd76ef85d59d0c946f48",
+    "name": "BUG: Kill switch auto-resets to True \u2014 Trading intermittent",
+    "desc": "**Evidence:** Kill switch state resets to True unexpectedly, causing trading to be blocked intermittently.\n\n**Root cause:** State persistence issue in kill switch storage.\n\n**Fix needed:** Investigate state storage mechanism and fix persistence."
+  },
+  {
+    "id": "6a82761a1711e382f44b7c92",
+    "name": "AGENT-1: /api/agent 404 while fleet install instructions point to http://192.168.0.39:8080/agent",
+    "desc": "**Evidence:** `fleet.html` install block: `curl ... http://192.168.0.39:8080/agent`. `/api/agent` returns `502/404`.\n\n**Root cause:** Agent download endpoint missing.\n\n**Fix needed:** Implement `/api/agent` or fix install URL.\n\n**Evidence:** `GET /api/agent 404` vs fleet install instructions."
+  },
+  {
+    "id": "6a82761ae183c0578c226193",
+    "name": "HEALTH-1: /api/health returns empty ships {} while /api/status shows 4 ships",
+    "desc": "**Evidence:** `/api/health` returns `ships: {}`. `/api/status` shows SQUIDSTATION/PINKCADY/STEALTHATTACK/GATEWAY.\n\n**Root cause:** Health endpoint not using same ship state as status.\n\n**Fix needed:** Merge ship status into `/api/health`.\n\n**Evidence:** `GET /api/health 200` empty vs `GET /api/status 200` populated."
+  },
+  {
+    "id": "6a82761ab10e7e45b87f5902",
+    "name": "NETWORK-ALERTS-1: /api/network/alerts empty while fleet/ships show stale/missing states",
+    "desc": "**Evidence:** `/api/network/alerts` returns `alerts: []`, `ships_online: 0`.\n\n**Root cause:** Network alert aggregation not ingesting ship state.\n\n**Fix needed:** Feed fleet/ship health into network alerts.\n\n**Evidence:** `GET /api/network/alerts 200` empty vs `GET /api/status 200` ship data."
+  },
+  {
+    "id": "6a82761bbd3fed195fdc4b1e",
+    "name": "PING-LATENCY-1: /api/ping and /api/latency 404 despite fleet UI showing latency column",
+    "desc": "**Evidence:** Fleet UI renders `latency` column. `/api/ping` and `/api/latency` return `502/404`.\n\n**Root cause:** Ping/latency endpoints missing.\n\n**Fix needed:** Implement latency probes or remove UI column.\n\n**Evidence:** `GET /api/ping 404`, `GET /api/latency 404` + fleet UI latency field."
+  },
+  {
+    "id": "6a8342135ac6b406162f983c",
+    "name": "\ud83d\udc1b P0: Docker Desktop broken on PINKCADY \u2014 WSL2 backend won't start, service won't run",
+    "desc": "**MISS PINK REPORT \u2014 Docker Desktop Repair Needed**\n\n## \ud83d\udcca Current Status\n- Docker Desktop.exe: \u2705 Running (GUI)\n- dockerd.exe: \u274c NOT running\n- com.docker.proxy.exe: \u274c NOT running\n- docker-desktop-service.exe: \u274c NOT running\n- vmmem.exe: \u274c NOT running (WSL2 VM won't start)\n- Docker CLI: \u274c \"Docker Desktop is unable to start\"\n- Port 2375: HTTP 503 (service exists but rejecting)\n- Port 2376: HTTP 000 (not listening)\n\n## \ud83d\udd0d Root Cause\n**Docker Desktop installation is corrupted** \u2014 the `settings.json` file was MISSING, causing Docker Desktop to load the GUI but fail to start the WSL2 backend engine. After recreating settings.json and restarting, the backend still won't start.\n\nKey findings:\n1. `docker-desktop` WSL2 distro NOT in Lxss registry (not fully registered)\n2. `vmmem.exe` (WSL2 VM) doesn't start \u2014 no virtualization backend\n3. `com.docker.service` was NOT registered \u2014 InstallerCli.exe tried to register it but no output\n4. 182GB of Docker data still intact at `~\\AppData\\Local\\Docker\\wsl`\n5. The `--accept-license` and `install --package` installer commands all fail with \"Missing package flag\"\n6. `InstallerCli.exe install` exits 0 but produces no output\n\n## \ud83d\udee0\ufe0f What Sir Green Needs To Do\n1. **Full Docker Desktop reinstall** \u2014 uninstall + reinstall from docker.com\n2. The local installer at `C:\\Users\\torus\\AppData\\Local\\Programs\\DockerDesktop\\` is corrupted\n3. Need to re-register WSL2 integration after reinstall\n4. Docker CLI (v29.7.1) in WinGet Links works but engine won't connect\n\n## \ud83e\uddea Verification Steps\n- `docker version` shows: \"Docker Desktop is unable to start\"\n- `docker info` shows: \"Docker Desktop is unable to start\"\n- Port 2375 returns 503, port 2376 returns 000\n\n## \ud83d\udccd Files / Evidence\n- Installer: `C:\\Users\\torus\\AppData\\Local\\Programs\\DockerDesktop\\Docker Desktop Installer.exe`\n- Docker exe: `C:\\Users\\torus\\AppData\\Local\\Programs\\DockerDesktop\\Docker Desktop.exe`\n- Data dir: `C:\\Users\\torus\\AppData\\Local\\Docker\\` (182GB)\n- daemon.json: `C:\\Users\\torus\\.docker\\daemon.json` (valid JSON)\n- settings.json: `C:\\Users\\torus\\AppData\\Roaming\\Docker\\settings.json` (recreated)\n\n## \u26a1 Priority\n**P0** \u2014 Docker is blocked across fleet operations (captain dashboard depends on containers)\n"
+  },
+  {
+    "id": "6a8397a80193991e2796e3e2",
+    "name": "[REB-6] Renew Claude.ai / Codex.ai subscriptions when ready",
+    "desc": "Priority: P2.\n\nCaptain note: no active payment currently. Created own system; renew only when needed.\n\nVault: [[AI_SUBSCRIPTION_TRACKER.md]]"
+  },
+  {
+    "id": "6a83a4f2644ee3ccf3901749",
+    "name": "BUG-HUNT-1: /api/diagram returns empty body/error",
+    "desc": "Priority: P1.\n\n/api/diagram currently returns {\"error\":\"empty body\"}.\n\nExpected: real diagram data or valid JSON payload.\n\nAction: integrate actual diagram source or remove broken endpoint.\n\nEvidence: GET /api/diagram returns 200 with error key"
+  },
+  {
+    "id": "6a83a4f2bce882b749dfd996",
+    "name": "BUG-HUNT-2: /api/monitor all services show unknown status",
+    "desc": "Priority: P1.\n\n/api/monitor returns all services (grafana, prometheus, cadvisor, kuma) as status=unknown.\n\nExpected: status=ok or status=error with real connectivity check.\n\nAction: implement active health checks for each service URL"
+  },
+  {
+    "id": "6a83a4f35b296966e7e5dc25",
+    "name": "BUG-HUNT-3: PINKCADY (192.168.0.3) unreachable on port 8080",
+    "desc": "Priority: P0.\n\n192.168.0.3:8080 timed out during bug hunt.\n\nExpected: PINKCADY dashboard or Captain Dashboard reachable from SQUIDSTATION.\n\nAction: verify Tailscale routing, firewall, and service binding on PINKCADY"
+  },
+  {
+    "id": "6a83a4f4b3e33dc62fa14816",
+    "name": "BUG-HUNT-4: TORUSLAPTOP (192.168.0.4) unreachable on port 8080",
+    "desc": "Priority: P0.\n\n192.168.0.4:8080 timed out during bug hunt.\n\nExpected: TORUSLAPTOP services reachable from SQUIDSTATION.\n\nAction: verify network config, firewall, and service binding on TORUSLAPTOP"
+  },
+  {
+    "id": "6a83a4f5db88866338f9dd3f",
+    "name": "BUG-HUNT-5: Local port 7679 timeout \u2014 Augur sandbox unreachable",
+    "desc": "Priority: P1.\n\n127.0.0.1:7679 timed out during bug hunt.\n\nExpected: Augur sandbox running and reachable locally.\n\nAction: verify Augur sandbox process, restart if needed, update proxy route"
+  },
+  {
+    "id": "6a83a4f6881bee029a399ce1",
+    "name": "BUG-HUNT-6: Local port 3100 timeout \u2014 TorusPOS unreachable",
+    "desc": "Priority: P1.\n\n127.0.0.1:3100 timed out during bug hunt.\n\nExpected: TorusPOS running and reachable locally.\n\nAction: verify TorusPOS container/process, restart if needed, fix iframe link"
+  },
+  {
+    "id": "6a83a4f6ce035aafe1c0efe6",
+    "name": "BUG-HUNT-7: Local port 2376 timeout \u2014 Docker API unreachable",
+    "desc": "Priority: P1.\n\n127.0.0.1:2376 timed out during bug hunt.\n\nExpected: Docker API exposed and reachable locally.\n\nAction: verify Docker Desktop settings, TLS config, firewall rules"
+  },
+  {
+    "id": "6a83a4f7fff715be46338043",
+    "name": "BUG-HUNT-8: Local port 3000 timeout \u2014 unknown service unreachable",
+    "desc": "Priority: P2.\n\n127.0.0.1:3000 timed out during bug hunt.\n\nExpected: identify service on port 3000 and verify it is running.\n\nAction: audit port 3000 usage, start missing service or update config"
+  },
+  {
+    "id": "6a83a4f88b3519615318d99c",
+    "name": "BUG-HUNT-9: Local port 22 timeout \u2014 SSH unreachable",
+    "desc": "Priority: P2.\n\n127.0.0.1:22 timed out during bug hunt.\n\nExpected: local SSH server reachable if enabled.\n\nAction: verify OpenSSH server status on SQUIDSTATION, enable if needed"
+  },
+  {
+    "id": "6a83a57b01371f036278c23d",
+    "name": "BUG-HUNT-10: /tabs and /art SPA routes return 404",
+    "desc": "Priority: P1.\n\n/tabs and /art should return SPA HTML but return 404.\n\nExpected: SPA catch-all should serve HTML for these routes.\n\nAction: fix SPA routing in dashboard_server.py"
+  },
+  {
+    "id": "6a83a57c26448b359d2d2243",
+    "name": "BUG-HUNT-11: Port 2375 open \u2014 unencrypted Docker API exposed",
+    "desc": "Priority: P0.\n\nPort 2375 is open, exposing unencrypted Docker API.\n\nSecurity risk: unauthorized container access possible.\n\nAction: disable unencrypted Docker API, enable TLS on 2376 only"
+  },
+  {
+    "id": "6a83a57d82e4fcd0ea626575",
+    "name": "BUG-HUNT-12: Port 3000 missing \u2014 unknown service not running",
+    "desc": "Priority: P2.\n\nPort 3000 expected but closed.\n\nAction: audit expected service on 3000, start or remove from config"
+  },
+  {
+    "id": "6a83a57ea541988ed69be25e",
+    "name": "BUG-HUNT-13: Port 3001 open \u2014 unknown service running",
+    "desc": "Priority: P2.\n\nPort 3001 is open but service unknown.\n\nAction: identify service, document in dashboard, add to /api/services"
+  },
+  {
+    "id": "6a83a57f4d31658d071127f6",
+    "name": "BUG-HUNT-14: Port 8081 open \u2014 unknown service running",
+    "desc": "Priority: P2.\n\nPort 8081 is open but service unknown.\n\nAction: identify service, document in dashboard, add to /api/services"
+  },
+  {
+    "id": "6a83a5803f7ce88bab1709ca",
+    "name": "BUG-HUNT-15: Port 5001 closed \u2014 expected service unreachable",
+    "desc": "Priority: P2.\n\nPort 5001 expected but closed.\n\nAction: audit expected service on 5001, start or remove from config"
+  },
+  {
+    "id": "6a83a58182f8907d98e7023b",
+    "name": "BUG-HUNT-16: Port 8090 closed \u2014 expected service unreachable",
+    "desc": "Priority: P2.\n\nPort 8090 expected but closed.\n\nAction: audit expected service on 8090, start or remove from config"
+  },
+  {
+    "id": "6a83ad75249a94d342507633",
+    "name": "BUG-HUNT-17: /api/fleet/verify matrix stale/incorrect for PINKCADY",
+    "desc": "Priority: P1.\n\n/api/fleet/verify shows PINKCADY crew_api:8090=200 and docker:2375=ok, but these ports are currently closed on PINKCADY.\n\nExpected: real-time live checks from PINKCADY itself.\n\nAction: fix verify_matrix to use live probes from remote hosts, not cached SQUIDSTATION-side data."
+  },
+  {
+    "id": "6a83ad762b046398c0e635b5",
+    "name": "BUG-HUNT-18: /api/auth/refresh and /api/auth/renew missing real token refresh",
+    "desc": "Priority: P1.\n\n/api/auth/refresh and /api/auth/renew currently return \"Invalid or missing token\" without performing token refresh.\n\nExpected: valid token renewal/refresh flow.\n\nAction: implement actual token refresh logic or document required token flow."
+  },
+  {
+    "id": "6a83ad87a02b5f575b92469e",
+    "name": "BUG-HUNT-19: Local DNS not resolving crew hostnames",
+    "desc": "Priority: P1.\n\nnslookup for pinkcady, stealthattack, toruslaptop, squidstation all return Non-existent domain from 192.168.0.1.\n\nExpected: local DNS or hosts file resolves crew hostnames to LAN IPs.\n\nAction: add hosts file entries or configure local DNS for crew hostnames"
+  },
+  {
+    "id": "6a83ad8886777d039c401c01",
+    "name": "BUG-HUNT-20: Docker API exposed on 2375 without auth",
+    "desc": "Priority: P0.\n\nDocker API reachable on 127.0.0.1:2375 without authentication.\n\nSecurity risk: any local process can control Docker daemon.\n\nAction: disable unencrypted 2375, enable TLS auth on 2376, restrict firewall"
+  },
+  {
+    "id": "6a83add9d7fd418b289bfe8c",
+    "name": "BUG-HUNT-21: /api/auth endpoints ignore JSON body token",
+    "desc": "Priority: P1.\n\nPOST /api/auth/login, /api/auth/verify, /api/auth/whoami with JSON body {\"token\":\"green_tide\"} all return \"Invalid or missing token\".\n\nExpected: accept token from JSON body or query param.\n\nAction: fix auth handler to read token from JSON body, query param, or Authorization header"
+  },
+  {
+    "id": "6a83adda96281a37df84e64b",
+    "name": "BUG-HUNT-22: Grafana datasource API returns 401 Unauthorized",
+    "desc": "Priority: P2.\n\nGrafana /api/datasources returns 401.\n\nExpected: accessible with admin credentials or service account token.\n\nAction: configure Grafana API key or service account; update dashboard auth"
+  },
+  {
+    "id": "6a83addb76dc35d6dd2d220a",
+    "name": "BUG-HUNT-23: Augur sandbox ports 7679/7680 unreachable",
+    "desc": "Priority: P1.\n\nAugur sandbox on 7679 returns connection refused; 7680 returns remote disconnected.\n\nExpected: Augur sandbox running and reachable.\n\nAction: verify Augur process, restart if needed, fix proxy route"
+  },
+  {
+    "id": "6a83addd3efee563f01c1e8f",
+    "name": "BUG-HUNT-25: /api/services shows trello and augur_sandbox as errors",
+    "desc": "Priority: P2.\n\n/api/services returns trello=\"error: HTTPError\" and augur_sandbox=\"error: URLError\".\n\nExpected: real status for all services.\n\nAction: fix health checks for Trello API and Augur sandbox endpoints"
+  },
+  {
+    "id": "6a83af136a95c9379e9c684e",
+    "name": "BUG-HUNT-26: void-gitea container EXITED \u2014 ports 22 and 3000 down",
+    "desc": "Priority: P0.\n\nvoid-gitea container exited 4 days ago. This explains:\n- Port 22 closed (Gitea SSH service)\n- Port 3000 closed (Gitea web UI)\n\nAction: investigate why Gitea exited, check logs, restart if safe.\n\nCommand: docker logs void-gitea --tail 50\ndocker start void-gitea"
+  },
+  {
+    "id": "6a83af1457a609b6cfa6d39d",
+    "name": "BUG-HUNT-27: void-npm container EXITED",
+    "desc": "Priority: P2.\n\nvoid-npm container exited 7 days ago with no ports exposed.\n\nAction: investigate why npm container exited, restart or remove if unused."
+  },
+  {
+    "id": "6a83af150b43bfc7a57b5679",
+    "name": "BUG-HUNT-28: squidstation-docker-desktop offline in Tailscale",
+    "desc": "Priority: P1.\n\nTailscale shows squidstation-docker-desktop as offline, last seen 8 days ago.\n\nThis is the Linux Docker Desktop VM that was providing fleet agent connectivity.\n\nAction: verify Docker Desktop VM status, restart Tailscale on that node, verify fleet agent."
+  },
+  {
+    "id": "6a83af15014fece524e30bf5",
+    "name": "BUG-HUNT-29: Docker API exposed on 2375 without auth",
+    "desc": "Priority: P0.\n\nPort 2375 is open on 127.0.0.1, exposing unencrypted Docker API.\n\nSecurity risk: any local process can control Docker daemon without auth.\n\nAction: disable unencrypted Docker API, enable TLS on 2376, restrict firewall rules."
+  },
+  {
+    "id": "6a83af16aa60c00e2b6b17f2",
+    "name": "BUG-HUNT-30: Port 22 missing \u2014 Gitea SSH down",
+    "desc": "Priority: P1.\n\nPort 22 expected for Gitea SSH access but closed because void-gitea container exited.\n\nDependent on BUG-HUNT-26.\n\nAction: restart Gitea container, verify SSH access."
+  },
+  {
+    "id": "6a83afe916d903b415da06cd",
+    "name": "BUG-HUNT-29: Docker API exposed on 2375 without auth \u2014 FIX NEEDED",
+    "desc": "Priority: P0.\n\nDocker Desktop for Windows exposes unencrypted API on tcp://localhost:2375.\n\nSecurity risk: any local process can control Docker daemon without authentication.\n\nAction:\n1. Open Docker Desktop\n2. Go to Settings > Advanced\n3. UNCHECK \"Expose daemon on tcp://localhost:2375 without TLS\"\n4. Click Apply & Restart\n5. Verify: `docker -H tcp://localhost:2375 version` should fail with connection refused\n\nAlternative: enable TLS auth on 2376 instead of disabling 2375 entirely."
+  },
+  {
+    "id": "6a83b4978c7d0f60890ddd9a",
+    "name": "OPS-1: Fix hosts file DNS entries for crew hostnames",
+    "desc": "Priority: P1.\n\nEvidence: nslookup for pinkcady, stealthattack, toruslaptop, squidstation all return Non-existent domain from 192.168.0.1.\n\nHosts file currently has entries for .void.local domains but missing crew hostnames.\n\nAction:\n1. Open C:\\Windows\\System32\\drivers\\etc\\hosts as Administrator\n2. Add entries:\n   - 192.168.0.39 squidstation.void.local\n   - 100.106.235.103 pinkcady.taile6676f.ts.net pinkcady\n   - 100.110.238.68 stealthattack.taile6676f.ts.net stealthattack\n   - 100.71.174.28 squidstation-docker-desktop.taile6676f.ts.net toruslaptop\n3. Save hosts file\n4. Verify: nslookup pinkcady, nslookup stealthattack\n\nRequires Administrator privileges."
+  },
+  {
+    "id": "6a83b1548ea9f2ca99fd623e",
+    "name": "BUG-HUNT-32: Grafana API auth needed for datasource/dashboard automation",
+    "desc": "Priority: P1.\n\nGrafana UI reachable at http://192.168.0.39:3002, but /api/datasources and /api/search return 401.\n\nAction: log into Grafana UI, create service account token or API key, store it in vault, then wire dashboard automation to use it."
+  },
+  {
+    "id": "6a83af17812bb3009c362ca9",
+    "name": "BUG-HUNT-31: Port 3000 missing \u2014 Gitea web UI down",
+    "desc": "Priority: P1.\n\nPort 3000 expected for Gitea web UI but closed because void-gitea container exited.\n\nDependent on BUG-HUNT-26.\n\nAction: restart Gitea container, verify web UI at http://192.168.0.39:3000"
+  },
+  {
+    "id": "6a83b4982fa629b8dc39e79d",
+    "name": "OPS-2: Disable Docker API on port 2375 in Docker Desktop",
+    "desc": "Priority: P0.\n\nPort 2375 is open on 127.0.0.1 exposing unencrypted Docker API without authentication.\n\nSecurity risk: any local process can control Docker daemon.\n\nAction:\n1. Open Docker Desktop for Windows\n2. Go to Settings > Advanced\n3. UNCHECK \"Expose daemon on tcp://localhost:2375 without TLS\"\n4. Click Apply & Restart\n5. Verify: `docker -H tcp://localhost:2375 version` should fail with connection refused\n6. If TLS needed: enable TLS auth on 2376 instead"
+  },
+  {
+    "id": "6a83b15597e8513f87ac13a2",
+    "name": "BUG-HUNT-33: /api/diagram returns empty body/error",
+    "desc": "Priority: P1.\n\n/api/diagram currently returns {\"error\":\"empty body\"}.\n\nExpected: real diagram data.\n\nAction: integrate actual diagram source or remove broken endpoint."
+  },
+  {
+    "id": "6a83bc4e03ec3bc8e4342a47",
+    "name": "BOT-1: Host Discord bots on SQUIDSTATION",
+    "desc": "Priority: P1.\n\nSQUIDSTATION will host the crew Discord bots.\n\nAction:\n1. Create bot directories under C:\\Users\\kidsm\\Documents\\My Docs\\VOID Pirate Trading Co\\bots\\\n2. Install discord.py or equivalent\n3. Configure each bot with tokens from vault secrets.env\n4. Create systemd service or scheduled task for auto-start\n5. Test bot connectivity\n6. Document bot commands and features\n\nToken location: Obsidian_Vault/Developer_Brain/02_Business_Operations/_Hub/_KEY_VAULT/secrets.env"
+  },
+  {
+    "id": "6a84255a14c56d5bb45c0537",
+    "name": "[P1] BUG: Dashboard healthcheck in compose uses /-/healthy but app only has /health",
+    "desc": "docker-compose.torus.fleet.yml healthcheck for torus-dashboard tests:\n  wget -q --spider http://localhost:6000/-/healthy\n\nBut /-/healthy returns 404 \u2014 the app has /health (200) instead.\nDashboard is actually running fine but healthcheck reports UNHEALTHY.\n\nEvidence: curl http://127.0.0.8:6000/-/healthy -> 404\n          curl http://127.0.0.8:6000/health -> 200\n\nReported by: Miss Pink (deep bug hunt)\nTagged: @captain Brewbeard + @sir Green"
+  },
+  {
+    "id": "6a842588ec0bb0ca76842111",
+    "name": "[P2] BUG: torus-backup container has no HEALTHCHECK",
+    "desc": "torus-backup/Dockerfile has no HEALTHCHECK directive.\nContainer shows 'Up 6 hours' with no health status.\nIf backup cron dies, nobody knows.\n\nEvidence: docker inspect torus-backup -> Health: none\n\nReported by: Miss Pink (deep bug hunt)\nTagged: @captain Brewbeard + @sir Green"
+  },
+  {
+    "id": "6a8425b65ecfdf85ea96d885",
+    "name": "[P2] BUG: 19 duplicate Docker volumes (torus_* vs torus-fleet_torus_*)",
+    "desc": "19 torus volumes \u2014 8 pairs of duplicates:\n  torus-fleet_torus_redis_data + torus_redis_data\n  etc.\n\nCaused by manual container starts (old naming) vs docker-compose (new naming).\nOrphaned volumes waste disk + confuse volume management.\n\nEvidence: docker system df -v shows 8 duplicate volume pairs\n\nReported by: Miss Pink (deep bug hunt)\nTagged: @captain Brewbeard + @sir Green"
+  },
+  {
+    "id": "6a8425e51a0f004439aa174f",
+    "name": "[P2] BUG: Stale Docker image tags wasting ~1.2GB disk",
+    "desc": "8 stale Docker images still in registry:\n  torus-alert-router:20260817-v3, v4\n  torus-inventory:20260817-v3, v4\n  torus-pos:20260817-v3, v4\n  torus-dashboard:20260817-v2\n  torus-backup:20260806-v1\n\nFIX: docker image prune -a\n\nReported by: Miss Pink (deep bug hunt)\nTagged: @captain Brewbeard + @sir Green"
+  },
+  {
+    "id": "6a84261313ebc00b4548f2fe",
+    "name": "[P0] BUG: Prometheus alertmanager not deployed \u2014 alerts silently fail",
+    "desc": "P0: Prometheus configured to send alerts to 172.18.0.10:9093 (Alertmanager)\nbut no Alertmanager container exists.\n\nEvidence: 50+ 'Error sending alerts' errors in prometheus logs\n          Connection refused: dial tcp 172.18.0.10:9093: connect: connection refused\n          docker ps shows no alertmanager container\n\nReported by: Miss Pink (deep bug hunt)\nTagged: @captain Brewbeard + @sir Green"
+  }
+]

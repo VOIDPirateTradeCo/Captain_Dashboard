@@ -1,0 +1,63 @@
+{
+  "cycle_id": "FODAVP_20260820_115059",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:50:59.333219",
+  "target": {
+    "card_id": "6a76c0952a59e2a8da1c22d4",
+    "shortLink": "sVeUeQH9",
+    "name": "[BUG] ticket_alert_bot.py \u2014 discord_loop() 3s poll burns Discord rate limit",
+    "url": "https://trello.com/c/sVeUeQH9/1386-bug-ticketalertbotpy-discordloop-3s-poll-burns-discord-rate-limit"
+  },
+  "decision": {
+    "action_type": "bug_fix",
+    "target_card": "sVeUeQH9",
+    "target_name": "[BUG] ticket_alert_bot.py \u2014 discord_loop() 3s poll burns Discord rate limit",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card description + any linked resources",
+      "Locate affected code/config",
+      "Apply minimal targeted fix",
+      "Run verification command",
+      "Post evidence comment to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "bug_fix",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card sVeUeQH9 \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:50:59.332673",
+    "fix_applied": false,
+    "note": "No real handler for sVeUeQH9 \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for sVeUeQH9 \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:50:59.332850",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

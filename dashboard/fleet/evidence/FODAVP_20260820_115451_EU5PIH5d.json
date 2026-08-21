@@ -1,0 +1,62 @@
+{
+  "cycle_id": "FODAVP_20260820_115451",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:54:51.753588",
+  "target": {
+    "card_id": "6a752dbe62d180d6c50b96bb",
+    "shortLink": "EU5PIH5d",
+    "name": "\ud83d\udce8 [INBOX] DEPLOY PACKAGE AND QUESTIONS 20260806 sirazure.msg",
+    "url": "https://trello.com/c/EU5PIH5d/875-%F0%9F%93%A8-inbox-deploy-package-and-questions-20260806-sirazuremsg"
+  },
+  "decision": {
+    "action_type": "deployment",
+    "target_card": "EU5PIH5d",
+    "target_name": "\ud83d\udce8 [INBOX] DEPLOY PACKAGE AND QUESTIONS 20260806 sirazure.msg",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card requirements",
+      "Execute objective",
+      "Verify completion",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "deployment",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card EU5PIH5d \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:54:51.753020",
+    "fix_applied": false,
+    "note": "No real handler for EU5PIH5d \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for EU5PIH5d \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:54:51.753198",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

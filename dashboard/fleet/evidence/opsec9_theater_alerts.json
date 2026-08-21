@@ -1,0 +1,282 @@
+{
+  "alert_system": "VoidAV Security Theater",
+  "total_alerts": 25,
+  "alerts": [
+    {
+      "id": "ALERT-1000",
+      "timestamp": "2026-08-19T22:01:08.557861",
+      "type": "Brute force attack mitigated",
+      "severity": "LOW",
+      "source_ip": "192.168.1.100",
+      "destination": "Protected Resource",
+      "action_taken": "BLOCKED",
+      "visible": true,
+      "real_threat": false
+    },
+    {
+      "id": "ALERT-1001",
+      "timestamp": "2026-08-19T22:01:08.557861",
+      "type": "Unauthorized access attempt blocked",
+      "severity": "HIGH",
+      "source_ip": "192.168.1.100",
+      "destination": "Protected Resource",
+      "action_taken": "BLOCKED",
+      "visible": true,
+      "real_threat": false
+    },
+    {
+      "id": "ALERT-1002",
+      "timestamp": "2026-08-19T22:01:08.557861",
+      "type": "Brute force attack mitigated",
+      "severity": "HIGH",
+      "source_ip": "external_unknown",
+      "destination": "Protected Resource",
+      "action_taken": "BLOCKED",
+      "visible": true,
+      "real_threat": false
+    },
+    {
+      "id": "ALERT-1003",
+      "timestamp": "2026-08-19T22:01:08.558369",
+      "type": "Port scan detected",
+      "severity": "MEDIUM",
+      "source_ip": "100.72.0.45",
+      "destination": "Protected Resource",
+      "action_taken": "BLOCKED",
+      "visible": true,
+      "real_threat": false
+    },
+    {
+      "id": "ALERT-1004",
+      "timestamp": "2026-08-19T22:01:08.558369",
+      "type": "Port scan detected",
+      "severity": "MEDIUM",
+      "source_ip": "100.72.0.45",
+      "destination": "Protected Resource",
+      "action_taken": "BLOCKED",
+      "visible": true,
+      "real_threat": false
+    },
+    {
+      "id": "ALERT-1005",
+      "timestamp": "2026-08-19T22:01:08.558369",
+      "type": "Unauthorized access attempt blocked",
+      "severity": "LOW",
+      "source_ip": "100.72.0.45",
+      "destination": "Protected Resource",
+      "action_taken": "BLOCKED",
+      "visible": true,
+      "real_threat": false
+    },
+    {
+      "id": "ALERT-1006",
+      "timestamp": "2026-08-19T22:01:08.558381",
+      "type": "Brute force attack mitigated",
+      "severity": "MEDIUM",
+      "source_ip": "external_unknown",
+      "destination": "Protected Resource",
+      "action_taken": "BLOCKED",
+      "visible": true,
+      "real_threat": false
+    },
+    {
+      "id": "ALERT-1007",
+      "timestamp": "2026-08-19T22:01:08.558381",
+      "type": "Brute force attack mitigated",
+      "severity": "HIGH",
+      "source_ip": "192.168.1.100",
+      "destination": "Protected Resource",
+      "action_taken": "BLOCKED",
+      "visible": true,
+      "real_threat": false
+    },
+    {
+      "id": "ALERT-1008",
+      "timestamp": "2026-08-19T22:01:08.558381",
+      "type": "Brute force attack mitigated",
+      "severity": "HIGH",
+      "source_ip": "100.72.0.45",
+      "destination": "Protected Resource",
+      "action_taken": "BLOCKED",
+      "visible": true,
+      "real_threat": false
+    },
+    {
+      "id": "ALERT-1009",
+      "timestamp": "2026-08-19T22:01:08.558381",
+      "type": "Suspicious packet dropped",
+      "severity": "MEDIUM",
+      "source_ip": "external_unknown",
+      "destination": "Protected Resource",
+      "action_taken": "BLOCKED",
+      "visible": true,
+      "real_threat": false
+    },
+    {
+      "id": "ALERT-1010",
+      "timestamp": "2026-08-19T22:01:08.558381",
+      "type": "Suspicious packet dropped",
+      "severity": "LOW",
+      "source_ip": "external_unknown",
+      "destination": "Protected Resource",
+      "action_taken": "BLOCKED",
+      "visible": true,
+      "real_threat": false
+    },
+    {
+      "id": "ALERT-1011",
+      "timestamp": "2026-08-19T22:01:08.558395",
+      "type": "Port scan detected",
+      "severity": "LOW",
+      "source_ip": "external_unknown",
+      "destination": "Protected Resource",
+      "action_taken": "BLOCKED",
+      "visible": true,
+      "real_threat": false
+    },
+    {
+      "id": "ALERT-1012",
+      "timestamp": "2026-08-19T22:01:08.558395",
+      "type": "Unauthorized access attempt blocked",
+      "severity": "LOW",
+      "source_ip": "100.72.0.45",
+      "destination": "Protected Resource",
+      "action_taken": "BLOCKED",
+      "visible": true,
+      "real_threat": false
+    },
+    {
+      "id": "ALERT-1013",
+      "timestamp": "2026-08-19T22:01:08.558395",
+      "type": "Port scan detected",
+      "severity": "HIGH",
+      "source_ip": "100.72.0.45",
+      "destination": "Protected Resource",
+      "action_taken": "BLOCKED",
+      "visible": true,
+      "real_threat": false
+    },
+    {
+      "id": "ALERT-1014",
+      "timestamp": "2026-08-19T22:01:08.558395",
+      "type": "Port scan detected",
+      "severity": "HIGH",
+      "source_ip": "192.168.1.100",
+      "destination": "Protected Resource",
+      "action_taken": "BLOCKED",
+      "visible": true,
+      "real_threat": false
+    },
+    {
+      "id": "ALERT-1015",
+      "timestamp": "2026-08-19T22:01:08.558395",
+      "type": "Unauthorized access attempt blocked",
+      "severity": "HIGH",
+      "source_ip": "external_unknown",
+      "destination": "Protected Resource",
+      "action_taken": "BLOCKED",
+      "visible": true,
+      "real_threat": false
+    },
+    {
+      "id": "ALERT-1016",
+      "timestamp": "2026-08-19T22:01:08.558395",
+      "type": "Suspicious packet dropped",
+      "severity": "HIGH",
+      "source_ip": "100.72.0.45",
+      "destination": "Protected Resource",
+      "action_taken": "BLOCKED",
+      "visible": true,
+      "real_threat": false
+    },
+    {
+      "id": "ALERT-1017",
+      "timestamp": "2026-08-19T22:01:08.558395",
+      "type": "Unauthorized access attempt blocked",
+      "severity": "HIGH",
+      "source_ip": "external_unknown",
+      "destination": "Protected Resource",
+      "action_taken": "BLOCKED",
+      "visible": true,
+      "real_threat": false
+    },
+    {
+      "id": "ALERT-1018",
+      "timestamp": "2026-08-19T22:01:08.558395",
+      "type": "Unauthorized access attempt blocked",
+      "severity": "MEDIUM",
+      "source_ip": "192.168.1.100",
+      "destination": "Protected Resource",
+      "action_taken": "BLOCKED",
+      "visible": true,
+      "real_threat": false
+    },
+    {
+      "id": "ALERT-1019",
+      "timestamp": "2026-08-19T22:01:08.558395",
+      "type": "Port scan detected",
+      "severity": "HIGH",
+      "source_ip": "external_unknown",
+      "destination": "Protected Resource",
+      "action_taken": "BLOCKED",
+      "visible": true,
+      "real_threat": false
+    },
+    {
+      "id": "ALERT-1020",
+      "timestamp": "2026-08-19T22:01:08.558395",
+      "type": "Suspicious packet dropped",
+      "severity": "LOW",
+      "source_ip": "100.72.0.45",
+      "destination": "Protected Resource",
+      "action_taken": "BLOCKED",
+      "visible": true,
+      "real_threat": false
+    },
+    {
+      "id": "ALERT-1021",
+      "timestamp": "2026-08-19T22:01:08.558395",
+      "type": "Port scan detected",
+      "severity": "MEDIUM",
+      "source_ip": "external_unknown",
+      "destination": "Protected Resource",
+      "action_taken": "BLOCKED",
+      "visible": true,
+      "real_threat": false
+    },
+    {
+      "id": "ALERT-1022",
+      "timestamp": "2026-08-19T22:01:08.558395",
+      "type": "Brute force attack mitigated",
+      "severity": "MEDIUM",
+      "source_ip": "external_unknown",
+      "destination": "Protected Resource",
+      "action_taken": "BLOCKED",
+      "visible": true,
+      "real_threat": false
+    },
+    {
+      "id": "ALERT-1023",
+      "timestamp": "2026-08-19T22:01:08.558395",
+      "type": "Suspicious packet dropped",
+      "severity": "LOW",
+      "source_ip": "external_unknown",
+      "destination": "Protected Resource",
+      "action_taken": "BLOCKED",
+      "visible": true,
+      "real_threat": false
+    },
+    {
+      "id": "ALERT-1024",
+      "timestamp": "2026-08-19T22:01:08.558395",
+      "type": "Suspicious packet dropped",
+      "severity": "LOW",
+      "source_ip": "100.72.0.45",
+      "destination": "Protected Resource",
+      "action_taken": "BLOCKED",
+      "visible": true,
+      "real_threat": false
+    }
+  ],
+  "status": "GENERATING_NOISE"
+}

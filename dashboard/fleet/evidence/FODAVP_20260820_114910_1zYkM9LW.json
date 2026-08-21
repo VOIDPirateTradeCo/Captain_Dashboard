@@ -1,0 +1,63 @@
+{
+  "cycle_id": "FODAVP_20260820_114910",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:49:10.857795",
+  "target": {
+    "card_id": "6a7c029d1ebf23d5573f7cbf",
+    "shortLink": "1zYkM9LW",
+    "name": "\ud83d\udc1b [BUG] API endpoints return HTML instead of JSON \u2014 jsonify() missing",
+    "url": "https://trello.com/c/1zYkM9LW/10775-%F0%9F%90%9B-bug-api-endpoints-return-html-instead-of-json-jsonify-missing"
+  },
+  "decision": {
+    "action_type": "bug_fix",
+    "target_card": "1zYkM9LW",
+    "target_name": "\ud83d\udc1b [BUG] API endpoints return HTML instead of JSON \u2014 jsonify() missing",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card description + any linked resources",
+      "Locate affected code/config",
+      "Apply minimal targeted fix",
+      "Run verification command",
+      "Post evidence comment to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "bug_fix",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card 1zYkM9LW \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:49:10.857220",
+    "fix_applied": false,
+    "note": "No real handler for 1zYkM9LW \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for 1zYkM9LW \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:49:10.857418",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

@@ -71,12 +71,12 @@ async def _post_gordon(channel: discord.abc.Messageable, message: str) -> None:
 
 @bot.event
 async def on_ready() -> None:
-    print(f"[READY] Sir Green bot online as {bot.user}")
+    print(f"[READY] Sir Green bot online as {bot.user}", flush=True)
     try:
         synced = await bot.tree.sync()
-        print(f"[SYNC] Slash commands synced: {len(synced)}")
+        print(f"[SYNC] Slash commands synced: {len(synced)}", flush=True)
     except Exception as e:
-        print(f"[SYNC] Failed: {e}")
+        print(f"[SYNC] Failed: {e}", flush=True)
 
 
 @bot.tree.command(name="ping", description="Check Sir Green bot latency")
@@ -106,14 +106,14 @@ async def _scheduler() -> None:
         try:
             channel = bot.get_channel(int(HOME_CHANNEL_ID)) or await bot.fetch_channel(int(HOME_CHANNEL_ID))
         except Exception as e:
-            print(f"[SCHEDULER] Cannot resolve home channel: {e}")
+            print(f"[SCHEDULER] Cannot resolve home channel: {e}", flush=True)
 
     while not bot.is_closed():
         try:
             if channel:
                 await _post_cycle(channel)
         except Exception as e:
-            print(f"[SCHEDULER] Cycle error: {e}")
+            print(f"[SCHEDULER] Cycle error: {e}", flush=True)
         await asyncio.sleep(int(os.environ.get("CYCLE_SECONDS", "1800")))
 
 

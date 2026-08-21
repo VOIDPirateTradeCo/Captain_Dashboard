@@ -1,0 +1,62 @@
+{
+  "cycle_id": "FODAVP_20260820_115550",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:55:50.547679",
+  "target": {
+    "card_id": "6a71ff84027843c1e51a8354",
+    "shortLink": "Fg7YDGzP",
+    "name": "12_Pirate_Philosophy: philosophy notes   secret offline BTB status",
+    "url": "https://trello.com/c/Fg7YDGzP/11103-12piratephilosophy-philosophy-notes-secret-offline-btb-status"
+  },
+  "decision": {
+    "action_type": "generic",
+    "target_card": "Fg7YDGzP",
+    "target_name": "12_Pirate_Philosophy: philosophy notes   secret offline BTB status",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card requirements",
+      "Execute objective",
+      "Verify completion",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "generic",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card Fg7YDGzP \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:55:50.546912",
+    "fix_applied": false,
+    "note": "No real handler for Fg7YDGzP \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for Fg7YDGzP \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:55:50.547157",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

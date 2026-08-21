@@ -1,0 +1,62 @@
+{
+  "cycle_id": "FODAVP_20260820_115728",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:57:28.505801",
+  "target": {
+    "card_id": "6a84ad7f1cbdfa7fe3887cf0",
+    "shortLink": "drb2sbTW",
+    "name": "[P1] Audit all VOID Ops Trello cards \u2014 review archived/reopened cards",
+    "url": "https://trello.com/c/drb2sbTW/11578-p1-audit-all-void-ops-trello-cards-review-archived-reopened-cards"
+  },
+  "decision": {
+    "action_type": "generic",
+    "target_card": "drb2sbTW",
+    "target_name": "[P1] Audit all VOID Ops Trello cards \u2014 review archived/reopened cards",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card requirements",
+      "Execute objective",
+      "Verify completion",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "generic",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card drb2sbTW \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:57:28.505221",
+    "fix_applied": false,
+    "note": "No real handler for drb2sbTW \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for drb2sbTW \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:57:28.505432",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

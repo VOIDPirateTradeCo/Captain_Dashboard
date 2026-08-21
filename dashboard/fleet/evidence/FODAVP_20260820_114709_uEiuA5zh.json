@@ -1,0 +1,63 @@
+{
+  "cycle_id": "FODAVP_20260820_114709",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:47:09.563510",
+  "target": {
+    "card_id": "6a8458899297b2cbde8f33c5",
+    "shortLink": "uEiuA5zh",
+    "name": "[P1] BUG: TM API docs say port 5000, but container exposes 3100",
+    "url": "https://trello.com/c/uEiuA5zh/11551-p1-bug-tm-api-docs-say-port-5000-but-container-exposes-3100"
+  },
+  "decision": {
+    "action_type": "bug_fix",
+    "target_card": "uEiuA5zh",
+    "target_name": "[P1] BUG: TM API docs say port 5000, but container exposes 3100",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card description + any linked resources",
+      "Locate affected code/config",
+      "Apply minimal targeted fix",
+      "Run verification command",
+      "Post evidence comment to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "bug_fix",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card uEiuA5zh \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:47:09.562981",
+    "fix_applied": false,
+    "note": "No real handler for uEiuA5zh \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for uEiuA5zh \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:47:09.563161",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

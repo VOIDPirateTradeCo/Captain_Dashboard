@@ -1,0 +1,65 @@
+{
+  "cycle_id": "FODAVP_20260820_112520",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:25:20.961257",
+  "target": {
+    "card_id": "6a83af136a95c9379e9c684e",
+    "shortLink": "Ujn3k3xy",
+    "name": "BUG-HUNT-26: void-gitea container EXITED \u2014 ports 22 and 3000 down",
+    "url": "https://trello.com/c/Ujn3k3xy/11508-bug-hunt-26-void-gitea-container-exited-ports-22-and-3000-down"
+  },
+  "decision": {
+    "action_type": "bug_fix",
+    "target_card": "Ujn3k3xy",
+    "target_name": "BUG-HUNT-26: void-gitea container EXITED \u2014 ports 22 and 3000 down",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card description + any linked resources",
+      "Locate affected code/config",
+      "Apply minimal targeted fix",
+      "Run verification command",
+      "Post evidence comment to Trello"
+    ]
+  },
+  "action": {
+    "status": "completed",
+    "action_type": "bug_fix",
+    "steps_completed": [
+      "no_handler_available"
+    ],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card Ujn3k3xy \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:25:20.960667",
+    "fix_applied": false,
+    "note": "No real handler for Ujn3k3xy \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "execution_completed",
+        "result": "FAIL",
+        "details": "No fix applied: No real handler for Ujn3k3xy \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:25:20.960844",
+    "verdict": "FAIL"
+  },
+  "result": "FAIL"
+}

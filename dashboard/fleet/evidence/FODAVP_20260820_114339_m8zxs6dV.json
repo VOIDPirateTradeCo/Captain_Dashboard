@@ -1,0 +1,63 @@
+{
+  "cycle_id": "FODAVP_20260820_114339",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:43:39.442461",
+  "target": {
+    "card_id": "6a86189ca1d9ee5fb2ba1dbf",
+    "shortLink": "m8zxs6dV",
+    "name": "\u2705 DONE: [P0] [G7] Fleet Security Perimeter Hardening \u2014 Port & Access Audit",
+    "url": "https://trello.com/c/m8zxs6dV/11604-%E2%9C%85-done-p0-g7-fleet-security-perimeter-hardening-port-access-audit"
+  },
+  "decision": {
+    "action_type": "security",
+    "target_card": "m8zxs6dV",
+    "target_name": "\u2705 DONE: [P0] [G7] Fleet Security Perimeter Hardening \u2014 Port & Access Audit",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Audit port bindings/firewall rules",
+      "Apply hardening",
+      "Verify ports restricted",
+      "Document changes",
+      "Update Trello with evidence"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "security",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card m8zxs6dV \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:43:39.441920",
+    "fix_applied": false,
+    "note": "No real handler for m8zxs6dV \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for m8zxs6dV \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:43:39.442101",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

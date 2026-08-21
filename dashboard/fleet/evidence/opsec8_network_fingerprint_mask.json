@@ -1,0 +1,25 @@
+{
+  "mask_type": "service_fingerprint_obfuscation",
+  "techniques": [
+    "banner_rotation",
+    "handshake_delay"
+  ],
+  "target_ports": [
+    22,
+    2375,
+    6379,
+    3000,
+    5000,
+    8080,
+    9090,
+    8188,
+    11434
+  ],
+  "fake_banners": {
+    "22": "SSH-2.0-OpenSSH_8.9p14",
+    "2375": "Docker Engine API (fake version)",
+    "6379": "Redis 6.2.7 (read-only mode simulated)",
+    "5000": "Flask Development Server"
+  },
+  "status": "ACTIVE"
+}

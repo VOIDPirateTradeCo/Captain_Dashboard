@@ -1,0 +1,63 @@
+{
+  "cycle_id": "FODAVP_20260820_115439",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:54:39.021132",
+  "target": {
+    "card_id": "6a752cf411f97f51e8a26947",
+    "shortLink": "9cxJBDc7",
+    "name": "[P3] Self-learning/self-correcting automation wrapper",
+    "url": "https://trello.com/c/9cxJBDc7/634-p3-self-learning-self-correcting-automation-wrapper"
+  },
+  "decision": {
+    "action_type": "automation",
+    "target_card": "9cxJBDc7",
+    "target_name": "[P3] Self-learning/self-correcting automation wrapper",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Review requirements",
+      "Implement/update script",
+      "Test execution",
+      "Document usage",
+      "Update Trello with deployment info"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "automation",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card 9cxJBDc7 \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:54:39.020570",
+    "fix_applied": false,
+    "note": "No real handler for 9cxJBDc7 \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for 9cxJBDc7 \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:54:39.020779",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

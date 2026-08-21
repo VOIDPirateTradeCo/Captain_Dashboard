@@ -1,0 +1,64 @@
+{
+  "cycle_id": "FODAVP_20260820_112402",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:24:02.530256",
+  "target": {
+    "card_id": "6a722d1721aed1dca5f5bcf5",
+    "shortLink": "f5Vunomj",
+    "name": "Wazuh: Verify manager install or replace with ELK/osquery stack",
+    "url": "https://trello.com/c/f5Vunomj/74-wazuh-verify-manager-install-or-replace-with-elk-osquery-stack"
+  },
+  "decision": {
+    "action_type": "generic",
+    "target_card": "f5Vunomj",
+    "target_name": "Wazuh: Verify manager install or replace with ELK/osquery stack",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card requirements",
+      "Execute objective",
+      "Verify completion",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "completed",
+    "action_type": "generic",
+    "steps_completed": [
+      "no_handler_available"
+    ],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card f5Vunomj \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:24:02.529673",
+    "fix_applied": false,
+    "note": "No real handler for f5Vunomj \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "execution_completed",
+        "result": "FAIL",
+        "details": "No fix applied: No real handler for f5Vunomj \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:24:02.529854",
+    "verdict": "FAIL"
+  },
+  "result": "FAIL"
+}

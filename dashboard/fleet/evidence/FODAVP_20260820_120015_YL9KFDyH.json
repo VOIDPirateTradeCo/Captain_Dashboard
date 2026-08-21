@@ -1,0 +1,62 @@
+{
+  "cycle_id": "FODAVP_20260820_120015",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T12:00:15.322962",
+  "target": {
+    "card_id": "6a78bdfa793db1b07e98f4fc",
+    "shortLink": "YL9KFDyH",
+    "name": "[SIR GREEN] Wire Captain single-command-hub (relay) for fleet-wide orders",
+    "url": "https://trello.com/c/YL9KFDyH/6837-sir-green-wire-captain-single-command-hub-relay-for-fleet-wide-orders"
+  },
+  "decision": {
+    "action_type": "generic",
+    "target_card": "YL9KFDyH",
+    "target_name": "[SIR GREEN] Wire Captain single-command-hub (relay) for fleet-wide orders",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card requirements",
+      "Execute objective",
+      "Verify completion",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "generic",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card YL9KFDyH \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T12:00:15.322355",
+    "fix_applied": false,
+    "note": "No real handler for YL9KFDyH \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for YL9KFDyH \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T12:00:15.322553",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

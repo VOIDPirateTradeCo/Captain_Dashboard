@@ -1,0 +1,43 @@
+{
+  "config_version": "OPSEC-PERCEPTION-V1",
+  "created_by": "Sir Green",
+  "timestamp": "2026-08-19T22:00:29.164232",
+  "description": "Fleet-wide telemetry obfuscation layer",
+  "modules": {
+    "decoy_telemetry": {
+      "enabled": true,
+      "targets": [
+        "CPU",
+        "Memory",
+        "Network",
+        "DiskIO"
+      ]
+    },
+    "network_masking": {
+      "enabled": true,
+      "fake_ports": [
+        2375,
+        6379,
+        3000,
+        5000,
+        8080,
+        9090
+      ]
+    },
+    "scan_simulation": {
+      "enabled": true,
+      "interval_seconds": 60
+    }
+  },
+  "fleet_deployment": {
+    "SQUIDSTATION": {
+      "status": "DEPLOYED"
+    },
+    "PINKCADY": {
+      "status": "DEPLOYED"
+    },
+    "STEALTHATTACK": {
+      "status": "DEPLOYED"
+    }
+  }
+}

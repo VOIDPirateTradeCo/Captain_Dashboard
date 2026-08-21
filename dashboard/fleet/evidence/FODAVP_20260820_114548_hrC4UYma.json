@@ -1,0 +1,62 @@
+{
+  "cycle_id": "FODAVP_20260820_114548",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:45:48.061117",
+  "target": {
+    "card_id": "6a5c38cbcb370af5d9b2127b",
+    "shortLink": "hrC4UYma",
+    "name": "[MACAW-5] Retention schedule + audit logging",
+    "url": "https://trello.com/c/hrC4UYma/11075-macaw-5-retention-schedule-audit-logging"
+  },
+  "decision": {
+    "action_type": "generic",
+    "target_card": "hrC4UYma",
+    "target_name": "[MACAW-5] Retention schedule + audit logging",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card requirements",
+      "Execute objective",
+      "Verify completion",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "generic",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card hrC4UYma \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:45:48.060580",
+    "fix_applied": false,
+    "note": "No real handler for hrC4UYma \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for hrC4UYma \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:45:48.060755",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

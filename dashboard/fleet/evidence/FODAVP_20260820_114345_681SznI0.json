@@ -1,0 +1,62 @@
+{
+  "cycle_id": "FODAVP_20260820_114345",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:43:45.638653",
+  "target": {
+    "card_id": "6a85bdf14aa6d145bf1dcab3",
+    "shortLink": "681SznI0",
+    "name": "RECOVERY-2: Create fleet-wide Hermes catastrophic recovery playbook \u2014 shared profiles, backup strate",
+    "url": ""
+  },
+  "decision": {
+    "action_type": "generic",
+    "target_card": "681SznI0",
+    "target_name": "RECOVERY-2: Create fleet-wide Hermes catastrophic recovery playbook \u2014 shared pro",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card requirements",
+      "Execute objective",
+      "Verify completion",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "generic",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card 681SznI0 \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:43:45.638104",
+    "fix_applied": false,
+    "note": "No real handler for 681SznI0 \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for 681SznI0 \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:43:45.638288",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

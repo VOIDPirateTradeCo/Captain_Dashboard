@@ -1,0 +1,64 @@
+{
+  "cycle_id": "FODAVP_20260820_113333",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:33:33.641842",
+  "target": {
+    "card_id": "6a7d69964e6d708bdd05b916",
+    "shortLink": "TmKUXA8e",
+    "name": "\ud83d\udc1b P2: Wazuh security data missing from dashboard API \u2014 agents installed but not reporting",
+    "url": "https://trello.com/c/TmKUXA8e/11318-%F0%9F%90%9B-p2-wazuh-security-data-missing-from-dashboard-api-agents-installed-but-not-reporting"
+  },
+  "decision": {
+    "action_type": "generic",
+    "target_card": "TmKUXA8e",
+    "target_name": "\ud83d\udc1b P2: Wazuh security data missing from dashboard API \u2014 agents installed but not ",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card requirements",
+      "Execute objective",
+      "Verify completion",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "completed",
+    "action_type": "generic",
+    "steps_completed": [
+      "no_handler_available"
+    ],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card TmKUXA8e \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:33:33.641258",
+    "fix_applied": false,
+    "note": "No real handler for TmKUXA8e \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "execution_completed",
+        "result": "FAIL",
+        "details": "No fix applied: No real handler for TmKUXA8e \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:33:33.641457",
+    "verdict": "FAIL"
+  },
+  "result": "FAIL"
+}

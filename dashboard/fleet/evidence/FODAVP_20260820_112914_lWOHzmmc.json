@@ -1,0 +1,64 @@
+{
+  "cycle_id": "FODAVP_20260820_112914",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:29:14.908400",
+  "target": {
+    "card_id": "6a80f8089fabb16cf1866350",
+    "shortLink": "lWOHzmmc",
+    "name": "UI-2: Bracket/OCO order form in dashboard",
+    "url": "https://trello.com/c/lWOHzmmc/11347-ui-2-bracket-oco-order-form-in-dashboard"
+  },
+  "decision": {
+    "action_type": "generic",
+    "target_card": "lWOHzmmc",
+    "target_name": "UI-2: Bracket/OCO order form in dashboard",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card requirements",
+      "Execute objective",
+      "Verify completion",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "completed",
+    "action_type": "generic",
+    "steps_completed": [
+      "no_handler_available"
+    ],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card lWOHzmmc \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:29:14.907777",
+    "fix_applied": false,
+    "note": "No real handler for lWOHzmmc \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "execution_completed",
+        "result": "FAIL",
+        "details": "No fix applied: No real handler for lWOHzmmc \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:29:14.907974",
+    "verdict": "FAIL"
+  },
+  "result": "FAIL"
+}

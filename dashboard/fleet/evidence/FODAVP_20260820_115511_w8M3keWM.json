@@ -1,0 +1,62 @@
+{
+  "cycle_id": "FODAVP_20260820_115511",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:55:11.024691",
+  "target": {
+    "card_id": "6a77ae98b68636bd943dedef",
+    "shortLink": "w8M3keWM",
+    "name": "Audit Sir Azure build template",
+    "url": "https://trello.com/c/w8M3keWM/3906-audit-sir-azure-build-template"
+  },
+  "decision": {
+    "action_type": "generic",
+    "target_card": "w8M3keWM",
+    "target_name": "Audit Sir Azure build template",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card requirements",
+      "Execute objective",
+      "Verify completion",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "generic",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card w8M3keWM \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:55:11.024067",
+    "fix_applied": false,
+    "note": "No real handler for w8M3keWM \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for w8M3keWM \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:55:11.024310",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

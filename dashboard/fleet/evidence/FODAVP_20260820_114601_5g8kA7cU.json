@@ -1,0 +1,62 @@
+{
+  "cycle_id": "FODAVP_20260820_114601",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:46:01.115642",
+  "target": {
+    "card_id": "6a7f6aa4e5ec02d11ba72a4e",
+    "shortLink": "5g8kA7cU",
+    "name": "[fleet] Implement GPU offload to STEALTHATTACK when online",
+    "url": "https://trello.com/c/5g8kA7cU/11331-fleet-implement-gpu-offload-to-stealthattack-when-online"
+  },
+  "decision": {
+    "action_type": "generic",
+    "target_card": "5g8kA7cU",
+    "target_name": "[fleet] Implement GPU offload to STEALTHATTACK when online",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card requirements",
+      "Execute objective",
+      "Verify completion",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "generic",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card 5g8kA7cU \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:46:01.115084",
+    "fix_applied": false,
+    "note": "No real handler for 5g8kA7cU \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for 5g8kA7cU \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:46:01.115257",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

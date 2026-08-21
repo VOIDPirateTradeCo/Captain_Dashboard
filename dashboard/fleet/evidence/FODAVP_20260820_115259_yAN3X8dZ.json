@@ -1,0 +1,63 @@
+{
+  "cycle_id": "FODAVP_20260820_115259",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:52:59.074912",
+  "target": {
+    "card_id": "6a752cdb57e84b7fbbdee0bf",
+    "shortLink": "yAN3X8dZ",
+    "name": "\ud83d\udda5\ufe0f [P2] WSL2 distro + Docker CLI",
+    "url": "https://trello.com/c/yAN3X8dZ/602-%F0%9F%96%A5%EF%B8%8F-p2-wsl2-distro-docker-cli"
+  },
+  "decision": {
+    "action_type": "docker",
+    "target_card": "yAN3X8dZ",
+    "target_name": "\ud83d\udda5\ufe0f [P2] WSL2 distro + Docker CLI",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Check container status via docker ps",
+      "Identify issue",
+      "Restart or reconfigure",
+      "Verify health",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "docker",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card yAN3X8dZ \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:52:59.074313",
+    "fix_applied": false,
+    "note": "No real handler for yAN3X8dZ \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for yAN3X8dZ \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:52:59.074497",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

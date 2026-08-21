@@ -1,0 +1,62 @@
+{
+  "cycle_id": "FODAVP_20260820_115422",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:54:22.805536",
+  "target": {
+    "card_id": "6a7437c0719bf5a944aa4805",
+    "shortLink": "hLPXY0jy",
+    "name": "Dashboard: service health + alerting",
+    "url": "https://trello.com/c/hLPXY0jy/481-dashboard-service-health-alerting"
+  },
+  "decision": {
+    "action_type": "generic",
+    "target_card": "hLPXY0jy",
+    "target_name": "Dashboard: service health + alerting",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card requirements",
+      "Execute objective",
+      "Verify completion",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "generic",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card hLPXY0jy \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:54:22.804712",
+    "fix_applied": false,
+    "note": "No real handler for hLPXY0jy \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for hLPXY0jy \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:54:22.804982",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

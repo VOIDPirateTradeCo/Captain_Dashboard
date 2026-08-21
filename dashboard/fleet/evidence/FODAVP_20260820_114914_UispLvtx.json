@@ -1,0 +1,62 @@
+{
+  "cycle_id": "FODAVP_20260820_114914",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:49:14.098535",
+  "target": {
+    "card_id": "6a596eb34f8afd568e0b5e07",
+    "shortLink": "UispLvtx",
+    "name": "Audit existing lore images for character consistency",
+    "url": "https://trello.com/c/UispLvtx/11140-audit-existing-lore-images-for-character-consistency"
+  },
+  "decision": {
+    "action_type": "generic",
+    "target_card": "UispLvtx",
+    "target_name": "Audit existing lore images for character consistency",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card requirements",
+      "Execute objective",
+      "Verify completion",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "generic",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card UispLvtx \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:49:14.097977",
+    "fix_applied": false,
+    "note": "No real handler for UispLvtx \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for UispLvtx \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:49:14.098171",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

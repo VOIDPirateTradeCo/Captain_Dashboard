@@ -1,0 +1,15 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install dependencies
+RUN pip install --no-cache-dir requests pyyaml
+
+# Copy watcher script
+COPY fodavp_watcher.py /app/fodavp_watcher.py
+
+# Create mount points
+RUN mkdir -p /fleet/automation/fodavp /fleet/evidence
+
+# Run watcher
+CMD ["python3", "/app/fodavp_watcher.py"]

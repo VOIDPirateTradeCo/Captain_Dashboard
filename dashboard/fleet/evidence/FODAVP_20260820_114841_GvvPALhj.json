@@ -1,0 +1,62 @@
+{
+  "cycle_id": "FODAVP_20260820_114841",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:48:41.647805",
+  "target": {
+    "card_id": "6a777175c139b747a5ad540e",
+    "shortLink": "GvvPALhj",
+    "name": "Build crew scheduler with capacity-aware rules",
+    "url": "https://trello.com/c/GvvPALhj/1434-build-crew-scheduler-with-capacity-aware-rules"
+  },
+  "decision": {
+    "action_type": "generic",
+    "target_card": "GvvPALhj",
+    "target_name": "Build crew scheduler with capacity-aware rules",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card requirements",
+      "Execute objective",
+      "Verify completion",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "generic",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card GvvPALhj \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:48:41.647225",
+    "fix_applied": false,
+    "note": "No real handler for GvvPALhj \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for GvvPALhj \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:48:41.647409",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

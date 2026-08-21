@@ -1,0 +1,139 @@
+{
+  "ACLs": [
+    {
+      "Action": "accept",
+      "Users": [
+        "group:fleet",
+        "group:captain"
+      ],
+      "Ports": [
+        {
+          "PortRange": "0-65535",
+          "Hosts": [
+            "*:*"
+          ]
+        }
+      ]
+    },
+    {
+      "Action": "accept",
+      "Users": [
+        "group:fleet"
+      ],
+      "Ports": [
+        {
+          "Port": 22,
+          "Hosts": [
+            "*"
+          ]
+        },
+        {
+          "Port": 2376,
+          "Hosts": [
+            "*"
+          ]
+        },
+        {
+          "Port": 6379,
+          "Hosts": [
+            "*:*"
+          ]
+        },
+        {
+          "Port": 5000,
+          "Hosts": [
+            "*:*"
+          ]
+        },
+        {
+          "Port": 8080,
+          "Hosts": [
+            "*:*"
+          ]
+        },
+        {
+          "Port": 9090,
+          "Hosts": [
+            "*:*"
+          ]
+        },
+        {
+          "Port": 9093,
+          "Hosts": [
+            "*:*"
+          ]
+        }
+      ]
+    },
+    {
+      "Action": "accept",
+      "Users": [
+        "group:captain"
+      ],
+      "Ports": [
+        {
+          "Port": 22,
+          "Hosts": [
+            "*"
+          ]
+        },
+        {
+          "Port": 3389,
+          "Hosts": [
+            "*"
+          ]
+        }
+      ]
+    },
+    {
+      "Action": "drop",
+      "Users": [
+        "*"
+      ],
+      "Ports": [
+        {
+          "Port": 2375,
+          "Hosts": [
+            "*"
+          ]
+        },
+        {
+          "Port": 6379,
+          "Hosts": [
+            "*"
+          ]
+        }
+      ]
+    }
+  ],
+  "Groups": {
+    "fleet": [
+      "192.168.0.39",
+      "192.168.0.3",
+      "100.83.247.14"
+    ],
+    "captain": [
+      "6a590410679a3d5e47f4adb5"
+    ],
+    "officers": [
+      "6a775ea928e6c1e8add756da",
+      "6a6e26f499fe3942052ea3c8"
+    ]
+  },
+  "Tests": [
+    {
+      "User": "192.168.0.39",
+      "Allow": [
+        "100.83.247.14:2376"
+      ],
+      "Deny": []
+    },
+    {
+      "User": "100.83.247.14",
+      "Allow": [
+        "192.168.0.39:8080"
+      ],
+      "Deny": []
+    }
+  ]
+}

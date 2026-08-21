@@ -1,0 +1,28 @@
+{
+  "record_id": "20260819_233821_b46ee5b2",
+  "timestamp": "2026-08-19T23:38:21.134861",
+  "observation": {
+    "ports_checked": [
+      "2375",
+      "2376",
+      "3001",
+      "3003",
+      "6379"
+    ],
+    "cards_processed": 2,
+    "containers_running": 11
+  },
+  "actions_taken": [
+    "HARDEN Docker API (Port 2375)",
+    "HARDEN Docker TLS (Port 2376)",
+    "HARDEN Redis (Port 6379)",
+    "RESTRICT Kuma Monitoring (Port 3001)"
+  ],
+  "execution_results": [
+    {
+      "status": "failed",
+      "port": "2375",
+      "service": "Docker API",
+      "rules_applied": 2,
+      "block_output": "The requested operation requires elevation (Run as administrator).\n\n",
+      "allow_output": 

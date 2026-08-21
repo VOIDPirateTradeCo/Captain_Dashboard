@@ -1,0 +1,63 @@
+{
+  "cycle_id": "FODAVP_20260820_114627",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:46:27.349124",
+  "target": {
+    "card_id": "6a844fbc1e46fb7b1a7bbcbd",
+    "shortLink": "24U5Rma6",
+    "name": "[P1] BUG: torus-backup healthcheck checks port 8080 (cadvisor's port)",
+    "url": "https://trello.com/c/24U5Rma6/11547-p1-bug-torus-backup-healthcheck-checks-port-8080-cadvisors-port"
+  },
+  "decision": {
+    "action_type": "bug_fix",
+    "target_card": "24U5Rma6",
+    "target_name": "[P1] BUG: torus-backup healthcheck checks port 8080 (cadvisor's port)",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card description + any linked resources",
+      "Locate affected code/config",
+      "Apply minimal targeted fix",
+      "Run verification command",
+      "Post evidence comment to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "bug_fix",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card 24U5Rma6 \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:46:27.348598",
+    "fix_applied": false,
+    "note": "No real handler for 24U5Rma6 \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for 24U5Rma6 \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:46:27.348773",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

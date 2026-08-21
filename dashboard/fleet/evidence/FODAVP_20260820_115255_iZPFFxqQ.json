@@ -1,0 +1,63 @@
+{
+  "cycle_id": "FODAVP_20260820_115255",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:52:55.812519",
+  "target": {
+    "card_id": "6a752cde3efc1f20504123bb",
+    "shortLink": "iZPFFxqQ",
+    "name": "\ud83d\udc33 [P1] Build torus-light Docker stack from Sir Green's fleet pattern",
+    "url": "https://trello.com/c/iZPFFxqQ/607-%F0%9F%90%B3-p1-build-torus-light-docker-stack-from-sir-greens-fleet-pattern"
+  },
+  "decision": {
+    "action_type": "docker",
+    "target_card": "iZPFFxqQ",
+    "target_name": "\ud83d\udc33 [P1] Build torus-light Docker stack from Sir Green's fleet pattern",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Check container status via docker ps",
+      "Identify issue",
+      "Restart or reconfigure",
+      "Verify health",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "docker",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card iZPFFxqQ \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:52:55.811879",
+    "fix_applied": false,
+    "note": "No real handler for iZPFFxqQ \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for iZPFFxqQ \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:52:55.812068",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

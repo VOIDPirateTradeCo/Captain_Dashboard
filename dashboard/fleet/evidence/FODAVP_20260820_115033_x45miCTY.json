@@ -1,0 +1,62 @@
+{
+  "cycle_id": "FODAVP_20260820_115033",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:50:33.490319",
+  "target": {
+    "card_id": "6a77f28967260e36cc82bac0",
+    "shortLink": "x45miCTY",
+    "name": "Discord: wire dashboard alerts -> crew Discord channels via relay",
+    "url": "https://trello.com/c/x45miCTY/3983-discord-wire-dashboard-alerts-crew-discord-channels-via-relay"
+  },
+  "decision": {
+    "action_type": "generic",
+    "target_card": "x45miCTY",
+    "target_name": "Discord: wire dashboard alerts -> crew Discord channels via relay",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card requirements",
+      "Execute objective",
+      "Verify completion",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "generic",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card x45miCTY \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:50:33.489481",
+    "fix_applied": false,
+    "note": "No real handler for x45miCTY \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for x45miCTY \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:50:33.489758",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

@@ -1,0 +1,9 @@
+{
+  "timestamp": "2026-08-19 16:59:59Z",
+  "ship": "SQUIDSTATION",
+  "phase": "PRE-HARDENING",
+  "listening_ports": "TCP    0.0.0.0:2376           0.0.0.0:0              LISTENING\n  TCP    0.0.0.0:6379           0.0.0.0:0              LISTENING\n  TCP    0.0.0.0:8080           0.0.0.0:0              LISTENING\n  TCP    127.0.0.1:2375         0.0.0.0:0              LISTENING\n  TCP    [::]:6379              [::]:0                 LISTENING\n  TCP    [::1]:2375             [::]:0                 LISTENING\n  TCP    [::1]:6379             [::]:0                 LISTENING",
+  "docker_api_exposed": true,
+  "existing_rules": "",
+  "backup_path": "C:\\Users\\kidsm\\Documents\\My Docs\\VOID Pirate Trading Co\\Captain_Dashboard\\dashboard\\fleet\\backups\\firewall_backup_squidstation.wfw"
+}

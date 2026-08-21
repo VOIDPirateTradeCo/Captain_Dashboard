@@ -1,0 +1,52 @@
+{
+  "decoy_channels": "crew_communication_obfuscation",
+  "created_by": "Sir Green",
+  "timestamp": "2026-08-19T22:01:40.754998",
+  "fake_channels": [
+    {
+      "type": "discord",
+      "name": "Pirate-Captain-Public",
+      "members": [
+        "Captain_Brewbeard",
+        "Sir_Green",
+        "Miss_Pink",
+        "Sir_Azure"
+      ],
+      "activity_level": "high",
+      "decoy_purpose": "Obscure actual command channels"
+    },
+    {
+      "type": "discord",
+      "name": "Fleet-Technical-Discussion",
+      "members": [
+        "Sir_Green",
+        "Sir_Azure",
+        "System"
+      ],
+      "activity_level": "medium",
+      "decoy_purpose": "Mask real tactical coordination"
+    },
+    {
+      "type": "trello",
+      "name": "Captain's Public Ideas",
+      "cards": 23,
+      "activity_level": "low",
+      "decoy_purpose": "Hide real strategic planning"
+    },
+    {
+      "type": "obsidian",
+      "name": "Public-Vault-Index",
+      "pages": 45,
+      "links": 127,
+      "decoy_purpose": "Obscure actual fleet knowledge base"
+    },
+    {
+      "type": "slack",
+      "name": "VOID-Pirate-Public",
+      "channels": 12,
+      "members": 34,
+      "decoy_purpose": "Misdirect from actual secure comms"
+    }
+  ],
+  "status": "ACTIVE"
+}

@@ -1,0 +1,62 @@
+{
+  "cycle_id": "FODAVP_20260820_115910",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:59:10.620655",
+  "target": {
+    "card_id": "6a77f28713d19092191fd149",
+    "shortLink": "OYLTJ3PE",
+    "name": "[sir_green] Discord: bots now LIVE \u2014 verify end-to-end response + slash cmds",
+    "url": "https://trello.com/c/OYLTJ3PE/3977-sirgreen-discord-bots-now-live-verify-end-to-end-response-slash-cmds"
+  },
+  "decision": {
+    "action_type": "generic",
+    "target_card": "OYLTJ3PE",
+    "target_name": "[sir_green] Discord: bots now LIVE \u2014 verify end-to-end response + slash cmds",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card requirements",
+      "Execute objective",
+      "Verify completion",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "generic",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card OYLTJ3PE \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:59:10.620114",
+    "fix_applied": false,
+    "note": "No real handler for OYLTJ3PE \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for OYLTJ3PE \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:59:10.620295",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

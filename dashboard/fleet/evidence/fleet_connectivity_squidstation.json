@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-08-19 18:06:13",
+  "fleet_status": {
+    "SQUIDSTATION": {
+      "ip": "192.168.0.39",
+      "online": false
+    },
+    "PINKCADY": {
+      "ip": "192.168.0.3",
+      "online": false
+    },
+    "STEALTHATTACK": {
+      "ip": "100.83.247.14",
+      "online": false
+    }
+  },
+  "online_ships": 0,
+  "total_ships": 3
+}

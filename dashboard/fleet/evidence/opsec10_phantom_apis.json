@@ -1,0 +1,71 @@
+{
+  "generator_version": "PhantomAPI-v1.0",
+  "created_by": "Sir Green",
+  "timestamp": "2026-08-19T22:01:40.753998",
+  "description": "Automated decoy API endpoint creation for intrusion detection",
+  "deployed_endpoints": [
+    {
+      "url": "/api/v1/secret/algorithm/backtesting",
+      "fake_methods": [
+        "GET",
+        "POST"
+      ],
+      "response": {
+        "profit_potential": "15.7%",
+        "confidence": "HIGH"
+      },
+      "decoy_purpose": "Attract quant researchers"
+    },
+    {
+      "url": "/api/internal/admin/debug",
+      "fake_methods": [
+        "GET",
+        "POST",
+        "DELETE"
+      ],
+      "response": {
+        "debug_mode": "enabled",
+        "admin_access": "true"
+      },
+      "decoy_purpose": "Attract privilege escalation attempts"
+    },
+    {
+      "url": "/api/v2/experimental/strategy_optimizer",
+      "fake_methods": [
+        "POST"
+      ],
+      "response": {
+        "optimization_running": true,
+        "estimated_completion": "2 hours"
+      },
+      "decoy_purpose": "Attract algorithmic traders"
+    },
+    {
+      "url": "/api/internal/ml/model_weights",
+      "fake_methods": [
+        "GET"
+      ],
+      "response": {
+        "model_accuracy": "94.7%",
+        "training_data_size": "2.3TB"
+      },
+      "decoy_purpose": "Attract ML researchers"
+    },
+    {
+      "url": "/api/v3/quant/factor_backtest",
+      "fake_methods": [
+        "POST"
+      ],
+      "response": {
+        "sharpe_ratio": "2.8",
+        "max_drawdown": "12%"
+      },
+      "decoy_purpose": "Attract financial quants"
+    }
+  ],
+  "monitoring": {
+    "active_traps": 5,
+    "access_log": "continuous",
+    "alert_threshold": "immediate"
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "cycle_id": "FODAVP_20260820_120101",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T12:01:01.781326",
+  "target": {
+    "card_id": "6a744d85162dc8fcbb93412c",
+    "shortLink": "2MF3ZUj1",
+    "name": "Add local sqlite-vec memory backend to Sir Green automations",
+    "url": "https://trello.com/c/2MF3ZUj1/502-add-local-sqlite-vec-memory-backend-to-sir-green-automations"
+  },
+  "decision": {
+    "action_type": "automation",
+    "target_card": "2MF3ZUj1",
+    "target_name": "Add local sqlite-vec memory backend to Sir Green automations",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Review requirements",
+      "Implement/update script",
+      "Test execution",
+      "Document usage",
+      "Update Trello with deployment info"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "automation",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card 2MF3ZUj1 \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T12:01:01.780728",
+    "fix_applied": false,
+    "note": "No real handler for 2MF3ZUj1 \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for 2MF3ZUj1 \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T12:01:01.780919",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

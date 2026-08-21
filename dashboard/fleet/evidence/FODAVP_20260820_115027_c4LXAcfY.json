@@ -1,0 +1,63 @@
+{
+  "cycle_id": "FODAVP_20260820_115027",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:50:27.124189",
+  "target": {
+    "card_id": "6a78bdfc7bf53e065643d96c",
+    "shortLink": "c4LXAcfY",
+    "name": "[SIR GREEN] ToS deep-dive: Discord bots + Docker + GitHub + Tailscale",
+    "url": "https://trello.com/c/c4LXAcfY/6838-sir-green-tos-deep-dive-discord-bots-docker-github-tailscale"
+  },
+  "decision": {
+    "action_type": "docker",
+    "target_card": "c4LXAcfY",
+    "target_name": "[SIR GREEN] ToS deep-dive: Discord bots + Docker + GitHub + Tailscale",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Check container status via docker ps",
+      "Identify issue",
+      "Restart or reconfigure",
+      "Verify health",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "docker",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card c4LXAcfY \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:50:27.123661",
+    "fix_applied": false,
+    "note": "No real handler for c4LXAcfY \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for c4LXAcfY \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:50:27.123831",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

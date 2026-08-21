@@ -1,0 +1,62 @@
+{
+  "cycle_id": "FODAVP_20260820_115929",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:59:29.869586",
+  "target": {
+    "card_id": "6a7c0bbed3449bbeb2a0e627",
+    "shortLink": "4LVVmB1S",
+    "name": "\ud83d\udd27 Add vault governance README/CONTRIBUTING rules for file placement",
+    "url": "https://trello.com/c/4LVVmB1S/10834-%F0%9F%94%A7-add-vault-governance-readme-contributing-rules-for-file-placement"
+  },
+  "decision": {
+    "action_type": "generic",
+    "target_card": "4LVVmB1S",
+    "target_name": "\ud83d\udd27 Add vault governance README/CONTRIBUTING rules for file placement",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card requirements",
+      "Execute objective",
+      "Verify completion",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "generic",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card 4LVVmB1S \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:59:29.868981",
+    "fix_applied": false,
+    "note": "No real handler for 4LVVmB1S \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for 4LVVmB1S \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:59:29.869214",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

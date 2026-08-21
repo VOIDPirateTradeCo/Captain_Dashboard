@@ -1,0 +1,62 @@
+{
+  "fleet_mesh_state": {
+    "ships": {
+      "AUTO": {"status": "stale", "source": "heartbeat"},
+      "PINKCADY": {"status": "stale", "source": "heartbeat"},
+      "SQUIDSTATION_TEST": {"status": "stale", "source": "heartbeat"},
+      "SQUIDSTATION": {"status": "stale", "source": "heartbeat"},
+      "STEALTHATTACK": {"status": "stale", "source": "heartbeat"}
+    },
+    "live_status": {
+      "AUTO": "stale",
+      "PINKCADY": "stale",
+      "SQUIDSTATION_TEST": "stale",
+      "SQUIDSTATION": "stale",
+      "STEALTHATTACK": "stale"
+    },
+    "ships_online": 0,
+    "generated": "2026-08-20T10:17:43.221505+00:00"
+  },
+  "fleet_mesh_learned": {},
+  "debug_heartbeat_count": 5,
+  "debug_heartbeat_sample": {
+    "SQUIDSTATION": {
+      "last_seen": "2026-08-10T06:00:13.243134+00:00",
+      "data": {
+        "ship": "SQUIDSTATION",
+        "crew": "Sir Green",
+        "lane": "Captain",
+        "agent_version": "netmon-1.0",
+        "services_up": true,
+        "note": "3/3 ships online, 3 alerts",
+        "ip": "192.168.0.39",
+        "tailscale_ip": null,
+        "daemon": "docker",
+        "federated": true,
+        "registered_at": "2026-08-10T06:00:13.243125+00:00"
+      }
+    },
+    "STEALTHATTACK": {
+      "last_seen": "2026-08-09T22:05:25.572803+00:00",
+      "data": {
+        "crew": "Sir Azure",
+        "ts": "2026-08-09T22:05:25.5117630Z",
+        "services_up": true,
+        "lane": "GPU render pipeline (ComfyUI/Ollama)",
+        "ship": "STEALTHATTACK",
+        "agent_version": "hive-agent-1.1"
+      }
+    },
+    "AUTO": {
+      "last_seen": "2026-08-10T04:47:33.995253+00:00",
+      "data": {
+        "ship": "AUTO",
+        "crew": "Sir Green",
+        "lane": "VOID Ops + LAN + dashboard",
+        "agent_version": "hive-agent-1.0",
+        "ts": "2026-08-10T04:47:33.983877+00:00",
+        "services_up": true
+      }
+    }
+  }
+}

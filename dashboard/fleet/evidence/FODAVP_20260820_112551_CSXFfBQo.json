@@ -1,0 +1,65 @@
+{
+  "cycle_id": "FODAVP_20260820_112551",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:25:51.685682",
+  "target": {
+    "card_id": "6a83a57f4d31658d071127f6",
+    "shortLink": "CSXFfBQo",
+    "name": "BUG-HUNT-14: Port 8081 open \u2014 unknown service running",
+    "url": "https://trello.com/c/CSXFfBQo/11496-bug-hunt-14-port-8081-open-unknown-service-running"
+  },
+  "decision": {
+    "action_type": "bug_fix",
+    "target_card": "CSXFfBQo",
+    "target_name": "BUG-HUNT-14: Port 8081 open \u2014 unknown service running",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card description + any linked resources",
+      "Locate affected code/config",
+      "Apply minimal targeted fix",
+      "Run verification command",
+      "Post evidence comment to Trello"
+    ]
+  },
+  "action": {
+    "status": "completed",
+    "action_type": "bug_fix",
+    "steps_completed": [
+      "no_handler_available"
+    ],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card CSXFfBQo \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:25:51.685091",
+    "fix_applied": false,
+    "note": "No real handler for CSXFfBQo \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "execution_completed",
+        "result": "FAIL",
+        "details": "No fix applied: No real handler for CSXFfBQo \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:25:51.685275",
+    "verdict": "FAIL"
+  },
+  "result": "FAIL"
+}

@@ -1,0 +1,63 @@
+{
+  "cycle_id": "FODAVP_20260820_114500",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:45:00.501128",
+  "target": {
+    "card_id": "6a7b1d62265713de7748a706",
+    "shortLink": "wCbLC9VH",
+    "name": "\ud83d\udc1b [BUG] Fleet Services DOWN \u2014 Ports 80/81/2376/9999 all \ud83d\udd34 DOWN on SQUIDSTATION",
+    "url": "https://trello.com/c/wCbLC9VH/10765-%F0%9F%90%9B-bug-fleet-services-down-ports-80-81-2376-9999-all-%F0%9F%94%B4-down-on-squidstation"
+  },
+  "decision": {
+    "action_type": "bug_fix",
+    "target_card": "wCbLC9VH",
+    "target_name": "\ud83d\udc1b [BUG] Fleet Services DOWN \u2014 Ports 80/81/2376/9999 all \ud83d\udd34 DOWN on SQUIDSTATION",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card description + any linked resources",
+      "Locate affected code/config",
+      "Apply minimal targeted fix",
+      "Run verification command",
+      "Post evidence comment to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "bug_fix",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card wCbLC9VH \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:45:00.500598",
+    "fix_applied": false,
+    "note": "No real handler for wCbLC9VH \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for wCbLC9VH \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:45:00.500777",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

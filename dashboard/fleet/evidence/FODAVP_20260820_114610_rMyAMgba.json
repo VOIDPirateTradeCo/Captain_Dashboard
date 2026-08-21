@@ -1,0 +1,62 @@
+{
+  "cycle_id": "FODAVP_20260820_114610",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:46:10.820592",
+  "target": {
+    "card_id": "6a73b10df382d468eb97b9d8",
+    "shortLink": "rMyAMgba",
+    "name": "[sir_green] crew_access: RE_SIR_AZURE_TOKEN_RECEIVED_20260805T201000Z_misspink.msg",
+    "url": "https://trello.com/c/rMyAMgba/396-sirgreen-crewaccess-resirazuretokenreceived20260805t201000zmisspinkmsg"
+  },
+  "decision": {
+    "action_type": "generic",
+    "target_card": "rMyAMgba",
+    "target_name": "[sir_green] crew_access: RE_SIR_AZURE_TOKEN_RECEIVED_20260805T201000Z_misspink.m",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card requirements",
+      "Execute objective",
+      "Verify completion",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "generic",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card rMyAMgba \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:46:10.819925",
+    "fix_applied": false,
+    "note": "No real handler for rMyAMgba \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for rMyAMgba \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:46:10.820154",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

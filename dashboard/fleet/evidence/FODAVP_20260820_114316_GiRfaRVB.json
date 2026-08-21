@@ -1,0 +1,63 @@
+{
+  "cycle_id": "FODAVP_20260820_114316",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:43:16.418171",
+  "target": {
+    "card_id": "6a7b1d6f103a306bdbe852a0",
+    "shortLink": "GiRfaRVB",
+    "name": "\ud83d\udc1b [BUG] STEALTHATTACK shows ONLINE but is actually OFFLINE \u2014 Stale fleet status",
+    "url": "https://trello.com/c/GiRfaRVB/10768-%F0%9F%90%9B-bug-stealthattack-shows-online-but-is-actually-offline-stale-fleet-status"
+  },
+  "decision": {
+    "action_type": "bug_fix",
+    "target_card": "GiRfaRVB",
+    "target_name": "\ud83d\udc1b [BUG] STEALTHATTACK shows ONLINE but is actually OFFLINE \u2014 Stale fleet status",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card description + any linked resources",
+      "Locate affected code/config",
+      "Apply minimal targeted fix",
+      "Run verification command",
+      "Post evidence comment to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "bug_fix",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card GiRfaRVB \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:43:16.417643",
+    "fix_applied": false,
+    "note": "No real handler for GiRfaRVB \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for GiRfaRVB \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:43:16.417817",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

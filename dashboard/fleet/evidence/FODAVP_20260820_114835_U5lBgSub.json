@@ -1,0 +1,63 @@
+{
+  "cycle_id": "FODAVP_20260820_114835",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:48:35.364315",
+  "target": {
+    "card_id": "6a84665d3c1c3f421d5f55e5",
+    "shortLink": "U5lBgSub",
+    "name": "[P2] BUG: TM API \u2014 11 endpoints return 404 Not Found",
+    "url": "https://trello.com/c/U5lBgSub/11556-p2-bug-tm-api-11-endpoints-return-404-not-found"
+  },
+  "decision": {
+    "action_type": "bug_fix",
+    "target_card": "U5lBgSub",
+    "target_name": "[P2] BUG: TM API \u2014 11 endpoints return 404 Not Found",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card description + any linked resources",
+      "Locate affected code/config",
+      "Apply minimal targeted fix",
+      "Run verification command",
+      "Post evidence comment to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "bug_fix",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card U5lBgSub \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:48:35.363673",
+    "fix_applied": false,
+    "note": "No real handler for U5lBgSub \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for U5lBgSub \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:48:35.363890",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

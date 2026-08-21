@@ -1,0 +1,62 @@
+{
+  "cycle_id": "FODAVP_20260820_115616",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:56:16.947042",
+  "target": {
+    "card_id": "6a752cda987c9ca3aff2b6a0",
+    "shortLink": "nhh4VW7R",
+    "name": "\ud83e\udd16 #259 Discord bot token wiring into crew_map.json/vault config",
+    "url": "https://trello.com/c/nhh4VW7R/601-%F0%9F%A4%96-259-discord-bot-token-wiring-into-crewmapjson-vault-config"
+  },
+  "decision": {
+    "action_type": "generic",
+    "target_card": "nhh4VW7R",
+    "target_name": "\ud83e\udd16 #259 Discord bot token wiring into crew_map.json/vault config",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card requirements",
+      "Execute objective",
+      "Verify completion",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "generic",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card nhh4VW7R \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:56:16.946410",
+    "fix_applied": false,
+    "note": "No real handler for nhh4VW7R \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for nhh4VW7R \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:56:16.946656",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

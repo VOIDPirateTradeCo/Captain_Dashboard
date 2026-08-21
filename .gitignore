@@ -1,2 +1,3 @@
 __pycache__/
 dashboard/state/dashboard_cache.json
+dashboard/bots/.env.sirgreen

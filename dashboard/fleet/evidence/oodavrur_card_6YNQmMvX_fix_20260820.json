@@ -1,0 +1,46 @@
+{
+  "card_id": "6YNQmMvX",
+  "card_url": "https://trello.com/c/6YNQmMvX",
+  "title": "[P2] BUG: tr3asure_mAp frontend hardcodes API URL to localhost:5000",
+  "fix_summary": "Made API base URL configurable via environment variable",
+  "timestamp": "2026-08-20T03:45:17Z",
+  "observe": {
+    "issue": "Hardcoded localhost:5000 API URL prevents fleet deployment",
+    "location": "PROJECT_tr3asure_mAp/tr3asure_mAp/frontend/src/App.jsx:89"
+  },
+  "orient": {
+    "impact": "Cannot deploy tr3asure_mAp across different fleet nodes without code changes",
+    "severity": "P2 - Medium (operational constraint, not critical failure)"
+  },
+  "decide": {
+    "solution": "Replace hardcoded URL with environment variable lookup",
+    "pattern": "import.meta.env.VITE_API_BASE || fallback"
+  },
+  "act": {
+    "changes": [
+      {
+        "file": "tr3asure_mAp/frontend/src/App.jsx",
+        "line": 89,
+        "before": "const API = \"http://127.0.0.1:5000/api\";",
+        "after": "const API = import.meta.env.VITE_API_BASE || \"http://127.0.0.1:5000/api\";"
+      },
+      {
+        "file": "tr3asure_mAp/frontend/.env",
+        "action": "created",
+        "content": "VITE_API_BASE=http://127.0.0.1:5000/api"
+      }
+    ]
+  },
+  "verify": {
+    "code_change": "Confirmed via grep",
+    "env_file": "Created and valid",
+    "frontend_health": "000 (service offline - safe to deploy fix)",
+    "backend_health": "000 (service offline - safe to deploy fix)"
+  },
+  "resolution": "RESOLVED",
+  "executed_by": "Sir Green OODAVRUR System",
+  "evidence_files": [
+    "App.jsx:89 - API URL made configurable",
+    ".env - Environment variable definition"
+  ]
+}

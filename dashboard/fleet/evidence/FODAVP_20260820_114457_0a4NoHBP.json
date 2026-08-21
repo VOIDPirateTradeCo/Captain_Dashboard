@@ -1,0 +1,62 @@
+{
+  "cycle_id": "FODAVP_20260820_114457",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:44:57.401672",
+  "target": {
+    "card_id": "6a71523d9578db9340cc5fda",
+    "shortLink": "0a4NoHBP",
+    "name": "Ch 1: Contract Work / Corporate Shenanigans",
+    "url": "https://trello.com/c/0a4NoHBP/11088-ch-1-contract-work-corporate-shenanigans"
+  },
+  "decision": {
+    "action_type": "generic",
+    "target_card": "0a4NoHBP",
+    "target_name": "Ch 1: Contract Work / Corporate Shenanigans",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card requirements",
+      "Execute objective",
+      "Verify completion",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "generic",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card 0a4NoHBP \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:44:57.401092",
+    "fix_applied": false,
+    "note": "No real handler for 0a4NoHBP \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for 0a4NoHBP \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:44:57.401294",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

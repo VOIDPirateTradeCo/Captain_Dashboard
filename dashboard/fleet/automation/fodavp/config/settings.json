@@ -1,0 +1,6 @@
+{
+  "cycle_delay_seconds": 30,
+  "auto_repeat": true,
+  "escalate_critical_to_captain": true,
+  "log_level": "INFO"
+}

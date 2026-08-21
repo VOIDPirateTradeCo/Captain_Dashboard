@@ -1,0 +1,4 @@
+[FATAL] port 8080 is already in use by another process.
+        The Captain dashboard must be the ONLY server on :8080.
+        If a stale hive-mind-dashboard/app.py is running, stop it first.
+        (This guard prevents a split-brain dashboard.)

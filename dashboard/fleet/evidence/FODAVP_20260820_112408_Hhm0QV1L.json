@@ -1,0 +1,64 @@
+{
+  "cycle_id": "FODAVP_20260820_112408",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:24:08.419750",
+  "target": {
+    "card_id": "6a71fe1d52b77e09a27afa13",
+    "shortLink": "Hhm0QV1L",
+    "name": "COSMOS: 16 Constellations navigation lore",
+    "url": ""
+  },
+  "decision": {
+    "action_type": "generic",
+    "target_card": "Hhm0QV1L",
+    "target_name": "COSMOS: 16 Constellations navigation lore",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card requirements",
+      "Execute objective",
+      "Verify completion",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "completed",
+    "action_type": "generic",
+    "steps_completed": [
+      "no_handler_available"
+    ],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card Hhm0QV1L \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:24:08.419101",
+    "fix_applied": false,
+    "note": "No real handler for Hhm0QV1L \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "execution_completed",
+        "result": "FAIL",
+        "details": "No fix applied: No real handler for Hhm0QV1L \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:24:08.419343",
+    "verdict": "FAIL"
+  },
+  "result": "FAIL"
+}

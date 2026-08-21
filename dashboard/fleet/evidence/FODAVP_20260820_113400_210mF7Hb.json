@@ -1,0 +1,65 @@
+{
+  "cycle_id": "FODAVP_20260820_113400",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:34:00.404157",
+  "target": {
+    "card_id": "6a7d0e03fb642b4193ed1023",
+    "shortLink": "210mF7Hb",
+    "name": "SQUIDSTATION: reclaim Docker WSL disk space",
+    "url": "https://trello.com/c/210mF7Hb/10923-squidstation-reclaim-docker-wsl-disk-space"
+  },
+  "decision": {
+    "action_type": "docker",
+    "target_card": "210mF7Hb",
+    "target_name": "SQUIDSTATION: reclaim Docker WSL disk space",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Check container status via docker ps",
+      "Identify issue",
+      "Restart or reconfigure",
+      "Verify health",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "completed",
+    "action_type": "docker",
+    "steps_completed": [
+      "no_handler_available"
+    ],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card 210mF7Hb \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:34:00.403632",
+    "fix_applied": false,
+    "note": "No real handler for 210mF7Hb \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "execution_completed",
+        "result": "FAIL",
+        "details": "No fix applied: No real handler for 210mF7Hb \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:34:00.403807",
+    "verdict": "FAIL"
+  },
+  "result": "FAIL"
+}

@@ -1,0 +1,62 @@
+{
+  "cycle_id": "FODAVP_20260820_115845",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:58:45.016147",
+  "target": {
+    "card_id": "6a7529f076752bd0ea3bcfd1",
+    "shortLink": "ebmEXw2x",
+    "name": "[P3] Discord bots \u2192 Midjourney bot integration for auto image generation",
+    "url": "https://trello.com/c/ebmEXw2x/550-p3-discord-bots-%E2%86%92-midjourney-bot-integration-for-auto-image-generation"
+  },
+  "decision": {
+    "action_type": "generic",
+    "target_card": "ebmEXw2x",
+    "target_name": "[P3] Discord bots \u2192 Midjourney bot integration for auto image generation",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card requirements",
+      "Execute objective",
+      "Verify completion",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "generic",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card ebmEXw2x \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:58:45.015605",
+    "fix_applied": false,
+    "note": "No real handler for ebmEXw2x \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for ebmEXw2x \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:58:45.015796",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

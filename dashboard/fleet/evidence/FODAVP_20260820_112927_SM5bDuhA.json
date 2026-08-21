@@ -1,0 +1,64 @@
+{
+  "cycle_id": "FODAVP_20260820_112927",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:29:27.534130",
+  "target": {
+    "card_id": "6a7f7891eb7a9fcf074f5fca",
+    "shortLink": "SM5bDuhA",
+    "name": "TOS-INSP-5",
+    "url": "https://trello.com/c/SM5bDuhA/11337-tos-insp-5"
+  },
+  "decision": {
+    "action_type": "generic",
+    "target_card": "SM5bDuhA",
+    "target_name": "TOS-INSP-5",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card requirements",
+      "Execute objective",
+      "Verify completion",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "completed",
+    "action_type": "generic",
+    "steps_completed": [
+      "no_handler_available"
+    ],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card SM5bDuhA \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:29:27.533595",
+    "fix_applied": false,
+    "note": "No real handler for SM5bDuhA \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "execution_completed",
+        "result": "FAIL",
+        "details": "No fix applied: No real handler for SM5bDuhA \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:29:27.533780",
+    "verdict": "FAIL"
+  },
+  "result": "FAIL"
+}

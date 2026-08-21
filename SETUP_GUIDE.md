@@ -5,7 +5,7 @@
 - **SSH:** `ssh://git@localhost:3000/VOIDPirate/<repo>.git`
 
 ## Accounts
-- **Captain/Bryon:** `captain` / `V0idP1rate!`
+- **Captain/Brewbeard:** `captain` / `V0idP1rate!`
 - **Seraphine/Northstar:** `northstar` / `T0rusC0ff33!`
 
 ## Repositories

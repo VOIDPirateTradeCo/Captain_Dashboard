@@ -1,0 +1,62 @@
+{
+  "cycle_id": "FODAVP_20260820_131543",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T13:15:43.400360",
+  "target": {
+    "card_id": "6a71fe1ba81df75539d2fcdf",
+    "shortLink": "ciVPoYZH",
+    "name": "COSMOS: 06 CrossReference backfill",
+    "url": ""
+  },
+  "decision": {
+    "action_type": "generic",
+    "target_card": "ciVPoYZH",
+    "target_name": "COSMOS: 06 CrossReference backfill",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card requirements",
+      "Execute objective",
+      "Verify completion",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "generic",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card ciVPoYZH \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T13:15:43.399746",
+    "fix_applied": false,
+    "note": "No real handler for ciVPoYZH \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for ciVPoYZH \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T13:15:43.399933",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

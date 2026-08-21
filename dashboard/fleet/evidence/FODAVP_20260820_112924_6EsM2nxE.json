@@ -1,0 +1,64 @@
+{
+  "cycle_id": "FODAVP_20260820_112924",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:29:24.266489",
+  "target": {
+    "card_id": "6a7ff8d732b85db3831eabee",
+    "shortLink": "6EsM2nxE",
+    "name": "FLEET-2: Captain Dashboard fleet tab + data source UI",
+    "url": "https://trello.com/c/6EsM2nxE/11340-fleet-2-captain-dashboard-fleet-tab-data-source-ui"
+  },
+  "decision": {
+    "action_type": "generic",
+    "target_card": "6EsM2nxE",
+    "target_name": "FLEET-2: Captain Dashboard fleet tab + data source UI",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card requirements",
+      "Execute objective",
+      "Verify completion",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "completed",
+    "action_type": "generic",
+    "steps_completed": [
+      "no_handler_available"
+    ],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card 6EsM2nxE \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:29:24.265949",
+    "fix_applied": false,
+    "note": "No real handler for 6EsM2nxE \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "execution_completed",
+        "result": "FAIL",
+        "details": "No fix applied: No real handler for 6EsM2nxE \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:29:24.266129",
+    "verdict": "FAIL"
+  },
+  "result": "FAIL"
+}

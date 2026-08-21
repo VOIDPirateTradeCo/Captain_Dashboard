@@ -1,0 +1,62 @@
+{
+  "cycle_id": "FODAVP_20260820_120131",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T12:01:31.792775",
+  "target": {
+    "card_id": "6a77ac0b38c2ce409a7f03d3",
+    "shortLink": "IYG9f7AL",
+    "name": "Fleet: deploy fleet_comms_watcher on SQUIDSTATION/PINKCADY/STEALTHATTACK",
+    "url": "https://trello.com/c/IYG9f7AL/4036-fleet-deploy-fleetcommswatcher-on-squidstation-pinkcady-stealthattack"
+  },
+  "decision": {
+    "action_type": "deployment",
+    "target_card": "IYG9f7AL",
+    "target_name": "Fleet: deploy fleet_comms_watcher on SQUIDSTATION/PINKCADY/STEALTHATTACK",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card requirements",
+      "Execute objective",
+      "Verify completion",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "deployment",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card IYG9f7AL \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T12:01:31.792224",
+    "fix_applied": false,
+    "note": "No real handler for IYG9f7AL \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for IYG9f7AL \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T12:01:31.792422",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

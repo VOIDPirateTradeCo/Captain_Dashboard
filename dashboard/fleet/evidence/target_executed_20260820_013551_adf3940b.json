@@ -1,0 +1,15 @@
+{
+  "evidence_id": "adf3940b",
+  "type": "target_executed",
+  "timestamp": "2026-08-20T01:35:51.086665",
+  "data": {
+    "type": "target_execution",
+    "target": "unknown",
+    "actions_taken": [
+      "scan",
+      "analyze",
+      "document"
+    ],
+    "timestamp": "2026-08-20T01:35:51.086623"
+  }
+}

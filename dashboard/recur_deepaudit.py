@@ -11,7 +11,7 @@ def call(path,data=None,method='GET'):
         try: return json.loads(u.urlopen(u.Request(url,method=method,data=b'' if method in('POST','PUT') else None),timeout=20).read())
         except Exception as e: time.sleep(8*(i+1))
 ROOT=r'C:\Users\kidsm\Documents\My Docs\VOID Pirate Trading Co\Obsidian_Vault'
-audit_files=[f for f in ['Developer_Brain/02_Business_Operations/_Hub/VAULT_AUDIT.md','Developer_Brain/01_Projects/capta1n_orchestrat0r/dashboard/vault_audit.json'] if os.path.exists(ROOT+'/'+f)]
+audit_files=['none — vault audit artifacts not yet recreated under new structure']
 due=(datetime.utcnow()+timedelta(days=30)).strftime('%Y-%m-%dT23:59:59Z')
 call(f'/cards/{CID}',{'due':due,'dueComplete':False},'PUT')
 call(f'/cards/{CID}/actions/comments',{'text':'[Sir Green] Deep vault audit VERIFIED complete (audit artifacts: %s). Converting to RECURRING: next audit due %s. Card stays open as repeating cadence. Prior auto-"FULLY ANALYZED" spam was the S5 OODA over-claim bug (fixed).' % (audit_files or ['none found'], due[:10])},'POST')

@@ -1,0 +1,63 @@
+{
+  "cycle_id": "FODAVP_20260820_115537",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:55:37.760041",
+  "target": {
+    "card_id": "6a7370c5d57f072aa259a918",
+    "shortLink": "BiUydRxy",
+    "name": "Dashboard: expand Hive Mind Dashboard with Tailscale/Docker/share/bot health",
+    "url": "https://trello.com/c/BiUydRxy/262-dashboard-expand-hive-mind-dashboard-with-tailscale-docker-share-bot-health"
+  },
+  "decision": {
+    "action_type": "docker",
+    "target_card": "BiUydRxy",
+    "target_name": "Dashboard: expand Hive Mind Dashboard with Tailscale/Docker/share/bot health",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Check container status via docker ps",
+      "Identify issue",
+      "Restart or reconfigure",
+      "Verify health",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "docker",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card BiUydRxy \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:55:37.759298",
+    "fix_applied": false,
+    "note": "No real handler for BiUydRxy \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for BiUydRxy \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:55:37.759480",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

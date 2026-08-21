@@ -1,0 +1,23 @@
+{
+  "timestamp": "2026-08-20T00:05:36.794707Z",
+  "threat_response": {
+    "port_2376": {
+      "action": "Firewall rule verification",
+      "status": "Protected",
+      "evidence": "Rule 'BLOCK-DockerDesktop-TLS-Public' is active and enabled"
+    },
+    "port_8080": {
+      "action": "Firewall rule creation",
+      "status": "Rules applied",
+      "rules_created": [
+        "BLOCK-UnknownPort8080-External",
+        "ALLOW-Port8080-Fleet"
+      ]
+    }
+  },
+  "verification": {
+    "timestamp": "2026-08-20T00:05:36.794707Z",
+    "port_2376_protected": true,
+    "port_8080_rules_applied": true
+  }
+}

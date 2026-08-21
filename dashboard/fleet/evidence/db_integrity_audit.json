@@ -1,0 +1,26 @@
+{
+  "timestamp": "2026-08-19T18:19:12.841290",
+  "db_path": "C:/Users/kidsm/Documents/My Docs/VOID Pirate Trading Co/PROJECT_tr3asure_mAp/tr3asure_mAp/data/treasure_map.db",
+  "size_kb": 4.0,
+  "sha256": "352a9bb23c329c5a9bf235baf56917358b5b64b03f1a11d261fadae9c3cdb721",
+  "modified": "2026-08-19T18:16:06.130050",
+  "table_count": 0,
+  "key_tables_present": [],
+  "missing_tables": [
+    "historical_prices",
+    "trades",
+    "signals",
+    "fundamentals",
+    "strategy_results",
+    "indicator_weights",
+    "watchlist_log",
+    "journal_entries",
+    "belt_progress",
+    "market_regimes",
+    "sector_scores",
+    "performance_summary",
+    "ai_watchlist"
+  ],
+  "integrity_status": "INCOMPLETE",
+  "journal_mode": "wal"
+}

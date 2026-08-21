@@ -8,7 +8,7 @@ Generated: 2026-08-12T18:16:09.946834
 - SSH: ssh://git@localhost:3000/VOIDPirate/<repo>.git
 
 ## Crew Accounts
-- Captain/Bryon: captain
+- Captain/Brewbeard: captain
 - Seraphine/Northstar: northstar / T0rusC0ff33!
 
 ## Repositories

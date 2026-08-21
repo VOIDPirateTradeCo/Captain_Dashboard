@@ -1,0 +1,63 @@
+{
+  "cycle_id": "FODAVP_20260820_115030",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:50:30.335846",
+  "target": {
+    "card_id": "6a722d1695f9a4ffc8410301",
+    "shortLink": "yxxa2SBu",
+    "name": "Self-healing: Implement real Docker health probe with auto-restart",
+    "url": "https://trello.com/c/yxxa2SBu/71-self-healing-implement-real-docker-health-probe-with-auto-restart"
+  },
+  "decision": {
+    "action_type": "docker",
+    "target_card": "yxxa2SBu",
+    "target_name": "Self-healing: Implement real Docker health probe with auto-restart",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Check container status via docker ps",
+      "Identify issue",
+      "Restart or reconfigure",
+      "Verify health",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "docker",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card yxxa2SBu \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:50:30.335307",
+    "fix_applied": false,
+    "note": "No real handler for yxxa2SBu \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for yxxa2SBu \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:50:30.335498",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

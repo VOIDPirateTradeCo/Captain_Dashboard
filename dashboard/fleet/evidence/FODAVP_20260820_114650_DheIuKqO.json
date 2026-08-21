@@ -1,0 +1,62 @@
+{
+  "cycle_id": "FODAVP_20260820_114650",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:46:50.469018",
+  "target": {
+    "card_id": "6a752cb77be14a890802c95c",
+    "shortLink": "DheIuKqO",
+    "name": "\ud83d\udc65 Sir Green: invite limited toruscoffeecompany collaborators",
+    "url": "https://trello.com/c/DheIuKqO/556-%F0%9F%91%A5-sir-green-invite-limited-toruscoffeecompany-collaborators"
+  },
+  "decision": {
+    "action_type": "generic",
+    "target_card": "DheIuKqO",
+    "target_name": "\ud83d\udc65 Sir Green: invite limited toruscoffeecompany collaborators",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card requirements",
+      "Execute objective",
+      "Verify completion",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "generic",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card DheIuKqO \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:46:50.468493",
+    "fix_applied": false,
+    "note": "No real handler for DheIuKqO \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for DheIuKqO \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:46:50.468668",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

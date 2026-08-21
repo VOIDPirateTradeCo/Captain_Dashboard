@@ -1,0 +1,88 @@
+{
+  "module": "telemetry_spoofer",
+  "version": "1.0",
+  "active": true,
+  "simulations": [
+    {
+      "target": "SQUIDSTATION:5000",
+      "fake_metrics": {
+        "cpu_utilization": "28%",
+        "memory_usage": "33%",
+        "network_io": "2903 KB/s"
+      },
+      "behavior_pattern": "normal_business",
+      "status": "SIMULATING"
+    },
+    {
+      "target": "SQUIDSTATION:6379",
+      "fake_metrics": {
+        "cpu_utilization": "33%",
+        "memory_usage": "48%",
+        "network_io": "1018 KB/s"
+      },
+      "behavior_pattern": "normal_business",
+      "status": "SIMULATING"
+    },
+    {
+      "target": "SQUIDSTATION:8080",
+      "fake_metrics": {
+        "cpu_utilization": "49%",
+        "memory_usage": "79%",
+        "network_io": "6749 KB/s"
+      },
+      "behavior_pattern": "normal_business",
+      "status": "SIMULATING"
+    },
+    {
+      "target": "SQUIDSTATION:9090",
+      "fake_metrics": {
+        "cpu_utilization": "30%",
+        "memory_usage": "65%",
+        "network_io": "4885 KB/s"
+      },
+      "behavior_pattern": "normal_business",
+      "status": "SIMULATING"
+    },
+    {
+      "target": "PINKCADY:8080",
+      "fake_metrics": {
+        "cpu_utilization": "29%",
+        "memory_usage": "69%",
+        "network_io": "4839 KB/s"
+      },
+      "behavior_pattern": "normal_business",
+      "status": "SIMULATING"
+    },
+    {
+      "target": "PINKCADY:5000",
+      "fake_metrics": {
+        "cpu_utilization": "20%",
+        "memory_usage": "70%",
+        "network_io": "6540 KB/s"
+      },
+      "behavior_pattern": "normal_business",
+      "status": "SIMULATING"
+    },
+    {
+      "target": "STEALTHATTACK:8188",
+      "fake_metrics": {
+        "cpu_utilization": "23%",
+        "memory_usage": "33%",
+        "network_io": "6453 KB/s"
+      },
+      "behavior_pattern": "normal_business",
+      "status": "SIMULATING"
+    },
+    {
+      "target": "STEALTHATTACK:11434",
+      "fake_metrics": {
+        "cpu_utilization": "54%",
+        "memory_usage": "54%",
+        "network_io": "3874 KB/s"
+      },
+      "behavior_pattern": "normal_business",
+      "status": "SIMULATING"
+    }
+  ],
+  "total_streams": 8
+}

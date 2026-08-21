@@ -108,11 +108,22 @@ async function loadDocs(){
     document.getElementById('docs').textContent = 'ERROR: ' + e.message;
   }
 }
+async function sha256(str) {
+  const data = new TextEncoder().encode(str);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
 async function unlockWhale(){
   const pw = document.getElementById('whale-pass').value;
-  const encoded = btoa(pw);
+  if (!pw) {
+    document.getElementById('whale-status').innerHTML = '<span style="color:#f85149">Enter passphrase</span>';
+    return;
+  }
+  const hash = await sha256(pw);
   try{
-    const r = await fetch('/api/whale?passphrase_hash=' + encodeURIComponent(encoded) + '&threat_detected=true');
+    const r = await fetch('/api/whale?passphrase_hash=' + encodeURIComponent(hash) + '&threat_detected=true');
     const d = await r.json();
     const out = document.getElementById('whale-out');
     const status = document.getElementById('whale-status');

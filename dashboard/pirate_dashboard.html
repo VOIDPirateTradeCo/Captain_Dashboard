@@ -220,6 +220,59 @@
         <a href="/tab/diagram" class="tabnav-link">📐 Diagram</a>
         <a href="/tab/toruspos" class="tabnav-link">☕ Torus POS</a>
     </nav>
+    
+    <!-- FODAVP Activation Panel -->
+    <div class="section-title">⚔️ SIR GREEN'S COMMAND — FODAVP PROTOCOL</div>
+    <div class="grid">
+        <div class="card full" style="margin-top: 15px; border: 2px solid #f5c518; box-shadow: 0 0 40px rgba(245, 197, 24, 0.3);">
+            <h3>🍳⚔️ FODAVP — Fleet OODA Loop Automation</h3>
+            <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+                <!-- GOLDEN ACTIVATION BUTTON -->
+                <button id="fodavpActivateBtn" onclick="activateFodavp()" style="
+                    background: linear-gradient(135deg, #f5c518, #ffd700, #ffaa00);
+                    color: #000;
+                    border: 3px solid #f5c518;
+                    padding: 16px 32px;
+                    font-size: 1.1em;
+                    font-weight: 700;
+                    border-radius: 12px;
+                    cursor: pointer;
+                    box-shadow: 0 0 30px rgba(245, 197, 24, 0.5);
+                    transition: all 0.3s;
+                    letter-spacing: 2px;
+                    text-transform: uppercase;
+                    font-family: 'Courier New', monospace;
+                " onmouseover="this.style.boxShadow='0 0 50px rgba(245, 197, 24, 0.8)'; this.style.transform='scale(1.05)' " 
+                   onmouseout="this.style.boxShadow='0 0 30px rgba(245, 197, 24, 0.5)'; this.style.transform='scale(1)'">
+                    ⚔️ ACTIVATE FODAVP PROTOCAL ⚡
+                </button>
+                
+                <!-- STATUS INDICATOR -->
+                <div style="margin-left: auto; text-align: right;">
+                    <div style="color: #fbbf24; font-size: 0.9em; margin-bottom: 5px;">
+                        <span id="fodavpStatus">🟡 READY</span>
+                    </div>
+                    <div style="color: #94a3b8; font-size: 0.8em;" id="fodavpDetail">
+                        Last run: Never<br>Cycle time: ~4s
+                    </div>
+                </div>
+            </div>
+            
+            <!-- LOG PANEL -->
+            <div style="margin-top: 15px; padding-top: 12px; border-top: 1px solid #1e293b; font-size: 0.8em; color: #64748b;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <span>📡 Fleet Status</span>
+                    <span>📊 Evidence Count</span>
+                    <span>🔄 Protocol</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span id="fodavpFleet">SQUIDSTATION: 🟡 | PINKCADY: 🟡 | STEALTH: 🟡</span>
+                    <span id="fodavpEvidence">0 files</span>
+                    <span id="fodavpRate">Full Autonomous v1.0</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="section-title">🔐 OPSEC & Tool Classifications</div>
     <div class="grid">
@@ -931,6 +984,74 @@ function applyAll(d) {
   try { if (d.internal_services) applyInternalServices(d.internal_services); } catch (e) {}
   try { if (d.tailscale_status) applyTailscaleCrew(d.tailscale_status); } catch (e) {}
 }
+
+/* ==================== FODAVP BUTTON HANDLERS ==================== */
+function activateFodavp() {
+    const btn = document.getElementById('fodavpActivateBtn');
+    const status = document.getElementById('fodavpStatus');
+    const detail = document.getElementById('fodavpDetail');
+    
+    btn.disabled = true;
+    btn.textContent = '⚡ ACTIVATING...';
+    status.textContent = '🔵 ACTIVATING';
+    detail.textContent = 'Starting FODAVP engine...';
+    
+    fetch('/api/fodavp/trigger', {method: 'POST'})
+        .then(response => response.json())
+        .then(data => {
+            status.textContent = '🟢 RUNNING';
+            detail.textContent = 'Cycle started: ' + new Date().toLocaleTimeString();
+            setTimeout(updateFodavpStatus, 5000);
+            window.fodavpPoll = setInterval(updateFodavpStatus, 30000);
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.textContent = '⚔️ ACTIVATE FODAVP PROTOCAL ⚡';
+            }, 3000);
+        })
+        .catch(err => {
+            status.textContent = '🔴 ERROR';
+            detail.textContent = 'Activation failed: ' + err.message;
+            btn.disabled = false;
+            btn.textContent = '⚔️ ACTIVATE FODAVP PROTOCAL ⚡';
+        });
+}
+
+function stopFodavp() {
+    if (!confirm('🛑 STOP ALL FODAVP SYSTEMS?\nThis will terminate the fleet automation engine immediately.')) return;
+    
+    fetch('/api/stop-fodavp', {method: 'POST'})
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('fodavpStatus').textContent = '🟡 STOPPED';
+            document.getElementById('fodavpDetail').textContent = 'Stopped: ' + new Date().toLocaleTimeString();
+            clearInterval(window.fodavpPoll);
+        })
+        .catch(err => {
+            console.error('Stop failed:', err);
+        });
+}
+
+function updateFodavpStatus() {
+    fetch('/api/fodavp-status')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('fodavpEvidence').textContent = (data.evidence_count || 0) + ' files';
+            document.getElementById('fodavpFleet').textContent = 
+                'SQUIDSTATION: ' + (data.squid || '🟡') + ' | PINKCADY: ' + (data.pink || '🟡') + ' | STEALTH: ' + (data.stealth || '🟡');
+            document.getElementById('fodavpRate').textContent = data.cycle_rate || '~30s/cycle';
+            if (data.running) {
+                document.getElementById('fodavpStatus').textContent = '🟢 RUNNING';
+            }
+        })
+        .catch(err => {
+            console.warn('Status check failed:', err);
+        });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(updateFodavpStatus, 2000);
+    window.fodavpPoll = setInterval(updateFodavpStatus, 30000);
+});
 </script>
 </body>
 </html>

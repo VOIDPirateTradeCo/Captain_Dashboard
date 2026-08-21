@@ -1,0 +1,17 @@
+{
+  "timestamp": "2026-08-20T00:04:50.900877Z",
+  "cycle": "OODAVRUR_CONTINUOUS_SWEEP",
+  "fleet_posture": "YELLOW",
+  "exposed_ports": [
+    "2376",
+    "8080"
+  ],
+  "secured_ports": [
+    "2375",
+    "3001",
+    "6379",
+    "8081"
+  ],
+  "active_containers": 10,
+  "action_required": 2
+}

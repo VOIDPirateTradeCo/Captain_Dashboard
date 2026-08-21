@@ -1,0 +1,62 @@
+{
+  "cycle_id": "FODAVP_20260820_115318",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:53:18.456931",
+  "target": {
+    "card_id": "6a739cbfc3c55eb3fa87d288",
+    "shortLink": "RUeo8vzv",
+    "name": "GitHub crew access: set up teams and repo permissions",
+    "url": "https://trello.com/c/RUeo8vzv/346-github-crew-access-set-up-teams-and-repo-permissions"
+  },
+  "decision": {
+    "action_type": "generic",
+    "target_card": "RUeo8vzv",
+    "target_name": "GitHub crew access: set up teams and repo permissions",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card requirements",
+      "Execute objective",
+      "Verify completion",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "generic",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card RUeo8vzv \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:53:18.456288",
+    "fix_applied": false,
+    "note": "No real handler for RUeo8vzv \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for RUeo8vzv \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:53:18.456509",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

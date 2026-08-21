@@ -1,0 +1,62 @@
+{
+  "cycle_id": "FODAVP_20260820_115825",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:58:25.558771",
+  "target": {
+    "card_id": "6a737818004b5820956ae032",
+    "shortLink": "aPT5TPtY",
+    "name": "Avatar design: Sir Azure / STEALTHATTACK",
+    "url": "https://trello.com/c/aPT5TPtY/282-avatar-design-sir-azure-stealthattack"
+  },
+  "decision": {
+    "action_type": "generic",
+    "target_card": "aPT5TPtY",
+    "target_name": "Avatar design: Sir Azure / STEALTHATTACK",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card requirements",
+      "Execute objective",
+      "Verify completion",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "generic",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card aPT5TPtY \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:58:25.558218",
+    "fix_applied": false,
+    "note": "No real handler for aPT5TPtY \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for aPT5TPtY \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:58:25.558392",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

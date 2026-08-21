@@ -1,0 +1,26 @@
+{
+  "cycle": "#1-Observe",
+  "timestamp": "2026-08-20T01:23:55.154612",
+  "card_id": "R6HyziJF",
+  "card_title": "[P0] BUG: 6 ContainerDown alerts FIRING on Prometheus",
+  "description_preview": "Prometheus (port 9090) has 6 active firing alerts:\n\n  1. ContainerDown \u2014 172.18.0.3:3100 (torus-pos metrics)\n  2. ContainerDown \u2014 172.18.0.4:4000 (torus-alert-router metrics)\n  3. ContainerDown \u2014 172.18.0.6:3200 (torus-inventory metrics)\n  4. ContainerDown \u2014 localhost:9090 (localhost health)\n  5. Co",
+  "labels": [
+    "miss-pink",
+    "sir-green",
+    "Captain's Dashboard",
+    "P1",
+    "Fleet Ops"
+  ],
+  "priority_indicators": [
+    "P0 BUG",
+    "P1",
+    "miss-pink assigned",
+    "sir-green assigned",
+    "recent activity"
+  ],
+  "observed_issues": [
+    "Prometheus showing 6 ContainerDown alerts",
+    "Fleet monitoring partially failing",
+    "High priority critical bug"
+  ]
+}

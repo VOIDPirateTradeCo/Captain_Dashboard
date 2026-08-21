@@ -1,0 +1,62 @@
+{
+  "cycle_id": "FODAVP_20260820_115607",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-20T11:56:07.440421",
+  "target": {
+    "card_id": "6a715240a202a79ea66e5187",
+    "shortLink": "wJDtiRtr",
+    "name": "Astro Profiles for Crew",
+    "url": "https://trello.com/c/wJDtiRtr/11082-astro-profiles-for-crew"
+  },
+  "decision": {
+    "action_type": "generic",
+    "target_card": "wJDtiRtr",
+    "target_name": "Astro Profiles for Crew",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card requirements",
+      "Execute objective",
+      "Verify completion",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "generic",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card wJDtiRtr \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-20T11:56:07.439891",
+    "fix_applied": false,
+    "note": "No real handler for wJDtiRtr \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for wJDtiRtr \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-20T11:56:07.440066",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}
