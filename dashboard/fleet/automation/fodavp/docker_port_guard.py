@@ -21,11 +21,10 @@ def docker(*args: str) -> str:
 
 
 def is_port_free(port: int) -> bool:
-    try:
-        with urllib.request.urlopen(f"http://127.0.0.1:{port}", timeout=0.5) as resp:
-            return False
-    except Exception:
-        return True
+    import socket
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.settimeout(0.5)
+        return s.connect_ex(("127.0.0.1", port)) != 0
 
 
 def find_conflicts() -> List[int]:
@@ -50,14 +49,26 @@ def restart_sequence() -> None:
             pass
 
 
+EXPECTED_PORTS = {5001, 3002, 8080, 8081, 2375, 2376, 9090, 5453}
+
 def main() -> None:
-    conflicts = find_conflicts()
-    print(json.dumps({"conflicts": conflicts, "timestamp": time.time()}, indent=2))
-    if conflicts:
+    all_used = [port for port in CONFLICT_PORTS if not is_port_free(port)]
+    unexpected = [port for port in all_used if port not in EXPECTED_PORTS]
+    print(json.dumps({
+        "expected_ports_in_use": [p for p in all_used if p in EXPECTED_PORTS],
+        "unexpected_conflicts_initial": unexpected,
+        "timestamp": time.time(),
+    }, indent=2))
+    if unexpected:
         restart_sequence()
         time.sleep(5)
-        conflicts = find_conflicts()
-        print(json.dumps({"conflicts_after": conflicts, "timestamp": time.time()}, indent=2))
+        remaining_all = [port for port in CONFLICT_PORTS if not is_port_free(port)]
+        remaining_unexpected = [port for port in remaining_all if port not in EXPECTED_PORTS]
+        print(json.dumps({
+            "unexpected_conflicts_remaining": remaining_unexpected,
+            "healthy_containers": verify_containers(),
+            "timestamp": time.time(),
+        }, indent=2))
 
 
 if __name__ == "__main__":
