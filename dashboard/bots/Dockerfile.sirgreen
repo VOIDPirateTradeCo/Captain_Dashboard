@@ -1,0 +1,23 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        libffi-dev \
+        libssl-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements_sirgreen.txt .
+RUN pip install --no-cache-dir -r requirements_sirgreen.txt
+
+COPY sir_green_discord_bot.py .
+
+ENV DISCORD_BOT_TOKEN=""
+ENV DISCORD_HOME_CHANNEL_ID=""
+ENV CYCLE_SECONDS=1800
+ENV STATE_PATH=/state/sir_green_bot_state.json
+
+VOLUME ["/state"]
+
+CMD ["python", "sir_green_discord_bot.py"]
