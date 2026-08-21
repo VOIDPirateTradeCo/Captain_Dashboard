@@ -24,6 +24,7 @@ except ImportError:
 # === CONFIG ===
 TOKEN = os.environ.get("DISCORD_BOT_TOKEN") or os.environ.get("DISCORD_SIR_GREEN_TOKEN")
 HOME_CHANNEL_ID = os.environ.get("DISCORD_HOME_CHANNEL_ID", "")
+ALLOWED_CHANNEL_IDS = {HOME_CHANNEL_ID, "1535372450223886417"}
 GUILD_IDS = [g.strip() for g in os.environ.get("DISCORD_GUILD_IDS", "").split(",") if g.strip()]
 STATE_PATH = pathlib.Path(os.environ.get("STATE_PATH", "/state/sir_green_bot_state.json"))
 STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
