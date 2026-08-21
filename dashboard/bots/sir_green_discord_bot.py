@@ -85,7 +85,7 @@ async def _post_gordon(channel: discord.abc.Messageable, message: str) -> None:
 
 def _call_hermes(prompt: str) -> str:
     try:
-        base = pathlib.Path(os.environ.get("RELAY_BASE", "/relay"))
+        base = pathlib.Path(os.environ.get("RELAY_BASE", "relay"))
         ts = int(dt.datetime.now(dt.timezone.utc).timestamp() * 1000)
         fname = f"{ts}_sir_green.json"
         data = {"prompt": prompt, "created_at": time.strftime("%Y%m%dT%H%M%S")}
@@ -103,8 +103,8 @@ def _call_hermes(prompt: str) -> str:
                     return "(reply read error)"
             time.sleep(0.5)
         return "Relay timeout"
-    except Exception as e:
-        return f"Relay error: {e}"
+    except Exception:
+        return None
 
 
 @bot.event
