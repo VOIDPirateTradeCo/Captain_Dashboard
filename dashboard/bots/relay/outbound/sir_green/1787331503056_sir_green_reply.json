@@ -1,6 +1,0 @@
-{
-  "prompt": "great work!!!  make sure your updating the trello card on the void ops board with all our work and evidcenc.  ty sir green.",
-  "reply": "Done.\n\nUpdated VOID Ops card **PROJECT: tr3asure mAp needs to fully be running.** with a fresh evidence comment.\n\nVerified and posted:\n- Latest FODAVP state: `last_cycle: 2026-08-20T13:54:51.484572`\n- Evidence artifacts present under `Captain_Dashboard/dashboard/fleet/evidence/`\n- 19 git commits with evidence/verification messages\n- Trello auth path valid via Windows Credential Store\n\nCard live timestamp updated: `2026-08-21T17:03:13.769Z`",
-  "created_at": "20260821T115823",
-  "processed_at": "20260821T120343"
-}

@@ -1,6 +1,0 @@
-{
-  "prompt": "i want you to create a test trello card on the void ops board to see if this whole automation works end to end with our bots.",
-  "reply": "Test card created, but **the full end-to-end is not currently verified**.\n\n**Verified working:**\n- Card created on VOID Ops `To Do Next`\n- `sir-green` owner label applied\n- `P1` priority label applied\n- Evidence comment posted\n- Re-read back: all labels + list confirmed live\n\nCard: `[TEST] Trello automation end-to-end bot check`\nURL: `https://trello.com/c/a4aXz1gJ`\n\n**Blocked \u2014 bot side not verified:**\n- `ticket_bot.log` shows the current state of the Discord ticket bot: it is crash-looping on `ModuleNotFoundError: No module named 'daemon_guard'`.\n- Under your own rules, \u201cbuilt/dry-run verified \u2260 live + responding,\u201d so I\u2019m not closing this as end-to-end success while the bot is offline.\n\n**Current assessment:**\n- Trello automation pipeline: green\n- Discord bot pipeline: red / not functional right now\n\nIf you want, the next OODA step is to locate `daemon_guard` in the vault and repair the bot launch path instead of retrying blind.",
-  "created_at": "20260821T160959",
-  "processed_at": "20260821T111243"
-}
