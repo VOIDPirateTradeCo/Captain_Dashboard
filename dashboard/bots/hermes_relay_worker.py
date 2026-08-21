@@ -2,7 +2,17 @@
 import json
 import os
 from dotenv import load_dotenv
-load_dotenv(str(Path(__file__).with_name(".env.sirgreen")))
+load_dotenv(str(Path(__file__).with_name(".env")))
+
+import os as _os
+SECRETS_PATH = _os.environ.get("SECRETS_PATH", str(Path(__file__).with_name("secrets.env")))
+if Path(SECRETS_PATH).exists():
+    for line in Path(SECRETS_PATH).read_text(encoding="utf-8", errors="ignore").splitlines():
+        line = line.strip()
+        if line.startswith("TRELLO_") and "=" in line:
+            k, v = line.split("=", 1)
+            _os.environ.setdefault(k.strip(), v.strip())
+
 import subprocess
 import time
 from pathlib import Path

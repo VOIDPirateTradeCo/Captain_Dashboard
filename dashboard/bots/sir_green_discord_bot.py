@@ -12,7 +12,11 @@ import time
 import urllib.request
 from typing import Any
 from dotenv import load_dotenv
-load_dotenv(".env.sirgreen")
+load_dotenv(".env")
+
+# === TRELLO CONFIG ===
+TRELLO_KEY = os.environ.get("TRELLO_KEY")
+TRELLO_TOKEN = os.environ.get("TRELLO_TOKEN")
 
 try:
     import discord
@@ -117,6 +121,29 @@ async def on_ready() -> None:
         print(f"[SYNC] Failed: {e}", flush=True)
 
 
+
+@bot.tree.command(name="trello_update", description="Update Trello card with evidence")
+@app_commands.describe(card_id="Trello card ID", comment="Evidence comment")
+async def trello_update(interaction: discord.Interaction, card_id: str, comment: str) -> None:
+    await interaction.response.defer()
+    ok = update_trello_card(card_id, comment)
+    if ok:
+        await interaction.followup.send(f"✅ Updated Trello card {card_id}")
+    else:
+        await interaction.followup.send("❌ Trello update failed")
+
+
+@bot.tree.command(name="trello_read", description="Read Trello card status")
+@app_commands.describe(card_id="Trello card ID")
+async def trello_read(interaction: discord.Interaction, card_id: str) -> None:
+    await interaction.response.defer()
+    card = get_trello_card(card_id)
+    if not card:
+        await interaction.followup.send("❌ Could not fetch card")
+        return
+    comments = get_trello_card_comments(card_id)
+    latest = comments[0]["data"]["text"] if comments else "No comments"
+    await interaction.followup.send("[CARD] " + card.get("name", "") + " | Status: " + card.get("idList", "") + " | Latest: " + latest[:200])
 @bot.tree.command(name="ping", description="Check Sir Green bot latency")
 async def ping(interaction: discord.Interaction) -> None:
     await interaction.response.send_message(f"Pong! {round(bot.latency*1000)}ms")
