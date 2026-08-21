@@ -155,20 +155,19 @@ async def on_message(message: discord.Message) -> None:
             print(f"[DM] send failed: {e}", flush=True)
         return
 
-    # Mention relay in guild
-    if message.guild is not None and bot.user in message.mentions:
-        cleaned = message.content.replace(f"<@{bot.user.id}>", "").replace(f"<@!{bot.user.id}>", "").strip()
+    # Channel-only relay in allowed guild channels
+    if message.guild is not None and str(message.channel.id) in ALLOWED_CHANNEL_IDS:
+        if bot.user in message.mentions:
+            cleaned = message.content.replace(f"<@{bot.user.id}>", "").replace(f"<@!{bot.user.id}>", "").strip()
+        else:
+            cleaned = message.content.strip()
         if cleaned:
             reply = _call_hermes(cleaned)
             try:
                 await message.reply(reply, mention_author=False)
             except Exception as e:
-                print(f"[MENTION] reply failed: {e}", flush=True)
-        else:
-            try:
-                await message.reply("Acknowledged. Send a task after the @Sir Green mention.", mention_author=False)
-            except Exception as e:
-                print(f"[MENTION] empty reply failed: {e}", flush=True)
+                print(f"[CHANNEL] reply failed: {e}", flush=True)
+        return
 
 
 # OODA cycle posting is now manual-only via /cycle command.
