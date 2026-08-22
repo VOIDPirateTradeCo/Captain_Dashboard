@@ -274,6 +274,15 @@
         </div>
     </div>
 
+    <!-- GitHub Issues -->
+    <div class="section-title">🐙 GitHub Issues</div>
+    <div class="grid">
+        <div class="card full">
+            <h3>Obsidian Vault Open Issues</h3>
+            <div id="github-issues-list" class="terminal-scan">Loading...</div>
+        </div>
+    </div>
+
     <div class="section-title">🔐 OPSEC & Tool Classifications</div>
     <div class="grid">
         <div class="card full">
@@ -390,9 +399,9 @@
         <div class="card">
             <h3>🏴‍☠️ SQUIDSTATION (Captain Green)</h3>
             <div class="status-grid">
-                <div class="status-item"><span class="label">IP</span><span class="value online">192.168.0.39</span></div>
+                <div class="status-item"><span class="label">IP</span><span class="value online" id="ip-squid">...</span></div>
                 <div class="status-item"><span class="label">Status</span><span class="value" id="ship-squid">⏳</span></div>
-                <div class="status-item"><span class="label">Role</span><span class="value">Captain's Flagship</span></div>
+                <div class="status-item"><span class="label">Role</span><span class="value" id="role-squid">Captain's Flagship</span></div>
                 <div class="status-item"><span class="label">Latency</span><span class="value" id="latency-squid">...</span></div>
                 <div class="status-item"><span class="label">Open Ports</span><span class="value" id="ports-squid">...</span></div>
             </div>
@@ -400,9 +409,9 @@
         <div class="card">
             <h3>🦜 PINKCADY (Miss Pink)</h3>
             <div class="status-grid">
-                <div class="status-item"><span class="label">IP</span><span class="value warning">192.168.0.3</span></div>
+                <div class="status-item"><span class="label">IP</span><span class="value warning" id="ip-pink">...</span></div>
                 <div class="status-item"><span class="label">Status</span><span class="value" id="ship-pink">⏳</span></div>
-                <div class="status-item"><span class="label">Role</span><span class="value">Torus Coffee Commander</span></div>
+                <div class="status-item"><span class="label">Role</span><span class="value" id="role-pink">Torus Coffee Commander</span></div>
                 <div class="status-item"><span class="label">Latency</span><span class="value" id="latency-pink">...</span></div>
                 <div class="status-item"><span class="label">Open Ports</span><span class="value" id="ports-pink">...</span></div>
             </div>
@@ -410,9 +419,9 @@
         <div class="card">
             <h3>🐉 STEALTHATTACK (Sir Azure)</h3>
             <div class="status-grid">
-                <div class="status-item"><span class="label">IP</span><span class="value warning">192.168.0.10</span></div>
+                <div class="status-item"><span class="label">IP</span><span class="value warning" id="ip-azure">...</span></div>
                 <div class="status-item"><span class="label">Status</span><span class="value" id="ship-azure">⏳</span></div>
-                <div class="status-item"><span class="label">Role</span><span class="value">GPU Rendering Lane</span></div>
+                <div class="status-item"><span class="label">Role</span><span class="value" id="role-azure">GPU Rendering Lane</span></div>
                 <div class="status-item"><span class="label">Latency</span><span class="value" id="latency-azure">...</span></div>
                 <div class="status-item"><span class="label">Open Ports</span><span class="value" id="ports-azure">...</span></div>
             </div>
@@ -544,17 +553,7 @@
     <!-- Quick Links -->
     <div class="section-title">⚡ Quick Links</div>
     <div class="card full">
-        <div class="grid" style="grid-template-columns:repeat(6,1fr);gap:8px;">
-            <a href="http://192.168.0.39:81" target="_blank" class="metric">NPM Admin (81)</a>
-            <a href="http://192.168.0.39:3000" target="_blank" class="metric">Gitea</a>
-            <a href="http://192.168.0.39:3002" target="_blank" class="metric">Grafana</a>
-            <a href="http://192.168.0.39:3001" target="_blank" class="metric">Kuma</a>
-            <a href="http://192.168.0.39:9090" target="_blank" class="metric">Prometheus</a>
-            <a href="http://192.168.0.39:8081" target="_blank" class="metric">cAdvisor</a>
-            <a href="https://trello.com/b/E801tUD3/void-ops" target="_blank" class="metric">VOID Ops</a>
-            <a href="https://trello.com/b/MK3o45Dg/lore-writing" target="_blank" class="metric">Lore Writing</a>
-            <a href="/api/status" class="metric">API Status</a>
-        </div>
+        <div class="grid" id="quick-links-grid" style="grid-template-columns:repeat(6,1fr);gap:8px;"></div>
     </div>
 </div>
 
@@ -568,6 +567,25 @@
 <script>
 const API = '/api/status';
 const WHALE_API = '/api/whale';
+const DASHBOARD_CONFIG = {
+  host: '192.168.0.39',
+  ships: {
+    SQUIDSTATION: '192.168.0.39',
+    PINKCADY: '192.168.0.3',
+    STEALTHATTACK: '192.168.0.32',
+    GATEWAY: '192.168.0.1'
+  },
+  ports: {
+    npm: 81,
+    gitea: 3000,
+    grafana: 3002,
+    kuma: 3001,
+    prometheus: 9090,
+    cadvisor: 8081,
+    dashboard: 8080,
+    backend: 5001
+  }
+};
 
 // SHA-256 hash function
 async function sha256(str) {
@@ -721,6 +739,15 @@ async function updateDashboard() {
         setShipStatus('ship-squid', ships.SQUIDSTATION);
         setShipStatus('ship-pink', ships.PINKCADY);
         setShipStatus('ship-azure', ships.STEALTHATTACK);
+
+        // Ship details
+        const details = d.ship_details || {};
+        setText('ip-squid', details.SQUIDSTATION?.ip || '—');
+        setText('role-squid', details.SQUIDSTATION?.role || '—');
+        setText('ip-pink', details.PINKCADY?.ip || '—');
+        setText('role-pink', details.PINKCADY?.role || '—');
+        setText('ip-azure', details.STEALTHATTACK?.ip || '—');
+        setText('role-azure', details.STEALTHATTACK?.role || '—');
 
         // Latency
         const lat = d.latency || {};
@@ -973,6 +1000,46 @@ function applyComms(comms, cipher) {
   setText('cipher-decode', cipher['decode_pirate.py'] ? '✅ Present' : '❌ Missing', cipher['decode_pirate.py'] ? 'online' : 'offline');
   setText('cipher-doc', cipher['TIDAL_TONGUE_CIPHER.md'] ? '✅ Present' : '❌ Missing', cipher['TIDAL_TONGUE_CIPHER.md'] ? 'online' : 'offline');
 }
+
+function applyGithub(github) {
+  const el = document.getElementById('github-issues-list');
+  if (!el) return;
+  const repo = github?.repo || '';
+  const issues = github?.issues || [];
+  const fallback = github?.source === 'github_fallback';
+  const error = fallback ? (github?.error || 'GitHub feed unavailable') : '';
+  if (!repo) {
+    el.innerHTML = '<div class="terminal-scan">GitHub repo not configured</div>';
+    return;
+  }
+  const header = `<div class="status-item"><span class="label">Repo</span><span class="value">${repo}${error ? ` — ${error}` : ''}</span></div>`;
+  if (!issues.length) {
+    el.innerHTML = `${header}<div class="terminal-scan">No open issues to display</div>`;
+    return;
+  }
+  el.innerHTML = header + issues.map(i => {
+    const labels = (i.labels || []).map(l => `<span class="port-tag">${l}</span>`).join(' ');
+    return `<div class="status-item"><span class="label">#${i.number}</span><span class="value">${i.title} ${labels} <a href="${i.url}" target="_blank" class="metric">Open</a></span></div>`;
+  }).join('');
+}
+
+function buildQuickLinks() {
+  const grid = document.getElementById('quick-links-grid');
+  if (!grid) return;
+  const links = [
+    { label: 'NPM Admin', href: `http://${DASHBOARD_CONFIG.host}:${DASHBOARD_CONFIG.ports.npm}` },
+    { label: 'Gitea', href: `http://${DASHBOARD_CONFIG.host}:${DASHBOARD_CONFIG.ports.gitea}` },
+    { label: 'Grafana', href: `http://${DASHBOARD_CONFIG.host}:${DASHBOARD_CONFIG.ports.grafana}` },
+    { label: 'Kuma', href: `http://${DASHBOARD_CONFIG.host}:${DASHBOARD_CONFIG.ports.kuma}` },
+    { label: 'Prometheus', href: `http://${DASHBOARD_CONFIG.host}:${DASHBOARD_CONFIG.ports.prometheus}` },
+    { label: 'cAdvisor', href: `http://${DASHBOARD_CONFIG.host}:${DASHBOARD_CONFIG.ports.cadvisor}` },
+    { label: 'VOID Ops', href: 'https://trello.com/b/E801tUD3/void-ops', external: true },
+    { label: 'Lore Writing', href: 'https://trello.com/b/MK3o45Dg/lore-writing', external: true },
+    { label: 'API Status', href: '/api/status' },
+  ];
+  grid.innerHTML = links.map(l => `<a href="${l.href}" ${l.external ? 'target="_blank" rel="noopener noreferrer"' : ''} class="metric">${l.label}</a>`).join('');
+}
+
 function applyAll(d) {
   try { if (d.ships) applyShips(d.ships, d.ship_details, d.latency); } catch (e) {}
   try { if (d.services) applyServices(d.services); } catch (e) {}
@@ -983,6 +1050,7 @@ function applyAll(d) {
   try { if (d.comms) applyComms(d.comms, d.cipher); } catch (e) {}
   try { if (d.internal_services) applyInternalServices(d.internal_services); } catch (e) {}
   try { if (d.tailscale_status) applyTailscaleCrew(d.tailscale_status); } catch (e) {}
+  try { if (d.github) applyGithub(d.github); } catch (e) {}
 }
 
 /* ==================== FODAVP BUTTON HANDLERS ==================== */
@@ -1051,6 +1119,7 @@ function updateFodavpStatus() {
 document.addEventListener('DOMContentLoaded', () => {
     setTimeout(updateFodavpStatus, 2000);
     window.fodavpPoll = setInterval(updateFodavpStatus, 30000);
+    buildQuickLinks();
 });
 </script>
 </body>

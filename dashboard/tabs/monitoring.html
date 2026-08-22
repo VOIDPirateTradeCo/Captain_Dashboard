@@ -33,6 +33,7 @@
     <div class="card">
         <h2>Live Status</h2>
         <p id="status">Loading...</p>
+        <div id="ports" style="margin-top:8px;"></div>
     </div>
     <div class="card">
         <h2>Panels</h2>
@@ -79,6 +80,9 @@
                     if (panel) panel.innerHTML = ok ? '<span class="online">UP — dashboard routed</span>' : '<span class="offline">DOWN</span>';
                 }
                 document.getElementById('status').innerHTML = lines.join('<br>');
+                const ports = data.services?.network_ports || {};
+                const portEl = document.getElementById('ports');
+                if (portEl) portEl.innerHTML = Object.entries(ports).map(([k,v])=>`<span class="${v?'online':'offline'}">${k}: ${v?'OPEN':'CLOSED'}</span>`).join('<br>');
             } catch (e) {
                 document.getElementById('status').innerText = 'Failed to load status';
             }

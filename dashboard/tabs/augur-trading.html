@@ -38,6 +38,7 @@
 </nav>
 <h1>🧠 AUGUR TRADING — Live Alpaca + AI Status</h1>
 <div id="augur-ui-errors" style="font-size:0.85em;color:#ff6b6b;white-space:pre-wrap;"></div>
+<div id="augur-error-panel" style="font-size:0.8em;color:#fbbf24;white-space:pre-wrap;display:none;"></div>
 <p class="metric">Augur training status, Alpaca paper account, open orders, positions, and signals.</p>
 
 <div class="card">
@@ -202,6 +203,7 @@ function renderAugurStatus(obj){
   }).join('');
 }
 async function load(){
+  const errPanel = document.getElementById('augur-error-panel');
   try {
     const r = await fetch('/api/augur');
     const data = await r.json();
@@ -224,6 +226,7 @@ async function load(){
     const signals = ((liveBackend.signals && liveBackend.signals.data) || {});
     document.getElementById('signals').textContent = Object.keys(signals).length ? JSON.stringify(signals, null, 2) : (data && data.status === 'PENDING_DEPLOY' ? 'Backend not deployed: PENDING_DEPLOY' : 'No signals');
     document.getElementById('raw').textContent = JSON.stringify(data, null, 2);
+    if (errPanel) { errPanel.style.display = 'none'; errPanel.textContent = ''; }
   } catch(e) {
     const msg = 'load() failed: ' + esc(e.message);
     ['account','orders','positions','augur','signals','raw'].forEach(id => {
@@ -232,8 +235,8 @@ async function load(){
       if (id === 'account') el.innerHTML = '<span class="badge bad">ERR ' + esc(e.message) + '</span>';
       else el.textContent = msg;
     });
-    document.getElementById('augur-ui-errors').textContent = (document.getElementById('augur-ui-errors').textContent || '') + '
-[' + new Date().toLocaleTimeString() + '] ' + msg;
+    document.getElementById('augur-ui-errors').textContent = (document.getElementById('augur-ui-errors').textContent || '') + '\n[' + new Date().toLocaleTimeString() + '] ' + msg;
+    if (errPanel) { errPanel.style.display = 'block'; errPanel.textContent = msg; }
   }
 }
 

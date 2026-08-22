@@ -35,6 +35,7 @@ import subprocess
 import threading
 import time
 import datetime
+from datetime import timezone
 import re
 import hashlib
 import hmac
@@ -1606,9 +1607,9 @@ class DashboardHandler(BaseHTTPRequestHandler):
         elif path == '/api/fleet/verify' or path == '/api/fleet/verify/':
             self.handle_fleet_verify_api()
         elif path == '/api/fleet/data' or path == '/api/fleet/data/':
-            return self.handle_local_proxy_json('http://127.0.0.1:5000/api/fleet/data', keep_path=True)
+            return self.handle_local_proxy_json('http://127.0.0.1:5001/api/fleet/data', keep_path=True)
         elif path.startswith('/api/fleet/compute'):
-            self.handle_local_proxy_json('http://127.0.0.1:5000/api/fleet/compute', keep_path=True)
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/fleet/compute', keep_path=True)
         elif path == '/api/network/alerts' or path == '/api/network/alerts/':
             self.handle_network_alerts_api()
         elif path == '/api/security' or path == '/api/security/':
@@ -1644,13 +1645,13 @@ class DashboardHandler(BaseHTTPRequestHandler):
         elif path == '/api/data/sources/status':
             self.handle_local_data_source_status_api()
         elif path.startswith('/api/data/sources'):
-            self.handle_local_proxy_json('http://127.0.0.1:5000/api/data/sources', keep_path=True)
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/data/sources', keep_path=True)
         elif path == '/api/schwab/auth-url':
             return self.handle_local_schwab_auth_url_api()
         elif path == '/api/schwab/oauth/callback':
             return self.handle_local_schwab_oauth_callback_api()
         elif path == '/api/schwab/account_snapshot':
-            return self.handle_local_proxy_json('http://127.0.0.1:5000/api/schwab/account_snapshot')
+            return self.handle_local_proxy_json('http://127.0.0.1:5001/api/schwab/account_snapshot')
         elif path.startswith('/api/schwab'):
             self.handle_local_schwab_status_api()
         elif path == '/api/healthz':
@@ -1678,63 +1679,63 @@ class DashboardHandler(BaseHTTPRequestHandler):
         elif path == '/api/signals' or path.startswith('/api/signals/'):
             self.handle_local_signals_api()
         elif path.startswith('/api/augur/scan/status'):
-            self.handle_local_proxy_json('http://127.0.0.1:5000/api/augur/scan/status')
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/augur/scan/status')
         elif path.startswith('/api/augur/augmented_signals'):
-            self.handle_local_proxy_json('http://127.0.0.1:5000/api/augur/augmented_signals')
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/augur/augmented_signals')
         elif path in ('/api/augur/oco', '/api/augur/oco/') or path.startswith('/api/augur/oco/'):
             self.handle_local_api_stub(path, default_body={"orders": [], "count": 0, "mode": "paper"})
         elif path == '/api/augur/bracket' or path == '/api/augur/bracket/' or (path.startswith('/api/augur/bracket/') and not path.startswith('/api/augur/bracket/info')):
             self.handle_local_api_stub(path, default_body={"orders": [], "count": 0, "mode": "paper"})
         elif path.startswith('/api/augur/bracket/info'):
-            self.handle_local_proxy_json(f'http://127.0.0.1:5000{path}')
+            self.handle_local_proxy_json(f'http://127.0.0.1:5001{path}')
         elif path.startswith('/api/augur/manual_signal'):
             self.handle_local_manual_signal_api()
         elif path.startswith('/api/auth/login'):
-            self.handle_local_proxy_json('http://127.0.0.1:5000/api/auth/login', methods=['POST'])
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/auth/login', methods=['POST'])
         elif path.startswith('/api/auth/logout'):
-            self.handle_local_proxy_json('http://127.0.0.1:5000/api/auth/logout', methods=['POST'])
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/auth/logout', methods=['POST'])
         elif path.startswith('/api/auth/status'):
-            self.handle_local_proxy_json('http://127.0.0.1:5000/api/auth/status')
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/auth/status')
         elif path.startswith('/api/auth/whoami'):
-            self.handle_local_proxy_json('http://127.0.0.1:5000/api/auth/whoami')
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/auth/whoami')
         elif path.startswith('/api/auth/profiles'):
-            self.handle_local_proxy_json('http://127.0.0.1:5000/api/auth/profiles')
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/auth/profiles')
         elif path.startswith('/api/auth/profile'):
-            self.handle_local_proxy_json('http://127.0.0.1:5000/api/auth/profile', methods=['PATCH'])
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/auth/profile', methods=['PATCH'])
         elif path.startswith('/api/auth/verify'):
             self.handle_local_auth_verify_api()
         elif path.startswith('/api/auth/register'):
-            self.handle_local_proxy_json('http://127.0.0.1:5000/api/auth/register', methods=['POST'])
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/auth/register', methods=['POST'])
         elif path.startswith('/api/auth'):
-            self.handle_local_proxy_json('http://127.0.0.1:5000/api/auth', keep_path=True)
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/auth', keep_path=True)
         elif path.startswith('/api/augur'):
-            self.handle_local_proxy_json('http://127.0.0.1:5000/api/augur', keep_path=True)
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/augur', keep_path=True)
         elif path.startswith('/api/alpaca'):
-            self.handle_local_proxy_json('http://127.0.0.1:5000/api/alpaca', keep_path=True)
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/alpaca', keep_path=True)
         elif path == '/api/trade' or path == '/api/trade/':
             self.handle_local_api_stub(path, default_body={'error':'trade endpoint not implemented'})
         elif path == '/api/execute' or path == '/api/execute/':
             self.handle_local_api_stub(path, default_body={'error':'execute endpoint not implemented'})
         elif path.startswith('/api/trades'):
-            self.handle_local_proxy_json('http://127.0.0.1:5000/api/trades', keep_path=True)
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/trades', keep_path=True)
         elif path.startswith('/api/settings'):
-            self.handle_local_proxy_json('http://127.0.0.1:5000/api/settings', keep_path=True)
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/settings', keep_path=True)
         elif path.startswith('/api/ticker_fundamentals'):
-            self.handle_local_proxy_json('http://127.0.0.1:5000/api/ticker_fundamentals', keep_path=True)
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/ticker_fundamentals', keep_path=True)
         elif path == '/api/fundamentals' or path == '/api/fundamentals/':
             self.handle_fundamentals_index()
         elif path.startswith('/api/fundamentals'):
-            self.handle_local_proxy_json('http://127.0.0.1:5000/api/fundamentals', keep_path=True)
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/fundamentals', keep_path=True)
         elif path == '/api/sectors' or path == '/api/sectors/':
             self.handle_sectors_api()
         elif path in ('/api/killswitch', '/api/killswitch/', '/api/killswitch/trading','/api/killswitch/trading/','/api/killswitch/learning','/api/killswitch/learning/', '/api/killswitch/timeout', '/api/killswitch/timeout/'):
             self.handle_killswitch_api(path)
         elif path.startswith('/api/positions'):
-            self.handle_local_proxy_json('http://127.0.0.1:5000/api/positions', keep_path=True)
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/positions', keep_path=True)
         elif path == '/api/schwab/auth-url':
             return self.handle_local_schwab_auth_url_api()
         elif path.startswith('/api/paper_trades'):
-            self.handle_local_proxy_json('http://127.0.0.1:5000/api/paper_trades', keep_path=True)
+            self.handle_local_proxy_json('http://127.0.0.1:5001/api/paper_trades', keep_path=True)
         elif path == '/api/wazuh' or path.startswith('/api/wazuh/'):
             self.handle_local_api_stub('/api/wazuh', default_body={'wazuh': {'status': 'unavailable', 'note': 'Wazuh manager/agents not reporting via local API'}})
         elif path == '/api/stealthattack' or path.startswith('/api/stealthattack/'):
@@ -1817,7 +1818,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
         elif path in ('/api/captcha-verify', '/api/captcha-verify/'):
             self.handle_local_api_stub(path, default_body={"captcha": {"service": "npm-proxy", "status": "ready", "mode": "paper"}})
         elif path in ('/api/github', '/api/github/'):
-            self.handle_local_api_stub(path, default_body={"github": {"repos_synced": True, "repos": ["PROJECT_tr3asure_mAp", "PROJECT_crownless_fortune"], "sync_status": "in_sync", "mode": "paper"}})
+            self.handle_github_issues_api(path)
         # Live monitoring checks instead of hardcoded stubs
         elif path in ('/api/grafana', '/api/grafana/'):
             self._json_ok({"grafana": {"running": check_port_fast('127.0.0.1', 3002, timeout=0.6), "port": 3002, "mode": "paper", "live": True}})
@@ -1846,7 +1847,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
         elif path in ['/api/fodavp/stop', '/api/fodavp/stop/']:
             self.handle_fodavp_stop()
         elif path.startswith('/api/'):
-            self.handle_proxy_api('http://127.0.0.1:5000', keep_path=True)
+            self.handle_proxy_api('http://127.0.0.1:5001', keep_path=True)
         else:
             # SPA catch-all: serve dashboard HTML for any client-side route
             self.handle_html()
@@ -1931,7 +1932,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
     def handle_tr3asure_mAp_status_api(self):
         payload = {
             "integration": "CaptainDashboard -> tr3asure_mAp",
-            "backend_base": "http://127.0.0.1:5000",
+            "backend_base": "http://127.0.0.1:5001",
             "mode": "local",
             "sync_status": {"last_sync": time.time(), "trello_synced": True, "augur_synced": True},
         }
@@ -2155,6 +2156,31 @@ class DashboardHandler(BaseHTTPRequestHandler):
             default_body = {'error': 'not implemented'}
         self._json_ok(default_body)
 
+    def handle_github_issues_api(self, path):
+        repo = 'VOIDPirateTradeCo/Obsidian_Vault'
+        try:
+            url = f'https://api.github.com/repos/{repo}/issues?state=open&per_page=10&sort=updated&direction=desc'
+            req = urllib.request.Request(url, headers={'User-Agent':'CaptainDashboard','Accept':'application/vnd.github+json'})
+            with urllib.request.urlopen(req, timeout=15) as r:
+                raw = r.read()
+                data = json.loads(raw)
+                issues = []
+                for item in data:
+                    if 'pull_request' in item:
+                        continue
+                    issues.append({
+                        'id': item.get('id'),
+                        'number': item.get('number'),
+                        'title': item.get('title'),
+                        'state': item.get('state'),
+                        'updated_at': item.get('updated_at'),
+                        'url': item.get('html_url'),
+                        'labels': [l.get('name') for l in (item.get('labels') or [])],
+                    })
+                self._json_ok({'repo': repo, 'issues': issues, 'count': len(issues), 'source': 'github'})
+        except Exception as exc:
+            self._json_ok({'repo': repo if 'repo' in locals() else 'VOIDPirateTradeCo/Obsidian_Vault', 'issues': [], 'count': 0, 'error': str(exc), 'source': 'github_fallback'})
+
     def handle_local_data_source_status_api(self):
         sources = []
         stale_cutoff = None
@@ -2331,7 +2357,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
         # This eliminates the dependency on schwab_streamer and pandas modules
         try:
             path = f"/api/augur/bracket/info/{ticker}"
-            self.handle_local_proxy_json(f'http://127.0.0.1:5000{path}')
+            self.handle_local_proxy_json(f'http://127.0.0.1:5001{path}')
         except Exception as exc:
             self._json_err(500, f"Backend proxy failed: {str(exc)}")
         except Exception as exc:
@@ -2805,16 +2831,16 @@ class DashboardHandler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def handle_local_signals_api(self):
-        body = {"timestamp": datetime.datetime.now(timezone.utc).isoformat(), "count": 0, "signals": []}
+        body = {"timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(), "count": 0, "signals": []}
         try:
-            req = urllib.request.Request('http://127.0.0.1:5000/api/signals', method='GET')
+            req = urllib.request.Request('http://127.0.0.1:5001/api/signals', method='GET')
             with urllib.request.urlopen(req, timeout=5) as r:
                 upstream = json.loads(r.read())
             if isinstance(upstream, dict):
                 body = upstream
         except Exception:
             pass
-        body.setdefault('timestamp', datetime.datetime.now(timezone.utc).isoformat())
+        body.setdefault('timestamp', datetime.datetime.now(datetime.timezone.utc).isoformat())
         self._json_ok(body)
 
     def handle_augur_api(self):
@@ -2837,11 +2863,11 @@ class DashboardHandler(BaseHTTPRequestHandler):
             try:
                 import urllib.request as _u
                 live_endpoints = [
-                    ('augur_status', 'http://127.0.0.1:5000/api/augur/status'),
-                    ('signals', 'http://127.0.0.1:5000/api/signals'),
-                    ('last_signal', 'http://127.0.0.1:5000/api/augur/last_signal'),
-                    ('alpaca_status', 'http://127.0.0.1:5000/api/data/alpaca/status'),
-                    ('alpaca_smoke', 'http://127.0.0.1:5000/api/alpaca/smoke_test'),
+                    ('augur_status', 'http://127.0.0.1:5001/api/augur/status'),
+                    ('signals', 'http://127.0.0.1:5001/api/signals'),
+                    ('last_signal', 'http://127.0.0.1:5001/api/augur/last_signal'),
+                    ('alpaca_status', 'http://127.0.0.1:5001/api/data/alpaca/status'),
+                    ('alpaca_smoke', 'http://127.0.0.1:5001/api/alpaca/smoke_test'),
                 ]
                 for name, url in live_endpoints:
                     try:
@@ -2897,7 +2923,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
                 self.wfile.write(json.dumps(payload, indent=2).encode('utf-8'))
                 return
             import urllib.request as _u
-            req = _u.Request(f"http://127.0.0.1:5000/api/bots/{bot_id}/graduation_status",
+            req = _u.Request(f"http://127.0.0.1:5001/api/bots/{bot_id}/graduation_status",
                              method="GET")
             with _u.urlopen(req, timeout=10) as r:
                 payload = json.loads(r.read())
@@ -2917,9 +2943,9 @@ class DashboardHandler(BaseHTTPRequestHandler):
         self.end_headers()
         try:
             endpoints = [
-                ("portfolio", "http://127.0.0.1:5000/api/portfolio/paper"),
-                ("scheduler", "http://127.0.0.1:5000/api/scheduler/state"),
-                ("risk",      "http://127.0.0.1:5000/api/risk/daily"),
+                ("portfolio", "http://127.0.0.1:5001/api/portfolio/paper"),
+                ("scheduler", "http://127.0.0.1:5001/api/scheduler/state"),
+                ("risk",      "http://127.0.0.1:5001/api/risk/daily"),
             ]
             import urllib.request as _u
             result = {"generated": datetime.datetime.now(timezone.utc).isoformat()}
@@ -3454,7 +3480,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
                     p3_manifest = {}
             
             data = {
-                "timestamp": datetime.datetime.now(timezone.utc).isoformat(),
+                "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
                 "void_ops": {
                     "total_open": audit.get("total_cards", 0),
                     "top10_count": audit.get("top10_count", 0),
@@ -4372,8 +4398,8 @@ class DashboardHandler(BaseHTTPRequestHandler):
             import urllib.request as _u
             statuses = {}
             endpoints = [
-                ('sectors', 'http://127.0.0.1:5000/api/fundamentals/sectors'),
-                ('progress', 'http://127.0.0.1:5000/api/fundamentals/progress'),
+                ('sectors', 'http://127.0.0.1:5001/api/fundamentals/sectors'),
+                ('progress', 'http://127.0.0.1:5001/api/fundamentals/progress'),
             ]
             for name, url in endpoints:
                 try:
@@ -4383,7 +4409,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
                     statuses[name] = {'status': 'unavailable', 'error': str(exc)}
             payload = {
                 'endpoint': '/api/fundamentals',
-                'backend': 'http://127.0.0.1:5000',
+                'backend': 'http://127.0.0.1:5001',
                 'available_paths': [
                     '/api/fundamentals/<ticker>',
                     '/api/fundamentals/download',
@@ -4400,7 +4426,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
     def handle_sectors_api(self):
         self._json_ok({
             'endpoint': '/api/sectors',
-            'backend': 'http://127.0.0.1:5000',
+            'backend': 'http://127.0.0.1:5001',
             'status': 'unavailable',
             'note': 'backend /api/fundamentals/sectors returned 404; safe stub active',
         })
@@ -4659,7 +4685,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
             smart = _load_json(state_dir, "lan_automation_status.json") or _load_json(alt_state_dir, "lan_automation_status.json") or {}
 
             payload = {
-                "timestamp": datetime.datetime.now(timezone.utc).isoformat(),
+                "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
                 "ticketing": full_auto.get("ticketing", lan.get("ticketing", {})),
                 "automation": full_auto.get("issues", []),
                 "lan": {
