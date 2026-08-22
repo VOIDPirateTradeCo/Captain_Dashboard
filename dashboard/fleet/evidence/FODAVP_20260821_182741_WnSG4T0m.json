@@ -1,0 +1,63 @@
+{
+  "cycle_id": "FODAVP_20260821_182741",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-21T18:27:41.006283",
+  "target": {
+    "card_id": "6a88bac1665376f2b3c1545f",
+    "shortLink": "WnSG4T0m",
+    "name": "[P2] Fix VOID Pirate Fleet Orders scheduled task",
+    "url": "https://trello.com/c/WnSG4T0m/11703-p2-fix-void-pirate-fleet-orders-scheduled-task"
+  },
+  "decision": {
+    "action_type": "bug_fix",
+    "target_card": "WnSG4T0m",
+    "target_name": "[P2] Fix VOID Pirate Fleet Orders scheduled task",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card description + any linked resources",
+      "Locate affected code/config",
+      "Apply minimal targeted fix",
+      "Run verification command",
+      "Post evidence comment to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "bug_fix",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card WnSG4T0m \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-21T18:27:41.005283",
+    "fix_applied": false,
+    "note": "No real handler for WnSG4T0m \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for WnSG4T0m \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-21T18:27:41.006283",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

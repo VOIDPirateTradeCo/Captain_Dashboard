@@ -1,0 +1,62 @@
+{
+  "cycle_id": "FODAVP_20260821_182545",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-21T18:25:45.671938",
+  "target": {
+    "card_id": "6a88487e66064d6ac9ce920a",
+    "shortLink": "TmPXb4DR",
+    "name": "[P0] DASHBOARD: Action buttons crash server with ConnectionResetError",
+    "url": "https://trello.com/c/TmPXb4DR/11672-p0-dashboard-action-buttons-crash-server-with-connectionreseterror"
+  },
+  "decision": {
+    "action_type": "generic",
+    "target_card": "TmPXb4DR",
+    "target_name": "[P0] DASHBOARD: Action buttons crash server with ConnectionResetError",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card requirements",
+      "Execute objective",
+      "Verify completion",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "generic",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card TmPXb4DR \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-21T18:25:45.670941",
+    "fix_applied": false,
+    "note": "No real handler for TmPXb4DR \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for TmPXb4DR \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-21T18:25:45.671938",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

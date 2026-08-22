@@ -1,0 +1,63 @@
+{
+  "cycle_id": "FODAVP_20260821_182748",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-21T18:27:48.253516",
+  "target": {
+    "card_id": "6a88babf6ca6819d1dbf3dc6",
+    "shortLink": "Kvp3BguO",
+    "name": "[P2] Fix VOID_Pirate_Daily_Calendar_Sync scheduled task",
+    "url": "https://trello.com/c/Kvp3BguO/11701-p2-fix-voidpiratedailycalendarsync-scheduled-task"
+  },
+  "decision": {
+    "action_type": "bug_fix",
+    "target_card": "Kvp3BguO",
+    "target_name": "[P2] Fix VOID_Pirate_Daily_Calendar_Sync scheduled task",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card description + any linked resources",
+      "Locate affected code/config",
+      "Apply minimal targeted fix",
+      "Run verification command",
+      "Post evidence comment to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "bug_fix",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card Kvp3BguO \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-21T18:27:48.252516",
+    "fix_applied": false,
+    "note": "No real handler for Kvp3BguO \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for Kvp3BguO \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-21T18:27:48.252516",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}

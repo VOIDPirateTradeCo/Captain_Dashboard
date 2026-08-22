@@ -1,0 +1,1634 @@
+[2026-08-21T18:24:48.880106] ENGINE: 🍳⚔️ FODAVP Protocol Engine v2.0
+[2026-08-21T18:24:48.880106] ENGINE: F.IND → O.RIENT → D.ECIDE → A.CT → V.ERIFY → PERSIST
+[2026-08-21T18:24:48.880106] ENGINE: 🚀 CYCLE INITIATED — FODAVP_20260821_182448
+[2026-08-21T18:24:48.881104] F.IND: Locating up to 5 candidate cards...
+[2026-08-21T18:24:53.684817] F.IND: Found 142 priority cards across 16 lists
+[2026-08-21T18:24:53.686817] ENGINE: 🔍 Trying candidate: [Oi4N0kR4] Research: Build free Geometric Deep Learning (GDL) quan
+[2026-08-21T18:24:53.686817] O.RIENT: Analyzing: Research: Build free Geometric Deep Learning (GDL) quan
+[2026-08-21T18:24:56.597903] O.RIENT: Action type: generic | Complexity: low
+[2026-08-21T18:24:56.598905] D.ECIDE: Formulating action plan...
+[2026-08-21T18:24:56.599905] D.ECIDE: Captain approval required — gating execution
+[2026-08-21T18:24:56.599905] ENGINE: 🛑 Captain approval required — skipping to next candidate
+[2026-08-21T18:24:56.923067] ENGINE: Posted captain approval questions to Trello
+[2026-08-21T18:24:56.923067] ENGINE: ⏸️ Candidate needs captain: Oi4N0kR4 — trying next candidate
+[2026-08-21T18:24:56.923067] ENGINE: 🔍 Trying candidate: [zlp16TbD] Build company website
+[2026-08-21T18:24:56.923067] O.RIENT: Analyzing: Build company website
+[2026-08-21T18:24:59.913155] O.RIENT: Action type: generic | Complexity: low
+[2026-08-21T18:24:59.914160] O.RIENT: Dependencies found: 203
+[2026-08-21T18:24:59.914160] O.RIENT:   → rERRS1LL: [RULE] G3: No Hardcoded Secrets
+[2026-08-21T18:24:59.914160] O.RIENT:   → CDY75xYT: [RULE] G4: No Duplicate Work
+[2026-08-21T18:24:59.914160] O.RIENT:   → LydjrvvS: [RULE] G7: No Hackers
+[2026-08-21T18:24:59.914160] O.RIENT:   → Oi4N0kR4: Research: Build free Geometric Deep Learning (GDL)
+[2026-08-21T18:24:59.915161] O.RIENT:   → 0aCukj7x: FUTURE: Logbook Bot — daily fleet activity summary
+[2026-08-21T18:24:59.915161] O.RIENT:   → DuLYPOwm: FUTURE: Inventory Bot — track ship parts/consumabl
+[2026-08-21T18:24:59.915161] O.RIENT:   → qOjQlcTM: Create a VOID Pirate trading card game
+[2026-08-21T18:24:59.915161] O.RIENT:   → 6MCYfjZV: Launch a VOID Pirate podcast
+[2026-08-21T18:24:59.915161] O.RIENT:   → GsVnGLlf: Deploy website to free hosting
+[2026-08-21T18:24:59.915161] O.RIENT:   → P43oCHIf: Deploy website to Vercel
+[2026-08-21T18:24:59.916160] O.RIENT:   → SI14ECh0: Design website architecture: Next.js + dashboard
+[2026-08-21T18:24:59.916160] O.RIENT:   → zpseVZvV: Lore: Build character prompt sheets for full crew
+[2026-08-21T18:24:59.916160] O.RIENT:   → qhBYYspR: Build content pipeline: Substack + X + AI assets
+[2026-08-21T18:24:59.916160] O.RIENT:   → 6eLbP236: Automate YouTube production workflow
+[2026-08-21T18:24:59.916160] O.RIENT:   → BC47phgW: COSMOS: 02 Numerology backfill
+[2026-08-21T18:24:59.916160] O.RIENT:   → 55I70r2n: COSMOS: 03 Tarot backfill
+[2026-08-21T18:24:59.917161] O.RIENT:   → CvF6cQwl: COSMOS: 04 Mythical Beasts backfill
+[2026-08-21T18:24:59.917161] O.RIENT:   → FGPJ6Nja: COSMOS: 05 Timelines backfill
+[2026-08-21T18:24:59.917161] O.RIENT:   → ciVPoYZH: COSMOS: 06 CrossReference backfill
+[2026-08-21T18:24:59.917161] O.RIENT:   → YByPorJf: COSMOS: 07 Lore Chapters backfill
+[2026-08-21T18:24:59.917161] O.RIENT:   → katpiH67: COSMOS: 09 Sun Cycle notes
+[2026-08-21T18:24:59.917161] O.RIENT:   → 4AinwFBs: COSMOS: 11 Major Historical Events notes
+[2026-08-21T18:24:59.918160] O.RIENT:   → sNGbWYRn: COSMOS: 15 Ancient History notes
+[2026-08-21T18:24:59.918160] O.RIENT:   → Hhm0QV1L: COSMOS: 16 Constellations navigation lore
+[2026-08-21T18:24:59.918160] O.RIENT:   → XkK2r5Rw: COSMOS: 17 Naturalis historia notes
+[2026-08-21T18:24:59.918160] O.RIENT:   → nys7Q21K: Crew bot build template: finalize `crew_bot_templa
+[2026-08-21T18:24:59.918160] O.RIENT:   → u63AJBr4: Sir Green Discord bot: OODA cycle 2 — context-awar
+[2026-08-21T18:24:59.918160] O.RIENT:   → 3OiWivqj: Avatar design: Sir Green
+[2026-08-21T18:24:59.918160] O.RIENT:   → aPT5TPtY: Avatar design: Sir Azure / STEALTHATTACK
+[2026-08-21T18:24:59.919160] O.RIENT:   → ES4FrMiy: Trello: create crew-specific Taoism flavor notes
+[2026-08-21T18:24:59.919160] O.RIENT:   → NYSmLx8B: 🧹 Improvement: Define single Obsidian_Vault folder
+[2026-08-21T18:24:59.919160] O.RIENT:   → 4LVVmB1S: 🔧 Add vault governance README/CONTRIBUTING rules f
+[2026-08-21T18:24:59.919160] O.RIENT:   → qUqVdYxR: Sir Azure completes Trello card → auto-notify Capt
+[2026-08-21T18:24:59.919160] O.RIENT:   → fee8xoCO: "SQUIDSTATION"= current build of local pc = "Devic
+[2026-08-21T18:24:59.919160] O.RIENT:   → HRMycveY: Build content pipeline scheduler: Substack/X/YouTu
+[2026-08-21T18:24:59.920160] O.RIENT:   → 4GJhflkF: [CF-84] GitHub repo creation
+[2026-08-21T18:24:59.920160] O.RIENT:   → bXlF1ZIH: Deploy TencentDB Agent Memory Hermes plugin offlin
+[2026-08-21T18:24:59.920160] O.RIENT:   → ysiTHhDu: Crew Alert Bot — deploy + verify alerts in #crew-a
+[2026-08-21T18:24:59.920160] O.RIENT:   → jccaVuKX: Ticket Alert Bot — deploy + verify Trello lifecycl
+[2026-08-21T18:24:59.920160] O.RIENT:   → p2J2WMSF: Fleet Inventory Bot — deploy + verify inventory al
+[2026-08-21T18:24:59.921160] O.RIENT:   → FcNcMdCg: Rig Monitor Bot — deploy + verify ship status aler
+[2026-08-21T18:24:59.921160] O.RIENT:   → MKsMUAoP: Sir Green Discord bot — verify end-to-end relay
+[2026-08-21T18:24:59.921160] O.RIENT:   → bwwBXUBd: Discord bot container restart policy audit
+[2026-08-21T18:24:59.921160] O.RIENT:   → TmPXb4DR: [P0] DASHBOARD: Action buttons crash server with C
+[2026-08-21T18:24:59.921160] O.RIENT:   → 681SznI0: RECOVERY-2: Create fleet-wide Hermes catastrophic 
+[2026-08-21T18:24:59.921160] O.RIENT:   → TgbhKkQ5: [P2] DASHBOARD: GitHub Issues panel missing from d
+[2026-08-21T18:24:59.921160] O.RIENT:   → sQYWr7Ud: Add GPU/vRAM + Ollama load display to hive-mind da
+[2026-08-21T18:24:59.922161] O.RIENT:   → rAckWaQ7: Generate social templates with Sir Azure
+[2026-08-21T18:24:59.922161] O.RIENT:   → oVhvLq8p: Design a VOID Pirate flag collection
+[2026-08-21T18:24:59.922161] O.RIENT:   → Q9WYNr9b: Write a VOID Pirate cookbook
+[2026-08-21T18:24:59.922161] O.RIENT:   → A3Ivds4Y: Build automation dashboard page
+[2026-08-21T18:24:59.922161] O.RIENT:   → rbf3DH6S: Sir Green health dead-man's switch
+[2026-08-21T18:24:59.922161] O.RIENT:   → Ro98aX7E: Sir Green bot deployment checklist
+[2026-08-21T18:24:59.923160] O.RIENT:   → GCtSp0hb: Sir Green Discord bot E2E validation
+[2026-08-21T18:24:59.923160] O.RIENT:   → D1Fn4gjD: Discord: confirm bot tokens and scripts to build
+[2026-08-21T18:24:59.923160] O.RIENT:   → nNkCDfms: Discord: validate bot launcher paths and token set
+[2026-08-21T18:24:59.923160] O.RIENT:   → ar1rFn5e: Trello automation: create board/card workflow scri
+[2026-08-21T18:24:59.923160] O.RIENT:   → wqHsmJdz: Automation: auto-respond to routine email
+[2026-08-21T18:24:59.923160] O.RIENT:   → SvNvAnWK: Automation: build safe email reader for VOID Pirat
+[2026-08-21T18:24:59.923160] O.RIENT:   → oTXlxBIG: [ONBOARD] Sir Azure / STEALTHATTACK — AI art + Dis
+[2026-08-21T18:24:59.924160] O.RIENT:   → P8VQjhHv: [P2] BUG: 19 duplicate Docker volumes (torus_* vs 
+[2026-08-21T18:24:59.924160] O.RIENT:   → 7yBJyjGq: BUG-HUNT-30: Port 22 missing — Gitea SSH down
+[2026-08-21T18:24:59.924160] O.RIENT:   → bnvxep9o: [P2] BUG: 8 stale Docker image version tags
+[2026-08-21T18:24:59.924160] O.RIENT:   → 5yVkgBa6: BACKEND-MARKET-1: 12 market feature endpoints all 
+[2026-08-21T18:24:59.924160] O.RIENT:   → 268n53Sl: BUG-6: Verify full download flow end-to-end
+[2026-08-21T18:24:59.924160] O.RIENT:   → eiqhzf5D: [fleet] Wire fleet_data_manager.py into app.py and
+[2026-08-21T18:24:59.925160] O.RIENT:   → oNH7MhiV: [fleet] Build 20–30GB Augur offline dataset on SQU
+[2026-08-21T18:24:59.925160] O.RIENT:   → uHh52CJe: 🐛 P2: 5 missing security headers on dashboard API
+[2026-08-21T18:24:59.925160] O.RIENT:   → YFOs4nhq: 🐛 Alpaca in PAPER trading mode — no live trades be
+[2026-08-21T18:24:59.925160] O.RIENT:   → gAomymCs: 🐛 No TreasureMap containers running (containers_up
+[2026-08-21T18:24:59.925160] O.RIENT:   → dPuZC7zX: API /api/ships — latency field is EMPTY
+[2026-08-21T18:24:59.925160] O.RIENT:   → xLP78VzO: Dashboard /api/status — health_message field is EM
+[2026-08-21T18:24:59.926160] O.RIENT:   → e9XExoL4: Dashboard /api/status — latency field is EMPTY
+[2026-08-21T18:24:59.926160] O.RIENT:   → skA1pUJn: Dashboard /api/status — cipher field is EMPTY
+[2026-08-21T18:24:59.926160] O.RIENT:   → fhLifEPL: Dashboard /api/status — opsec field is EMPTY
+[2026-08-21T18:24:59.926160] O.RIENT:   → 3dK1U9V3: Scheduler/cron cards reference external IDs not in
+[2026-08-21T18:24:59.926160] O.RIENT:   → SJtUxUDM: populate_fundamental_macros.py missing — cannot po
+[2026-08-21T18:24:59.926160] O.RIENT:   → 1ojBeVEs: signal_augmentation.py missing — cannot wire augme
+[2026-08-21T18:24:59.926160] O.RIENT:   → Cr1crpun: TODO: Deploy augmented signal integration (4-layer
+[2026-08-21T18:24:59.927159] O.RIENT:   → uoV5bbeC: Create deployment manifests for all crew PCs
+[2026-08-21T18:24:59.927159] O.RIENT:   → RBMrDUU8: Create sync/deployment scripts for all 3 PCs
+[2026-08-21T18:24:59.927159] O.RIENT:   → 3j1oGE9G: Full code/functionality scan after reorganization
+[2026-08-21T18:24:59.927159] O.RIENT:   → 0ndwFPMs: Fix this discord bot, it should not be called  Gor
+[2026-08-21T18:24:59.927159] O.RIENT:   → JauV0Rt0: [BUG] 19 API routes still return 404 — need regist
+[2026-08-21T18:24:59.927159] O.RIENT:   → mVyzkhbJ: 🐛 [BUG] SQUIDSTATION system clock 5 hours ahead
+[2026-08-21T18:24:59.928160] O.RIENT:   → 9647DUE6: 🐛 [BUG] Vault structure changed — vault.json missi
+[2026-08-21T18:24:59.928160] O.RIENT:   → RnsC55hb: 📊 Inventory: Build tornado-inventory dashboard wid
+[2026-08-21T18:24:59.928160] O.RIENT:   → LjhBLnG8: [OPS] Deploy NetBox + Dnsmasq containers on SQUIDS
+[2026-08-21T18:24:59.928160] O.RIENT:   → 60bcJOxV: 🐛 [BUG] OODA cron has no auto-restart — dies silen
+[2026-08-21T18:24:59.928160] O.RIENT:   → dyqFMtgT: 🐛 [BUG] Vault NOT gitignored + 149 uncommitted fil
+[2026-08-21T18:24:59.928160] O.RIENT:   → a8m3OQXt: Ch 1: Before the Sea Took My Name
+[2026-08-21T18:24:59.929160] O.RIENT:   → DgxndIg8: Research sqlite-vec + local embeddings for offline
+[2026-08-21T18:24:59.929160] O.RIENT:   → OEB4ktaG: [MACAW-3] Build message classification engine (cle
+[2026-08-21T18:24:59.929160] O.RIENT:   → VLBPuyh6: INBOX BOT TOKEN SETUP AND WAIT STATUS 20260807T185
+[2026-08-21T18:24:59.929160] O.RIENT:   → eBRCEZAn: Ch 1: King's Navy / Illusions of Glory
+[2026-08-21T18:24:59.929160] O.RIENT:   → 03YNY0OM: P1: Deploy NetBox + Dnsmasq containers on SQUIDSTA
+[2026-08-21T18:24:59.929160] O.RIENT:   → 0a4NoHBP: Ch 1: Contract Work / Corporate Shenanigans
+[2026-08-21T18:24:59.929160] O.RIENT:   → px2ylCkm: Ch 1: Betrayal of Port Smithshire
+[2026-08-21T18:24:59.930159] O.RIENT:   → 3uoLp3m8: Register Smart Ticketing Orchestrator as a Managed
+[2026-08-21T18:24:59.930159] O.RIENT:   → VdpvuwnL: [REB-4] Build quarterly expense report template Q3
+[2026-08-21T18:24:59.930159] O.RIENT:   → YJXgPXly: P2: Sir Green — Audit Discord bots/webhooks on SQU
+[2026-08-21T18:24:59.930159] O.RIENT:   → TlzN6DSq: Calendar: Fix .ics DTEND format for Google import
+[2026-08-21T18:24:59.930159] O.RIENT:   → xQEkAh5i: Ch 1: The Breaking / Rise of Brewbeard Ledgerbane
+[2026-08-21T18:24:59.930159] O.RIENT:   → ktMG37Ok: [SIR AZURE] OODA LOOP ACTIVE — Sir Green processin
+[2026-08-21T18:24:59.931160] O.RIENT:   → w3hXqm7s: Ch 2: Searching for the Little Lights
+[2026-08-21T18:24:59.931160] O.RIENT:   → Ho9PFcIb: 👥 Grant Sir Green/Sir Azure limited access to toru
+[2026-08-21T18:24:59.931160] O.RIENT:   → hrmIy4pU: [P2] BUG: 6 Dockerfiles missing HEALTHCHECK direct
+[2026-08-21T18:24:59.931160] O.RIENT:   → DheIuKqO: 👥 Sir Green: invite limited toruscoffeecompany col
+[2026-08-21T18:24:59.931160] O.RIENT:   → HTkHGm9U: Sir Azure Docker daemon now mesh-exposed via Tails
+[2026-08-21T18:24:59.931160] O.RIENT:   → 6vv94LdC: Build a fleet of Raspberry Pi pirates
+[2026-08-21T18:24:59.931160] O.RIENT:   → 34WSG9XG: [P1] BUG: 14 dashboard routes return 404 — missing
+[2026-08-21T18:24:59.932160] O.RIENT:   → TdOY8MYu: Build inventory dashboard widget
+[2026-08-21T18:24:59.932160] O.RIENT:   → ijRkR7uN: P1: Document Sir Azure Queue Mapping Logic in his 
+[2026-08-21T18:24:59.932160] O.RIENT:   → RNrJkbq0: Obsidian vault automations: video + social media p
+[2026-08-21T18:24:59.932160] O.RIENT:   → DbRT5nuf: Build Obsidian vault watcher daemon
+[2026-08-21T18:24:59.932160] O.RIENT:   → z5ah3jct: Setup AI Art Pipeline (Sir Azure)
+[2026-08-21T18:24:59.932160] O.RIENT:   → GvvPALhj: Build crew scheduler with capacity-aware rules
+[2026-08-21T18:24:59.933161] O.RIENT:   → iqP86n2F: Sir Azure AI Media Pipeline Setup
+[2026-08-21T18:24:59.933161] O.RIENT:   → R6HyziJF: [P0] BUG: 6 ContainerDown alerts FIRING on Prometh
+[2026-08-21T18:24:59.933161] O.RIENT:   → 1aqKny5e: [DEPLOY] Sir Green: Wire augmented scoring into au
+[2026-08-21T18:24:59.933161] O.RIENT:   → T36W8nTu: [P2] BUG: 19 orphaned Docker volumes — 9 duplicate
+[2026-08-21T18:24:59.933161] O.RIENT:   → pHRCCbqV: [DEPLOY] Sir Green: Populate ticker_fundamentals f
+[2026-08-21T18:24:59.933161] O.RIENT:   → cmu6MEwP: [DATA] Wire sectors JSON into Augur DB
+[2026-08-21T18:24:59.933161] O.RIENT:   → K7Jb96hm: [DASHBOARD] Fully wire tr3asure_mAp into Captain d
+[2026-08-21T18:24:59.934161] O.RIENT:   → FfoPEFmf: [DATA] Wire news XML into Augur DB
+[2026-08-21T18:24:59.934161] O.RIENT:   → usJUNp5f: [DATA] Wire fundamentals JSON into Augur DB
+[2026-08-21T18:24:59.934161] O.RIENT:   → Zn1MDL5y: [P1] Sir Green: add /api/security-docs route to da
+[2026-08-21T18:24:59.934161] O.RIENT:   → x45miCTY: Discord: wire dashboard alerts -> crew Discord cha
+[2026-08-21T18:24:59.934161] O.RIENT:   → 1pObMlcJ: [BUG] ticket_alert_bot.py — unbounded `seen` set l
+[2026-08-21T18:24:59.934161] O.RIENT:   → sVeUeQH9: [BUG] ticket_alert_bot.py — discord_loop() 3s poll
+[2026-08-21T18:24:59.934161] O.RIENT:   → 0jJCfzWY: Sir Green Discord Bot: DM reply path missing
+[2026-08-21T18:24:59.935160] O.RIENT:   → rFl9ahFC: P1 Build Crew Alert Bot — priority-based alert man
+[2026-08-21T18:24:59.935160] O.RIENT:   → 6CFMQFIY: VPN: Deploy WireGuard/OAMP-style VPN for encrypted
+[2026-08-21T18:24:59.935160] O.RIENT:   → U4ct0nYM: Sir Green Discord Bot: token env wiring
+[2026-08-21T18:24:59.935160] O.RIENT:   → 6rY99DTR: Coordinate with Sir Green on Docker fixes
+[2026-08-21T18:24:59.935160] O.RIENT:   → b1TeNQwd: Gordon audited Sir Green's Docker fleet
+[2026-08-21T18:24:59.935160] O.RIENT:   → 58Yx5DlQ: 📨 [INBOX] SIR AZURE ACCESS AND DOCKER REPLY 202608
+[2026-08-21T18:24:59.936160] O.RIENT:   → BulRoH51: P1 Build White Whale Defense Bot — intrusion detec
+[2026-08-21T18:24:59.936160] O.RIENT:   → 47IdSHuf: 📨 [INBOX] RE FULL AUTOMATION BOOTSTRAP POST BIOS R
+[2026-08-21T18:24:59.936160] O.RIENT:   → 3ruImD6a: [RULE] G5 No Purchase Without Captain
+[2026-08-21T18:24:59.936160] O.RIENT:   → e85961oe: [P1] torus-website: build Next.js + Dockerfile.pro
+[2026-08-21T18:24:59.936160] O.RIENT:   → FxBld6jP: [RULE] G8 No Hackers
+[2026-08-21T18:24:59.936160] O.RIENT:   → SyluFaZs: 🔗 Forward Sir Azure container requests to Sir Gree
+[2026-08-21T18:24:59.937160] O.RIENT:   → G5nc1Hvd: 🔑 NEEDS CREDS: Docker Hub auth failure
+[2026-08-21T18:24:59.937160] O.RIENT:   → B1qKz9QS: 📨 STATUS ACK TORUS DOCKER BUILD IN PROGRESS DASHBO
+[2026-08-21T18:24:59.937160] O.RIENT:   → Hd4yZ4hB: 📨 SIR GREEN BOT AND WATCHER BOTH RUNNING END TO EN
+[2026-08-21T18:24:59.937160] O.RIENT:   → iZPFFxqQ: 🐳 [P1] Build torus-light Docker stack from Sir Gre
+[2026-08-21T18:24:59.937160] O.RIENT:   → 8qteBs1Y: [P1] Sir Green: add /api/rig-report route to dashb
+[2026-08-21T18:24:59.937160] O.RIENT:   → 5jj8GDiO: GitHub crew access: verify org, teams, and member 
+[2026-08-21T18:24:59.938161] O.RIENT:   → 3Z82BhNl: [P1] Sir Green: add /api/hw route to dashboard_ser
+[2026-08-21T18:24:59.938161] O.RIENT:   → aW3X14K6: [P1] Sir Green: add /api/tools route to dashboard_
+[2026-08-21T18:24:59.938161] O.RIENT:   → 0Lpjjxgy: GitHub crew access: Miss Pink added to teams
+[2026-08-21T18:24:59.938161] O.RIENT:   → RUeo8vzv: GitHub crew access: set up teams and repo permissi
+[2026-08-21T18:24:59.938161] O.RIENT:   → PKgV2cUl: [P1] Sir Green: add /api/fleet route to dashboard_
+[2026-08-21T18:24:59.938161] O.RIENT:   → 2i0rCnE5: [G2] Build /api/docker/register route on central o
+[2026-08-21T18:24:59.939161] O.RIENT:   → 0aKa4SRz: GitHub access: Sir Azure token-based access confir
+[2026-08-21T18:24:59.939161] O.RIENT:   → HT0N4MCo: [P2] Connect FleetWatcher/SirGreenBot/AutomationWa
+[2026-08-21T18:24:59.939161] O.RIENT:   → xb5VBzIj: Sir Azure: network access + Docker/service preflig
+[2026-08-21T18:24:59.939161] O.RIENT:   → Uar4LPQY: Automation: Wake-on-LAN + power-state dashboard fo
+[2026-08-21T18:24:59.939161] O.RIENT:   → pEI3hlzp: [G7] Build unified Alert Center + Comms channel st
+[2026-08-21T18:24:59.939161] O.RIENT:   → DpCOemra: [G8] Deploy NPM auth proxy (:81) + uptime-kuma cre
+[2026-08-21T18:24:59.939161] O.RIENT:   → EU5PIH5d: 📨 [INBOX] DEPLOY PACKAGE AND QUESTIONS 20260806 si
+[2026-08-21T18:24:59.940160] O.RIENT:   → vVDn5F8a: Bug: OODA loop Discord spam / false cycle count
+[2026-08-21T18:24:59.940160] O.RIENT:   → SrqmZ1PG: [AUTO] Actionable alerts: Trello/GitHub from dashb
+[2026-08-21T18:24:59.940160] O.RIENT:   → w8M3keWM: Audit Sir Azure build template
+[2026-08-21T18:24:59.940160] O.RIENT:   → 8vuPlpCB: Sir Green Discord Bot: slash command + intent audi
+[2026-08-21T18:24:59.940160] O.RIENT:   → WVZN1dXt: NETWORK-1: 5 unknown devices on LAN with no hostna
+[2026-08-21T18:24:59.940160] O.RIENT:   → wJDtiRtr: Astro Profiles for Crew
+[2026-08-21T18:24:59.941161] O.RIENT:   → nhh4VW7R: 🤖 #259 Discord bot token wiring into crew_map.json
+[2026-08-21T18:24:59.941161] O.RIENT:   → gEJGepwc: Entity Graph / Cast Bible
+[2026-08-21T18:24:59.941161] O.RIENT:   → T1pJ6bBP: Master Summary / World Canon
+[2026-08-21T18:24:59.941161] O.RIENT:   → cN0xbvz4: MONITORING-DEPLOY-1: Grafana/Prometheus/cAdvisor/K
+[2026-08-21T18:24:59.941161] O.RIENT:   → x7FYmBmY: Set up CI/build pipeline for tr3asure_mAp
+[2026-08-21T18:24:59.941161] O.RIENT:   → dlP29YYX: Schema: Define tr3asure_mAp core entity model v1
+[2026-08-21T18:24:59.941161] O.RIENT:   → dnjUofFX: Discord bot code: add startup logging and guild re
+[2026-08-21T18:24:59.942160] O.RIENT:   → 6U1vmOQT: [MASTER] SQUIDSTATION full cleanup — automations m
+[2026-08-21T18:24:59.942160] O.RIENT:   → uooE4Kpi: Sir Green Discord Bot — deploy container + verify 
+[2026-08-21T18:24:59.942160] O.RIENT:   → BoSsMdLD: Sir Green Discord bot: global error handler + life
+[2026-08-21T18:24:59.942160] O.RIENT:   → UwJNsXME: [P1] Deploy White Whale dashboard security tab + /
+[2026-08-21T18:24:59.942160] O.RIENT:   → ztozrcll: SQUIDSTATION: deploy Redis Windows service
+[2026-08-21T18:24:59.942160] O.RIENT:   → wXncvJoD: Captain Rig: full hardware/software inventory pass
+[2026-08-21T18:24:59.943160] O.RIENT:   → J6oAX4qn: Vault: migrate old Shared_With_Pink inbox backlog 
+[2026-08-21T18:24:59.943160] O.RIENT:   → OtE1wGHw: Automation: deploy fleet_comms_watcher on all 3 Ri
+[2026-08-21T18:24:59.943160] O.RIENT:   → cQ4c45A9: Sir Azure Rig: confirm tailscale status, ping mesh
+[2026-08-21T18:24:59.943160] O.RIENT:   → JNcf1Gmj: Deployment: deploy fleet_comms_watcher on all 3 Ri
+[2026-08-21T18:24:59.943160] O.RIENT:   → uALrW3Qc: OODA sweep: clear inboxes and remove processed mes
+[2026-08-21T18:24:59.944163] O.RIENT:   → uXtGntC9: Trello: add Sir Azure to VOID Ops board as needed
+[2026-08-21T18:24:59.944163] O.RIENT:   → IrPa7dUm: Wire crew local vault inbox paths into crew_connec
+[2026-08-21T18:24:59.944163] O.RIENT:   → ApBzPKkP: Vault reorganization: root inboxes, offline queue,
+[2026-08-21T18:24:59.944163] O.RIENT:   → 6blop7Wa: Verify bot buildout paths after vault root reorgan
+[2026-08-21T18:24:59.944163] O.RIENT:   → UDXzpJum: Sir Azure: share/Docker/GitHub/connectivity test
+[2026-08-21T18:24:59.944163] O.RIENT:   → om92dwdi: OODA loop: inbox -> Trello/Git task automation
+[2026-08-21T18:24:59.945163] O.RIENT:   → lrZSsfu2: Bot stack: verify after vault reorg
+[2026-08-21T18:24:59.945163] O.RIENT:   → bZ7g9OrI: [TRACKING] Dashboard: 5 Chinese content items flag
+[2026-08-21T18:24:59.945163] O.RIENT:   → dm9dETZb: P2: Create full OODA tasklist documentation for al
+[2026-08-21T18:24:59.945163] O.RIENT:   → YL9KFDyH: [SIR GREEN] Wire Captain single-command-hub (relay
+[2026-08-21T18:24:59.945163] O.RIENT:   → Mp7v3RJB: [AUTO] Smart ticket orchestrator — VOID hygiene st
+[2026-08-21T18:24:59.945163] O.RIENT:   → Bt5hhqPJ: Obsidian Desktop: vault fails to load due to missi
+[2026-08-21T18:24:59.946161] O.RIENT:   → OPVFbNPI: Build Torus Coffee Company Discord bot for Torus C
+[2026-08-21T18:24:59.946161] O.RIENT:   → AElczBX2: 📨 [INBOX] BOT TOKEN SETUP AND WAIT STATUS 20260805
+[2026-08-21T18:24:59.946161] O.RIENT:   → IYG9f7AL: Fleet: deploy fleet_comms_watcher on SQUIDSTATION/
+[2026-08-21T18:24:59.946161] O.RIENT:   → z4BUv9HC: Cybersec: secret_scan.py in auto-archive + daily c
+[2026-08-21T18:24:59.946161] O.RIENT:   → u5tg8AiV: [P1] FLEET: Deploy OODAVRUR engine on SQUIDSTATION
+[2026-08-21T18:24:59.948160] ENGINE: 🔗 DEPENDENCY CHAIN: Build company website
+[2026-08-21T18:24:59.948160] ENGINE:    Working dependency first: rERRS1LL - [RULE] G3: No Hardcoded Secrets
+[2026-08-21T18:24:59.948160] O.RIENT: Analyzing: [RULE] G3: No Hardcoded Secrets
+[2026-08-21T18:25:03.083889] O.RIENT: Action type: generic | Complexity: low
+[2026-08-21T18:25:03.085890] D.ECIDE: Formulating action plan...
+[2026-08-21T18:25:03.085890] D.ECIDE: Plan: generic — 4 steps
+[2026-08-21T18:25:03.085890] A.CT: Executing: generic
+[2026-08-21T18:25:03.085890] A.CT: ⚠️ No real handler for [rERRS1LL] [RULE] G3: No Hardcoded Secrets — skipping
+[2026-08-21T18:25:03.085890] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:25:03.085890] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for rERRS1LL — requires implementation
+[2026-08-21T18:25:03.086890] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:25:03.086890] PERSIST: Evidence saved: FODAVP_20260821_182503_rERRS1LL.json
+[2026-08-21T18:25:03.494977] PERSIST: Trello comment posted successfully
+[2026-08-21T18:25:03.495977] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:25:03.497977] ENGINE:    ✅ Dependency rERRS1LL completed, resuming parent card
+[2026-08-21T18:25:03.497977] D.ECIDE: Formulating action plan...
+[2026-08-21T18:25:03.497977] D.ECIDE: Plan: generic — 4 steps
+[2026-08-21T18:25:03.497977] A.CT: Executing: generic
+[2026-08-21T18:25:03.497977] A.CT: ⚠️ No real handler for [zlp16TbD] Build company website — skipping
+[2026-08-21T18:25:03.497977] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:25:03.498979] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for zlp16TbD — requires implementation
+[2026-08-21T18:25:03.498979] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:25:03.498979] PERSIST: Evidence saved: FODAVP_20260821_182503_zlp16TbD.json
+[2026-08-21T18:25:03.808111] PERSIST: Trello comment posted successfully
+[2026-08-21T18:25:03.808111] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:25:03.816152] ENGINE: 🏁 CARD COMPLETED — FAIL in 14.94s
+[2026-08-21T18:25:03.816152] ENGINE: ⏭️ Card zlp16TbD skipped — no handler or needs work
+[2026-08-21T18:25:03.817153] ENGINE: 🔍 Trying candidate: [o9qTg7n9] PROJECT: tr3asure mAp needs to fully be running.
+[2026-08-21T18:25:03.817153] O.RIENT: Analyzing: PROJECT: tr3asure mAp needs to fully be running.
+[2026-08-21T18:25:06.664296] O.RIENT: Action type: generic | Complexity: low
+[2026-08-21T18:25:06.664296] O.RIENT: Dependencies found: 73
+[2026-08-21T18:25:06.664296] O.RIENT:   → rERRS1LL: [RULE] G3: No Hardcoded Secrets
+[2026-08-21T18:25:06.664296] O.RIENT:   → CDY75xYT: [RULE] G4: No Duplicate Work
+[2026-08-21T18:25:06.664296] O.RIENT:   → LydjrvvS: [RULE] G7: No Hackers
+[2026-08-21T18:25:06.664296] O.RIENT:   → qOjQlcTM: Create a VOID Pirate trading card game
+[2026-08-21T18:25:06.665297] O.RIENT:   → 6MCYfjZV: Launch a VOID Pirate podcast
+[2026-08-21T18:25:06.665297] O.RIENT:   → GsVnGLlf: Deploy website to free hosting
+[2026-08-21T18:25:06.665297] O.RIENT:   → P43oCHIf: Deploy website to Vercel
+[2026-08-21T18:25:06.665297] O.RIENT:   → ES4FrMiy: Trello: create crew-specific Taoism flavor notes
+[2026-08-21T18:25:06.665297] O.RIENT:   → Q51uYXiM: Finish PROJECT: Crownless Fortune
+[2026-08-21T18:25:06.665297] O.RIENT:   → TdlOIXrf: Map Crownless Fortune deckhand skills to real auto
+[2026-08-21T18:25:06.666297] O.RIENT:   → ozjdDKAZ: [P0] Fix VOID_Pirate_Docker_Startup scheduled task
+[2026-08-21T18:25:06.666297] O.RIENT:   → D2kbWbTy: [P0] Fix Void_Daily_OODA_Loop scheduled task
+[2026-08-21T18:25:06.666297] O.RIENT:   → 0IDbwlPI: [P1] Fix VOID_SecretScan scheduled task
+[2026-08-21T18:25:06.666297] O.RIENT:   → N7z9d9jA: [P1] Fix VOID_DiscordPriorityAlerts scheduled task
+[2026-08-21T18:25:06.666297] O.RIENT:   → kEfRmZpO: [P1] Fix VOID_SirGreenBot scheduled task
+[2026-08-21T18:25:06.666297] O.RIENT:   → EeHMQRVx: [P1] Fix VOID_HiveMindChecker scheduled task
+[2026-08-21T18:25:06.666297] O.RIENT:   → hdbdPPDM: [P1] Fix VOID_FleetGuardian scheduled task
+[2026-08-21T18:25:06.667296] O.RIENT:   → P2iZ0iFh: [P1] Fix VOID_FleetDockerMonitor scheduled task
+[2026-08-21T18:25:06.667296] O.RIENT:   → HFPWVDsD: [P1] Fix VOID_FleetDockerBalance scheduled task
+[2026-08-21T18:25:06.667296] O.RIENT:   → 2031IrJi: [P1] Fix Void_Daily_Vault_Check scheduled task
+[2026-08-21T18:25:06.667296] O.RIENT:   → fc7XM4oN: [P1] Fix Void_Daily_Smart_Verify scheduled task
+[2026-08-21T18:25:06.667296] O.RIENT:   → 681SznI0: RECOVERY-2: Create fleet-wide Hermes catastrophic 
+[2026-08-21T18:25:06.667296] O.RIENT:   → sm5Q4BLp: [P2] Fix VOID_Vault_Sunrise scheduled task
+[2026-08-21T18:25:06.668296] O.RIENT:   → WnSG4T0m: [P2] Fix VOID Pirate Fleet Orders scheduled task
+[2026-08-21T18:25:06.668296] O.RIENT:   → iXgxw651: [P2] Fix VOID_AutoArchive_Trello scheduled task
+[2026-08-21T18:25:06.668296] O.RIENT:   → Kvp3BguO: [P2] Fix VOID_Pirate_Daily_Calendar_Sync scheduled
+[2026-08-21T18:25:06.668296] O.RIENT:   → tLyT9rBn: [P2] Fix Void_Weekly_Rebalance scheduled task
+[2026-08-21T18:25:06.668296] O.RIENT:   → oVhvLq8p: Design a VOID Pirate flag collection
+[2026-08-21T18:25:06.668296] O.RIENT:   → Q9WYNr9b: Write a VOID Pirate cookbook
+[2026-08-21T18:25:06.668296] O.RIENT:   → HFqoO20u: All crew: Run crew_connectivity_monitor.py and con
+[2026-08-21T18:25:06.669298] O.RIENT:   → ar1rFn5e: Trello automation: create board/card workflow scri
+[2026-08-21T18:25:06.669298] O.RIENT:   → wqHsmJdz: Automation: auto-respond to routine email
+[2026-08-21T18:25:06.669298] O.RIENT:   → Xdm6xlIz: OPS-1: Fix hosts file DNS entries for crew hostnam
+[2026-08-21T18:25:06.669298] O.RIENT:   → xdvbP1wT: BUG-5: Fix Prometheus container
+[2026-08-21T18:25:06.669298] O.RIENT:   → 268n53Sl: BUG-6: Verify full download flow end-to-end
+[2026-08-21T18:25:06.670297] O.RIENT:   → ZVEZ7bgp: BUG-3: Fix bracket/OCO API endpoints
+[2026-08-21T18:25:06.670297] O.RIENT:   → IjVSxfaD: BUG-4: Fix Grafana container restart
+[2026-08-21T18:25:06.670297] O.RIENT:   → RyasIvP4: BUG-2: Fix download status timeout
+[2026-08-21T18:25:06.670297] O.RIENT:   → 5p8Ro1Rc: BUG-1: Fix download quick_update endpoint
+[2026-08-21T18:25:06.670297] O.RIENT:   → QTitEG3L: DASH-2: Fix dashboard server port binding for prod
+[2026-08-21T18:25:06.671297] O.RIENT:   → YFOs4nhq: 🐛 Alpaca in PAPER trading mode — no live trades be
+[2026-08-21T18:25:06.671297] O.RIENT:   → gAomymCs: 🐛 No TreasureMap containers running (containers_up
+[2026-08-21T18:25:06.671297] O.RIENT:   → 3dK1U9V3: Scheduler/cron cards reference external IDs not in
+[2026-08-21T18:25:06.671297] O.RIENT:   → uoV5bbeC: Create deployment manifests for all crew PCs
+[2026-08-21T18:25:06.671297] O.RIENT:   → RBMrDUU8: Create sync/deployment scripts for all 3 PCs
+[2026-08-21T18:25:06.671297] O.RIENT:   → 3j1oGE9G: Full code/functionality scan after reorganization
+[2026-08-21T18:25:06.672297] O.RIENT:   → 0ndwFPMs: Fix this discord bot, it should not be called  Gor
+[2026-08-21T18:25:06.672297] O.RIENT:   → THhJVL0I: Fix fleet mesh ship status stuck on 'unknown' (hea
+[2026-08-21T18:25:06.672297] O.RIENT:   → pHAc9XOI: 🐛 tr3asure mAp download buttons still broken
+[2026-08-21T18:25:06.672297] O.RIENT:   → TlzN6DSq: Calendar: Fix .ics DTEND format for Google import
+[2026-08-21T18:25:06.672297] O.RIENT:   → AOqqitMl: Fixed dashboard credentials.ts path
+[2026-08-21T18:25:06.672297] O.RIENT:   → xQEkAh5i: Ch 1: The Breaking / Rise of Brewbeard Ledgerbane
+[2026-08-21T18:25:06.673298] O.RIENT:   → 6vv94LdC: Build a fleet of Raspberry Pi pirates
+[2026-08-21T18:25:06.673298] O.RIENT:   → K7Jb96hm: [DASHBOARD] Fully wire tr3asure_mAp into Captain d
+[2026-08-21T18:25:06.673298] O.RIENT:   → mopwynAD: 📨 [INBOX] BUG HUNT DISCORD BOT SETUP AND VERIFICAT
+[2026-08-21T18:25:06.673298] O.RIENT:   → 6rY99DTR: Coordinate with Sir Green on Docker fixes
+[2026-08-21T18:25:06.673298] O.RIENT:   → 47IdSHuf: 📨 [INBOX] RE FULL AUTOMATION BOOTSTRAP POST BIOS R
+[2026-08-21T18:25:06.673298] O.RIENT:   → 3ruImD6a: [RULE] G5 No Purchase Without Captain
+[2026-08-21T18:25:06.674299] O.RIENT:   → vM2jhkzc: 📨 [INBOX] new trello git cards for docker webhooks
+[2026-08-21T18:25:06.674299] O.RIENT:   → FxBld6jP: [RULE] G8 No Hackers
+[2026-08-21T18:25:06.674299] O.RIENT:   → G5nc1Hvd: 🔑 NEEDS CREDS: Docker Hub auth failure
+[2026-08-21T18:25:06.674299] O.RIENT:   → 1vej55aT: Dashboard: fix Portainer health check SSL error
+[2026-08-21T18:25:06.674299] O.RIENT:   → wJDtiRtr: Astro Profiles for Crew
+[2026-08-21T18:25:06.674299] O.RIENT:   → oT2b2S7H: Implement treasure map state machine + persistence
+[2026-08-21T18:25:06.675298] O.RIENT:   → NGKyVxL3: [P0] Fix VOID_OODA_WebHook.xml — Z:_Automation\ p
+[2026-08-21T18:25:06.675298] O.RIENT:   → 6U1vmOQT: [MASTER] SQUIDSTATION full cleanup — automations m
+[2026-08-21T18:25:06.675298] O.RIENT:   → wXncvJoD: Captain Rig: full hardware/software inventory pass
+[2026-08-21T18:25:06.675298] O.RIENT:   → uWuRlCup: Ops: fix autoprompt loop inbox target
+[2026-08-21T18:25:06.675298] O.RIENT:   → 1kAlRthu: Finish PROJECT: tr3assure mAp
+[2026-08-21T18:25:06.675298] O.RIENT:   → dm9dETZb: P2: Create full OODA tasklist documentation for al
+[2026-08-21T18:25:06.675298] O.RIENT:   → OZK3sssx: [SIR GREEN] Run done_card_verifier to archive veri
+[2026-08-21T18:25:06.676297] O.RIENT:   → z4BUv9HC: Cybersec: secret_scan.py in auto-archive + daily c
+[2026-08-21T18:25:06.676297] O.RIENT:   → bruSFQSn: [P1] FLEET-MONITOR: tr3asure mAp Boot Issues & Por
+[2026-08-21T18:25:06.677298] ENGINE: 🔗 DEPENDENCY CHAIN: PROJECT: tr3asure mAp needs to fully be running.
+[2026-08-21T18:25:06.677298] ENGINE:    Working dependency first: rERRS1LL - [RULE] G3: No Hardcoded Secrets
+[2026-08-21T18:25:06.677298] O.RIENT: Analyzing: [RULE] G3: No Hardcoded Secrets
+[2026-08-21T18:25:10.987317] O.RIENT: Action type: generic | Complexity: low
+[2026-08-21T18:25:10.989436] D.ECIDE: Formulating action plan...
+[2026-08-21T18:25:10.989436] D.ECIDE: Plan: generic — 4 steps
+[2026-08-21T18:25:10.989956] A.CT: Executing: generic
+[2026-08-21T18:25:10.989956] A.CT: ⚠️ No real handler for [rERRS1LL] [RULE] G3: No Hardcoded Secrets — skipping
+[2026-08-21T18:25:10.989956] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:25:10.990475] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for rERRS1LL — requires implementation
+[2026-08-21T18:25:10.990475] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:25:10.990992] PERSIST: Evidence saved: FODAVP_20260821_182510_rERRS1LL.json
+[2026-08-21T18:25:11.380180] PERSIST: Trello comment posted successfully
+[2026-08-21T18:25:11.381190] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:25:11.390473] ENGINE:    ✅ Dependency rERRS1LL completed, resuming parent card
+[2026-08-21T18:25:11.390473] D.ECIDE: Formulating action plan...
+[2026-08-21T18:25:11.391474] D.ECIDE: Plan: generic — 4 steps
+[2026-08-21T18:25:11.391474] A.CT: Executing: generic
+[2026-08-21T18:25:11.391474] A.CT: ⚠️ No real handler for [o9qTg7n9] PROJECT: tr3asure mAp needs to fully be running. — skipping
+[2026-08-21T18:25:11.391474] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:25:11.391474] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for o9qTg7n9 — requires implementation
+[2026-08-21T18:25:11.392473] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:25:11.392473] PERSIST: Evidence saved: FODAVP_20260821_182511_o9qTg7n9.json
+[2026-08-21T18:25:11.734964] PERSIST: Trello comment posted successfully
+[2026-08-21T18:25:11.734964] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:25:11.743859] ENGINE: 🏁 CARD COMPLETED — FAIL in 22.86s
+[2026-08-21T18:25:11.743859] ENGINE: ⏭️ Card o9qTg7n9 skipped — no handler or needs work
+[2026-08-21T18:25:11.743859] ENGINE: 🔍 Trying candidate: [ysiTHhDu] Crew Alert Bot — deploy + verify alerts in #crew-alerts
+[2026-08-21T18:25:11.743859] O.RIENT: Analyzing: Crew Alert Bot — deploy + verify alerts in #crew-alerts
+[2026-08-21T18:25:14.835197] O.RIENT: Action type: deployment | Complexity: medium
+[2026-08-21T18:25:14.836198] D.ECIDE: Formulating action plan...
+[2026-08-21T18:25:14.837199] D.ECIDE: Plan: deployment — 4 steps
+[2026-08-21T18:25:14.837199] A.CT: Executing: deployment
+[2026-08-21T18:25:14.837199] A.CT: ⚠️ No real handler for [ysiTHhDu] Crew Alert Bot — deploy + verify alerts in #crew-alerts — skipping
+[2026-08-21T18:25:14.837199] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:25:14.837199] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for ysiTHhDu — requires implementation
+[2026-08-21T18:25:14.838198] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:25:14.838198] PERSIST: Evidence saved: FODAVP_20260821_182514_ysiTHhDu.json
+[2026-08-21T18:25:15.158237] PERSIST: Trello comment posted successfully
+[2026-08-21T18:25:15.159238] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:25:15.166237] ENGINE: 🏁 CARD COMPLETED — FAIL in 26.29s
+[2026-08-21T18:25:15.166237] ENGINE: ⏭️ Card ysiTHhDu skipped — no handler or needs work
+[2026-08-21T18:25:15.167388] ENGINE: 🔍 Trying candidate: [yJLaNlvD] White Whale Defense Bot — deploy + verify alerts in #wh
+[2026-08-21T18:25:15.167388] O.RIENT: Analyzing: White Whale Defense Bot — deploy + verify alerts in #wh
+[2026-08-21T18:25:18.271163] O.RIENT: Action type: deployment | Complexity: medium
+[2026-08-21T18:25:18.272162] D.ECIDE: Formulating action plan...
+[2026-08-21T18:25:18.273164] D.ECIDE: Plan: deployment — 4 steps
+[2026-08-21T18:25:18.273164] A.CT: Executing: deployment
+[2026-08-21T18:25:18.273164] A.CT: ⚠️ No real handler for [yJLaNlvD] White Whale Defense Bot — deploy + verify alerts in #wh — skipping
+[2026-08-21T18:25:18.273164] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:25:18.273164] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for yJLaNlvD — requires implementation
+[2026-08-21T18:25:18.273164] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:25:18.274165] PERSIST: Evidence saved: FODAVP_20260821_182518_yJLaNlvD.json
+[2026-08-21T18:25:18.594692] PERSIST: Trello comment posted successfully
+[2026-08-21T18:25:18.594692] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:25:18.604269] ENGINE: 🏁 CARD COMPLETED — FAIL in 29.72s
+[2026-08-21T18:25:18.605269] ENGINE: ⏭️ Card yJLaNlvD skipped — no handler or needs work
+[2026-08-21T18:25:18.605269] ENGINE: 🔍 Trying candidate: [jccaVuKX] Ticket Alert Bot — deploy + verify Trello lifecycle ale
+[2026-08-21T18:25:18.605269] O.RIENT: Analyzing: Ticket Alert Bot — deploy + verify Trello lifecycle ale
+[2026-08-21T18:25:21.530172] O.RIENT: Action type: deployment | Complexity: medium
+[2026-08-21T18:25:21.532173] D.ECIDE: Formulating action plan...
+[2026-08-21T18:25:21.532173] D.ECIDE: Plan: deployment — 4 steps
+[2026-08-21T18:25:21.532173] A.CT: Executing: deployment
+[2026-08-21T18:25:21.533171] A.CT: ⚠️ No real handler for [jccaVuKX] Ticket Alert Bot — deploy + verify Trello lifecycle ale — skipping
+[2026-08-21T18:25:21.533171] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:25:21.533171] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for jccaVuKX — requires implementation
+[2026-08-21T18:25:21.533171] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:25:21.534172] PERSIST: Evidence saved: FODAVP_20260821_182521_jccaVuKX.json
+[2026-08-21T18:25:21.884924] PERSIST: Trello comment posted successfully
+[2026-08-21T18:25:21.885923] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:25:21.893924] ENGINE: 🏁 CARD COMPLETED — FAIL in 33.01s
+[2026-08-21T18:25:21.894924] ENGINE: ⏭️ Card jccaVuKX skipped — no handler or needs work
+[2026-08-21T18:25:21.894924] ENGINE: 🔍 Trying candidate: [p2J2WMSF] Fleet Inventory Bot — deploy + verify inventory alerts 
+[2026-08-21T18:25:21.894924] O.RIENT: Analyzing: Fleet Inventory Bot — deploy + verify inventory alerts 
+[2026-08-21T18:25:25.252764] O.RIENT: Action type: deployment | Complexity: medium
+[2026-08-21T18:25:25.254765] D.ECIDE: Formulating action plan...
+[2026-08-21T18:25:25.254765] D.ECIDE: Plan: deployment — 4 steps
+[2026-08-21T18:25:25.254765] A.CT: Executing: deployment
+[2026-08-21T18:25:25.254765] A.CT: ⚠️ No real handler for [p2J2WMSF] Fleet Inventory Bot — deploy + verify inventory alerts  — skipping
+[2026-08-21T18:25:25.254765] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:25:25.254765] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for p2J2WMSF — requires implementation
+[2026-08-21T18:25:25.255765] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:25:25.255765] PERSIST: Evidence saved: FODAVP_20260821_182525_p2J2WMSF.json
+[2026-08-21T18:25:25.563293] PERSIST: Trello comment posted successfully
+[2026-08-21T18:25:25.564303] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:25:25.573302] ENGINE: 🏁 CARD COMPLETED — FAIL in 36.69s
+[2026-08-21T18:25:25.573302] ENGINE: ⏭️ Card p2J2WMSF skipped — no handler or needs work
+[2026-08-21T18:25:25.574303] ENGINE: 🔍 Trying candidate: [FcNcMdCg] Rig Monitor Bot — deploy + verify ship status alerts
+[2026-08-21T18:25:25.574303] O.RIENT: Analyzing: Rig Monitor Bot — deploy + verify ship status alerts
+[2026-08-21T18:25:28.555673] O.RIENT: Action type: deployment | Complexity: medium
+[2026-08-21T18:25:28.556675] D.ECIDE: Formulating action plan...
+[2026-08-21T18:25:28.557675] D.ECIDE: Plan: deployment — 4 steps
+[2026-08-21T18:25:28.557675] A.CT: Executing: deployment
+[2026-08-21T18:25:28.557675] A.CT: ⚠️ No real handler for [FcNcMdCg] Rig Monitor Bot — deploy + verify ship status alerts — skipping
+[2026-08-21T18:25:28.557675] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:25:28.557675] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for FcNcMdCg — requires implementation
+[2026-08-21T18:25:28.557675] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:25:28.558675] PERSIST: Evidence saved: FODAVP_20260821_182528_FcNcMdCg.json
+[2026-08-21T18:25:28.873462] PERSIST: Trello comment posted successfully
+[2026-08-21T18:25:28.873462] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:25:28.882296] ENGINE: 🏁 CARD COMPLETED — FAIL in 40.0s
+[2026-08-21T18:25:28.882296] ENGINE: ⏭️ Card FcNcMdCg skipped — no handler or needs work
+[2026-08-21T18:25:28.882802] ENGINE: 🔍 Trying candidate: [yaLBR9vU] Discord channel audit — verify all bot channels + permi
+[2026-08-21T18:25:28.882819] O.RIENT: Analyzing: Discord channel audit — verify all bot channels + permi
+[2026-08-21T18:25:32.072522] O.RIENT: Action type: generic | Complexity: low
+[2026-08-21T18:25:32.074076] D.ECIDE: Formulating action plan...
+[2026-08-21T18:25:32.074076] D.ECIDE: Plan: generic — 4 steps
+[2026-08-21T18:25:32.074589] A.CT: Executing: generic
+[2026-08-21T18:25:32.074589] A.CT: ⚠️ No real handler for [yaLBR9vU] Discord channel audit — verify all bot channels + permi — skipping
+[2026-08-21T18:25:32.074589] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:25:32.075106] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for yaLBR9vU — requires implementation
+[2026-08-21T18:25:32.075106] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:25:32.075629] PERSIST: Evidence saved: FODAVP_20260821_182532_yaLBR9vU.json
+[2026-08-21T18:25:32.464819] PERSIST: Trello comment posted successfully
+[2026-08-21T18:25:32.465908] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:25:32.473718] ENGINE: 🏁 CARD COMPLETED — FAIL in 43.59s
+[2026-08-21T18:25:32.474247] ENGINE: ⏭️ Card yaLBR9vU skipped — no handler or needs work
+[2026-08-21T18:25:32.474247] ENGINE: 🔍 Trying candidate: [a4aXz1gJ] [TEST] Trello automation end-to-end bot check
+[2026-08-21T18:25:32.474247] O.RIENT: Analyzing: [TEST] Trello automation end-to-end bot check
+[2026-08-21T18:25:35.464826] O.RIENT: Action type: automation | Complexity: medium
+[2026-08-21T18:25:35.465826] D.ECIDE: Formulating action plan...
+[2026-08-21T18:25:35.465826] D.ECIDE: Plan: automation — 5 steps
+[2026-08-21T18:25:35.465826] A.CT: Executing: automation
+[2026-08-21T18:25:35.465826] A.CT: ⚠️ No real handler for [a4aXz1gJ] [TEST] Trello automation end-to-end bot check — skipping
+[2026-08-21T18:25:35.465826] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:25:35.465826] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for a4aXz1gJ — requires implementation
+[2026-08-21T18:25:35.467279] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:25:35.467805] PERSIST: Evidence saved: FODAVP_20260821_182535_a4aXz1gJ.json
+[2026-08-21T18:25:35.879422] PERSIST: Trello comment posted successfully
+[2026-08-21T18:25:35.879936] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:25:35.888990] ENGINE: 🏁 CARD COMPLETED — FAIL in 47.01s
+[2026-08-21T18:25:35.889515] ENGINE: ⏭️ Card a4aXz1gJ skipped — no handler or needs work
+[2026-08-21T18:25:35.889515] ENGINE: 🔍 Trying candidate: [ozjdDKAZ] [P0] Fix VOID_Pirate_Docker_Startup scheduled task
+[2026-08-21T18:25:35.889515] O.RIENT: Analyzing: [P0] Fix VOID_Pirate_Docker_Startup scheduled task
+[2026-08-21T18:25:38.879027] O.RIENT: Action type: bug_fix | Complexity: medium
+[2026-08-21T18:25:38.881027] D.ECIDE: Formulating action plan...
+[2026-08-21T18:25:38.881027] D.ECIDE: Plan: bug_fix — 5 steps
+[2026-08-21T18:25:38.881027] A.CT: Executing: bug_fix
+[2026-08-21T18:25:38.881027] A.CT: ⚠️ No real handler for [ozjdDKAZ] [P0] Fix VOID_Pirate_Docker_Startup scheduled task — skipping
+[2026-08-21T18:25:38.882026] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:25:38.882026] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for ozjdDKAZ — requires implementation
+[2026-08-21T18:25:38.882026] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:25:38.882026] PERSIST: Evidence saved: FODAVP_20260821_182538_ozjdDKAZ.json
+[2026-08-21T18:25:39.230537] PERSIST: Trello comment posted successfully
+[2026-08-21T18:25:39.230537] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:25:39.240137] ENGINE: 🏁 CARD COMPLETED — FAIL in 50.36s
+[2026-08-21T18:25:39.241134] ENGINE: ⏭️ Card ozjdDKAZ skipped — no handler or needs work
+[2026-08-21T18:25:39.241134] ENGINE: 🔍 Trying candidate: [D2kbWbTy] [P0] Fix Void_Daily_OODA_Loop scheduled task
+[2026-08-21T18:25:39.241134] O.RIENT: Analyzing: [P0] Fix Void_Daily_OODA_Loop scheduled task
+[2026-08-21T18:25:42.456796] O.RIENT: Action type: bug_fix | Complexity: medium
+[2026-08-21T18:25:42.458360] D.ECIDE: Formulating action plan...
+[2026-08-21T18:25:42.458360] D.ECIDE: Plan: bug_fix — 5 steps
+[2026-08-21T18:25:42.458892] A.CT: Executing: bug_fix
+[2026-08-21T18:25:42.458892] A.CT: ⚠️ No real handler for [D2kbWbTy] [P0] Fix Void_Daily_OODA_Loop scheduled task — skipping
+[2026-08-21T18:25:42.458892] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:25:42.459422] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for D2kbWbTy — requires implementation
+[2026-08-21T18:25:42.459422] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:25:42.459945] PERSIST: Evidence saved: FODAVP_20260821_182542_D2kbWbTy.json
+[2026-08-21T18:25:42.792153] PERSIST: Trello comment posted successfully
+[2026-08-21T18:25:42.793168] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:25:42.801167] ENGINE: 🏁 CARD COMPLETED — FAIL in 53.92s
+[2026-08-21T18:25:42.801167] ENGINE: ⏭️ Card D2kbWbTy skipped — no handler or needs work
+[2026-08-21T18:25:42.802168] ENGINE: 🔍 Trying candidate: [TmPXb4DR] [P0] DASHBOARD: Action buttons crash server with Connec
+[2026-08-21T18:25:42.802168] O.RIENT: Analyzing: [P0] DASHBOARD: Action buttons crash server with Connec
+[2026-08-21T18:25:45.668937] O.RIENT: Action type: generic | Complexity: low
+[2026-08-21T18:25:45.670941] D.ECIDE: Formulating action plan...
+[2026-08-21T18:25:45.670941] D.ECIDE: Plan: generic — 4 steps
+[2026-08-21T18:25:45.670941] A.CT: Executing: generic
+[2026-08-21T18:25:45.670941] A.CT: ⚠️ No real handler for [TmPXb4DR] [P0] DASHBOARD: Action buttons crash server with Connec — skipping
+[2026-08-21T18:25:45.671938] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:25:45.671938] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for TmPXb4DR — requires implementation
+[2026-08-21T18:25:45.671938] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:25:45.671938] PERSIST: Evidence saved: FODAVP_20260821_182545_TmPXb4DR.json
+[2026-08-21T18:25:46.009918] PERSIST: Trello comment posted successfully
+[2026-08-21T18:25:46.009918] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:25:46.018917] ENGINE: 🏁 CARD COMPLETED — FAIL in 57.14s
+[2026-08-21T18:25:46.018917] ENGINE: ⏭️ Card TmPXb4DR skipped — no handler or needs work
+[2026-08-21T18:25:46.018917] ENGINE: 🔍 Trying candidate: [xb32h0xw] [P0] DASHBOARD: PINKCADY shown as 'offline' despite bei
+[2026-08-21T18:25:46.018917] O.RIENT: Analyzing: [P0] DASHBOARD: PINKCADY shown as 'offline' despite bei
+[2026-08-21T18:25:49.034193] O.RIENT: Action type: generic | Complexity: low
+[2026-08-21T18:25:49.035234] D.ECIDE: Formulating action plan...
+[2026-08-21T18:25:49.035750] D.ECIDE: Plan: generic — 4 steps
+[2026-08-21T18:25:49.035750] A.CT: Executing: generic
+[2026-08-21T18:25:49.035750] A.CT: ⚠️ No real handler for [xb32h0xw] [P0] DASHBOARD: PINKCADY shown as 'offline' despite bei — skipping
+[2026-08-21T18:25:49.036274] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:25:49.036274] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for xb32h0xw — requires implementation
+[2026-08-21T18:25:49.036274] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:25:49.036799] PERSIST: Evidence saved: FODAVP_20260821_182549_xb32h0xw.json
+[2026-08-21T18:25:49.387805] PERSIST: Trello comment posted successfully
+[2026-08-21T18:25:49.387805] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:25:49.395804] ENGINE: 🏁 CARD COMPLETED — FAIL in 60.52s
+[2026-08-21T18:25:49.395804] ENGINE: ⏭️ Card xb32h0xw skipped — no handler or needs work
+[2026-08-21T18:25:49.395804] ENGINE: 🔍 Trying candidate: [0IDbwlPI] [P1] Fix VOID_SecretScan scheduled task
+[2026-08-21T18:25:49.396806] O.RIENT: Analyzing: [P1] Fix VOID_SecretScan scheduled task
+[2026-08-21T18:25:52.418572] O.RIENT: Action type: bug_fix | Complexity: medium
+[2026-08-21T18:25:52.419572] D.ECIDE: Formulating action plan...
+[2026-08-21T18:25:52.420573] D.ECIDE: Plan: bug_fix — 5 steps
+[2026-08-21T18:25:52.420573] A.CT: Executing: bug_fix
+[2026-08-21T18:25:52.420573] A.CT: ⚠️ No real handler for [0IDbwlPI] [P1] Fix VOID_SecretScan scheduled task — skipping
+[2026-08-21T18:25:52.420573] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:25:52.421573] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for 0IDbwlPI — requires implementation
+[2026-08-21T18:25:52.421573] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:25:52.422573] PERSIST: Evidence saved: FODAVP_20260821_182552_0IDbwlPI.json
+[2026-08-21T18:25:52.741426] PERSIST: Trello comment posted successfully
+[2026-08-21T18:25:52.741946] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:25:52.749684] ENGINE: 🏁 CARD COMPLETED — FAIL in 63.87s
+[2026-08-21T18:25:52.749684] ENGINE: ⏭️ Card 0IDbwlPI skipped — no handler or needs work
+[2026-08-21T18:25:52.750196] ENGINE: 🔍 Trying candidate: [N7z9d9jA] [P1] Fix VOID_DiscordPriorityAlerts scheduled task
+[2026-08-21T18:25:52.750196] O.RIENT: Analyzing: [P1] Fix VOID_DiscordPriorityAlerts scheduled task
+[2026-08-21T18:25:56.187920] O.RIENT: Action type: bug_fix | Complexity: medium
+[2026-08-21T18:25:56.189921] D.ECIDE: Formulating action plan...
+[2026-08-21T18:25:56.189921] D.ECIDE: Plan: bug_fix — 5 steps
+[2026-08-21T18:25:56.189921] A.CT: Executing: bug_fix
+[2026-08-21T18:25:56.189921] A.CT: ⚠️ No real handler for [N7z9d9jA] [P1] Fix VOID_DiscordPriorityAlerts scheduled task — skipping
+[2026-08-21T18:25:56.190921] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:25:56.190921] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for N7z9d9jA — requires implementation
+[2026-08-21T18:25:56.190921] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:25:56.190921] PERSIST: Evidence saved: FODAVP_20260821_182556_N7z9d9jA.json
+[2026-08-21T18:25:56.485152] PERSIST: Trello comment posted successfully
+[2026-08-21T18:25:56.485152] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:25:56.493151] ENGINE: 🏁 CARD COMPLETED — FAIL in 67.61s
+[2026-08-21T18:25:56.494152] ENGINE: ⏭️ Card N7z9d9jA skipped — no handler or needs work
+[2026-08-21T18:25:56.494152] ENGINE: 🔍 Trying candidate: [kEfRmZpO] [P1] Fix VOID_SirGreenBot scheduled task
+[2026-08-21T18:25:56.494152] O.RIENT: Analyzing: [P1] Fix VOID_SirGreenBot scheduled task
+[2026-08-21T18:25:59.423115] O.RIENT: Action type: bug_fix | Complexity: medium
+[2026-08-21T18:25:59.424117] D.ECIDE: Formulating action plan...
+[2026-08-21T18:25:59.424117] D.ECIDE: Plan: bug_fix — 5 steps
+[2026-08-21T18:25:59.424117] A.CT: Executing: bug_fix
+[2026-08-21T18:25:59.425117] A.CT: ⚠️ No real handler for [kEfRmZpO] [P1] Fix VOID_SirGreenBot scheduled task — skipping
+[2026-08-21T18:25:59.425117] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:25:59.425117] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for kEfRmZpO — requires implementation
+[2026-08-21T18:25:59.425117] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:25:59.426116] PERSIST: Evidence saved: FODAVP_20260821_182559_kEfRmZpO.json
+[2026-08-21T18:25:59.856411] PERSIST: Trello comment posted successfully
+[2026-08-21T18:25:59.856925] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:25:59.865539] ENGINE: 🏁 CARD COMPLETED — FAIL in 70.99s
+[2026-08-21T18:25:59.866539] ENGINE: ⏭️ Card kEfRmZpO skipped — no handler or needs work
+[2026-08-21T18:25:59.866539] ENGINE: 🔍 Trying candidate: [EeHMQRVx] [P1] Fix VOID_HiveMindChecker scheduled task
+[2026-08-21T18:25:59.866539] O.RIENT: Analyzing: [P1] Fix VOID_HiveMindChecker scheduled task
+[2026-08-21T18:26:02.842467] O.RIENT: Action type: bug_fix | Complexity: medium
+[2026-08-21T18:26:02.844469] D.ECIDE: Formulating action plan...
+[2026-08-21T18:26:02.844469] D.ECIDE: Plan: bug_fix — 5 steps
+[2026-08-21T18:26:02.844469] A.CT: Executing: bug_fix
+[2026-08-21T18:26:02.844469] A.CT: ⚠️ No real handler for [EeHMQRVx] [P1] Fix VOID_HiveMindChecker scheduled task — skipping
+[2026-08-21T18:26:02.844469] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:26:02.844469] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for EeHMQRVx — requires implementation
+[2026-08-21T18:26:02.845469] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:26:02.845469] PERSIST: Evidence saved: FODAVP_20260821_182602_EeHMQRVx.json
+[2026-08-21T18:26:03.212878] PERSIST: Trello comment posted successfully
+[2026-08-21T18:26:03.213398] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:26:03.221000] ENGINE: 🏁 CARD COMPLETED — FAIL in 74.34s
+[2026-08-21T18:26:03.221000] ENGINE: ⏭️ Card EeHMQRVx skipped — no handler or needs work
+[2026-08-21T18:26:03.222000] ENGINE: 🔍 Trying candidate: [hdbdPPDM] [P1] Fix VOID_FleetGuardian scheduled task
+[2026-08-21T18:26:03.222000] O.RIENT: Analyzing: [P1] Fix VOID_FleetGuardian scheduled task
+[2026-08-21T18:26:06.606495] O.RIENT: Action type: bug_fix | Complexity: medium
+[2026-08-21T18:26:06.607494] D.ECIDE: Formulating action plan...
+[2026-08-21T18:26:06.607494] D.ECIDE: Plan: bug_fix — 5 steps
+[2026-08-21T18:26:06.607494] A.CT: Executing: bug_fix
+[2026-08-21T18:26:06.608495] A.CT: ⚠️ No real handler for [hdbdPPDM] [P1] Fix VOID_FleetGuardian scheduled task — skipping
+[2026-08-21T18:26:06.608495] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:26:06.608495] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for hdbdPPDM — requires implementation
+[2026-08-21T18:26:06.608495] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:26:06.609496] PERSIST: Evidence saved: FODAVP_20260821_182606_hdbdPPDM.json
+[2026-08-21T18:26:06.955381] PERSIST: Trello comment posted successfully
+[2026-08-21T18:26:06.956381] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:26:06.965176] ENGINE: 🏁 CARD COMPLETED — FAIL in 78.09s
+[2026-08-21T18:26:06.965685] ENGINE: ⏭️ Card hdbdPPDM skipped — no handler or needs work
+[2026-08-21T18:26:06.965763] ENGINE: 🔍 Trying candidate: [P2iZ0iFh] [P1] Fix VOID_FleetDockerMonitor scheduled task
+[2026-08-21T18:26:06.965763] O.RIENT: Analyzing: [P1] Fix VOID_FleetDockerMonitor scheduled task
+[2026-08-21T18:26:09.934702] O.RIENT: Action type: bug_fix | Complexity: medium
+[2026-08-21T18:26:09.935771] D.ECIDE: Formulating action plan...
+[2026-08-21T18:26:09.936284] D.ECIDE: Plan: bug_fix — 5 steps
+[2026-08-21T18:26:09.936284] A.CT: Executing: bug_fix
+[2026-08-21T18:26:09.936284] A.CT: ⚠️ No real handler for [P2iZ0iFh] [P1] Fix VOID_FleetDockerMonitor scheduled task — skipping
+[2026-08-21T18:26:09.936812] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:26:09.936812] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for P2iZ0iFh — requires implementation
+[2026-08-21T18:26:09.936812] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:26:09.937850] PERSIST: Evidence saved: FODAVP_20260821_182609_P2iZ0iFh.json
+[2026-08-21T18:26:10.269412] PERSIST: Trello comment posted successfully
+[2026-08-21T18:26:10.269412] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:26:10.277419] ENGINE: 🏁 CARD COMPLETED — FAIL in 81.4s
+[2026-08-21T18:26:10.277419] ENGINE: ⏭️ Card P2iZ0iFh skipped — no handler or needs work
+[2026-08-21T18:26:10.278419] ENGINE: 🔍 Trying candidate: [HFPWVDsD] [P1] Fix VOID_FleetDockerBalance scheduled task
+[2026-08-21T18:26:10.278419] O.RIENT: Analyzing: [P1] Fix VOID_FleetDockerBalance scheduled task
+[2026-08-21T18:26:13.229565] O.RIENT: Action type: bug_fix | Complexity: medium
+[2026-08-21T18:26:13.230566] D.ECIDE: Formulating action plan...
+[2026-08-21T18:26:13.231566] D.ECIDE: Plan: bug_fix — 5 steps
+[2026-08-21T18:26:13.231566] A.CT: Executing: bug_fix
+[2026-08-21T18:26:13.231566] A.CT: ⚠️ No real handler for [HFPWVDsD] [P1] Fix VOID_FleetDockerBalance scheduled task — skipping
+[2026-08-21T18:26:13.231566] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:26:13.231566] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for HFPWVDsD — requires implementation
+[2026-08-21T18:26:13.231566] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:26:13.232567] PERSIST: Evidence saved: FODAVP_20260821_182613_HFPWVDsD.json
+[2026-08-21T18:26:13.540160] PERSIST: Trello comment posted successfully
+[2026-08-21T18:26:13.540160] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:26:13.548158] ENGINE: 🏁 CARD COMPLETED — FAIL in 84.67s
+[2026-08-21T18:26:13.548158] ENGINE: ⏭️ Card HFPWVDsD skipped — no handler or needs work
+[2026-08-21T18:26:13.548158] ENGINE: 🔍 Trying candidate: [2031IrJi] [P1] Fix Void_Daily_Vault_Check scheduled task
+[2026-08-21T18:26:13.548158] O.RIENT: Analyzing: [P1] Fix Void_Daily_Vault_Check scheduled task
+[2026-08-21T18:26:16.546914] O.RIENT: Action type: bug_fix | Complexity: medium
+[2026-08-21T18:26:16.547916] D.ECIDE: Formulating action plan...
+[2026-08-21T18:26:16.548915] D.ECIDE: Plan: bug_fix — 5 steps
+[2026-08-21T18:26:16.548915] A.CT: Executing: bug_fix
+[2026-08-21T18:26:16.548915] A.CT: ⚠️ No real handler for [2031IrJi] [P1] Fix Void_Daily_Vault_Check scheduled task — skipping
+[2026-08-21T18:26:16.548915] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:26:16.548915] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for 2031IrJi — requires implementation
+[2026-08-21T18:26:16.548915] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:26:16.549916] PERSIST: Evidence saved: FODAVP_20260821_182616_2031IrJi.json
+[2026-08-21T18:26:16.890070] PERSIST: Trello comment posted successfully
+[2026-08-21T18:26:16.891072] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:26:16.900906] ENGINE: 🏁 CARD COMPLETED — FAIL in 88.02s
+[2026-08-21T18:26:16.900906] ENGINE: ⏭️ Card 2031IrJi skipped — no handler or needs work
+[2026-08-21T18:26:16.900906] ENGINE: 🔍 Trying candidate: [fc7XM4oN] [P1] Fix Void_Daily_Smart_Verify scheduled task
+[2026-08-21T18:26:16.901434] O.RIENT: Analyzing: [P1] Fix Void_Daily_Smart_Verify scheduled task
+[2026-08-21T18:26:19.753547] O.RIENT: Action type: bug_fix | Complexity: medium
+[2026-08-21T18:26:19.754547] D.ECIDE: Formulating action plan...
+[2026-08-21T18:26:19.755548] D.ECIDE: Plan: bug_fix — 5 steps
+[2026-08-21T18:26:19.755548] A.CT: Executing: bug_fix
+[2026-08-21T18:26:19.755548] A.CT: ⚠️ No real handler for [fc7XM4oN] [P1] Fix Void_Daily_Smart_Verify scheduled task — skipping
+[2026-08-21T18:26:19.755548] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:26:19.755548] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for fc7XM4oN — requires implementation
+[2026-08-21T18:26:19.755548] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:26:19.756548] PERSIST: Evidence saved: FODAVP_20260821_182619_fc7XM4oN.json
+[2026-08-21T18:26:20.088342] PERSIST: Trello comment posted successfully
+[2026-08-21T18:26:20.088342] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:26:20.097459] ENGINE: 🏁 CARD COMPLETED — FAIL in 91.22s
+[2026-08-21T18:26:20.097459] ENGINE: ⏭️ Card fc7XM4oN skipped — no handler or needs work
+[2026-08-21T18:26:20.097459] ENGINE: 🔍 Trying candidate: [30QeV49u] [P1] DASHBOARD: Mystery action endpoints accept POST si
+[2026-08-21T18:26:20.097965] O.RIENT: Analyzing: [P1] DASHBOARD: Mystery action endpoints accept POST si
+[2026-08-21T18:26:24.904691] O.RIENT: Action type: generic | Complexity: low
+[2026-08-21T18:26:24.905691] D.ECIDE: Formulating action plan...
+[2026-08-21T18:26:24.905691] D.ECIDE: Plan: generic — 4 steps
+[2026-08-21T18:26:24.906690] A.CT: Executing: generic
+[2026-08-21T18:26:24.906690] A.CT: ⚠️ No real handler for [30QeV49u] [P1] DASHBOARD: Mystery action endpoints accept POST si — skipping
+[2026-08-21T18:26:24.906690] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:26:24.906690] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for 30QeV49u — requires implementation
+[2026-08-21T18:26:24.906690] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:26:24.907690] PERSIST: Evidence saved: FODAVP_20260821_182624_30QeV49u.json
+[2026-08-21T18:26:25.234924] PERSIST: Trello comment posted successfully
+[2026-08-21T18:26:25.234924] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:26:25.243921] ENGINE: 🏁 CARD COMPLETED — FAIL in 96.36s
+[2026-08-21T18:26:25.243921] ENGINE: ⏭️ Card 30QeV49u skipped — no handler or needs work
+[2026-08-21T18:26:25.243921] ENGINE: 🔍 Trying candidate: [PExVmWSI] [P1] DASHBOARD: console.error() calls in production JS 
+[2026-08-21T18:26:25.243921] O.RIENT: Analyzing: [P1] DASHBOARD: console.error() calls in production JS 
+[2026-08-21T18:26:28.126732] O.RIENT: Action type: generic | Complexity: low
+[2026-08-21T18:26:28.127732] D.ECIDE: Formulating action plan...
+[2026-08-21T18:26:28.127732] D.ECIDE: Captain approval required — gating execution
+[2026-08-21T18:26:28.128732] ENGINE: 🛑 Captain approval required — skipping to next candidate
+[2026-08-21T18:26:28.460028] ENGINE: Posted captain approval questions to Trello
+[2026-08-21T18:26:28.460028] ENGINE: ⏸️ Candidate needs captain: PExVmWSI — trying next candidate
+[2026-08-21T18:26:28.460028] ENGINE: 🔍 Trying candidate: [z7TV3Lqy] [P1] DASHBOARD: Inline JS mystery functions — unlockWha
+[2026-08-21T18:26:28.460028] O.RIENT: Analyzing: [P1] DASHBOARD: Inline JS mystery functions — unlockWha
+[2026-08-21T18:26:31.802815] O.RIENT: Action type: generic | Complexity: low
+[2026-08-21T18:26:31.804816] D.ECIDE: Formulating action plan...
+[2026-08-21T18:26:31.804816] D.ECIDE: Captain approval required — gating execution
+[2026-08-21T18:26:31.804816] ENGINE: 🛑 Captain approval required — skipping to next candidate
+[2026-08-21T18:26:32.096875] ENGINE: Posted captain approval questions to Trello
+[2026-08-21T18:26:32.096875] ENGINE: ⏸️ Candidate needs captain: z7TV3Lqy — trying next candidate
+[2026-08-21T18:26:32.097875] ENGINE: 🔍 Trying candidate: [ZzPnFP4H] [P1] DASHBOARD: Additional broken ports 3002, 8081 — ex
+[2026-08-21T18:26:32.097875] O.RIENT: Analyzing: [P1] DASHBOARD: Additional broken ports 3002, 8081 — ex
+[2026-08-21T18:26:35.108667] O.RIENT: Action type: generic | Complexity: low
+[2026-08-21T18:26:35.109668] D.ECIDE: Formulating action plan...
+[2026-08-21T18:26:35.110666] D.ECIDE: Plan: generic — 4 steps
+[2026-08-21T18:26:35.110666] A.CT: Executing: generic
+[2026-08-21T18:26:35.110666] A.CT: ⚠️ No real handler for [ZzPnFP4H] [P1] DASHBOARD: Additional broken ports 3002, 8081 — ex — skipping
+[2026-08-21T18:26:35.110666] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:26:35.110666] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for ZzPnFP4H — requires implementation
+[2026-08-21T18:26:35.110666] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:26:35.111667] PERSIST: Evidence saved: FODAVP_20260821_182635_ZzPnFP4H.json
+[2026-08-21T18:26:35.559110] PERSIST: Trello comment posted successfully
+[2026-08-21T18:26:35.560113] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:26:35.567696] ENGINE: 🏁 CARD COMPLETED — FAIL in 106.69s
+[2026-08-21T18:26:35.567696] ENGINE: ⏭️ Card ZzPnFP4H skipped — no handler or needs work
+[2026-08-21T18:26:35.567696] ENGINE: 🔍 Trying candidate: [uwBG40Lq] [SIR GREEN] Discord deep-dive: kill treasuremap firehos
+[2026-08-21T18:26:35.568694] O.RIENT: Analyzing: [SIR GREEN] Discord deep-dive: kill treasuremap firehos
+[2026-08-21T18:26:38.475228] O.RIENT: Action type: generic | Complexity: low
+[2026-08-21T18:26:38.476230] D.ECIDE: Formulating action plan...
+[2026-08-21T18:26:38.476230] D.ECIDE: Captain approval required — gating execution
+[2026-08-21T18:26:38.476230] ENGINE: 🛑 Captain approval required — skipping to next candidate
+[2026-08-21T18:26:38.826528] ENGINE: Posted captain approval questions to Trello
+[2026-08-21T18:26:38.827529] ENGINE: ⏸️ Candidate needs captain: uwBG40Lq — trying next candidate
+[2026-08-21T18:26:38.827529] ENGINE: 🔍 Trying candidate: [BTUuDnnC] 🐛 Offline queue auto-delivery for crew PCs
+[2026-08-21T18:26:38.827529] O.RIENT: Analyzing: 🐛 Offline queue auto-delivery for crew PCs
+[2026-08-21T18:26:42.456486] O.RIENT: Action type: generic | Complexity: low
+[2026-08-21T18:26:42.457486] D.ECIDE: Formulating action plan...
+[2026-08-21T18:26:42.457486] D.ECIDE: Plan: generic — 4 steps
+[2026-08-21T18:26:42.458486] A.CT: Executing: generic
+[2026-08-21T18:26:42.458486] A.CT: ⚠️ No real handler for [BTUuDnnC] 🐛 Offline queue auto-delivery for crew PCs — skipping
+[2026-08-21T18:26:42.458486] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:26:42.458486] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for BTUuDnnC — requires implementation
+[2026-08-21T18:26:42.458486] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:26:42.459486] PERSIST: Evidence saved: FODAVP_20260821_182642_BTUuDnnC.json
+[2026-08-21T18:26:42.777082] PERSIST: Trello comment posted successfully
+[2026-08-21T18:26:42.778091] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:26:42.785090] ENGINE: 🏁 CARD COMPLETED — FAIL in 113.9s
+[2026-08-21T18:26:42.786091] ENGINE: ⏭️ Card BTUuDnnC skipped — no handler or needs work
+[2026-08-21T18:26:42.786091] ENGINE: 🔍 Trying candidate: [ADk3xMYj] 🐛 Cross-rig connectivity monitor implementation
+[2026-08-21T18:26:42.786091] O.RIENT: Analyzing: 🐛 Cross-rig connectivity monitor implementation
+[2026-08-21T18:26:45.696309] O.RIENT: Action type: generic | Complexity: low
+[2026-08-21T18:26:45.697311] D.ECIDE: Formulating action plan...
+[2026-08-21T18:26:45.697311] D.ECIDE: Plan: generic — 4 steps
+[2026-08-21T18:26:45.697311] A.CT: Executing: generic
+[2026-08-21T18:26:45.698309] A.CT: ⚠️ No real handler for [ADk3xMYj] 🐛 Cross-rig connectivity monitor implementation — skipping
+[2026-08-21T18:26:45.698309] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:26:45.698309] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for ADk3xMYj — requires implementation
+[2026-08-21T18:26:45.698309] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:26:45.699309] PERSIST: Evidence saved: FODAVP_20260821_182645_ADk3xMYj.json
+[2026-08-21T18:26:46.006311] PERSIST: Trello comment posted successfully
+[2026-08-21T18:26:46.006832] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:26:46.014566] ENGINE: 🏁 CARD COMPLETED — FAIL in 117.13s
+[2026-08-21T18:26:46.014566] ENGINE: ⏭️ Card ADk3xMYj skipped — no handler or needs work
+[2026-08-21T18:26:46.014566] ENGINE: 🔍 Trying candidate: [sm5Q4BLp] [P2] Fix VOID_Vault_Sunrise scheduled task
+[2026-08-21T18:26:46.015081] O.RIENT: Analyzing: [P2] Fix VOID_Vault_Sunrise scheduled task
+[2026-08-21T18:27:16.540235] ENGINE: 🍳⚔️ FODAVP Protocol Engine v2.0
+[2026-08-21T18:27:16.540235] ENGINE: F.IND → O.RIENT → D.ECIDE → A.CT → V.ERIFY → PERSIST
+[2026-08-21T18:27:16.540235] ENGINE: 🚀 CYCLE INITIATED — FODAVP_20260821_182716
+[2026-08-21T18:27:16.540235] F.IND: Locating up to 5 candidate cards...
+[2026-08-21T18:27:21.272996] F.IND: Found 116 priority cards across 16 lists
+[2026-08-21T18:27:21.274996] ENGINE: 🔍 Trying candidate: [Oi4N0kR4] Research: Build free Geometric Deep Learning (GDL) quan
+[2026-08-21T18:27:21.274996] O.RIENT: Analyzing: Research: Build free Geometric Deep Learning (GDL) quan
+[2026-08-21T18:27:24.625856] O.RIENT: Action type: generic | Complexity: low
+[2026-08-21T18:27:24.626856] D.ECIDE: Formulating action plan...
+[2026-08-21T18:27:24.626856] D.ECIDE: Captain approval required — gating execution
+[2026-08-21T18:27:24.626856] ENGINE: 🛑 Captain approval required — skipping to next candidate
+[2026-08-21T18:27:24.926567] ENGINE: Posted captain approval questions to Trello
+[2026-08-21T18:27:24.926567] ENGINE: ⏸️ Candidate needs captain: Oi4N0kR4 — trying next candidate
+[2026-08-21T18:27:24.926567] ENGINE: 🔍 Trying candidate: [PExVmWSI] [P1] DASHBOARD: console.error() calls in production JS 
+[2026-08-21T18:27:24.927102] O.RIENT: Analyzing: [P1] DASHBOARD: console.error() calls in production JS 
+[2026-08-21T18:27:27.936252] O.RIENT: Action type: generic | Complexity: low
+[2026-08-21T18:27:27.937252] D.ECIDE: Formulating action plan...
+[2026-08-21T18:27:27.938253] D.ECIDE: Captain approval required — gating execution
+[2026-08-21T18:27:27.938253] ENGINE: 🛑 Captain approval required — skipping to next candidate
+[2026-08-21T18:27:28.246884] ENGINE: Posted captain approval questions to Trello
+[2026-08-21T18:27:28.246884] ENGINE: ⏸️ Candidate needs captain: PExVmWSI — trying next candidate
+[2026-08-21T18:27:28.246884] ENGINE: 🔍 Trying candidate: [z7TV3Lqy] [P1] DASHBOARD: Inline JS mystery functions — unlockWha
+[2026-08-21T18:27:28.246884] O.RIENT: Analyzing: [P1] DASHBOARD: Inline JS mystery functions — unlockWha
+[2026-08-21T18:27:31.188747] O.RIENT: Action type: generic | Complexity: low
+[2026-08-21T18:27:31.190746] D.ECIDE: Formulating action plan...
+[2026-08-21T18:27:31.190746] D.ECIDE: Captain approval required — gating execution
+[2026-08-21T18:27:31.190746] ENGINE: 🛑 Captain approval required — skipping to next candidate
+[2026-08-21T18:27:31.502359] ENGINE: Posted captain approval questions to Trello
+[2026-08-21T18:27:31.502359] ENGINE: ⏸️ Candidate needs captain: z7TV3Lqy — trying next candidate
+[2026-08-21T18:27:31.502359] ENGINE: 🔍 Trying candidate: [uwBG40Lq] [SIR GREEN] Discord deep-dive: kill treasuremap firehos
+[2026-08-21T18:27:31.502359] O.RIENT: Analyzing: [SIR GREEN] Discord deep-dive: kill treasuremap firehos
+[2026-08-21T18:27:34.419908] O.RIENT: Action type: generic | Complexity: low
+[2026-08-21T18:27:34.421911] D.ECIDE: Formulating action plan...
+[2026-08-21T18:27:34.421911] D.ECIDE: Captain approval required — gating execution
+[2026-08-21T18:27:34.421911] ENGINE: 🛑 Captain approval required — skipping to next candidate
+[2026-08-21T18:27:34.738956] ENGINE: Posted captain approval questions to Trello
+[2026-08-21T18:27:34.739962] ENGINE: ⏸️ Candidate needs captain: uwBG40Lq — trying next candidate
+[2026-08-21T18:27:34.739962] ENGINE: 🔍 Trying candidate: [sm5Q4BLp] [P2] Fix VOID_Vault_Sunrise scheduled task
+[2026-08-21T18:27:34.739962] O.RIENT: Analyzing: [P2] Fix VOID_Vault_Sunrise scheduled task
+[2026-08-21T18:27:37.671829] O.RIENT: Action type: bug_fix | Complexity: medium
+[2026-08-21T18:27:37.673829] D.ECIDE: Formulating action plan...
+[2026-08-21T18:27:37.673829] D.ECIDE: Plan: bug_fix — 5 steps
+[2026-08-21T18:27:37.673829] A.CT: Executing: bug_fix
+[2026-08-21T18:27:37.673829] A.CT: ⚠️ No real handler for [sm5Q4BLp] [P2] Fix VOID_Vault_Sunrise scheduled task — skipping
+[2026-08-21T18:27:37.673829] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:27:37.674829] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for sm5Q4BLp — requires implementation
+[2026-08-21T18:27:37.674829] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:27:37.674829] PERSIST: Evidence saved: FODAVP_20260821_182737_sm5Q4BLp.json
+[2026-08-21T18:27:37.975730] PERSIST: Trello comment posted successfully
+[2026-08-21T18:27:37.976730] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:27:37.977731] ENGINE: 🏁 CARD COMPLETED — FAIL in 21.44s
+[2026-08-21T18:27:37.977731] ENGINE: ⏭️ Card sm5Q4BLp skipped — no handler or needs work
+[2026-08-21T18:27:37.978731] ENGINE: 🔍 Trying candidate: [WnSG4T0m] [P2] Fix VOID Pirate Fleet Orders scheduled task
+[2026-08-21T18:27:37.978731] O.RIENT: Analyzing: [P2] Fix VOID Pirate Fleet Orders scheduled task
+[2026-08-21T18:27:41.003278] O.RIENT: Action type: bug_fix | Complexity: medium
+[2026-08-21T18:27:41.005283] D.ECIDE: Formulating action plan...
+[2026-08-21T18:27:41.005283] D.ECIDE: Plan: bug_fix — 5 steps
+[2026-08-21T18:27:41.005283] A.CT: Executing: bug_fix
+[2026-08-21T18:27:41.005283] A.CT: ⚠️ No real handler for [WnSG4T0m] [P2] Fix VOID Pirate Fleet Orders scheduled task — skipping
+[2026-08-21T18:27:41.006283] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:27:41.006283] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for WnSG4T0m — requires implementation
+[2026-08-21T18:27:41.006283] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:27:41.006283] PERSIST: Evidence saved: FODAVP_20260821_182741_WnSG4T0m.json
+[2026-08-21T18:27:41.322597] PERSIST: Trello comment posted successfully
+[2026-08-21T18:27:41.322597] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:27:41.330598] ENGINE: 🏁 CARD COMPLETED — FAIL in 24.79s
+[2026-08-21T18:27:41.330598] ENGINE: ⏭️ Card WnSG4T0m skipped — no handler or needs work
+[2026-08-21T18:27:41.330598] ENGINE: 🔍 Trying candidate: [iXgxw651] [P2] Fix VOID_AutoArchive_Trello scheduled task
+[2026-08-21T18:27:41.331596] O.RIENT: Analyzing: [P2] Fix VOID_AutoArchive_Trello scheduled task
+[2026-08-21T18:27:44.814334] O.RIENT: Action type: bug_fix | Complexity: medium
+[2026-08-21T18:27:44.815842] D.ECIDE: Formulating action plan...
+[2026-08-21T18:27:44.815842] D.ECIDE: Plan: bug_fix — 5 steps
+[2026-08-21T18:27:44.815842] A.CT: Executing: bug_fix
+[2026-08-21T18:27:44.815842] A.CT: ⚠️ No real handler for [iXgxw651] [P2] Fix VOID_AutoArchive_Trello scheduled task — skipping
+[2026-08-21T18:27:44.815842] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:27:44.815842] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for iXgxw651 — requires implementation
+[2026-08-21T18:27:44.816842] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:27:44.816842] PERSIST: Evidence saved: FODAVP_20260821_182744_iXgxw651.json
+[2026-08-21T18:27:45.123201] PERSIST: Trello comment posted successfully
+[2026-08-21T18:27:45.123201] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:27:45.131201] ENGINE: 🏁 CARD COMPLETED — FAIL in 28.59s
+[2026-08-21T18:27:45.131201] ENGINE: ⏭️ Card iXgxw651 skipped — no handler or needs work
+[2026-08-21T18:27:45.132201] ENGINE: 🔍 Trying candidate: [Kvp3BguO] [P2] Fix VOID_Pirate_Daily_Calendar_Sync scheduled task
+[2026-08-21T18:27:45.132201] O.RIENT: Analyzing: [P2] Fix VOID_Pirate_Daily_Calendar_Sync scheduled task
+[2026-08-21T18:27:48.250515] O.RIENT: Action type: bug_fix | Complexity: medium
+[2026-08-21T18:27:48.252516] D.ECIDE: Formulating action plan...
+[2026-08-21T18:27:48.252516] D.ECIDE: Plan: bug_fix — 5 steps
+[2026-08-21T18:27:48.252516] A.CT: Executing: bug_fix
+[2026-08-21T18:27:48.252516] A.CT: ⚠️ No real handler for [Kvp3BguO] [P2] Fix VOID_Pirate_Daily_Calendar_Sync scheduled task — skipping
+[2026-08-21T18:27:48.252516] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:27:48.253516] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for Kvp3BguO — requires implementation
+[2026-08-21T18:27:48.253516] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:27:48.254516] PERSIST: Evidence saved: FODAVP_20260821_182748_Kvp3BguO.json
+[2026-08-21T18:27:48.552844] PERSIST: Trello comment posted successfully
+[2026-08-21T18:27:48.552844] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:27:48.563843] ENGINE: 🏁 CARD COMPLETED — FAIL in 32.02s
+[2026-08-21T18:27:48.563843] ENGINE: ⏭️ Card Kvp3BguO skipped — no handler or needs work
+[2026-08-21T18:27:48.563843] ENGINE: 🔍 Trying candidate: [tLyT9rBn] [P2] Fix Void_Weekly_Rebalance scheduled task
+[2026-08-21T18:27:48.563843] O.RIENT: Analyzing: [P2] Fix Void_Weekly_Rebalance scheduled task
+[2026-08-21T18:27:51.501232] O.RIENT: Action type: bug_fix | Complexity: medium
+[2026-08-21T18:27:51.503323] D.ECIDE: Formulating action plan...
+[2026-08-21T18:27:51.503323] D.ECIDE: Plan: bug_fix — 5 steps
+[2026-08-21T18:27:51.503855] A.CT: Executing: bug_fix
+[2026-08-21T18:27:51.503855] A.CT: ⚠️ No real handler for [tLyT9rBn] [P2] Fix Void_Weekly_Rebalance scheduled task — skipping
+[2026-08-21T18:27:51.504390] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:27:51.504909] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for tLyT9rBn — requires implementation
+[2026-08-21T18:27:51.504909] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:27:51.506020] PERSIST: Evidence saved: FODAVP_20260821_182751_tLyT9rBn.json
+[2026-08-21T18:27:51.920717] PERSIST: Trello comment posted successfully
+[2026-08-21T18:27:51.921717] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:27:51.929819] ENGINE: 🏁 CARD COMPLETED — FAIL in 35.39s
+[2026-08-21T18:27:51.929819] ENGINE: ⏭️ Card tLyT9rBn skipped — no handler or needs work
+[2026-08-21T18:27:51.929819] ENGINE: 🔍 Trying candidate: [imlZPz0p] [P2] DASHBOARD: Fleet status table nearly empty — 1 row
+[2026-08-21T18:27:51.929819] O.RIENT: Analyzing: [P2] DASHBOARD: Fleet status table nearly empty — 1 row
+[2026-08-21T18:27:55.086551] O.RIENT: Action type: generic | Complexity: low
+[2026-08-21T18:27:55.088552] D.ECIDE: Formulating action plan...
+[2026-08-21T18:27:55.088552] D.ECIDE: Plan: generic — 4 steps
+[2026-08-21T18:27:55.088552] A.CT: Executing: generic
+[2026-08-21T18:27:55.088552] A.CT: ⚠️ No real handler for [imlZPz0p] [P2] DASHBOARD: Fleet status table nearly empty — 1 row — skipping
+[2026-08-21T18:27:55.089552] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:27:55.089552] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for imlZPz0p — requires implementation
+[2026-08-21T18:27:55.089552] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:27:55.090553] PERSIST: Evidence saved: FODAVP_20260821_182755_imlZPz0p.json
+[2026-08-21T18:27:55.420074] PERSIST: Trello comment posted successfully
+[2026-08-21T18:27:55.421127] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:27:55.429638] ENGINE: 🏁 CARD COMPLETED — FAIL in 38.89s
+[2026-08-21T18:27:55.429638] ENGINE: ⏭️ Card imlZPz0p skipped — no handler or needs work
+[2026-08-21T18:27:55.429638] ENGINE: 🔍 Trying candidate: [TgbhKkQ5] [P2] DASHBOARD: GitHub Issues panel missing from dashbo
+[2026-08-21T18:27:55.430638] O.RIENT: Analyzing: [P2] DASHBOARD: GitHub Issues panel missing from dashbo
+[2026-08-21T18:27:58.340317] O.RIENT: Action type: generic | Complexity: low
+[2026-08-21T18:27:58.341316] D.ECIDE: Formulating action plan...
+[2026-08-21T18:27:58.341316] D.ECIDE: Plan: generic — 4 steps
+[2026-08-21T18:27:58.342316] A.CT: Executing: generic
+[2026-08-21T18:27:58.342316] A.CT: ⚠️ No real handler for [TgbhKkQ5] [P2] DASHBOARD: GitHub Issues panel missing from dashbo — skipping
+[2026-08-21T18:27:58.342316] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:27:58.342316] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for TgbhKkQ5 — requires implementation
+[2026-08-21T18:27:58.342316] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:27:58.343316] PERSIST: Evidence saved: FODAVP_20260821_182758_TgbhKkQ5.json
+[2026-08-21T18:27:58.694971] PERSIST: Trello comment posted successfully
+[2026-08-21T18:27:58.694971] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:27:58.702970] ENGINE: 🏁 CARD COMPLETED — FAIL in 42.16s
+[2026-08-21T18:27:58.702970] ENGINE: ⏭️ Card TgbhKkQ5 skipped — no handler or needs work
+[2026-08-21T18:27:58.702970] ENGINE: 🔍 Trying candidate: [tvXAPIew] [P2] DASHBOARD: Fleet status reports STALE data — needs
+[2026-08-21T18:27:58.702970] O.RIENT: Analyzing: [P2] DASHBOARD: Fleet status reports STALE data — needs
+[2026-08-21T18:28:02.290368] O.RIENT: Action type: generic | Complexity: low
+[2026-08-21T18:28:02.290884] O.RIENT: Dependencies found: 195
+[2026-08-21T18:28:02.290884] O.RIENT:   → M4z7T3X7: [RULE] G1: Fleet Command Structure
+[2026-08-21T18:28:02.290884] O.RIENT:   → SZ0T7F1j: [RULE] G15: Fleet Personas
+[2026-08-21T18:28:02.290884] O.RIENT:   → qOjQlcTM: Create a VOID Pirate trading card game
+[2026-08-21T18:28:02.291403] O.RIENT:   → 6MCYfjZV: Launch a VOID Pirate podcast
+[2026-08-21T18:28:02.291403] O.RIENT:   → 4GJhflkF: [CF-84] GitHub repo creation
+[2026-08-21T18:28:02.291403] O.RIENT:   → p2J2WMSF: Fleet Inventory Bot — deploy + verify inventory al
+[2026-08-21T18:28:02.291919] O.RIENT:   → TmPXb4DR: [P0] DASHBOARD: Action buttons crash server with C
+[2026-08-21T18:28:02.291919] O.RIENT:   → xb32h0xw: [P0] DASHBOARD: PINKCADY shown as 'offline' despit
+[2026-08-21T18:28:02.291919] O.RIENT:   → 30QeV49u: [P1] DASHBOARD: Mystery action endpoints accept PO
+[2026-08-21T18:28:02.292437] O.RIENT:   → PExVmWSI: [P1] DASHBOARD: console.error() calls in productio
+[2026-08-21T18:28:02.292437] O.RIENT:   → z7TV3Lqy: [P1] DASHBOARD: Inline JS mystery functions — unlo
+[2026-08-21T18:28:02.292437] O.RIENT:   → ZzPnFP4H: [P1] DASHBOARD: Additional broken ports 3002, 8081
+[2026-08-21T18:28:02.292953] O.RIENT:   → sm5Q4BLp: [P2] Fix VOID_Vault_Sunrise scheduled task
+[2026-08-21T18:28:02.292953] O.RIENT:   → WnSG4T0m: [P2] Fix VOID Pirate Fleet Orders scheduled task
+[2026-08-21T18:28:02.292953] O.RIENT:   → iXgxw651: [P2] Fix VOID_AutoArchive_Trello scheduled task
+[2026-08-21T18:28:02.292953] O.RIENT:   → Kvp3BguO: [P2] Fix VOID_Pirate_Daily_Calendar_Sync scheduled
+[2026-08-21T18:28:02.293469] O.RIENT:   → tLyT9rBn: [P2] Fix Void_Weekly_Rebalance scheduled task
+[2026-08-21T18:28:02.293469] O.RIENT:   → imlZPz0p: [P2] DASHBOARD: Fleet status table nearly empty — 
+[2026-08-21T18:28:02.293469] O.RIENT:   → TgbhKkQ5: [P2] DASHBOARD: GitHub Issues panel missing from d
+[2026-08-21T18:28:02.293985] O.RIENT:   → yNQ2fIde: [P2] DASHBOARD: Hardcoded IPs in HTML — maintainab
+[2026-08-21T18:28:02.293985] O.RIENT:   → Y9VKqMNB: [P2] DASHBOARD: External resource links broken (po
+[2026-08-21T18:28:02.293985] O.RIENT:   → oVhvLq8p: Design a VOID Pirate flag collection
+[2026-08-21T18:28:02.294501] O.RIENT:   → Q9WYNr9b: Write a VOID Pirate cookbook
+[2026-08-21T18:28:02.294501] O.RIENT:   → A3Ivds4Y: Build automation dashboard page
+[2026-08-21T18:28:02.294501] O.RIENT:   → 6xXsBbqB: [P2] API auth + input validation
+[2026-08-21T18:28:02.294501] O.RIENT:   → XzXUBTXr: [P3] DASHBOARD: All 55KB JS inline — no external c
+[2026-08-21T18:28:02.295017] O.RIENT:   → uwkVG7Br: [P3] DASHBOARD: Settings panel missing — no config
+[2026-08-21T18:28:02.295017] O.RIENT:   → TuFconaG: [P2] BUG: Stale Docker image tags wasting ~1.2GB d
+[2026-08-21T18:28:02.295017] O.RIENT:   → P8VQjhHv: [P2] BUG: 19 duplicate Docker volumes (torus_* vs 
+[2026-08-21T18:28:02.295533] O.RIENT:   → OBFQ98p4: [P2] BUG: torus-backup container has no HEALTHCHEC
+[2026-08-21T18:28:02.295533] O.RIENT:   → X6Ek3G1z: [P1] BUG: Dashboard healthcheck in compose uses /-
+[2026-08-21T18:28:02.295533] O.RIENT:   → oVzdqXrf: BUG-HUNT-31: Port 3000 missing — Gitea web UI down
+[2026-08-21T18:28:02.296051] O.RIENT:   → 7yBJyjGq: BUG-HUNT-30: Port 22 missing — Gitea SSH down
+[2026-08-21T18:28:02.296051] O.RIENT:   → mxmExKpt: BUG-HUNT-25: /api/services shows trello and augur_
+[2026-08-21T18:28:02.296051] O.RIENT:   → sZ29uBjT: [P0] BUG: Dashboard route /trello returns 500
+[2026-08-21T18:28:02.296051] O.RIENT:   → ZZrycatV: [P2] BUG: Dashboard /github references 2 stale rep
+[2026-08-21T18:28:02.296602] O.RIENT:   → bnvxep9o: [P2] BUG: 8 stale Docker image version tags
+[2026-08-21T18:28:02.296602] O.RIENT:   → RhRemMty: BUG-HUNT-16: Port 8090 closed — expected service u
+[2026-08-21T18:28:02.296602] O.RIENT:   → q42S4et9: BUG-HUNT-15: Port 5001 closed — expected service u
+[2026-08-21T18:28:02.296602] O.RIENT:   → CSXFfBQo: BUG-HUNT-14: Port 8081 open — unknown service runn
+[2026-08-21T18:28:02.296602] O.RIENT:   → poTMRbKy: BUG-HUNT-13: Port 3001 open — unknown service runn
+[2026-08-21T18:28:02.296602] O.RIENT:   → eslpghnJ: BUG-HUNT-12: Port 3000 missing — unknown service n
+[2026-08-21T18:28:02.297560] O.RIENT:   → YWhUtCfn: BUG-HUNT-11: Port 2375 open — unencrypted Docker A
+[2026-08-21T18:28:02.297560] O.RIENT:   → zXrNVk2I: BUG-HUNT-9: Local port 22 timeout — SSH unreachabl
+[2026-08-21T18:28:02.297560] O.RIENT:   → 2DSp3YB9: BUG-HUNT-8: Local port 3000 timeout — unknown serv
+[2026-08-21T18:28:02.297560] O.RIENT:   → N0AnwOFo: BUG-HUNT-7: Local port 2376 timeout — Docker API u
+[2026-08-21T18:28:02.297560] O.RIENT:   → FbhlA3f3: BUG-HUNT-6: Local port 3100 timeout — TorusPOS unr
+[2026-08-21T18:28:02.297560] O.RIENT:   → wzIoOV7x: BUG-HUNT-5: Local port 7679 timeout — Augur sandbo
+[2026-08-21T18:28:02.298559] O.RIENT:   → kPzm8Nq7: FRONTEND-5: suricata.html shows IPS mode message e
+[2026-08-21T18:28:02.298559] O.RIENT:   → YNWN0cA1: DOWNLOAD-BUTTONS-1: Dashboard download buttons do 
+[2026-08-21T18:28:02.298559] O.RIENT:   → TRBe1Rk9: COMPUTE-STATE-1: Fleet compute block contradictory
+[2026-08-21T18:28:02.298559] O.RIENT:   → qe9nwI9A: AUGUR-DEPLOY-1: /api/augur shows deployed=false PE
+[2026-08-21T18:28:02.298559] O.RIENT:   → LUbZqxuo: SIR-AZURE-1: /api/sir-azure stale last_activity an
+[2026-08-21T18:28:02.298559] O.RIENT:   → WU1wlgBB: BUG-3: dashboard download buttons stuck starting→i
+[2026-08-21T18:28:02.298559] O.RIENT:   → QTitEG3L: DASH-2: Fix dashboard server port binding for prod
+[2026-08-21T18:28:02.299559] O.RIENT:   → O70zkWUR: FLEET-3: Fleet failover UI with compute/data statu
+[2026-08-21T18:28:02.299559] O.RIENT:   → 6EsM2nxE: FLEET-2: Captain Dashboard fleet tab + data source
+[2026-08-21T18:28:02.299559] O.RIENT:   → 5oAHLvbO: 🐛 P1: Dashboard /api/status — 11 data sections EMP
+[2026-08-21T18:28:02.299559] O.RIENT:   → SQ19RnjL: 🐛 P1: Dashboard root '/' returns HTTP 200 but EMPT
+[2026-08-21T18:28:02.299559] O.RIENT:   → vEhv3kCa: 🐛 Dashboard API uses HTTP/1.1 — HTTP/2 upgrade wou
+[2026-08-21T18:28:02.299559] O.RIENT:   → YFOs4nhq: 🐛 Alpaca in PAPER trading mode — no live trades be
+[2026-08-21T18:28:02.299559] O.RIENT:   → TpgzEDVy: 🐛 Port 3000 is running Gitea, but TreasureMap shou
+[2026-08-21T18:28:02.300559] O.RIENT:   → IzSL118Q: Augur reports issue: https://github.com/VOIDPirate
+[2026-08-21T18:28:02.300559] O.RIENT:   → Qv7k0AoH: Dashboard /api/vault → 502 causes OODA 'vault JSON
+[2026-08-21T18:28:02.300559] O.RIENT:   → dPuZC7zX: API /api/ships — latency field is EMPTY
+[2026-08-21T18:28:02.300559] O.RIENT:   → Ipx1QkSF: Dashboard /api/alerts returns empty array
+[2026-08-21T18:28:02.300559] O.RIENT:   → xLP78VzO: Dashboard /api/status — health_message field is EM
+[2026-08-21T18:28:02.300559] O.RIENT:   → e9XExoL4: Dashboard /api/status — latency field is EMPTY
+[2026-08-21T18:28:02.301559] O.RIENT:   → skA1pUJn: Dashboard /api/status — cipher field is EMPTY
+[2026-08-21T18:28:02.301559] O.RIENT:   → fhLifEPL: Dashboard /api/status — opsec field is EMPTY
+[2026-08-21T18:28:02.301559] O.RIENT:   → yLmS4P20: DASHBOARD ROUTE /crew returns 404
+[2026-08-21T18:28:02.301978] O.RIENT:   → b8YSMCY7: DASHBOARD ROUTE /opsec returns 404
+[2026-08-21T18:28:02.301978] O.RIENT:   → XLMdTHab: DASHBOARD ROUTE /containers returns 404
+[2026-08-21T18:28:02.301978] O.RIENT:   → IKRBHO3I: DASHBOARD ROUTE /ships returns 404
+[2026-08-21T18:28:02.302488] O.RIENT:   → zD7BN2oC: DASHBOARD ROUTE /vault returns 404
+[2026-08-21T18:28:02.302488] O.RIENT:   → pdjIcSfM: DASHBOARD ROUTE /services returns 404
+[2026-08-21T18:28:02.302488] O.RIENT:   → Q7OdW42W: DASHBOARD ROUTE /tailscale returns 404
+[2026-08-21T18:28:02.302488] O.RIENT:   → hl12wSvi: DASHBOARD ROUTE /tools returns 404
+[2026-08-21T18:28:02.302488] O.RIENT:   → ogP96YQX: DASHBOARD ROUTE /comms returns 404
+[2026-08-21T18:28:02.302488] O.RIENT:   → RVV6UZcl: DASHBOARD ROUTE /diagram returns 404
+[2026-08-21T18:28:02.303489] O.RIENT:   → 1AiB1Cou: DASHBOARD ROUTE /dataview returns 404
+[2026-08-21T18:28:02.303489] O.RIENT:   → LpJHFK3J: DASHBOARD ROUTE /auth returns 404
+[2026-08-21T18:28:02.303489] O.RIENT:   → KPWt6wNZ: DASHBOARD ROUTE /api-status returns 404
+[2026-08-21T18:28:02.303489] O.RIENT:   → qhXJ3Bcu: DASHBOARD ROUTE /sandbox returns 404
+[2026-08-21T18:28:02.303489] O.RIENT:   → hCCrZAmp: DASHBOARD ROUTE /white-whale returns 404
+[2026-08-21T18:28:02.303489] O.RIENT:   → iXnbkC7P: 🐛 DASHBOARD: /api/alerts returns empty []
+[2026-08-21T18:28:02.304488] O.RIENT:   → bD3JPFoe: 🐛 DASHBOARD: /crew route returns 404
+[2026-08-21T18:28:02.304488] O.RIENT:   → KIxFylh5: 🐛 DASHBOARD: /opsec route returns 404
+[2026-08-21T18:28:02.304488] O.RIENT:   → Eqkk1BFe: 🐛 DASHBOARD: /containers route returns 404
+[2026-08-21T18:28:02.304488] O.RIENT:   → jTEeExhM: 🐛 DASHBOARD: /ships route returns 404
+[2026-08-21T18:28:02.304488] O.RIENT:   → ZQQl5b6C: 🐛 DASHBOARD: /vault route returns 404
+[2026-08-21T18:28:02.305490] O.RIENT:   → LcNdmYTc: 🐛 DASHBOARD: /services route returns 404
+[2026-08-21T18:28:02.305490] O.RIENT:   → FPalpu2H: 🐛 DASHBOARD: /tailscale route returns 404
+[2026-08-21T18:28:02.305490] O.RIENT:   → RsQM5yFb: 🐛 DASHBOARD: /tools route returns 404
+[2026-08-21T18:28:02.305490] O.RIENT:   → alrJRWMz: 🐛 DASHBOARD: /comms route returns 404
+[2026-08-21T18:28:02.305490] O.RIENT:   → AtPnNx18: 🐛 DASHBOARD: /diagram route returns 404
+[2026-08-21T18:28:02.305490] O.RIENT:   → VEH4UaYi: 🐛 DASHBOARD: /sandbox route returns 404
+[2026-08-21T18:28:02.305490] O.RIENT:   → KTz3bimL: [REVIEW] Add dashboard repo/automation sync status
+[2026-08-21T18:28:02.306489] O.RIENT:   → SJtUxUDM: populate_fundamental_macros.py missing — cannot po
+[2026-08-21T18:28:02.306489] O.RIENT:   → 1ojBeVEs: signal_augmentation.py missing — cannot wire augme
+[2026-08-21T18:28:02.306489] O.RIENT:   → nYhFvdgj: BUG: Captain's Dashboard server (port 8080) NOT ru
+[2026-08-21T18:28:02.306489] O.RIENT:   → SUAbpBiX: Add dashboard repo/automation sync status page
+[2026-08-21T18:28:02.306489] O.RIENT:   → 3DH1Dr6m: Dashboard: sync-status widget
+[2026-08-21T18:28:02.306489] O.RIENT:   → 8yRXpRju: Add dashboard sync-status widget
+[2026-08-21T18:28:02.307488] O.RIENT:   → gpA8lkSu: TOOLS: Dashboard applyTools() expects tools.classi
+[2026-08-21T18:28:02.307488] O.RIENT:   → QuzGqy4j: 🐛 [BUG] Dashboard resource missing: /favicon.ico
+[2026-08-21T18:28:02.307488] O.RIENT:   → 2nM0D9fA: 🐛 [BUG] Dashboard resource missing: /static/css/ma
+[2026-08-21T18:28:02.307488] O.RIENT:   → 8g2SdPdY: 🐛 [BUG] Dashboard resource missing: /static/js/mai
+[2026-08-21T18:28:02.307488] O.RIENT:   → ospetieA: 🐛 [BUG] Dashboard route /white-whale — 404 (missin
+[2026-08-21T18:28:02.307488] O.RIENT:   → TpydYqXo: 🐛 [BUG] Dashboard route /api-status — 404 (missing
+[2026-08-21T18:28:02.307488] O.RIENT:   → iqFZYdL8: [P0] DASHBOARD API: All /api/* endpoints return 55
+[2026-08-21T18:28:02.308488] O.RIENT:   → UfPpVfUS: 🧹 ARCHIVED BOARD REVIEW: Audit and Decide Fate of 
+[2026-08-21T18:28:02.308488] O.RIENT:   → THhJVL0I: Fix fleet mesh ship status stuck on 'unknown' (hea
+[2026-08-21T18:28:02.308488] O.RIENT:   → cKW6QuWD: [P0] DASHBOARD: API endpoints /api/creds, /api/log
+[2026-08-21T18:28:02.308488] O.RIENT:   → a8m3OQXt: Ch 1: Before the Sea Took My Name
+[2026-08-21T18:28:02.308488] O.RIENT:   → gUm5JwSF: [P2] BUG: Stale Docker image tags (20260817-v2, v3
+[2026-08-21T18:28:02.308488] O.RIENT:   → SpGBkgDN: Fleet Perception Management Layer
+[2026-08-21T18:28:02.309488] O.RIENT:   → 6YNQmMvX: [P2] BUG: tr3asure_mAp frontend hardcodes API URL 
+[2026-08-21T18:28:02.309488] O.RIENT:   → eBRCEZAn: Ch 1: King's Navy / Illusions of Glory
+[2026-08-21T18:28:02.309488] O.RIENT:   → 0a4NoHBP: Ch 1: Contract Work / Corporate Shenanigans
+[2026-08-21T18:28:02.309488] O.RIENT:   → wCbLC9VH: 🐛 [BUG] Fleet Services DOWN — Ports 80/81/2376/999
+[2026-08-21T18:28:02.309488] O.RIENT:   → px2ylCkm: Ch 1: Betrayal of Port Smithshire
+[2026-08-21T18:28:02.309488] O.RIENT:   → js6fy8PX: [P0] Kill port 3000 process conflict on SQUIDSTATI
+[2026-08-21T18:28:02.309488] O.RIENT:   → 2txiuoWQ: [P1] BUG: Dashboard compose pins stale image tag 2
+[2026-08-21T18:28:02.310488] O.RIENT:   → EoGqdmDt: [P2] E2E TEST: Documentation update for fleet mesh
+[2026-08-21T18:28:02.310488] O.RIENT:   → ji2imc2c: [P2] BUG: POS/inventory/alert-router lack promethe
+[2026-08-21T18:28:02.310488] O.RIENT:   → AOqqitMl: Fixed dashboard credentials.ts path
+[2026-08-21T18:28:02.310488] O.RIENT:   → lEqHi7yi: Update fleet-compatible dashboard doc to replace 8
+[2026-08-21T18:28:02.310488] O.RIENT:   → lgK7SNuQ: [P2] BUG: cAdvisor can't read system UUID (missing
+[2026-08-21T18:28:02.310488] O.RIENT:   → xQEkAh5i: Ch 1: The Breaking / Rise of Brewbeard Ledgerbane
+[2026-08-21T18:28:02.311488] O.RIENT:   → w3hXqm7s: Ch 2: Searching for the Little Lights
+[2026-08-21T18:28:02.311488] O.RIENT:   → hrmIy4pU: [P2] BUG: 6 Dockerfiles missing HEALTHCHECK direct
+[2026-08-21T18:28:02.311488] O.RIENT:   → jahgtCo2: 🐛 [BUG] Dashboard route /lore-writing — 404 (missi
+[2026-08-21T18:28:02.311488] O.RIENT:   → vhgojcst: 🐛 [BUG] Dashboard route /auth — 404 (missing Auth 
+[2026-08-21T18:28:02.311488] O.RIENT:   → 6vv94LdC: Build a fleet of Raspberry Pi pirates
+[2026-08-21T18:28:02.311488] O.RIENT:   → 3mag9kiA: 🐛 [BUG] Dashboard route /dataview — 404 (missing D
+[2026-08-21T18:28:02.311488] O.RIENT:   → KhxsCVd1: [P2] BUG: Grafana has NO Prometheus datasource con
+[2026-08-21T18:28:02.312649] O.RIENT:   → r0VjKAqk: 🐛 [BUG] Dashboard route /diagram — 404 (missing Di
+[2026-08-21T18:28:02.312649] O.RIENT:   → UxuDZkGV: 🐛 [BUG] Dashboard route /sandbox — 404 (missing Sa
+[2026-08-21T18:28:02.312649] O.RIENT:   → TdOY8MYu: Build inventory dashboard widget
+[2026-08-21T18:28:02.312649] O.RIENT:   → pFvsiSzH: Dashboard /api/scanner → 502 causes OODA 'scanner 
+[2026-08-21T18:28:02.313168] O.RIENT:   → OKOUhbDC: 🐛 [BUG] Dashboard route /crew — 404 (missing Crew 
+[2026-08-21T18:28:02.313168] O.RIENT:   → OOwvlTzd: [P1] BUG: Dashboard docs say port 3000, app runs o
+[2026-08-21T18:28:02.313168] O.RIENT:   → ofq3vdac: 🐛 [BUG] Dashboard route /monitoring — 404 (missing
+[2026-08-21T18:28:02.313686] O.RIENT:   → U5lBgSub: [P2] BUG: TM API — 11 endpoints return 404 Not Fou
+[2026-08-21T18:28:02.313686] O.RIENT:   → Zmtv4iOw: 🐛 [BUG] Dashboard route /alerts — 404 (missing Ale
+[2026-08-21T18:28:02.313686] O.RIENT:   → umCPpY6S: [P2] BUG: Grafana — no Prometheus datasource confi
+[2026-08-21T18:28:02.314205] O.RIENT:   → T36W8nTu: [P2] BUG: 19 orphaned Docker volumes — 9 duplicate
+[2026-08-21T18:28:02.314205] O.RIENT:   → x8QsvtDn: [P2] BUG: Stray 02_Business_Operations dir outside
+[2026-08-21T18:28:02.314205] O.RIENT:   → OCbI5UUn: 🐛 Fundamental data download rate limited for AAPL
+[2026-08-21T18:28:02.314205] O.RIENT:   → BgxHUIMq: 🏗️ Design data architecture: bulk dataset on Z:\Wo
+[2026-08-21T18:28:02.314721] O.RIENT:   → yxxa2SBu: Self-healing: Implement real Docker health probe w
+[2026-08-21T18:28:02.314721] O.RIENT:   → x45miCTY: Discord: wire dashboard alerts -> crew Discord cha
+[2026-08-21T18:28:02.314721] O.RIENT:   → 1pObMlcJ: [BUG] ticket_alert_bot.py — unbounded `seen` set l
+[2026-08-21T18:28:02.315241] O.RIENT:   → sVeUeQH9: [BUG] ticket_alert_bot.py — discord_loop() 3s poll
+[2026-08-21T18:28:02.315241] O.RIENT:   → pBv5PwnC: 🐛 #256 Dashboard truthfulness verification
+[2026-08-21T18:28:02.315241] O.RIENT:   → 47IdSHuf: 📨 [INBOX] RE FULL AUTOMATION BOOTSTRAP POST BIOS R
+[2026-08-21T18:28:02.315766] O.RIENT:   → G5nc1Hvd: 🔑 NEEDS CREDS: Docker Hub auth failure
+[2026-08-21T18:28:02.315795] O.RIENT:   → ecmnuAyl: 📊 [P2] Prometheus + Grafana fleet dashboard for To
+[2026-08-21T18:28:02.315795] O.RIENT:   → B1qKz9QS: 📨 STATUS ACK TORUS DOCKER BUILD IN PROGRESS DASHBO
+[2026-08-21T18:28:02.315795] O.RIENT:   → yAN3X8dZ: 🖥️ [P2] WSL2 distro + Docker CLI
+[2026-08-21T18:28:02.316313] O.RIENT:   → fQEQaMrx: [P2] DEPLOY_FLEET.ps1 master deployment script
+[2026-08-21T18:28:02.316313] O.RIENT:   → LiUGhlmF: Add dashboard container-count source validation
+[2026-08-21T18:28:02.316313] O.RIENT:   → dZYGCDkN: [TRACKING] Dashboard: health check repeatedly repo
+[2026-08-21T18:28:02.316830] O.RIENT:   → HT0N4MCo: [P2] Connect FleetWatcher/SirGreenBot/AutomationWa
+[2026-08-21T18:28:02.316830] O.RIENT:   → IpPOYH78: [TRACKING] Dashboard: Port 9999 Health DOWN
+[2026-08-21T18:28:02.316830] O.RIENT:   → sT1tzsi7: [TRACKING] Dashboard: Port 2376 Docker API DOWN
+[2026-08-21T18:28:02.317347] O.RIENT:   → 48pK2cU7: [TRACKING] Dashboard: Port 80 HTTP DOWN
+[2026-08-21T18:28:02.317347] O.RIENT:   → ou8fMNsl: [P3] Dashboard API auth + rate limiting
+[2026-08-21T18:28:02.317347] O.RIENT:   → i8RD2cvT: [TRACKING] Dashboard: SQUIDSTATION/PINKCADY/STEALT
+[2026-08-21T18:28:02.317347] O.RIENT:   → hLPXY0jy: Dashboard: service health + alerting
+[2026-08-21T18:28:02.317864] O.RIENT:   → A4fGrGAf: Dashboard: local network device discovery + online
+[2026-08-21T18:28:02.317864] O.RIENT:   → TPV5QgcJ: Dashboard: integrate all automation scripts into u
+[2026-08-21T18:28:02.317864] O.RIENT:   → iuixeMb1: Dashboard: eliminate NPM default page on all tab r
+[2026-08-21T18:28:02.318378] O.RIENT:   → 1vej55aT: Dashboard: fix Portainer health check SSL error
+[2026-08-21T18:28:02.318378] O.RIENT:   → BiUydRxy: Dashboard: expand Hive Mind Dashboard with Tailsca
+[2026-08-21T18:28:02.318378] O.RIENT:   → 6w2VF7GJ: Local fleet mesh design
+[2026-08-21T18:28:02.318896] O.RIENT:   → BWt4EZrJ: DASHBOARD-DOCKER-1: Dashboard assumes Docker avail
+[2026-08-21T18:28:02.318896] O.RIENT:   → mzdQjNf1: Dashboard: keep Hive Mind Dashboard live and expan
+[2026-08-21T18:28:02.318896] O.RIENT:   → KzWdDJKp: Dashboard: inbox count + alert automation
+[2026-08-21T18:28:02.318896] O.RIENT:   → SLbdHz2c: Dashboard: Grafana integration when stable
+[2026-08-21T18:28:02.319413] O.RIENT:   → 0G36DA8H: [PROGRESS] Dashboard alerts wired
+[2026-08-21T18:28:02.319413] O.RIENT:   → bZ7g9OrI: [TRACKING] Dashboard: 5 Chinese content items flag
+[2026-08-21T18:28:02.319413] O.RIENT:   → dF5HuWW3: [P1] DASHBOARD API: Ship list inconsistency — /api
+[2026-08-21T18:28:02.319930] O.RIENT:   → 0ivKBvDj: [P1] DASHBOARD: /api/fleet returns truncated 3-byt
+[2026-08-21T18:28:02.319930] O.RIENT:   → z4BUv9HC: Cybersec: secret_scan.py in auto-archive + daily c
+[2026-08-21T18:28:02.319930] O.RIENT:   → RbIQxfXh: 🐛 DASHBOARD: /api/scanner + /api/sir-azure return 
+[2026-08-21T18:28:02.320447] O.RIENT:   → cui4XJZU: 🐛 DASHBOARD: /api/captain returns 502
+[2026-08-21T18:28:02.320447] O.RIENT:   → VGp53987: [P1] BUG: Dashboard compose uses stale image tag (
+[2026-08-21T18:28:02.320447] O.RIENT:   → 3xZRPvEJ: [P1] BUG: Dashboard compose exposes port 3000, but
+[2026-08-21T18:28:02.320952] O.RIENT:   → IFis9BFZ: [P2] BUG: prometheus.yml missing cadvisor + node-e
+[2026-08-21T18:28:02.320966] O.RIENT:   → cWvYvxS4: [P2] BUG: Dashboard has no /-/healthy endpoint (re
+[2026-08-21T18:28:02.320966] O.RIENT:   → hIgmcCJU: [P2] IMPROVEMENT: Add prometheus_client to POS, in
+[2026-08-21T18:28:02.320966] O.RIENT:   → FFlfXgyK: [BUG] Fleet verify: /api/fleet reports STALE despi
+[2026-08-21T18:28:02.321495] O.RIENT:   → qDpkNwot: [P1] FLEET API: All ships STALE despite Tailscale 
+[2026-08-21T18:28:02.322538] ENGINE: 🔗 DEPENDENCY CHAIN: [P2] DASHBOARD: Fleet status reports STALE data — needs real
+[2026-08-21T18:28:02.323057] ENGINE:    Working dependency first: M4z7T3X7 - [RULE] G1: Fleet Command Structure
+[2026-08-21T18:28:02.323057] O.RIENT: Analyzing: [RULE] G1: Fleet Command Structure
+[2026-08-21T18:28:05.376688] O.RIENT: Action type: generic | Complexity: low
+[2026-08-21T18:28:05.378688] D.ECIDE: Formulating action plan...
+[2026-08-21T18:28:05.378688] D.ECIDE: Plan: generic — 4 steps
+[2026-08-21T18:28:05.378688] A.CT: Executing: generic
+[2026-08-21T18:28:05.378688] A.CT: ⚠️ No real handler for [M4z7T3X7] [RULE] G1: Fleet Command Structure — skipping
+[2026-08-21T18:28:05.378688] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:28:05.378688] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for M4z7T3X7 — requires implementation
+[2026-08-21T18:28:05.379689] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:28:05.379689] PERSIST: Evidence saved: FODAVP_20260821_182805_M4z7T3X7.json
+[2026-08-21T18:28:05.734879] PERSIST: Trello comment posted successfully
+[2026-08-21T18:28:05.734879] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:28:05.746574] ENGINE:    ✅ Dependency M4z7T3X7 completed, resuming parent card
+[2026-08-21T18:28:05.746574] D.ECIDE: Formulating action plan...
+[2026-08-21T18:28:05.747573] D.ECIDE: Plan: generic — 4 steps
+[2026-08-21T18:28:05.747573] A.CT: Executing: generic
+[2026-08-21T18:28:05.747573] A.CT: ⚠️ No real handler for [tvXAPIew] [P2] DASHBOARD: Fleet status reports STALE data — needs — skipping
+[2026-08-21T18:28:05.747573] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:28:05.747573] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for tvXAPIew — requires implementation
+[2026-08-21T18:28:05.747573] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:28:05.748574] PERSIST: Evidence saved: FODAVP_20260821_182805_tvXAPIew.json
+[2026-08-21T18:28:06.199407] PERSIST: Trello comment posted successfully
+[2026-08-21T18:28:06.199407] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:28:06.209407] ENGINE: 🏁 CARD COMPLETED — FAIL in 49.67s
+[2026-08-21T18:28:06.209407] ENGINE: ⏭️ Card tvXAPIew skipped — no handler or needs work
+[2026-08-21T18:28:06.209407] ENGINE: 🔍 Trying candidate: [yNQ2fIde] [P2] DASHBOARD: Hardcoded IPs in HTML — maintainability
+[2026-08-21T18:28:06.209407] O.RIENT: Analyzing: [P2] DASHBOARD: Hardcoded IPs in HTML — maintainability
+[2026-08-21T18:28:09.134237] O.RIENT: Action type: generic | Complexity: low
+[2026-08-21T18:28:09.135278] D.ECIDE: Formulating action plan...
+[2026-08-21T18:28:09.135791] D.ECIDE: Plan: generic — 4 steps
+[2026-08-21T18:28:09.135791] A.CT: Executing: generic
+[2026-08-21T18:28:09.135791] A.CT: ⚠️ No real handler for [yNQ2fIde] [P2] DASHBOARD: Hardcoded IPs in HTML — maintainability — skipping
+[2026-08-21T18:28:09.136314] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:28:09.136314] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for yNQ2fIde — requires implementation
+[2026-08-21T18:28:09.136314] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:28:09.136835] PERSIST: Evidence saved: FODAVP_20260821_182809_yNQ2fIde.json
+[2026-08-21T18:28:09.467706] PERSIST: Trello comment posted successfully
+[2026-08-21T18:28:09.468220] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:28:09.476218] ENGINE: 🏁 CARD COMPLETED — FAIL in 52.94s
+[2026-08-21T18:28:09.476218] ENGINE: ⏭️ Card yNQ2fIde skipped — no handler or needs work
+[2026-08-21T18:28:09.476218] ENGINE: 🔍 Trying candidate: [Y9VKqMNB] [P2] DASHBOARD: External resource links broken (ports 8
+[2026-08-21T18:28:09.476218] O.RIENT: Analyzing: [P2] DASHBOARD: External resource links broken (ports 8
+[2026-08-21T18:28:13.466658] O.RIENT: Action type: generic | Complexity: low
+[2026-08-21T18:28:13.467657] D.ECIDE: Formulating action plan...
+[2026-08-21T18:28:13.468658] D.ECIDE: Plan: generic — 4 steps
+[2026-08-21T18:28:13.468658] A.CT: Executing: generic
+[2026-08-21T18:28:13.468658] A.CT: ⚠️ No real handler for [Y9VKqMNB] [P2] DASHBOARD: External resource links broken (ports 8 — skipping
+[2026-08-21T18:28:13.468658] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:28:13.468658] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for Y9VKqMNB — requires implementation
+[2026-08-21T18:28:13.468658] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:28:13.469657] PERSIST: Evidence saved: FODAVP_20260821_182813_Y9VKqMNB.json
+[2026-08-21T18:28:13.803937] PERSIST: Trello comment posted successfully
+[2026-08-21T18:28:13.804994] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:28:13.813510] ENGINE: 🏁 CARD COMPLETED — FAIL in 57.27s
+[2026-08-21T18:28:13.813510] ENGINE: ⏭️ Card Y9VKqMNB skipped — no handler or needs work
+[2026-08-21T18:28:13.813510] ENGINE: 🔍 Trying candidate: [VKgGJVvT] Extract PDF inventories into markdown
+[2026-08-21T18:28:13.813510] O.RIENT: Analyzing: Extract PDF inventories into markdown
+[2026-08-21T18:28:16.862935] O.RIENT: Action type: generic | Complexity: low
+[2026-08-21T18:28:16.863936] D.ECIDE: Formulating action plan...
+[2026-08-21T18:28:16.864936] D.ECIDE: Captain approval required — gating execution
+[2026-08-21T18:28:16.864936] ENGINE: 🛑 Captain approval required — skipping to next candidate
+[2026-08-21T18:28:17.238144] ENGINE: Posted captain approval questions to Trello
+[2026-08-21T18:28:17.239143] ENGINE: ⏸️ Candidate needs captain: VKgGJVvT — trying next candidate
+[2026-08-21T18:28:17.239143] ENGINE: 🔍 Trying candidate: [QkTp4MRv] Biz docs: Update insurance/filings checklist
+[2026-08-21T18:28:17.239143] O.RIENT: Analyzing: Biz docs: Update insurance/filings checklist
+[2026-08-21T18:28:20.246480] O.RIENT: Action type: documentation | Complexity: low
+[2026-08-21T18:28:20.247482] D.ECIDE: Formulating action plan...
+[2026-08-21T18:28:20.248482] D.ECIDE: Captain approval required — gating execution
+[2026-08-21T18:28:20.248482] ENGINE: 🛑 Captain approval required — skipping to next candidate
+[2026-08-21T18:28:20.559858] ENGINE: Posted captain approval questions to Trello
+[2026-08-21T18:28:20.560858] ENGINE: ⏸️ Candidate needs captain: QkTp4MRv — trying next candidate
+[2026-08-21T18:28:20.560858] ENGINE: 🔍 Trying candidate: [TG6ttHyD] 🐛 Alpaca last_gap_check=None — no market gap analysis s
+[2026-08-21T18:28:20.560858] O.RIENT: Analyzing: 🐛 Alpaca last_gap_check=None — no market gap analysis s
+[2026-08-21T18:28:23.464725] O.RIENT: Action type: generic | Complexity: low
+[2026-08-21T18:28:23.465727] D.ECIDE: Formulating action plan...
+[2026-08-21T18:28:23.465727] D.ECIDE: Plan: generic — 4 steps
+[2026-08-21T18:28:23.466727] A.CT: Executing: generic
+[2026-08-21T18:28:23.466727] A.CT: ⚠️ No real handler for [TG6ttHyD] 🐛 Alpaca last_gap_check=None — no market gap analysis s — skipping
+[2026-08-21T18:28:23.466727] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:28:23.466727] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for TG6ttHyD — requires implementation
+[2026-08-21T18:28:23.466727] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:28:23.467726] PERSIST: Evidence saved: FODAVP_20260821_182823_TG6ttHyD.json
+[2026-08-21T18:28:23.861663] PERSIST: Trello comment posted successfully
+[2026-08-21T18:28:23.861663] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:28:23.870662] ENGINE: 🏁 CARD COMPLETED — FAIL in 67.33s
+[2026-08-21T18:28:23.870662] ENGINE: ⏭️ Card TG6ttHyD skipped — no handler or needs work
+[2026-08-21T18:28:23.870662] ENGINE: 🔍 Trying candidate: [LqbNIG2m] 🐛 API responses missing Cache-Control headers — no clie
+[2026-08-21T18:28:23.870662] O.RIENT: Analyzing: 🐛 API responses missing Cache-Control headers — no clie
+[2026-08-21T18:28:27.576132] O.RIENT: Action type: generic | Complexity: low
+[2026-08-21T18:28:27.578132] D.ECIDE: Formulating action plan...
+[2026-08-21T18:28:27.578132] D.ECIDE: Plan: generic — 4 steps
+[2026-08-21T18:28:27.578132] A.CT: Executing: generic
+[2026-08-21T18:28:27.578132] A.CT: ⚠️ No real handler for [LqbNIG2m] 🐛 API responses missing Cache-Control headers — no clie — skipping
+[2026-08-21T18:28:27.578132] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:28:27.578132] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for LqbNIG2m — requires implementation
+[2026-08-21T18:28:27.579164] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:28:27.579164] PERSIST: Evidence saved: FODAVP_20260821_182827_LqbNIG2m.json
+[2026-08-21T18:28:27.875738] PERSIST: Trello comment posted successfully
+[2026-08-21T18:28:27.876738] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:28:27.885740] ENGINE: 🏁 CARD COMPLETED — FAIL in 71.34s
+[2026-08-21T18:28:27.885740] ENGINE: ⏭️ Card LqbNIG2m skipped — no handler or needs work
+[2026-08-21T18:28:27.885740] ENGINE: 🔍 Trying candidate: [0O4oHygH] 11_Major_Historical_Events: historical event notes
+[2026-08-21T18:28:27.885740] O.RIENT: Analyzing: 11_Major_Historical_Events: historical event notes
+[2026-08-21T18:28:30.934232] O.RIENT: Action type: generic | Complexity: low
+[2026-08-21T18:28:30.936234] D.ECIDE: Formulating action plan...
+[2026-08-21T18:28:30.936234] D.ECIDE: Captain approval required — gating execution
+[2026-08-21T18:28:30.936234] ENGINE: 🛑 Captain approval required — skipping to next candidate
+[2026-08-21T18:28:31.243339] ENGINE: Posted captain approval questions to Trello
+[2026-08-21T18:28:31.243339] ENGINE: ⏸️ Candidate needs captain: 0O4oHygH — trying next candidate
+[2026-08-21T18:28:31.243339] ENGINE: 🔍 Trying candidate: [EGcFWpFd] BACKUP-1: Fleet-wide Hermes backup strategy (trigger-on
+[2026-08-21T18:28:31.244339] O.RIENT: Analyzing: BACKUP-1: Fleet-wide Hermes backup strategy (trigger-on
+[2026-08-21T18:28:34.177236] O.RIENT: Action type: generic | Complexity: low
+[2026-08-21T18:28:34.177236] O.RIENT: Dependencies found: 267
+[2026-08-21T18:28:34.178237] O.RIENT:   → M4z7T3X7: [RULE] G1: Fleet Command Structure
+[2026-08-21T18:28:34.178237] O.RIENT:   → rERRS1LL: [RULE] G3: No Hardcoded Secrets
+[2026-08-21T18:28:34.178237] O.RIENT:   → CDY75xYT: [RULE] G4: No Duplicate Work
+[2026-08-21T18:28:34.178237] O.RIENT:   → LydjrvvS: [RULE] G7: No Hackers
+[2026-08-21T18:28:34.178237] O.RIENT:   → AfeCXrUg: [RULE] G13: Captain Authority
+[2026-08-21T18:28:34.178237] O.RIENT:   → SZ0T7F1j: [RULE] G15: Fleet Personas
+[2026-08-21T18:28:34.179238] O.RIENT:   → Oi4N0kR4: Research: Build free Geometric Deep Learning (GDL)
+[2026-08-21T18:28:34.179238] O.RIENT:   → j0e05doZ: FUTURE: Crew Paymaster — share/payout tracking
+[2026-08-21T18:28:34.179238] O.RIENT:   → qOjQlcTM: Create a VOID Pirate trading card game
+[2026-08-21T18:28:34.179238] O.RIENT:   → 6MCYfjZV: Launch a VOID Pirate podcast
+[2026-08-21T18:28:34.179238] O.RIENT:   → zlp16TbD: Build company website
+[2026-08-21T18:28:34.179238] O.RIENT:   → GsVnGLlf: Deploy website to free hosting
+[2026-08-21T18:28:34.179238] O.RIENT:   → ceQiwQL5: [LOW] Persona fix: rename Miss Pink to Mrs Pink ac
+[2026-08-21T18:28:34.180236] O.RIENT:   → CQCA0xI0: Lore: Finalize Captain Brewbeard portrait referenc
+[2026-08-21T18:28:34.180236] O.RIENT:   → P43oCHIf: Deploy website to Vercel
+[2026-08-21T18:28:34.180236] O.RIENT:   → SI14ECh0: Design website architecture: Next.js + dashboard
+[2026-08-21T18:28:34.180236] O.RIENT:   → dWmZ7Mgj: Lore: Export Substack-ready article for Pirate Sto
+[2026-08-21T18:28:34.180236] O.RIENT:   → zpseVZvV: Lore: Build character prompt sheets for full crew
+[2026-08-21T18:28:34.180236] O.RIENT:   → qhBYYspR: Build content pipeline: Substack + X + AI assets
+[2026-08-21T18:28:34.181242] O.RIENT:   → 6eLbP236: Automate YouTube production workflow
+[2026-08-21T18:28:34.181242] O.RIENT:   → Hhm0QV1L: COSMOS: 16 Constellations navigation lore
+[2026-08-21T18:28:34.181242] O.RIENT:   → nys7Q21K: Crew bot build template: finalize `crew_bot_templa
+[2026-08-21T18:28:34.181242] O.RIENT:   → RpHbqAgH: Pirate profile template builder: finalize persona 
+[2026-08-21T18:28:34.181242] O.RIENT:   → P9m0lmR8: Pirate profile template builder
+[2026-08-21T18:28:34.181242] O.RIENT:   → u63AJBr4: Sir Green Discord bot: OODA cycle 2 — context-awar
+[2026-08-21T18:28:34.182235] O.RIENT:   → UM32vIhy: Business automation brainstorm: profit pathways
+[2026-08-21T18:28:34.182235] O.RIENT:   → hD5PYPdj: Avatar design: Captain Brewbeard Ledgerbane
+[2026-08-21T18:28:34.182235] O.RIENT:   → 3OiWivqj: Avatar design: Sir Green
+[2026-08-21T18:28:34.182235] O.RIENT:   → aPT5TPtY: Avatar design: Sir Azure / STEALTHATTACK
+[2026-08-21T18:28:34.182235] O.RIENT:   → qUqVdYxR: Sir Azure completes Trello card → auto-notify Capt
+[2026-08-21T18:28:34.182235] O.RIENT:   → fRggbTX7: Miss Pink schedules work for Sir Azure → prevent d
+[2026-08-21T18:28:34.182235] O.RIENT:   → fee8xoCO: "SQUIDSTATION"= current build of local pc = "Devic
+[2026-08-21T18:28:34.183236] O.RIENT:   → HRMycveY: Build content pipeline scheduler: Substack/X/YouTu
+[2026-08-21T18:28:34.183236] O.RIENT:   → i1BF2xVM: [CF-83] TreasureMap export bridge
+[2026-08-21T18:28:34.183236] O.RIENT:   → ysiTHhDu: Crew Alert Bot — deploy + verify alerts in #crew-a
+[2026-08-21T18:28:34.183236] O.RIENT:   → p2J2WMSF: Fleet Inventory Bot — deploy + verify inventory al
+[2026-08-21T18:28:34.183236] O.RIENT:   → FcNcMdCg: Rig Monitor Bot — deploy + verify ship status aler
+[2026-08-21T18:28:34.183236] O.RIENT:   → a4aXz1gJ: [TEST] Trello automation end-to-end bot check
+[2026-08-21T18:28:34.184236] O.RIENT:   → MKsMUAoP: Sir Green Discord bot — verify end-to-end relay
+[2026-08-21T18:28:34.184236] O.RIENT:   → xb32h0xw: [P0] DASHBOARD: PINKCADY shown as 'offline' despit
+[2026-08-21T18:28:34.184236] O.RIENT:   → 681SznI0: RECOVERY-2: Create fleet-wide Hermes catastrophic 
+[2026-08-21T18:28:34.184236] O.RIENT:   → WnSG4T0m: [P2] Fix VOID Pirate Fleet Orders scheduled task
+[2026-08-21T18:28:34.184236] O.RIENT:   → imlZPz0p: [P2] DASHBOARD: Fleet status table nearly empty — 
+[2026-08-21T18:28:34.184236] O.RIENT:   → tvXAPIew: [P2] DASHBOARD: Fleet status reports STALE data — 
+[2026-08-21T18:28:34.184236] O.RIENT:   → sQYWr7Ud: Add GPU/vRAM + Ollama load display to hive-mind da
+[2026-08-21T18:28:34.185236] O.RIENT:   → xJJDUv1P: Setup Google Analytics
+[2026-08-21T18:28:34.185236] O.RIENT:   → oVhvLq8p: Design a VOID Pirate flag collection
+[2026-08-21T18:28:34.185236] O.RIENT:   → Q9WYNr9b: Write a VOID Pirate cookbook
+[2026-08-21T18:28:34.185236] O.RIENT:   → A3Ivds4Y: Build automation dashboard page
+[2026-08-21T18:28:34.185236] O.RIENT:   → LqbNIG2m: 🐛 API responses missing Cache-Control headers — no
+[2026-08-21T18:28:34.185236] O.RIENT:   → 6xXsBbqB: [P2] API auth + input validation
+[2026-08-21T18:28:34.186239] O.RIENT:   → rbf3DH6S: Sir Green health dead-man's switch
+[2026-08-21T18:28:34.186239] O.RIENT:   → Ro98aX7E: Sir Green bot deployment checklist
+[2026-08-21T18:28:34.186239] O.RIENT:   → GCtSp0hb: Sir Green Discord bot E2E validation
+[2026-08-21T18:28:34.186239] O.RIENT:   → HFqoO20u: All crew: Run crew_connectivity_monitor.py and con
+[2026-08-21T18:28:34.186239] O.RIENT:   → 0AdRqR9v: All crew: Verify connectivity monitor
+[2026-08-21T18:28:34.186239] O.RIENT:   → Tdm85XEO: [PROGRESS] Email config template created
+[2026-08-21T18:28:34.187239] O.RIENT:   → wqHsmJdz: Automation: auto-respond to routine email
+[2026-08-21T18:28:34.187239] O.RIENT:   → SvNvAnWK: Automation: build safe email reader for VOID Pirat
+[2026-08-21T18:28:34.187239] O.RIENT:   → U6DP5ceK: BACKUP-3: Cross-PC backup + peer sync strategy (SQ
+[2026-08-21T18:28:34.187239] O.RIENT:   → XzXUBTXr: [P3] DASHBOARD: All 55KB JS inline — no external c
+[2026-08-21T18:28:34.187239] O.RIENT:   → oTXlxBIG: [ONBOARD] Sir Azure / STEALTHATTACK — AI art + Dis
+[2026-08-21T18:28:34.188237] O.RIENT:   → WqGP7tri: [VERIFY] PINKCADY firewall port rules � verify tr3
+[2026-08-21T18:28:34.188237] O.RIENT:   → oECUYxjB: [P0] Audit all Windows Scheduled Tasks — validate 
+[2026-08-21T18:28:34.188237] O.RIENT:   → P8VQjhHv: [P2] BUG: 19 duplicate Docker volumes (torus_* vs 
+[2026-08-21T18:28:34.188237] O.RIENT:   → vTzs7X2c: BUG: Kill switch auto-resets to True — Trading int
+[2026-08-21T18:28:34.188237] O.RIENT:   → wpdh5HoG: BUG-HUNT-32: Grafana API auth needed for datasourc
+[2026-08-21T18:28:34.188237] O.RIENT:   → FVqNBQGG: BUG-HUNT-29: Docker API exposed on 2375 without au
+[2026-08-21T18:28:34.189238] O.RIENT:   → oVzdqXrf: BUG-HUNT-31: Port 3000 missing — Gitea web UI down
+[2026-08-21T18:28:34.189238] O.RIENT:   → 7yBJyjGq: BUG-HUNT-30: Port 22 missing — Gitea SSH down
+[2026-08-21T18:28:34.189238] O.RIENT:   → bnvxep9o: [P2] BUG: 8 stale Docker image version tags
+[2026-08-21T18:28:34.189238] O.RIENT:   → RhRemMty: BUG-HUNT-16: Port 8090 closed — expected service u
+[2026-08-21T18:28:34.190237] O.RIENT:   → q42S4et9: BUG-HUNT-15: Port 5001 closed — expected service u
+[2026-08-21T18:28:34.190237] O.RIENT:   → CSXFfBQo: BUG-HUNT-14: Port 8081 open — unknown service runn
+[2026-08-21T18:28:34.190237] O.RIENT:   → poTMRbKy: BUG-HUNT-13: Port 3001 open — unknown service runn
+[2026-08-21T18:28:34.190237] O.RIENT:   → eslpghnJ: BUG-HUNT-12: Port 3000 missing — unknown service n
+[2026-08-21T18:28:34.190237] O.RIENT:   → YWhUtCfn: BUG-HUNT-11: Port 2375 open — unencrypted Docker A
+[2026-08-21T18:28:34.190237] O.RIENT:   → zXrNVk2I: BUG-HUNT-9: Local port 22 timeout — SSH unreachabl
+[2026-08-21T18:28:34.190237] O.RIENT:   → 2DSp3YB9: BUG-HUNT-8: Local port 3000 timeout — unknown serv
+[2026-08-21T18:28:34.191237] O.RIENT:   → N0AnwOFo: BUG-HUNT-7: Local port 2376 timeout — Docker API u
+[2026-08-21T18:28:34.191237] O.RIENT:   → FbhlA3f3: BUG-HUNT-6: Local port 3100 timeout — TorusPOS unr
+[2026-08-21T18:28:34.191237] O.RIENT:   → wzIoOV7x: BUG-HUNT-5: Local port 7679 timeout — Augur sandbo
+[2026-08-21T18:28:34.191237] O.RIENT:   → J5J2FLjn: BUG-HUNT-3: PINKCADY (192.168.0.3) unreachable on 
+[2026-08-21T18:28:34.191237] O.RIENT:   → aT3AgzP5: BUG-HUNT-2: /api/monitor all services show unknown
+[2026-08-21T18:28:34.192238] O.RIENT:   → pOYz8BIe: CAPTAIN-1: Captain tab has no actionable buttons/c
+[2026-08-21T18:28:34.192238] O.RIENT:   → TRBe1Rk9: COMPUTE-STATE-1: Fleet compute block contradictory
+[2026-08-21T18:28:34.192238] O.RIENT:   → xRTCT2gV: DASH-1: verify all dashboard tabs load on :8080
+[2026-08-21T18:28:34.192238] O.RIENT:   → O70zkWUR: FLEET-3: Fleet failover UI with compute/data statu
+[2026-08-21T18:28:34.192238] O.RIENT:   → 6EsM2nxE: FLEET-2: Captain Dashboard fleet tab + data source
+[2026-08-21T18:28:34.192238] O.RIENT:   → oNH7MhiV: [fleet] Build 20–30GB Augur offline dataset on SQU
+[2026-08-21T18:28:34.193239] O.RIENT:   → sxTZnra6: 🐛 Dashboard/TM API responses missing GZIP compress
+[2026-08-21T18:28:34.193239] O.RIENT:   → vEhv3kCa: 🐛 Dashboard API uses HTTP/1.1 — HTTP/2 upgrade wou
+[2026-08-21T18:28:34.193239] O.RIENT:   → N1cCtepn: 🐛 TM API /api/risk returns 404 — no risk managemen
+[2026-08-21T18:28:34.193239] O.RIENT:   → KBz0LGQp: 🐛 TM API /api/performance returns 404 — no P&L rep
+[2026-08-21T18:28:34.193239] O.RIENT:   → tnklIl8e: 🐛 TM API /api/balance returns 404 — can't check ac
+[2026-08-21T18:28:34.193239] O.RIENT:   → KaSBu9S7: 🐛 TM API /api/execute returns 404 — NO order execu
+[2026-08-21T18:28:34.193239] O.RIENT:   → rGAnsIqt: 🐛 TM API /api/trade returns 404 — NO trade executi
+[2026-08-21T18:28:34.194238] O.RIENT:   → 5Ho9BM9N: 🐛 TM API /api/positions returns 200 but positions=
+[2026-08-21T18:28:34.194238] O.RIENT:   → YFOs4nhq: 🐛 Alpaca in PAPER trading mode — no live trades be
+[2026-08-21T18:28:34.194238] O.RIENT:   → mXrNdkSJ: 🐛 TM API missing /api/augur, /api/backtest, /api/g
+[2026-08-21T18:28:34.194238] O.RIENT:   → wU6vu3zD: 🐛 TM API /api/signals returns 0 signals — Augur no
+[2026-08-21T18:28:34.194238] O.RIENT:   → cIPR7peZ: 🐛 TM API /health returns HTML (Gitea page) instead
+[2026-08-21T18:28:34.194238] O.RIENT:   → TpgzEDVy: 🐛 Port 3000 is running Gitea, but TreasureMap shou
+[2026-08-21T18:28:34.195236] O.RIENT:   → gAomymCs: 🐛 No TreasureMap containers running (containers_up
+[2026-08-21T18:28:34.195236] O.RIENT:   → ldOy2Asf: TM API /api/watchlist returns 404
+[2026-08-21T18:28:34.195236] O.RIENT:   → mikKPbtI: TM API /api/orders returns 404
+[2026-08-21T18:28:34.195236] O.RIENT:   → cubQlwBN: TM API /api/account returns 404
+[2026-08-21T18:28:34.195236] O.RIENT:   → dPuZC7zX: API /api/ships — latency field is EMPTY
+[2026-08-21T18:28:34.195236] O.RIENT:   → xLP78VzO: Dashboard /api/status — health_message field is EM
+[2026-08-21T18:28:34.196236] O.RIENT:   → e9XExoL4: Dashboard /api/status — latency field is EMPTY
+[2026-08-21T18:28:34.196236] O.RIENT:   → skA1pUJn: Dashboard /api/status — cipher field is EMPTY
+[2026-08-21T18:28:34.196236] O.RIENT:   → fhLifEPL: Dashboard /api/status — opsec field is EMPTY
+[2026-08-21T18:28:34.196236] O.RIENT:   → M5a1BJYn: API /api/captain returns 502
+[2026-08-21T18:28:34.196236] O.RIENT:   → s3xXzXx6: API /api/sir-azure returns 502
+[2026-08-21T18:28:34.196236] O.RIENT:   → RJ4NJdT7: API /api/scanner returns 502
+[2026-08-21T18:28:34.196236] O.RIENT:   → E8j4TMzU: API /api/comms returns 502
+[2026-08-21T18:28:34.197236] O.RIENT:   → Ny9ImPnO: API /api/opsec returns 502
+[2026-08-21T18:28:34.197236] O.RIENT:   → EGw3ayub: API /api/vault returns 502
+[2026-08-21T18:28:34.197236] O.RIENT:   → Q3WpJNM2: API /api/containers returns 502
+[2026-08-21T18:28:34.197236] O.RIENT:   → SJtUxUDM: populate_fundamental_macros.py missing — cannot po
+[2026-08-21T18:28:34.197236] O.RIENT:   → 1ojBeVEs: signal_augmentation.py missing — cannot wire augme
+[2026-08-21T18:28:34.197236] O.RIENT:   → 1fW6exFA: 🐛 P1: PINKCADY Tailscale IP 100.106.235.103 unreac
+[2026-08-21T18:28:34.197236] O.RIENT:   → SbDn6kEN: tr3asure_mAp → Captain Dashboard integration
+[2026-08-21T18:28:34.198236] O.RIENT:   → a1pcIOd2: All PCs: verify Gitea clone + push + pull flow
+[2026-08-21T18:28:34.198236] O.RIENT:   → mSu2qY7O: Clone shared repos on all PCs
+[2026-08-21T18:28:34.198236] O.RIENT:   → 0ndwFPMs: Fix this discord bot, it should not be called  Gor
+[2026-08-21T18:28:34.198236] O.RIENT:   → sjReHc39: 🐛 [BUG] AI learner pipeline STUCK — 0 proposals, 0
+[2026-08-21T18:28:34.198236] O.RIENT:   → JauV0Rt0: [BUG] 19 API routes still return 404 — need regist
+[2026-08-21T18:28:34.198236] O.RIENT:   → aAcqeCk2: 🐛 [BUG] Kill switch auto-resets to True — Trading 
+[2026-08-21T18:28:34.199235] O.RIENT:   → RnsC55hb: 📊 Inventory: Build tornado-inventory dashboard wid
+[2026-08-21T18:28:34.199235] O.RIENT:   → 6OZAHmek: 🌐 Network-wide shared filesystem design + pilot
+[2026-08-21T18:28:34.199235] O.RIENT:   → THhJVL0I: Fix fleet mesh ship status stuck on 'unknown' (hea
+[2026-08-21T18:28:34.199235] O.RIENT:   → cKW6QuWD: [P0] DASHBOARD: API endpoints /api/creds, /api/log
+[2026-08-21T18:28:34.199235] O.RIENT:   → xwJ6vk5j: [TEST] End-to-end automation smoke
+[2026-08-21T18:28:34.199235] O.RIENT:   → f9z6sQry: 🐛 TM API /api/status download_status is empty/null
+[2026-08-21T18:28:34.200236] O.RIENT:   → 6hTC4Nud: 🐛 [BUG] Kill switch auto-resets to True — Trading 
+[2026-08-21T18:28:34.200236] O.RIENT:   → a8m3OQXt: Ch 1: Before the Sea Took My Name
+[2026-08-21T18:28:34.200236] O.RIENT:   → DgxndIg8: Research sqlite-vec + local embeddings for offline
+[2026-08-21T18:28:34.200236] O.RIENT:   → hI0FxNLP: 🎨 AI Art: Crownless Fortune character art + scene 
+[2026-08-21T18:28:34.200236] O.RIENT:   → SpGBkgDN: Fleet Perception Management Layer
+[2026-08-21T18:28:34.200236] O.RIENT:   → OEB4ktaG: [MACAW-3] Build message classification engine (cle
+[2026-08-21T18:28:34.200236] O.RIENT:   → n8BlSUK4: [P0] FLEET-SECURITY: Centralized ACL + Firewall Go
+[2026-08-21T18:28:34.201236] O.RIENT:   → eBRCEZAn: Ch 1: King's Navy / Illusions of Glory
+[2026-08-21T18:28:34.201236] O.RIENT:   → 0a4NoHBP: Ch 1: Contract Work / Corporate Shenanigans
+[2026-08-21T18:28:34.201236] O.RIENT:   → wCbLC9VH: 🐛 [BUG] Fleet Services DOWN — Ports 80/81/2376/999
+[2026-08-21T18:28:34.201236] O.RIENT:   → px2ylCkm: Ch 1: Betrayal of Port Smithshire
+[2026-08-21T18:28:34.201236] O.RIENT:   → jQEvGcfJ: Verify Trello API auth   board access
+[2026-08-21T18:28:34.201236] O.RIENT:   → js6fy8PX: [P0] Kill port 3000 process conflict on SQUIDSTATI
+[2026-08-21T18:28:34.202235] O.RIENT:   → VdpvuwnL: [REB-4] Build quarterly expense report template Q3
+[2026-08-21T18:28:34.202235] O.RIENT:   → YJXgPXly: P2: Sir Green — Audit Discord bots/webhooks on SQU
+[2026-08-21T18:28:34.202235] O.RIENT:   → hrC4UYma: [MACAW-5] Retention schedule + audit logging
+[2026-08-21T18:28:34.202235] O.RIENT:   → 5wxzWFT6: Phantom API Endpoint Generator
+[2026-08-21T18:28:34.202235] O.RIENT:   → 5g8kA7cU: [fleet] Implement GPU offload to STEALTHATTACK whe
+[2026-08-21T18:28:34.202235] O.RIENT:   → e7y7Vv52: Decoy Crew Communication Channels
+[2026-08-21T18:28:34.202235] O.RIENT:   → xQEkAh5i: Ch 1: The Breaking / Rise of Brewbeard Ledgerbane
+[2026-08-21T18:28:34.203235] O.RIENT:   → evKLdHU3: 🐛 Trades table missing entry_price column
+[2026-08-21T18:28:34.203235] O.RIENT:   → w3hXqm7s: Ch 2: Searching for the Little Lights
+[2026-08-21T18:28:34.203235] O.RIENT:   → Ho9PFcIb: 👥 Grant Sir Green/Sir Azure limited access to toru
+[2026-08-21T18:28:34.203235] O.RIENT:   → hrmIy4pU: [P2] BUG: 6 Dockerfiles missing HEALTHCHECK direct
+[2026-08-21T18:28:34.203235] O.RIENT:   → v92cx7XM: 🐛 price_history_1min table missing from initial sc
+[2026-08-21T18:28:34.203235] O.RIENT:   → DheIuKqO: 👥 Sir Green: invite limited toruscoffeecompany col
+[2026-08-21T18:28:34.204238] O.RIENT:   → HTkHGm9U: Sir Azure Docker daemon now mesh-exposed via Tails
+[2026-08-21T18:28:34.204238] O.RIENT:   → 0Rqh45JS: Cosmos Library: automation review for lanes 01-17
+[2026-08-21T18:28:34.204238] O.RIENT:   → 6vv94LdC: Build a fleet of Raspberry Pi pirates
+[2026-08-21T18:28:34.204238] O.RIENT:   → cj8GDyYL: 🐛 Docker API port 2376 not reachable from PINKCADY
+[2026-08-21T18:28:34.204238] O.RIENT:   → 8Y8zjlYG: Follow-up: Accounting files population
+[2026-08-21T18:28:34.205236] O.RIENT:   → TdOY8MYu: Build inventory dashboard widget
+[2026-08-21T18:28:34.205236] O.RIENT:   → ijRkR7uN: P1: Document Sir Azure Queue Mapping Logic in his 
+[2026-08-21T18:28:34.205236] O.RIENT:   → iHmnELSJ: AUTH-1: Add Captain Dashboard login UI
+[2026-08-21T18:28:34.205236] O.RIENT:   → DbRT5nuf: Build Obsidian vault watcher daemon
+[2026-08-21T18:28:34.205236] O.RIENT:   → z5ah3jct: Setup AI Art Pipeline (Sir Azure)
+[2026-08-21T18:28:34.205236] O.RIENT:   → UJ2Bo6xo: STEALTHATTACK SSH key blocked — need pubkey from S
+[2026-08-21T18:28:34.206236] O.RIENT:   → oo5n1VAL: SCHWAB-1: Complete Schwab OAuth token setup
+[2026-08-21T18:28:34.206236] O.RIENT:   → GvvPALhj: Build crew scheduler with capacity-aware rules
+[2026-08-21T18:28:34.206236] O.RIENT:   → Vqr5eFxW: PINKCADY SSH key blocked — need pubkey from PINKCA
+[2026-08-21T18:28:34.206236] O.RIENT:   → iqP86n2F: Sir Azure AI Media Pipeline Setup
+[2026-08-21T18:28:34.206236] O.RIENT:   → 1zYkM9LW: 🐛 [BUG] API endpoints return HTML instead of JSON 
+[2026-08-21T18:28:34.206236] O.RIENT:   → 7KJBdFyv: 🐛 Trades table missing entry_price column — open t
+[2026-08-21T18:28:34.207236] O.RIENT:   → R6HyziJF: [P0] BUG: 6 ContainerDown alerts FIRING on Prometh
+[2026-08-21T18:28:34.207236] O.RIENT:   → ImZUlMXF: 🐛 price_history_1min table missing from initial sc
+[2026-08-21T18:28:34.207236] O.RIENT:   → 1aqKny5e: [DEPLOY] Sir Green: Wire augmented scoring into au
+[2026-08-21T18:28:34.207236] O.RIENT:   → T36W8nTu: [P2] BUG: 19 orphaned Docker volumes — 9 duplicate
+[2026-08-21T18:28:34.207236] O.RIENT:   → pHRCCbqV: [DEPLOY] Sir Green: Populate ticker_fundamentals f
+[2026-08-21T18:28:34.207236] O.RIENT:   → 2Vc0rofn: [LEARNING] Use downloaded data to improve Augur si
+[2026-08-21T18:28:34.208237] O.RIENT:   → XrqcqFOL: 🐛 PINKCADY unreachable — cannot move data for Augu
+[2026-08-21T18:28:34.208237] O.RIENT:   → Zn1MDL5y: [P1] Sir Green: add /api/security-docs route to da
+[2026-08-21T18:28:34.208237] O.RIENT:   → YSjPqHTj: 🐛 Alpaca API 400 errors for BRK_B/BRK-B/VIX_X tick
+[2026-08-21T18:28:34.208237] O.RIENT:   → OCbI5UUn: 🐛 Fundamental data download rate limited for AAPL
+[2026-08-21T18:28:34.208237] O.RIENT:   → BgxHUIMq: 🏗️ Design data architecture: bulk dataset on Z:\Wo
+[2026-08-21T18:28:34.208237] O.RIENT:   → yxxa2SBu: Self-healing: Implement real Docker health probe w
+[2026-08-21T18:28:34.209236] O.RIENT:   → 1pObMlcJ: [BUG] ticket_alert_bot.py — unbounded `seen` set l
+[2026-08-21T18:28:34.209236] O.RIENT:   → sVeUeQH9: [BUG] ticket_alert_bot.py — discord_loop() 3s poll
+[2026-08-21T18:28:34.209236] O.RIENT:   → 0jJCfzWY: Sir Green Discord Bot: DM reply path missing
+[2026-08-21T18:28:34.209236] O.RIENT:   → rFl9ahFC: P1 Build Crew Alert Bot — priority-based alert man
+[2026-08-21T18:28:34.209236] O.RIENT:   → U4ct0nYM: Sir Green Discord Bot: token env wiring
+[2026-08-21T18:28:34.209236] O.RIENT:   → 6rY99DTR: Coordinate with Sir Green on Docker fixes
+[2026-08-21T18:28:34.209236] O.RIENT:   → b1TeNQwd: Gordon audited Sir Green's Docker fleet
+[2026-08-21T18:28:34.210236] O.RIENT:   → 58Yx5DlQ: 📨 [INBOX] SIR AZURE ACCESS AND DOCKER REPLY 202608
+[2026-08-21T18:28:34.210236] O.RIENT:   → BulRoH51: P1 Build White Whale Defense Bot — intrusion detec
+[2026-08-21T18:28:34.210236] O.RIENT:   → Q5KDoWvN: 📨 [INBOX] pink docker build push and single ask si
+[2026-08-21T18:28:34.210236] O.RIENT:   → 47IdSHuf: 📨 [INBOX] RE FULL AUTOMATION BOOTSTRAP POST BIOS R
+[2026-08-21T18:28:34.210236] O.RIENT:   → 3ruImD6a: [RULE] G5 No Purchase Without Captain
+[2026-08-21T18:28:34.210236] O.RIENT:   → e85961oe: [P1] torus-website: build Next.js + Dockerfile.pro
+[2026-08-21T18:28:34.211236] O.RIENT:   → FxBld6jP: [RULE] G8 No Hackers
+[2026-08-21T18:28:34.211236] O.RIENT:   → SyluFaZs: 🔗 Forward Sir Azure container requests to Sir Gree
+[2026-08-21T18:28:34.211236] O.RIENT:   → B1qKz9QS: 📨 STATUS ACK TORUS DOCKER BUILD IN PROGRESS DASHBO
+[2026-08-21T18:28:34.211236] O.RIENT:   → Hd4yZ4hB: 📨 SIR GREEN BOT AND WATCHER BOTH RUNNING END TO EN
+[2026-08-21T18:28:34.211236] O.RIENT:   → iZPFFxqQ: 🐳 [P1] Build torus-light Docker stack from Sir Gre
+[2026-08-21T18:28:34.211236] O.RIENT:   → 8qteBs1Y: [P1] Sir Green: add /api/rig-report route to dashb
+[2026-08-21T18:28:34.211236] O.RIENT:   → 5jj8GDiO: GitHub crew access: verify org, teams, and member 
+[2026-08-21T18:28:34.212235] O.RIENT:   → 3Z82BhNl: [P1] Sir Green: add /api/hw route to dashboard_ser
+[2026-08-21T18:28:34.212235] O.RIENT:   → aW3X14K6: [P1] Sir Green: add /api/tools route to dashboard_
+[2026-08-21T18:28:34.212235] O.RIENT:   → 0Lpjjxgy: GitHub crew access: Miss Pink added to teams
+[2026-08-21T18:28:34.212235] O.RIENT:   → RUeo8vzv: GitHub crew access: set up teams and repo permissi
+[2026-08-21T18:28:34.212235] O.RIENT:   → PKgV2cUl: [P1] Sir Green: add /api/fleet route to dashboard_
+[2026-08-21T18:28:34.212235] O.RIENT:   → 2i0rCnE5: [G2] Build /api/docker/register route on central o
+[2026-08-21T18:28:34.213236] O.RIENT:   → 0aKa4SRz: GitHub access: Sir Azure token-based access confir
+[2026-08-21T18:28:34.213236] O.RIENT:   → IpPOYH78: [TRACKING] Dashboard: Port 9999 Health DOWN
+[2026-08-21T18:28:34.213236] O.RIENT:   → sT1tzsi7: [TRACKING] Dashboard: Port 2376 Docker API DOWN
+[2026-08-21T18:28:34.213236] O.RIENT:   → 48pK2cU7: [TRACKING] Dashboard: Port 80 HTTP DOWN
+[2026-08-21T18:28:34.213236] O.RIENT:   → ou8fMNsl: [P3] Dashboard API auth + rate limiting
+[2026-08-21T18:28:34.213236] O.RIENT:   → xb5VBzIj: Sir Azure: network access + Docker/service preflig
+[2026-08-21T18:28:34.213236] O.RIENT:   → Uar4LPQY: Automation: Wake-on-LAN + power-state dashboard fo
+[2026-08-21T18:28:34.214236] O.RIENT:   → D4BRR0Mr: [TRACKING] Trello API label-removal endpoint 404s
+[2026-08-21T18:28:34.214236] O.RIENT:   → pEI3hlzp: [G7] Build unified Alert Center + Comms channel st
+[2026-08-21T18:28:34.214236] O.RIENT:   → CnrCTT0W: MONITORING-STACK-1: Monitoring tab shows Grafana/P
+[2026-08-21T18:28:34.214236] O.RIENT:   → A4fGrGAf: Dashboard: local network device discovery + online
+[2026-08-21T18:28:34.214236] O.RIENT:   → TPV5QgcJ: Dashboard: integrate all automation scripts into u
+[2026-08-21T18:28:34.214236] O.RIENT:   → 9cxJBDc7: [P3] Self-learning/self-correcting automation wrap
+[2026-08-21T18:28:34.215236] O.RIENT:   → oMdq9NNv: Discord: test all bots end-to-end and fix relay/co
+[2026-08-21T18:28:34.215236] O.RIENT:   → w8M3keWM: Audit Sir Azure build template
+[2026-08-21T18:28:34.215236] O.RIENT:   → GAoLvQgJ: [sir_azure] tasklist_share_docker_gh_and_connectiv
+[2026-08-21T18:28:34.215236] O.RIENT:   → yEyqDfbw: [sir_azure] stealthattack_next_actions_share_gh_an
+[2026-08-21T18:28:34.215236] O.RIENT:   → 8vuPlpCB: Sir Green Discord Bot: slash command + intent audi
+[2026-08-21T18:28:34.215236] O.RIENT:   → GXEk5rLt: Deduplicate Legal PDFs across vault
+[2026-08-21T18:28:34.216236] O.RIENT:   → Otl8gj8I: 05_Timelines: era entries   officer timelines
+[2026-08-21T18:28:34.216236] O.RIENT:   → gEJGepwc: Entity Graph / Cast Bible
+[2026-08-21T18:28:34.216236] O.RIENT:   → 6w2VF7GJ: Local fleet mesh design
+[2026-08-21T18:28:34.216236] O.RIENT:   → T1pJ6bBP: Master Summary / World Canon
+[2026-08-21T18:28:34.216236] O.RIENT:   → IRgCfic2: [miss_pink] torus_tokens: captain
+[2026-08-21T18:28:34.216236] O.RIENT:   → x7FYmBmY: Set up CI/build pipeline for tr3asure_mAp
+[2026-08-21T18:28:34.216236] O.RIENT:   → 8yceXjjU: Design API contract between tr3asure_mAp and Crown
+[2026-08-21T18:28:34.217236] O.RIENT:   → oT2b2S7H: Implement treasure map state machine + persistence
+[2026-08-21T18:28:34.217236] O.RIENT:   → uooE4Kpi: Sir Green Discord Bot — deploy container + verify 
+[2026-08-21T18:28:34.217236] O.RIENT:   → drb2sbTW: [P1] Audit all VOID Ops Trello cards — review arch
+[2026-08-21T18:28:34.217236] O.RIENT:   → BoSsMdLD: Sir Green Discord bot: global error handler + life
+[2026-08-21T18:28:34.217236] O.RIENT:   → VNASvdMJ: Automate self-healing checks for Tailscale + Docke
+[2026-08-21T18:28:34.217236] O.RIENT:   → wXncvJoD: Captain Rig: full hardware/software inventory pass
+[2026-08-21T18:28:34.218236] O.RIENT:   → cQ4c45A9: Sir Azure Rig: confirm tailscale status, ping mesh
+[2026-08-21T18:28:34.218236] O.RIENT:   → uXtGntC9: Trello: add Sir Azure to VOID Ops board as needed
+[2026-08-21T18:28:34.218236] O.RIENT:   → FqC027Mx: Ops: verify all watchers/startup shortcuts after a
+[2026-08-21T18:28:34.218236] O.RIENT:   → IrPa7dUm: Wire crew local vault inbox paths into crew_connec
+[2026-08-21T18:28:34.218236] O.RIENT:   → UDXzpJum: Sir Azure: share/Docker/GitHub/connectivity test
+[2026-08-21T18:28:34.218236] O.RIENT:   → ax1G8FPy: Crew: verify all local vault inbox paths on 3 Rigs
+[2026-08-21T18:28:34.218236] O.RIENT:   → BuwNKeN8: Automation: speed up critical stat refresh + dashb
+[2026-08-21T18:28:34.219236] O.RIENT:   → EjwKaQT7: Critical alert: Augur finds perfect stock → auto-a
+[2026-08-21T18:28:34.219236] O.RIENT:   → Qozrc3at: Alert: critical system broken → auto-create Trello
+[2026-08-21T18:28:34.219236] O.RIENT:   → NGFgwZhX: 🌐 Follow-up: Design network-wide shared filesystem
+[2026-08-21T18:28:34.219236] O.RIENT:   → N1HiCQxa: [FLEET] Crew install hive agent — 3 rigs pending
+[2026-08-21T18:28:34.219236] O.RIENT:   → OPVFbNPI: Build Torus Coffee Company Discord bot for Torus C
+[2026-08-21T18:28:34.219236] O.RIENT:   → YZTgfjtY: GitHub: share Torus Coffee repos to Miss Pink and 
+[2026-08-21T18:28:34.220236] O.RIENT:   → z4BUv9HC: Cybersec: secret_scan.py in auto-archive + daily c
+[2026-08-21T18:28:34.220236] O.RIENT:   → ijKIuORH: RECOVERY-1: Restore PINKCADY Hermes app after fail
+[2026-08-21T18:28:34.220236] O.RIENT:   → 0tJro8ZJ: RECOVERY-3: Design Hermes app shared deployment mo
+[2026-08-21T18:28:34.220236] O.RIENT:   → FFlfXgyK: [BUG] Fleet verify: /api/fleet reports STALE despi
+[2026-08-21T18:28:34.220236] O.RIENT:   → X06LvSLS: BACKUP-2: Thumb stick bootable OS blueprint — 32GB
+[2026-08-21T18:28:34.220236] O.RIENT:   → qDpkNwot: [P1] FLEET API: All ships STALE despite Tailscale 
+[2026-08-21T18:28:34.222236] ENGINE: 🔗 DEPENDENCY CHAIN: BACKUP-1: Fleet-wide Hermes backup strategy (trigger-only) —
+[2026-08-21T18:28:34.222236] ENGINE:    Working dependency first: M4z7T3X7 - [RULE] G1: Fleet Command Structure
+[2026-08-21T18:28:34.222236] O.RIENT: Analyzing: [RULE] G1: Fleet Command Structure
+[2026-08-21T18:28:37.198421] O.RIENT: Action type: generic | Complexity: low
+[2026-08-21T18:28:37.199421] D.ECIDE: Formulating action plan...
+[2026-08-21T18:28:37.199421] D.ECIDE: Plan: generic — 4 steps
+[2026-08-21T18:28:37.199421] A.CT: Executing: generic
+[2026-08-21T18:28:37.200421] A.CT: ⚠️ No real handler for [M4z7T3X7] [RULE] G1: Fleet Command Structure — skipping
+[2026-08-21T18:28:37.200421] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:28:37.200421] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for M4z7T3X7 — requires implementation
+[2026-08-21T18:28:37.200421] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:28:37.201421] PERSIST: Evidence saved: FODAVP_20260821_182837_M4z7T3X7.json
+[2026-08-21T18:28:37.573248] PERSIST: Trello comment posted successfully
+[2026-08-21T18:28:37.573248] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:28:37.581248] ENGINE:    ✅ Dependency M4z7T3X7 completed, resuming parent card
+[2026-08-21T18:28:37.581248] D.ECIDE: Formulating action plan...
+[2026-08-21T18:28:37.581248] D.ECIDE: Captain approval required — gating execution
+[2026-08-21T18:28:37.581248] ENGINE: 🛑 Captain approval required — skipping to next candidate
+[2026-08-21T18:28:37.966726] ENGINE: Posted captain approval questions to Trello
+[2026-08-21T18:28:37.966726] ENGINE: ⏸️ Candidate needs captain: EGcFWpFd — trying next candidate
+[2026-08-21T18:28:37.967726] ENGINE: 🔍 Trying candidate: [U6DP5ceK] BACKUP-3: Cross-PC backup + peer sync strategy (SQUIDST
+[2026-08-21T18:28:37.967726] O.RIENT: Analyzing: BACKUP-3: Cross-PC backup + peer sync strategy (SQUIDST
+[2026-08-21T18:28:40.980725] O.RIENT: Action type: generic | Complexity: low
+[2026-08-21T18:28:40.981725] D.ECIDE: Formulating action plan...
+[2026-08-21T18:28:40.982725] D.ECIDE: Captain approval required — gating execution
+[2026-08-21T18:28:40.982725] ENGINE: 🛑 Captain approval required — skipping to next candidate
+[2026-08-21T18:28:41.316214] ENGINE: Posted captain approval questions to Trello
+[2026-08-21T18:28:41.316214] ENGINE: ⏸️ Candidate needs captain: U6DP5ceK — trying next candidate
+[2026-08-21T18:28:41.316214] ENGINE: 🔍 Trying candidate: [CYpENxEv] 🔬 Research spike: TencentDB-Agent-Memory alert routing
+[2026-08-21T18:28:41.316214] O.RIENT: Analyzing: 🔬 Research spike: TencentDB-Agent-Memory alert routing
+[2026-08-21T18:28:45.752320] O.RIENT: Action type: generic | Complexity: low
+[2026-08-21T18:28:45.753355] D.ECIDE: Formulating action plan...
+[2026-08-21T18:28:45.753870] D.ECIDE: Plan: generic — 4 steps
+[2026-08-21T18:28:45.753870] A.CT: Executing: generic
+[2026-08-21T18:28:45.753870] A.CT: ⚠️ No real handler for [CYpENxEv] 🔬 Research spike: TencentDB-Agent-Memory alert routing — skipping
+[2026-08-21T18:28:45.754389] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:28:45.754389] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for CYpENxEv — requires implementation
+[2026-08-21T18:28:45.754907] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:28:45.755422] PERSIST: Evidence saved: FODAVP_20260821_182845_CYpENxEv.json
+[2026-08-21T18:28:46.058952] PERSIST: Trello comment posted successfully
+[2026-08-21T18:28:46.059953] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:28:46.067952] ENGINE: 🏁 CARD COMPLETED — FAIL in 89.53s
+[2026-08-21T18:28:46.068952] ENGINE: ⏭️ Card CYpENxEv skipped — no handler or needs work
+[2026-08-21T18:28:46.068952] ENGINE: 🔍 Trying candidate: [XzXUBTXr] [P3] DASHBOARD: All 55KB JS inline — no external cachin
+[2026-08-21T18:28:46.068952] O.RIENT: Analyzing: [P3] DASHBOARD: All 55KB JS inline — no external cachin
+[2026-08-21T18:28:49.171301] O.RIENT: Action type: generic | Complexity: low
+[2026-08-21T18:28:49.172301] D.ECIDE: Formulating action plan...
+[2026-08-21T18:28:49.173302] D.ECIDE: Plan: generic — 4 steps
+[2026-08-21T18:28:49.173302] A.CT: Executing: generic
+[2026-08-21T18:28:49.173302] A.CT: ⚠️ No real handler for [XzXUBTXr] [P3] DASHBOARD: All 55KB JS inline — no external cachin — skipping
+[2026-08-21T18:28:49.173302] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:28:49.173302] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for XzXUBTXr — requires implementation
+[2026-08-21T18:28:49.173302] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:28:49.174302] PERSIST: Evidence saved: FODAVP_20260821_182849_XzXUBTXr.json
+[2026-08-21T18:28:49.497038] PERSIST: Trello comment posted successfully
+[2026-08-21T18:28:49.498038] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:28:49.506039] ENGINE: 🏁 CARD COMPLETED — FAIL in 92.97s
+[2026-08-21T18:28:49.506039] ENGINE: ⏭️ Card XzXUBTXr skipped — no handler or needs work
+[2026-08-21T18:28:49.506039] ENGINE: 🔍 Trying candidate: [uwkVG7Br] [P3] DASHBOARD: Settings panel missing — no configurati
+[2026-08-21T18:28:49.506039] O.RIENT: Analyzing: [P3] DASHBOARD: Settings panel missing — no configurati
+[2026-08-21T18:28:52.826087] O.RIENT: Action type: generic | Complexity: low
+[2026-08-21T18:28:52.828088] D.ECIDE: Formulating action plan...
+[2026-08-21T18:28:52.828088] D.ECIDE: Plan: generic — 4 steps
+[2026-08-21T18:28:52.828088] A.CT: Executing: generic
+[2026-08-21T18:28:52.828088] A.CT: ⚠️ No real handler for [uwkVG7Br] [P3] DASHBOARD: Settings panel missing — no configurati — skipping
+[2026-08-21T18:28:52.828088] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:28:52.828088] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for uwkVG7Br — requires implementation
+[2026-08-21T18:28:52.829087] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:28:52.829087] PERSIST: Evidence saved: FODAVP_20260821_182852_uwkVG7Br.json
+[2026-08-21T18:28:53.167214] PERSIST: Trello comment posted successfully
+[2026-08-21T18:28:53.168215] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:28:53.176791] ENGINE: 🏁 CARD COMPLETED — FAIL in 96.64s
+[2026-08-21T18:28:53.176791] ENGINE: ⏭️ Card uwkVG7Br skipped — no handler or needs work
+[2026-08-21T18:28:53.177800] ENGINE: 🔍 Trying candidate: [oTXlxBIG] [ONBOARD] Sir Azure / STEALTHATTACK — AI art + Discord 
+[2026-08-21T18:28:53.177800] O.RIENT: Analyzing: [ONBOARD] Sir Azure / STEALTHATTACK — AI art + Discord 
+[2026-08-21T18:28:56.114754] O.RIENT: Action type: generic | Complexity: low
+[2026-08-21T18:28:56.115753] D.ECIDE: Formulating action plan...
+[2026-08-21T18:28:56.115753] D.ECIDE: Captain approval required — gating execution
+[2026-08-21T18:28:56.115753] ENGINE: 🛑 Captain approval required — skipping to next candidate
+[2026-08-21T18:28:56.450253] ENGINE: Posted captain approval questions to Trello
+[2026-08-21T18:28:56.450253] ENGINE: ⏸️ Candidate needs captain: oTXlxBIG — trying next candidate
+[2026-08-21T18:28:56.450253] ENGINE: 🔍 Trying candidate: [vTzs7X2c] BUG: Kill switch auto-resets to True — Trading intermit
+[2026-08-21T18:28:56.450253] O.RIENT: Analyzing: BUG: Kill switch auto-resets to True — Trading intermit
+[2026-08-21T18:29:00.972028] O.RIENT: Action type: bug_fix | Complexity: medium
+[2026-08-21T18:29:00.973028] D.ECIDE: Formulating action plan...
+[2026-08-21T18:29:00.973028] D.ECIDE: Captain approval required — gating execution
+[2026-08-21T18:29:00.973028] ENGINE: 🛑 Captain approval required — skipping to next candidate
+[2026-08-21T18:29:01.431441] ENGINE: Posted captain approval questions to Trello
+[2026-08-21T18:29:01.431441] ENGINE: ⏸️ Candidate needs captain: vTzs7X2c — trying next candidate
+[2026-08-21T18:29:01.432441] ENGINE: 🔍 Trying candidate: [C7Xtu91P] KILLSWITCH-1: /api/killswitch/trading and /api/killswit
+[2026-08-21T18:29:01.432441] O.RIENT: Analyzing: KILLSWITCH-1: /api/killswitch/trading and /api/killswit
+[2026-08-21T18:29:04.543144] O.RIENT: Action type: generic | Complexity: low
+[2026-08-21T18:29:04.545145] D.ECIDE: Formulating action plan...
+[2026-08-21T18:29:04.545145] D.ECIDE: Captain approval required — gating execution
+[2026-08-21T18:29:04.545145] ENGINE: 🛑 Captain approval required — skipping to next candidate
+[2026-08-21T18:29:04.913429] ENGINE: Posted captain approval questions to Trello
+[2026-08-21T18:29:04.913429] ENGINE: ⏸️ Candidate needs captain: C7Xtu91P — trying next candidate
+[2026-08-21T18:29:04.914429] ENGINE: 🔍 Trying candidate: [Ik5F8glm] BACKEND-1: TM backend missing many routes dashboard/pro
+[2026-08-21T18:29:04.914429] O.RIENT: Analyzing: BACKEND-1: TM backend missing many routes dashboard/pro
+[2026-08-21T18:29:07.967124] O.RIENT: Action type: generic | Complexity: low
+[2026-08-21T18:29:07.968124] D.ECIDE: Formulating action plan...
+[2026-08-21T18:29:07.969124] D.ECIDE: Captain approval required — gating execution
+[2026-08-21T18:29:07.969124] ENGINE: 🛑 Captain approval required — skipping to next candidate
+[2026-08-21T18:29:08.296918] ENGINE: Posted captain approval questions to Trello
+[2026-08-21T18:29:08.296918] ENGINE: ⏸️ Candidate needs captain: Ik5F8glm — trying next candidate
+[2026-08-21T18:29:08.296918] ENGINE: 🔍 Trying candidate: [Omvc4UQ2] BUG-5: Grafana container restart required
+[2026-08-21T18:29:08.296918] O.RIENT: Analyzing: BUG-5: Grafana container restart required
+[2026-08-21T18:29:11.351662] O.RIENT: Action type: bug_fix | Complexity: medium
+[2026-08-21T18:29:11.351662] O.RIENT: Dependencies found: 36
+[2026-08-21T18:29:11.351662] O.RIENT:   → qOjQlcTM: Create a VOID Pirate trading card game
+[2026-08-21T18:29:11.351662] O.RIENT:   → 6MCYfjZV: Launch a VOID Pirate podcast
+[2026-08-21T18:29:11.351662] O.RIENT:   → BC47phgW: COSMOS: 02 Numerology backfill
+[2026-08-21T18:29:11.352662] O.RIENT:   → bwwBXUBd: Discord bot container restart policy audit
+[2026-08-21T18:29:11.352662] O.RIENT:   → oVhvLq8p: Design a VOID Pirate flag collection
+[2026-08-21T18:29:11.352662] O.RIENT:   → Q9WYNr9b: Write a VOID Pirate cookbook
+[2026-08-21T18:29:11.352662] O.RIENT:   → wpdh5HoG: BUG-HUNT-32: Grafana API auth needed for datasourc
+[2026-08-21T18:29:11.352662] O.RIENT:   → qACEk31u: BUG-HUNT-27: void-npm container EXITED
+[2026-08-21T18:29:11.352662] O.RIENT:   → Ujn3k3xy: BUG-HUNT-26: void-gitea container EXITED — ports 2
+[2026-08-21T18:29:11.352662] O.RIENT:   → Bcig0VvC: BUG-HUNT-22: Grafana datasource API returns 401 Un
+[2026-08-21T18:29:11.353663] O.RIENT:   → xyezlx9Q: FRONTEND-10: monitoring.html Live Status logic use
+[2026-08-21T18:29:11.353663] O.RIENT:   → jPI0RLpF: BUG-4: Prometheus container start failed (missing 
+[2026-08-21T18:29:11.353663] O.RIENT:   → xdvbP1wT: BUG-5: Fix Prometheus container
+[2026-08-21T18:29:11.353663] O.RIENT:   → IjVSxfaD: BUG-4: Fix Grafana container restart
+[2026-08-21T18:29:11.353663] O.RIENT:   → uHh52CJe: 🐛 P2: 5 missing security headers on dashboard API
+[2026-08-21T18:29:11.354664] O.RIENT:   → YFOs4nhq: 🐛 Alpaca in PAPER trading mode — no live trades be
+[2026-08-21T18:29:11.354664] O.RIENT:   → 206rQF2Q: torus-dashboard container EXITED (137) on PINKCADY
+[2026-08-21T18:29:11.354664] O.RIENT:   → sjReHc39: 🐛 [BUG] AI learner pipeline STUCK — 0 proposals, 0
+[2026-08-21T18:29:11.354664] O.RIENT:   → hI0FxNLP: 🎨 AI Art: Crownless Fortune character art + scene 
+[2026-08-21T18:29:11.354664] O.RIENT:   → 6vv94LdC: Build a fleet of Raspberry Pi pirates
+[2026-08-21T18:29:11.354664] O.RIENT:   → KhxsCVd1: [P2] BUG: Grafana has NO Prometheus datasource con
+[2026-08-21T18:29:11.355664] O.RIENT:   → z5ah3jct: Setup AI Art Pipeline (Sir Azure)
+[2026-08-21T18:29:11.355664] O.RIENT:   → iqP86n2F: Sir Azure AI Media Pipeline Setup
+[2026-08-21T18:29:11.355664] O.RIENT:   → umCPpY6S: [P2] BUG: Grafana — no Prometheus datasource confi
+[2026-08-21T18:29:11.355664] O.RIENT:   → UispLvtx: Audit existing lore images for character consisten
+[2026-08-21T18:29:11.355664] O.RIENT:   → mopwynAD: 📨 [INBOX] BUG HUNT DISCORD BOT SETUP AND VERIFICAT
+[2026-08-21T18:29:11.355664] O.RIENT:   → 6rY99DTR: Coordinate with Sir Green on Docker fixes
+[2026-08-21T18:29:11.356663] O.RIENT:   → 47IdSHuf: 📨 [INBOX] RE FULL AUTOMATION BOOTSTRAP POST BIOS R
+[2026-08-21T18:29:11.356663] O.RIENT:   → R5ZZNxrv: [DONE][MONITORING] Mount Grafana provisioning conf
+[2026-08-21T18:29:11.356663] O.RIENT:   → 1FGhX0sa: [CF-88] Live working_status.json projection
+[2026-08-21T18:29:11.356663] O.RIENT:   → WVZN1dXt: NETWORK-1: 5 unknown devices on LAN with no hostna
+[2026-08-21T18:29:11.356663] O.RIENT:   → gZps7vsf: [P1] Restart dashboard_server.py and verify /api/f
+[2026-08-21T18:29:11.356663] O.RIENT:   → SLbdHz2c: Dashboard: Grafana integration when stable
+[2026-08-21T18:29:11.357662] O.RIENT:   → bZ7g9OrI: [TRACKING] Dashboard: 5 Chinese content items flag
+[2026-08-21T18:29:11.357662] O.RIENT:   → w1ZP152Q: Automation: Docker volume backup automation
+[2026-08-21T18:29:11.357662] O.RIENT:   → z4BUv9HC: Cybersec: secret_scan.py in auto-archive + daily c
+[2026-08-21T18:29:11.359662] ENGINE: 🔗 DEPENDENCY CHAIN: BUG-5: Grafana container restart required
+[2026-08-21T18:29:11.359662] ENGINE:    Working dependency first: qOjQlcTM - Create a VOID Pirate trading card game
+[2026-08-21T18:29:11.359662] O.RIENT: Analyzing: Create a VOID Pirate trading card game
+[2026-08-21T18:29:14.239129] O.RIENT: Action type: generic | Complexity: low
+[2026-08-21T18:29:14.240130] D.ECIDE: Formulating action plan...
+[2026-08-21T18:29:14.241129] D.ECIDE: Plan: generic — 4 steps
+[2026-08-21T18:29:14.241129] A.CT: Executing: generic
+[2026-08-21T18:29:14.241129] A.CT: ⚠️ No real handler for [qOjQlcTM] Create a VOID Pirate trading card game — skipping
+[2026-08-21T18:29:14.241129] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:29:14.241129] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for qOjQlcTM — requires implementation
+[2026-08-21T18:29:14.241129] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:29:14.242130] PERSIST: Evidence saved: FODAVP_20260821_182914_qOjQlcTM.json
+[2026-08-21T18:29:14.572560] PERSIST: Trello comment posted successfully
+[2026-08-21T18:29:14.572560] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:29:14.580561] ENGINE:    ✅ Dependency qOjQlcTM completed, resuming parent card
+[2026-08-21T18:29:14.580561] D.ECIDE: Formulating action plan...
+[2026-08-21T18:29:14.580561] D.ECIDE: Plan: bug_fix — 5 steps
+[2026-08-21T18:29:14.581561] A.CT: Executing: bug_fix
+[2026-08-21T18:29:14.581561] A.CT: ⚠️ No real handler for [Omvc4UQ2] BUG-5: Grafana container restart required — skipping
+[2026-08-21T18:29:14.581561] V.ERIFY: Validating action results against success criteria...
+[2026-08-21T18:29:14.581561] V.ERIFY: Verdict: NEEDS_HANDLER — No real handler for Omvc4UQ2 — requires implementation
+[2026-08-21T18:29:14.581561] PERSIST: Archiving evidence + updating Trello...
+[2026-08-21T18:29:14.582560] PERSIST: Evidence saved: FODAVP_20260821_182914_Omvc4UQ2.json
+[2026-08-21T18:29:14.968098] PERSIST: Trello comment posted successfully
+[2026-08-21T18:29:14.968098] PERSIST: State cache updated: fodavp_latest_state.json
+[2026-08-21T18:29:14.976147] ENGINE: 🏁 CARD COMPLETED — FAIL in 118.44s
+[2026-08-21T18:29:14.976147] ENGINE: ⏭️ Card Omvc4UQ2 skipped — no handler or needs work
+[2026-08-21T18:29:14.977147] ENGINE: 🔍 Trying candidate: [268n53Sl] BUG-6: Verify full download flow end-to-end
+[2026-08-21T18:29:14.977147] O.RIENT: Analyzing: BUG-6: Verify full download flow end-to-end

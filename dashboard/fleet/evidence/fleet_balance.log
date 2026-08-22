@@ -1,0 +1,12 @@
+[2026-08-22T00:07:01.816062+00:00] OK containers=11
+void-treasuremap-backend	Up About an hour (healthy)
+void-sir-green-bot	Up 5 hours
+void-netbox	Up 14 hours (healthy)
+void-netbox-db	Up 16 hours (healthy)
+void-netbox-redis	Up 16 hours (healthy)
+void-fodavp-watcher	Restarting (1) 50 seconds ago
+void-prometheus	Up 14 hours
+void-cadvisor-hardened	Up 14 hours (healthy)
+void-grafana	Up 14 hours
+tailscale_docker-extension-desktop-extension-service	Up 30 hours
+void-dnsmasq	Up 14 hours (healthy)

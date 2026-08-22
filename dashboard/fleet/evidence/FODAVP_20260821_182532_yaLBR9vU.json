@@ -1,0 +1,62 @@
+{
+  "cycle_id": "FODAVP_20260821_182532",
+  "protocol": "FODAVP v2.0",
+  "phases": [
+    "Find",
+    "Orient",
+    "Decide",
+    "Act",
+    "Verify",
+    "Persist"
+  ],
+  "timestamp": "2026-08-21T18:25:32.075106",
+  "target": {
+    "card_id": "6a88675f1f44f68b045ba01e",
+    "shortLink": "yaLBR9vU",
+    "name": "Discord channel audit \u2014 verify all bot channels + permissions + slash commands",
+    "url": "https://trello.com/c/yaLBR9vU/11680-discord-channel-audit-verify-all-bot-channels-permissions-slash-commands"
+  },
+  "decision": {
+    "action_type": "generic",
+    "target_card": "yaLBR9vU",
+    "target_name": "Discord channel audit \u2014 verify all bot channels + permissions + slash commands",
+    "approach": "autonomous_execution",
+    "estimated_effort": "5-10 minutes",
+    "requires_captain": false,
+    "captain_questions": [],
+    "plan": [
+      "Read card requirements",
+      "Execute objective",
+      "Verify completion",
+      "Post evidence to Trello"
+    ]
+  },
+  "action": {
+    "status": "needs_handler",
+    "action_type": "generic",
+    "steps_completed": [],
+    "evidence": [
+      {
+        "check": "handler_registry",
+        "result": "SKIP",
+        "details": "No real handler for card yaLBR9vU \u2014 needs code/human work"
+      }
+    ],
+    "timestamp": "2026-08-21T18:25:32.074589",
+    "fix_applied": false,
+    "note": "No real handler for yaLBR9vU \u2014 requires implementation"
+  },
+  "verification": {
+    "passed": false,
+    "checks": [
+      {
+        "check": "handler_check",
+        "result": "SKIP",
+        "details": "No real handler for yaLBR9vU \u2014 requires implementation"
+      }
+    ],
+    "timestamp": "2026-08-21T18:25:32.074589",
+    "verdict": "NEEDS_HANDLER"
+  },
+  "result": "FAIL"
+}
