@@ -23,6 +23,7 @@ import { registerNavItems, registerPanel } from './plugins'
 import { VoidPlaceholderPanel } from '@/components/panels/void-placeholder-panel'
 import { VoidFleetPanel } from '@/components/panels/void-fleet-panel'
 import { VoidSecurityPanel } from '@/components/panels/void-security-panel'
+import { VoidMonitoringPanel } from '@/components/panels/void-monitoring-panel'
 
 interface VoidPanelDef {
   /** URL slug + nav id + registry key. Must start with `void-`. */
@@ -49,6 +50,13 @@ const VOID_PANELS: VoidPanelDef[] = [
     icon: '🐋',
     groupId: 'admin',
     component: VoidSecurityPanel,
+  },
+  {
+    id: 'void-monitoring',
+    label: 'Monitoring (VOID)',
+    icon: '📈',
+    groupId: 'observe',
+    component: VoidMonitoringPanel,
   },
   {
     id: 'void-placeholder',
