@@ -2674,7 +2674,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Origin', '*')
         self.end_headers()
         try:
-            state_dir = os.path.join(VAULT_PATH, '02_Business_Operations', 'state')
+            state_dir = os.path.join(VAULT_PATH, '03_Business_Operations', 'state')
             learn = load_json(os.path.join(state_dir, 'whale_selfheal_learning.json'), [])
             interventions = load_json(os.path.join(state_dir, 'whale_interventions.json'), [])
             mesh = load_json(os.path.join(state_dir, 'fleet_mesh_state.json'), {})
@@ -2707,7 +2707,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Origin', '*')
         self.end_headers()
         try:
-            state_dir = os.path.join(VAULT_PATH, '02_Business_Operations', 'state')
+            state_dir = os.path.join(VAULT_PATH, '03_Business_Operations', 'state')
             verdict = load_json(os.path.join(state_dir, 'pinkcady_verdict.json'), {})
             # also reflect crew_heartbeats PINKCADY entry (sent by the sentinel)
             hb = CREW_HEARTBEATS.get('PINKCADY')
@@ -2732,7 +2732,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Origin', '*')
         self.end_headers()
         try:
-            state_dir = os.path.join(VAULT_PATH, '02_Business_Operations', 'state')
+            state_dir = os.path.join(VAULT_PATH, '03_Business_Operations', 'state')
             cfg = load_json(os.path.join(state_dir, 'fleet_traffic_config.json'), {})
             # daemon liveness from heartbeat files
             hb_dir = os.path.join(state_dir, 'daemon_heartbeats')
@@ -2879,7 +2879,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
             if action == 'paper_state':
                 self.handle_augur_paper_state_api(body_override=True)
                 return
-            augur_state = os.path.join(VAULT_PATH, '02_Business_Operations', 'state', 'augur_status.json')
+            augur_state = os.path.join(VAULT_PATH, '03_Business_Operations', 'state', 'augur_status.json')
             live = {}
             try:
                 import urllib.request as _u
@@ -2910,7 +2910,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
                     "issue": "https://github.com/VOIDPirateTradeCo/Obsidian_Vault/issues/355",
                 }
             data['live_backend'] = live
-            bridge_path = os.path.join(VAULT_PATH, '02_Business_Operations', 'state', 'alpaca_bridge.json')
+            bridge_path = os.path.join(VAULT_PATH, '03_Business_Operations', 'state', 'alpaca_bridge.json')
             if os.path.exists(bridge_path):
                 try:
                     data['alpaca_bridge'] = load_json(bridge_path, {})
@@ -2989,7 +2989,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
         try:
             # network_monitor already probes SQUID docker; check the game container
             # if it runs here. Honest fallback if not present.
-            game_state = os.path.join(VAULT_PATH, '02_Business_Operations', 'state', 'game_status.json')
+            game_state = os.path.join(VAULT_PATH, '03_Business_Operations', 'state', 'game_status.json')
             if os.path.exists(game_state):
                 data = load_json(game_state, {})
                 data['deployed'] = True
@@ -3014,16 +3014,16 @@ class DashboardHandler(BaseHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Origin', '*')
         self.end_headers()
         try:
-            kit = os.path.join(VAULT_PATH, '09_Cosmos_Library', 'PERSONA_BUILD_KIT.md')
+            kit = os.path.join(VAULT_PATH, '05_Cosmos_Library', 'PERSONA_BUILD_KIT.md')
             template = os.path.join(VAULT_PATH, '03_AI_Operating_System',
                                      '00_General_AI_Brain_Subagent_Templates',
                                      'Brain_Hermes', 'TEMPLATE_PERSONALITY.md')
-            cosmos_index = os.path.join(VAULT_PATH, '09_Cosmos_Library', '00_MASTER_INDEX.md')
+            cosmos_index = os.path.join(VAULT_PATH, '05_Cosmos_Library', '00_MASTER_INDEX.md')
             data = {
                 "persona_build_kit": open(kit, encoding='utf-8', errors='ignore').read() if os.path.exists(kit) else None,
                 "persona_template": open(template, encoding='utf-8', errors='ignore').read() if os.path.exists(template) else None,
                 "cosmos_library_index": open(cosmos_index, encoding='utf-8', errors='ignore').read() if os.path.exists(cosmos_index) else None,
-                "cosmos_library_path": "09_Cosmos_Library/",
+                "cosmos_library_path": "05_Cosmos_Library/",
                 "broadcast": "git pull on any rig gets PERSONA_BUILD_KIT.md + Cosmos Library together",
             }
             self.wfile.write(json.dumps(data, indent=2, default=str).encode('utf-8'))
@@ -3072,8 +3072,8 @@ class DashboardHandler(BaseHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Origin', '*')
         self.end_headers()
         try:
-            state_path = os.path.join(VAULT_PATH, '02_Business_Operations', 'state', 'fleet_mesh_state.json')
-            learned_path = os.path.join(VAULT_PATH, '02_Business_Operations', 'state', 'fleet_mesh_learned.json')
+            state_path = os.path.join(VAULT_PATH, '03_Business_Operations', 'state', 'fleet_mesh_state.json')
+            learned_path = os.path.join(VAULT_PATH, '03_Business_Operations', 'state', 'fleet_mesh_learned.json')
             mesh_state = load_json(state_path, {})
             learned = load_json(learned_path, {})
             ships = mesh_state.get('ships', {})
@@ -3473,7 +3473,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
             import json as _json
             from pathlib import Path as _Path
             vault_dir = _Path(VAULT_PATH)
-            state_dir = vault_dir / "02_Business_Operations" / "Infrastructure" / "state"
+            state_dir = vault_dir / "03_Business_Operations" / "Infrastructure" / "state"
             
             # Load state files if available
             audit = {}
@@ -4012,7 +4012,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
         """WHITE WHALE network monitor: serve live mesh + active alerts.
         Reads fleet_mesh_state.json + network_alerts.json written by network_monitor.py."""
         import os as _os
-        state_dir = _os.path.join(VAULT_PATH, "02_Business_Operations", "state")
+        state_dir = _os.path.join(VAULT_PATH, "03_Business_Operations", "state")
         mesh_path = _os.path.join(state_dir, "fleet_mesh_state.json")
         alerts_path = _os.path.join(state_dir, "network_alerts.json" if False else "network_alerts.json")
         mesh = {}
@@ -4187,7 +4187,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
 
     def handle_security_docs_api(self):
         import json as _j
-        base = os.path.join(VAULT_PATH, "02_Business_Operations", "_Hub", "security")
+        base = os.path.join(VAULT_PATH, "03_Business_Operations", "_Hub", "security")
         files = []
         summary = {
             "base_path": base,
@@ -4390,7 +4390,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
         agent from the Captain. Works from any PC with a browser or curl.
         """
         agent_path = os.path.join(
-            VAULT_PATH, "02_Business_Operations", "Infrastructure",
+            VAULT_PATH, "03_Business_Operations", "Infrastructure",
             "scripts", "hive_agent.py")
         try:
             with open(agent_path, "rb") as fh:
@@ -4648,7 +4648,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
         try:
             from pathlib import Path as _Path
             import json as _json
-            state_dir = _Path(VAULT_PATH) / "02_Business_Operations" / "Infrastructure" / "state"
+            state_dir = _Path(VAULT_PATH) / "03_Business_Operations" / "Infrastructure" / "state"
             data = {}
             state_file = state_dir / "trello_content_schedule.json"
             if state_file.exists():
@@ -4669,7 +4669,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
         try:
             from pathlib import Path as _Path
             import json as _json
-            state_dir = _Path(VAULT_PATH) / "02_Business_Operations" / "Infrastructure" / "state"
+            state_dir = _Path(VAULT_PATH) / "03_Business_Operations" / "Infrastructure" / "state"
             data = {}
             state_file = state_dir / "trello_schedule.json"
             if state_file.exists():
@@ -4689,8 +4689,8 @@ class DashboardHandler(BaseHTTPRequestHandler):
         try:
             import json as _json
             from pathlib import Path as _Path
-            state_dir = _Path(VAULT_PATH) / "02_Business_Operations" / "state"
-            alt_state_dir = _Path(VAULT_PATH) / "02_Business_Operations" / "Infrastructure" / "state"
+            state_dir = _Path(VAULT_PATH) / "03_Business_Operations" / "state"
+            alt_state_dir = _Path(VAULT_PATH) / "03_Business_Operations" / "Infrastructure" / "state"
 
             def _load_json(folder: _Path, name: str):
                 target = folder / name

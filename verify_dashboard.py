@@ -1,6 +1,17 @@
-import json, datetime, os
+import json, datetime, os, sys
+from pathlib import Path
 
-with open('mesh_response.json', 'r') as f:
+_HERE = Path(__file__).resolve().parent            # <business>/Captain_Dashboard
+_BUSINESS_ROOT = _HERE.parent                       # <business>
+
+# Resolve the vault via canonical_paths; fall back to the business root layout.
+sys.path.insert(0, str(_HERE / 'dashboard'))
+try:
+    from canonical_paths import VAULT_PATH
+except Exception:
+    VAULT_PATH = _BUSINESS_ROOT / 'Obsidian_Vault'
+
+with open(_HERE / 'mesh_response.json', 'r') as f:
     data = json.load(f)
 
 ships = data['fleet_mesh_state']['ships']
@@ -24,9 +35,9 @@ status = 'SUCCESS' if not mismatches else 'FAILURE'
 msg = '; '.join(mismatches) if mismatches else f'all_checks_passed ships_online={ships_online}'
 
 line = f'{ts} | {status} | {msg}\n'
-log_dir = 'Obsidian_Vault/Developer_Brain/02_Business_Operations/state'
-os.makedirs(log_dir, exist_ok=True)
-with open(os.path.join(log_dir, 'dashboard_heartbeat_verify.log'), 'a') as f:
+log_dir = Path(VAULT_PATH) / 'Developer_Brain' / '02_Business_Operations' / 'state'
+log_dir.mkdir(parents=True, exist_ok=True)
+with open(log_dir / 'dashboard_heartbeat_verify.log', 'a', encoding='utf-8') as f:
     f.write(line)
 
 print(f'Written: {line.strip()}')

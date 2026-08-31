@@ -1,3 +1,12 @@
 __pycache__/
 dashboard/state/dashboard_cache.json
 dashboard/bots/.env.sirgreen
+
+# Canonical scratch dir for agents — throwaway files, never tracked (see _SCRATCH/README.md)
+/_SCRATCH/
+
+# Mission Control — upstream checkout (builderz-labs/mission-control), managed
+# via `git pull` inside it. Not tracked by this repo. VOID-local config lives
+# in mission-control/.env + docker-compose.void.yml.
+mission-control/
+_archive/
