@@ -21,6 +21,12 @@ services:
       - MC_ALLOWED_HOSTS=localhost,127.0.0.1,::1,squidstation,squidstation.local,100.83.247.14,192.168.0.39
       - MC_COOKIE_SECURE=0        # local http, not https
       - MC_COOKIE_SAMESITE=lax
+      # Integration keys — values live in the gitignored .env sidecar, sourced from
+      # treasure_map_keys.env. Only the 4 VOID actually holds today.
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+      - GITHUB_TOKEN=${GITHUB_TOKEN:-}
     networks:
       mc-internal:
 
