@@ -12,6 +12,25 @@ This file is that card's deliverable.
 
 ---
 
+## 0. STATUS — updated 2026-08-31 (Sir Cobalt)
+
+| Phase | State | Notes |
+|---|---|---|
+| **0 — foundation** | ✅ **DONE** | Plugin registry lit up; `plugins-void.ts` + `void-proxy/[...path]` route live (allow-lists incl. `monitor`, `monitoring`, `git-sync`, `vault`, `opsec`, …). Sir Green ran `typecheck`/`eslint`/`build` clean, container healthy (card 12083). |
+| **1 — iframe embeds (12081)** | ✅ mostly | "Monitoring (VOID)" panel = Prometheus + cAdvisor iframes + Grafana/NetBox "open in new tab" links. Pending: 12100 browser smoke test. |
+| **2 — VOID panels hard (12082)** | ✅ mostly | `void-fleet-panel.tsx` + `void-whale` route shipped (all 9 void-proxy paths + void-whale → 200, card 12100). |
+| **3 — repos & vault (12083)** | ✅ **DONE** | `void-vault-panel.tsx` (git-sync + vault health + OPSEC red/green) registered + verified. |
+| **4 — hardening (12084)** | ⏳ not started | Sir Green's queue: scheduled `/api/backup`, restart policy, `MC_ALLOWED_HOSTS` auth scope. |
+| **5 — retire dashboard_server.py (12085)** | 🔒 gated | Waits on 1–4 parity. `dashboard_server.py` still runs (2 instances) and was NOT yet stripped to a headless collector — new work landed *in place* (see below). |
+
+**New work since this plan was written (not in the phases above):**
+- **Prometheus alert rules** (card 12159, commit `850355c`) — `dashboard/monitoring/fleet_alerts.yml`, 10 rules (node/GPU/cAdvisor down, host CPU/RAM/disk pressure + 24h fill prediction, container down/OOM). Live via SIGHUP. The `monitoring` tab disposition below should now read "NATIVE monitor + alerts feed".
+- **`/api/monitor` fleet-health rollup** (card 12160, commit `5d5dc37`) — the "small health-grid in VOID-PANEL" this plan calls for (`monitoring` / `rig-report` rows) is now backed by one endpoint: services + live alerts + scrape-target up/down + MC agent roster + tr3asure fleet + `verdict`. **MC-consumable now** via `GET /api/void-proxy/monitor` (already allow-listed). A panel to render it is a small Phase-1/2 add.
+- **WHITE WHALE collector-side hardened** (cards 12131 + 12158) — passphrase hash now resolves from `_KEY_VAULT/secrets.env`, no plaintext literal anywhere, activation runs through `verify_passphrase()`. The §6 risk "WHITE WHALE is classified" is half-addressed on the collector; the MC-panel side still needs `admin` RBAC + a separate secret at Phase 2.
+- **MC → Hermes push-dispatcher (card 12077): DEAD END — recommend close.** Hermes headless contract exists (`hermes chat --query-file - --oneshot -Q --yolo …`) but the MC container has no hermes binary / no `~/.hermes` mount / `HOME=/nonexistent`, and card 12124 already decided OpenClaw is MC's push gateway + Hermes stays pull-model. `agent-runtimes.ts` `hermes.dispatch=false` is correct and stays. Confirms §1d for the CLI path specifically.
+
+---
+
 ## 1. How Mission Control is extended (audit result)
 
 MC is Next.js 16 App Router. Adding UI = adding a **panel**; adding data = adding an
