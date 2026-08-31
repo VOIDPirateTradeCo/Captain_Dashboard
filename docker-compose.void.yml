@@ -27,6 +27,23 @@ services:
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}
       - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
       - GITHUB_TOKEN=${GITHUB_TOKEN:-}
+      # Skills Vault + OpenClaw runtime detection (read-only bind mounts)
+      - MC_SKILLS_OPENCLAW_DIR=/run/openclaw/skills
+      - MC_SKILLS_WORKSPACE_DIR=/run/skills-vault
+      - OPENCLAW_STATE_DIR=/run/openclaw
+    volumes:
+      - type: bind
+        source: /c/Users/kidsm/.openclaw
+        target: /run/openclaw
+        read_only: true
+      - type: bind
+        source: /c/Users/kidsm/Documents/My Docs/VOID Pirate Trading Co/Obsidian_Vault/04_AI_Operating_System/Skills Vault
+        target: /run/skills-vault
+        read_only: true
+      - type: bind
+        source: /c/Users/kidsm/Documents/My Docs/VOID Pirate Trading Co/Captain_Dashboard/mission-control/.backups
+        target: /app/.data/backups
+        read_only: false
     networks:
       mc-internal:
 

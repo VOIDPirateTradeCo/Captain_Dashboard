@@ -46,13 +46,13 @@ interface DispatchableTask {
   agent_name: string
   agent_id: number
   agent_config: string | null
-  /** From agents.runtime_type — 'claude' opts into per-agent CLI session dispatch (#602). */
+  /** From agents.runtime_type - 'claude' opts into per-agent CLI session dispatch (#602). */
   agent_runtime_type?: string | null
   ticket_prefix: string | null
   project_ticket_no: number | null
   project_id: number | null
   tags?: string[]
-  /** Raw tasks.metadata JSON — carries optional per-task sandbox overrides. */
+  /** Raw tasks.metadata JSON - carries optional per-task sandbox overrides. */
   metadata?: string | null
 }
 
@@ -149,7 +149,7 @@ function resolveGatewayAgentId(task: DispatchableTask): string {
 
 /**
  * Tool names the Claude Code CLI accepts for `--allowedTools`. Conservative
- * exact-match allowlist — entries not listed here (including `Bash(...)`
+ * exact-match allowlist - entries not listed here (including `Bash(...)`
  * specifier syntax) are dropped with a warning. `--dangerously-skip-permissions`
  * is never passed by task dispatch.
  */
@@ -170,7 +170,7 @@ export interface CliDispatchSandboxOptions {
 /**
  * Validate a configured allowed-tools list against CLAUDE_CLI_ALLOWED_TOOL_NAMES.
  * Unknown entries are dropped with a warning. Returns null when the input is
- * not a list or nothing survives filtering — in `--print` mode, omitting
+ * not a list or nothing survives filtering - in `--print` mode, omitting
  * `--allowedTools` is the more restrictive default (tools stay gated), so an
  * all-invalid list fails closed, not open.
  */
@@ -325,7 +325,7 @@ function parseAgentResponse(stdout: string): AgentResponseParsed {
     // Last resort: stringify the whole response
     return { text: JSON.stringify(parsed, null, 2), sessionId }
   } catch {
-    // Not valid JSON — return raw stdout if non-empty
+    // Not valid JSON - return raw stdout if non-empty
     return { text: stdout.trim() || null, sessionId: null }
   }
 }
@@ -670,7 +670,7 @@ function isGatewayAvailable(): boolean {
 /**
  * Resolve the Anthropic dispatch model ID for a catalog tier alias.
  *
- * MODEL_CATALOG is the single source of truth for model IDs — classification
+ * MODEL_CATALOG is the single source of truth for model IDs - classification
  * derives the exact API model ID from the catalog entry instead of
  * hard-coding ID strings here. The literal fallback only applies if the
  * catalog alias is ever removed (defensive; all three aliases exist today).
@@ -721,7 +721,7 @@ function classifyDirectModel(task: DispatchableTask): string {
   ]
   if (routineSignals.some(s => text.includes(s)) && priority !== 'high' && priority !== 'critical') {
     // Catalog carries 'claude-haiku-4-5' (Anthropic's alias for the
-    // claude-haiku-4-5-20251001 snapshot) — both resolve to the same model.
+    // claude-haiku-4-5-20251001 snapshot) - both resolve to the same model.
     return anthropicDispatchId('haiku', 'claude-haiku-4-5')
   }
 
@@ -746,7 +746,7 @@ async function callClaudeDirectly(
   prompt: string,
 ): Promise<AgentResponseParsed> {
   const apiKey = getAnthropicApiKey()
-  if (!apiKey) throw new Error('ANTHROPIC_API_KEY not set — cannot dispatch without gateway')
+  if (!apiKey) throw new Error('ANTHROPIC_API_KEY not set - cannot dispatch without gateway')
 
   const model = classifyDirectModel(task)
   const soul = getAgentSoulContent(task)
@@ -807,7 +807,7 @@ async function callClaudeDirectly(
 }
 
 // ---------------------------------------------------------------------------
-// Direct compatibility API dispatch — also gateway-free.
+// Direct compatibility API dispatch - also gateway-free.
 //
 // The "local" provider path is intentionally generic: it speaks the OpenAI
 // `/v1/chat/completions` REST shape, which is what LMStudio, Ollama, vLLM and
@@ -852,7 +852,7 @@ export function pickProvider(model: string): DirectProvider {
   if (catalogProvider === 'ollama') return 'local'
   if (catalogProvider === 'minimax') return 'minimax'
 
-  // Prefix-match fallback for models not in the catalog — behavior for
+  // Prefix-match fallback for models not in the catalog - behavior for
   // unknown IDs is unchanged (default remains 'anthropic').
   const m = model.toLowerCase()
   if (m.startsWith('openai/') || m.startsWith('gpt-') || m.startsWith('o1-') || m.startsWith('o3-')) return 'openai'
@@ -878,7 +878,7 @@ let claudeCliBinaryPath: string | false | null = null
  * Resolve the Claude CLI binary path. Returns the absolute path when found
  * at a known location, or 'claude' (bare command name) when it's in PATH.
  * Prefers Docker paths, then Windows native install, then PATH resolution.
- * Cached — spawnSync costs ~1s and existsSync results are stable per boot.
+ * Cached - spawnSync costs ~1s and existsSync results are stable per boot.
  */
 function getClaudeCliBinaryPath(): string | null {
   if (claudeCliBinaryPath !== null) {
@@ -886,7 +886,7 @@ function getClaudeCliBinaryPath(): string | null {
   }
 
   try {
-    // Docker paths (preferred per #933 — container bind-mounts)
+    // Docker paths (preferred per #933 - container bind-mounts)
     const dockerPaths = [
       '/home/nextjs/.local/bin/claude',
       '/usr/local/bin/claude',
@@ -932,13 +932,13 @@ function isClaudeCliAvailable(): boolean {
 /**
  * The Codex CLI authenticated via ChatGPT subscription login. When present,
  * OpenAI-model tasks can dispatch through `codex exec` without an
- * OPENAI_API_KEY — same idea as the Claude Code CLI path above.
+ * OPENAI_API_KEY - same idea as the Claude Code CLI path above.
  */
 let codexCliBinaryPath: string | false | null = null
 
 /**
  * Resolve the Codex CLI binary path. Returns 'codex' (bare command name) when
- * it's in PATH. Cached — spawnSync costs ~1s.
+ * it's in PATH. Cached - spawnSync costs ~1s.
  */
 function getCodexCliBinaryPath(): string | null {
   if (codexCliBinaryPath !== null) {
@@ -1100,7 +1100,7 @@ async function callClaudeViaCli(
  *
  * No-fallback rule: any failure here (missing CLI, auth, expired or damaged
  * session) is a dispatch failure. We never reroute to the API-key or gateway
- * paths — those run with different authority than the operator's CLI login.
+ * paths - those run with different authority than the operator's CLI login.
  */
 async function dispatchViaClaudeSession(
   task: DispatchableTask,
@@ -1267,7 +1267,7 @@ async function callMiniMaxDirectly(
   model: string,
 ): Promise<AgentResponseParsed> {
   const apiKey = getMiniMaxApiKey()
-  if (!apiKey) throw new Error('MINIMAX_API_KEY not set — cannot dispatch to MiniMax without gateway')
+  if (!apiKey) throw new Error('MINIMAX_API_KEY not set - cannot dispatch to MiniMax without gateway')
 
   const { baseUrl, protocol } = resolveMiniMaxEndpoint()
   const modelId = stripProviderPrefix(model)
@@ -1280,10 +1280,10 @@ async function callMiniMaxDirectly(
 async function callOpenAIDirectly(task: DispatchableTask, prompt: string, model: string): Promise<AgentResponseParsed> {
   const apiKey = getOpenAIApiKey()
   if (!apiKey) {
-    // No API key — fall back to the host Codex CLI (ChatGPT subscription
+    // No API key - fall back to the host Codex CLI (ChatGPT subscription
     // login), mirroring the Claude CLI path used for Anthropic models.
     if (isCodexCliAvailable()) return callCodexViaCli(task, prompt, stripProviderPrefix(model))
-    throw new Error('OPENAI_API_KEY not set and Codex CLI not found — cannot dispatch to OpenAI without gateway')
+    throw new Error('OPENAI_API_KEY not set and Codex CLI not found - cannot dispatch to OpenAI without gateway')
   }
   return callOpenAICompatible(task, prompt, 'https://api.openai.com/v1', apiKey, stripProviderPrefix(model), 'openai')
 }
@@ -1315,7 +1315,7 @@ async function callCodexViaCli(
   if (model && /^gpt-/i.test(model)) args.push('--model', model)
   args.push('-')
 
-  // Workspace-scoped cwd only (issue #720) — codex's own --sandbox flag
+  // Workspace-scoped cwd only (issue #720) - codex's own --sandbox flag
   // handling above stays untouched.
   const dispatchCwd = resolveCliSandboxOptions(task).cwd
   logger.info(
@@ -1362,7 +1362,7 @@ async function callCodexViaCli(
 
 async function callLocalDirectly(task: DispatchableTask, prompt: string, model: string): Promise<AgentResponseParsed> {
   const endpoint = getLocalEndpoint()
-  if (!endpoint) throw new Error('LOCAL_LLM_ENDPOINT not set — cannot dispatch to local model')
+  if (!endpoint) throw new Error('LOCAL_LLM_ENDPOINT not set - cannot dispatch to local model')
   return callOpenAICompatible(task, prompt, endpoint, getLocalApiKey(), stripProviderPrefix(model), 'local')
 }
 
@@ -1372,7 +1372,7 @@ async function callDirectly(task: DispatchableTask, prompt: string): Promise<Age
   if (provider === 'minimax') return callMiniMaxDirectly(task, prompt, model)
   if (provider === 'openai') return callOpenAIDirectly(task, prompt, model)
   if (provider === 'local') return callLocalDirectly(task, prompt, model)
-  // Anthropic: prefer the host Claude Code CLI when available — it uses the
+  // Anthropic: prefer the host Claude Code CLI when available - it uses the
   // operator's existing login, no API key needed. Fall back to the API key
   // path only if the CLI isn't installed.
   if (isClaudeCliAvailable()) return callClaudeViaCli(task, prompt, stripProviderPrefix(model))
@@ -1556,7 +1556,7 @@ export async function runAegisReviews(): Promise<{ ok: boolean; message: string 
         const maxAegisRetries = 3
 
         if (newAttempts >= maxAegisRetries) {
-          // Too many rejections — move to failed
+          // Too many rejections - move to failed
           db.prepare('UPDATE tasks SET status = ?, error_message = ?, dispatch_attempts = ?, updated_at = ? WHERE id = ? AND workspace_id = ?')
             .run('failed', `Aegis rejected ${newAttempts} times. Last: ${verdict.notes}`, newAttempts, now, task.id, task.workspace_id)
 
@@ -1663,7 +1663,7 @@ export async function requeueStaleTasks(): Promise<{ ok: boolean; message: strin
   let failed = 0
 
   // When MC runs in direct-API mode (no gateway), the agent has no heartbeat
-  // and stays "offline" by design — but tasks still get dispatched via the
+  // and stays "offline" by design - but tasks still get dispatched via the
   // configured direct provider. Skip the offline-stale check
   // entirely in that mode, otherwise every task is failed after 5 cycles
   // before any direct-API dispatch can run.
@@ -1679,13 +1679,13 @@ export async function requeueStaleTasks(): Promise<{ ok: boolean; message: strin
 
     if (newAttempts >= maxDispatchRetries) {
       db.prepare('UPDATE tasks SET status = ?, error_message = ?, dispatch_attempts = ?, updated_at = ? WHERE id = ? AND workspace_id = ?')
-        .run('failed', `Task stuck in_progress ${newAttempts} times — agent "${task.assigned_to}" offline. Moved to failed.`, newAttempts, now, task.id, task.workspace_id)
+        .run('failed', `Task stuck in_progress ${newAttempts} times - agent "${task.assigned_to}" offline. Moved to failed.`, newAttempts, now, task.id, task.workspace_id)
 
       eventBus.broadcast('task.status_changed', {
         id: task.id,
         status: 'failed',
         previous_status: 'in_progress',
-        error_message: `Stale task — agent offline after ${newAttempts} attempts`,
+        error_message: `Stale task - agent offline after ${newAttempts} attempts`,
         reason: 'stale_task_max_retries',
         workspace_id: task.workspace_id,
       })
@@ -1763,14 +1763,14 @@ export async function dispatchAssignedTasks(): Promise<{ ok: boolean; message: s
     // Atomically claim the task: only flip to in_progress if it is still
     // 'assigned'. If two dispatchers race (e.g. concurrent scheduler ticks or
     // multiple workers polling), exactly one UPDATE reports changes=1 and the
-    // loser skips this task — preventing double-dispatch (issue/PR #698).
+    // loser skips this task - preventing double-dispatch (issue/PR #698).
     const claim = db
       .prepare("UPDATE tasks SET status = ?, updated_at = ? WHERE id = ? AND status = 'assigned' AND workspace_id = ?")
       .run('in_progress', now, task.id, task.workspace_id)
 
     if (claim.changes === 0) {
       // Another dispatcher won the race (or the task was cancelled between
-      // SELECT and UPDATE). Skip silently — no event, no activity, no work.
+      // SELECT and UPDATE). Skip silently - no event, no activity, no work.
       continue
     }
 
@@ -1820,11 +1820,11 @@ export async function dispatchAssignedTasks(): Promise<{ ok: boolean; message: s
       if (String(task.agent_runtime_type || '').toLowerCase() === 'claude') {
         // #602: explicit opt-in per-agent Claude Code session dispatch. This
         // branch deliberately outranks gateway availability, target_session,
-        // and callDirectly — a claude-runtime agent never falls back to a
+        // and callDirectly - a claude-runtime agent never falls back to a
         // less restrictive provider; failures surface as dispatch failures.
         agentResponse = await dispatchViaClaudeSession(task, prompt)
       } else if (useDirectApi && !targetSession) {
-        // Direct API dispatch — provider chosen by `dispatchModel`. No gateway needed.
+        // Direct API dispatch - provider chosen by `dispatchModel`. No gateway needed.
         agentResponse = await callDirectly(task, prompt)
       } else if (targetSession) {
         // Dispatch to a specific existing session via chat.send
@@ -2019,7 +2019,7 @@ export async function dispatchAssignedTasks(): Promise<{ ok: boolean; message: s
         'task',
         task.id,
         task.agent_name,
-        `Agent completed task "${task.title}" — awaiting review`,
+        `Agent completed task "${task.title}" - awaiting review`,
         { response_length: agentResponse.text.length, dispatch_session_id: agentResponse.sessionId },
         task.workspace_id
       )
@@ -2038,7 +2038,7 @@ export async function dispatchAssignedTasks(): Promise<{ ok: boolean; message: s
 
       if (newAttempts >= maxDispatchRetries) {
         const failureMessage = `Dispatch failed ${newAttempts} times. Last: ${errorMsg.substring(0, 5000)}`
-        // Too many failures — move to failed
+        // Too many failures - move to failed
         db.prepare('UPDATE tasks SET status = ?, error_message = ?, dispatch_attempts = ?, updated_at = ? WHERE id = ? AND workspace_id = ?')
           .run('failed', failureMessage, newAttempts, Math.floor(Date.now() / 1000), task.id, task.workspace_id)
 
@@ -2097,7 +2097,7 @@ export async function dispatchAssignedTasks(): Promise<{ ok: boolean; message: s
 // Auto-routing: assign inbox tasks to available agents
 // ---------------------------------------------------------------------------
 
-/** Role affinity mapping — which task keywords match which agent roles. */
+/** Role affinity mapping - which task keywords match which agent roles. */
 const ROLE_AFFINITY: Record<string, string[]> = {
   coder: ['code', 'implement', 'build', 'fix', 'bug', 'test', 'unit test', 'refactor', 'feature', 'api', 'endpoint', 'function', 'class', 'module', 'component', 'deploy', 'ci', 'pipeline'],
   researcher: ['research', 'investigate', 'analyze', 'compare', 'find', 'discover', 'audit', 'review', 'survey', 'benchmark', 'evaluate', 'assess', 'competitor', 'market', 'trend'],
@@ -2112,7 +2112,7 @@ function scoreAgentForTask(
   agent: { name: string; role: string; status: string; config: string | null },
   taskText: string,
 ): number {
-  // Offline agents can't take work — unless we're in direct-API mode where
+  // Offline agents can't take work - unless we're in direct-API mode where
   // the agent has no heartbeat by design and the dispatcher invokes the
   // provider HTTP API directly (no live agent process required).
   const directApiOk = !isGatewayAvailable() && isDirectDispatchAvailable()
@@ -2147,7 +2147,7 @@ function scoreAgentForTask(
 
 /**
  * Auto-route inbox tasks to the best available agent.
- * Runs before dispatch — moves tasks from inbox → assigned.
+ * Runs before dispatch - moves tasks from inbox → assigned.
  */
 export async function autoRouteInboxTasks(): Promise<{ ok: boolean; message: string }> {
   const db = getDatabase()
@@ -2197,7 +2197,7 @@ export async function autoRouteInboxTasks(): Promise<{ ok: boolean; message: str
 
     const best = scored[0].agent
 
-    // Check capacity — skip agents with 3+ in-progress tasks
+    // Check capacity - skip agents with 3+ in-progress tasks
     const inProgressCount = (db.prepare(
       'SELECT COUNT(*) as c FROM tasks WHERE assigned_to = ? AND status = \'in_progress\' AND workspace_id = ?'
     ).get(best.name, task.workspace_id) as { c: number }).c
