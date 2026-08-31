@@ -3381,9 +3381,16 @@ class DashboardHandler(BaseHTTPRequestHandler):
                     "ping": "level_1_landlubber",
                     "docker": "level_1_landlubber"
                 },
-                "white_whale_activated": os.environ.get("WHITE_WHALE_PASSPHRASE", "") == "VOID_PIRATE_BLACK_7734",
+                # Card 12158: activation now runs off the same validated env hash
+                # as the WHITE WHALE gate (WHITE_WHALE_PASSPHRASE_HASH, resolved at
+                # module load) — no hardcoded plaintext passphrase, and no hint is
+                # ever returned in the response.
+                "white_whale_activated": verify_passphrase(
+                    hashlib.sha256(
+                        os.environ.get("WHITE_WHALE_PASSPHRASE", "").encode("utf-8")
+                    ).hexdigest()
+                ) if os.environ.get("WHITE_WHALE_PASSPHRASE", "") else False,
                 "passphrase_required": True,
-                "passphrase_hint": "VOID_PIRATE_BLACK_7734",
                 "security_status": remediated,
                 "crew_access": crew_access,
             }
