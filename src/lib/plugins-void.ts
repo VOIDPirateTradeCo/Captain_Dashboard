@@ -21,6 +21,8 @@
 import type { ComponentType } from 'react'
 import { registerNavItems, registerPanel } from './plugins'
 import { VoidPlaceholderPanel } from '@/components/panels/void-placeholder-panel'
+import { VoidFleetPanel } from '@/components/panels/void-fleet-panel'
+import { VoidSecurityPanel } from '@/components/panels/void-security-panel'
 
 interface VoidPanelDef {
   /** URL slug + nav id + registry key. Must start with `void-`. */
@@ -35,9 +37,23 @@ interface VoidPanelDef {
 
 const VOID_PANELS: VoidPanelDef[] = [
   {
+    id: 'void-fleet',
+    label: 'Fleet (VOID)',
+    icon: '⚓',
+    groupId: 'observe',
+    component: VoidFleetPanel,
+  },
+  {
+    id: 'void-security',
+    label: 'Security (VOID)',
+    icon: '🐋',
+    groupId: 'admin',
+    component: VoidSecurityPanel,
+  },
+  {
     id: 'void-placeholder',
-    label: 'VOID',
-    icon: '⚓', // ⚓
+    label: 'VOID wiring',
+    icon: '🔌',
     groupId: 'observe',
     component: VoidPlaceholderPanel,
   },

@@ -10,11 +10,15 @@ import { logger } from '@/lib/logger'
  * host) provide that data as JSON. This route is the single, allow-listed bridge
  * VOID panels use to reach them.
  *
- * GET /api/void-proxy/<name>[/<sub>...]  →  http://<COLLECTOR>/api/<name>[/<sub>]
+ * GET /api/void-proxy/<name>[/<sub>...][?query]  →
+ *   http://<COLLECTOR>/api/<name>[/<sub>][?query]
  *
  * - `viewer` role required (session cookie; same as other read routes).
  * - Only paths whose first segment is in ALLOW pass; everything else is 404.
  * - GET only, 4s timeout, response body capped, always JSON.
+ * - The query string is forwarded verbatim (all ALLOW paths are read-only status
+ *   endpoints). Secrets never go through here — WHITE WHALE's passphrase has its
+ *   own admin-gated POST route (`/api/void-whale`).
  * - host.docker.internal is already mapped via `extra_hosts` in the base
  *   docker-compose.yml — no compose change needed.
  */
@@ -60,7 +64,8 @@ export async function GET(
     return NextResponse.json({ error: 'Unknown or disallowed collector path' }, { status: 404 })
   }
 
-  const target = `${COLLECTOR_BASE}/api/${segments.join('/')}`
+  const qs = request.nextUrl.search // includes leading '?' or ''
+  const target = `${COLLECTOR_BASE}/api/${segments.join('/')}${qs}`
 
   let res: Response
   try {
