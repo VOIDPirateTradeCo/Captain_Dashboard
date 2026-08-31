@@ -46,6 +46,9 @@ const ALLOW = new Set([
   'dataview',
   'containers',
   'traffic',
+  'git-sync',
+  'tickets',
+  'crowdsec',
 ])
 
 const TIMEOUT_MS = 4000
