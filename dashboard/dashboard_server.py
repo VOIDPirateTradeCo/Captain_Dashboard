@@ -46,6 +46,7 @@ from socketserver import ThreadingMixIn
 from urllib.parse import urlparse, parse_qs
 from canonical_paths import path_guard
 from pathlib import Path
+import tempfile
 import urllib.request
 
 # Offline-first: make TM backend modules importable directly
@@ -131,10 +132,20 @@ KNOWN_SHIPS = {
 NETWORK_SCAN_PORTS = [21, 22, 23, 25, 53, 80, 111, 139, 443, 445, 873,
                       2375, 2376, 3000, 3001, 3306, 5432, 6379, 8080, 8443, 9999, 5000, 27017]
 
-# WHITE WHALE passphrase hash
-# Default passphrase: "voidpirate_captain_2026"
-# To change: python3 -c "import hashlib; print(hashlib.sha256(b'your_passphrase').hexdigest())"
-WHITE_WHALE_PASSPHRASE_HASH = hashlib.sha256(b"voidpirate_captain_2026").hexdigest()
+# WHITE WHALE passphrase hash.
+# Set env WHITE_WHALE_PASSPHRASE_HASH (64-hex sha256) OR WHITE_WHALE_PASSPHRASE
+# (plaintext, hashed here) to keep the passphrase OUT of source/git. A legacy
+# fallback is retained so existing installs keep working until the env is set —
+# treat that fallback as compromised (it is committed in history) and rotate.
+_ww_hash_env = os.environ.get("WHITE_WHALE_PASSPHRASE_HASH", "").strip().lower()
+_ww_pass_env = os.environ.get("WHITE_WHALE_PASSPHRASE", "")
+if len(_ww_hash_env) == 64 and all(c in "0123456789abcdef" for c in _ww_hash_env):
+    WHITE_WHALE_PASSPHRASE_HASH = _ww_hash_env
+elif _ww_pass_env:
+    WHITE_WHALE_PASSPHRASE_HASH = hashlib.sha256(_ww_pass_env.encode("utf-8")).hexdigest()
+else:
+    # legacy default — already in git history, treat as compromised, rotate via the env vars
+    WHITE_WHALE_PASSPHRASE_HASH = hashlib.sha256(b"voidpirate_captain_2026").hexdigest()
 
 # Resolve paths — vault-aware
 # This server can run from either:
@@ -559,16 +570,20 @@ def get_kuma_summary():
     if cached:
         return cached
     try:
+        tmp_db = tempfile.NamedTemporaryFile(suffix='.db', delete=False, dir=Path(__file__).resolve().parent.parent / 'state')
+        tmp_path = tmp_db.name
+        tmp_db.close()
         result = subprocess.run(
-            ['docker', 'cp', 'void-kuma:/app/data/kuma.db', '/tmp/kuma_dashboard.db'],
+            ['docker', 'cp', 'void-kuma:/app/data/kuma.db', tmp_path],
             capture_output=True, text=True, timeout=10
         )
         if result.returncode != 0:
+            os.unlink(tmp_path)
             degraded = {"status": "degraded", "error": "docker cp failed", "stderr": result.stderr}
             cache_set('kuma', degraded)
             return degraded
-        
-        conn = sqlite3.connect('/tmp/kuma_dashboard.db')
+
+        conn = sqlite3.connect(tmp_path)
         cur = conn.cursor()
         cur.execute("SELECT id, name, url, active FROM monitor")
         monitors = [{"id": r[0], "name": r[1], "url": r[2], "active": bool(r[3])} for r in cur.fetchall()]
@@ -577,7 +592,8 @@ def get_kuma_summary():
         cur.execute("SELECT monitor_id, notification_id FROM monitor_notification")
         bindings = [{"monitor_id": r[0], "notification_id": r[1]} for r in cur.fetchall()]
         conn.close()
-        
+        os.unlink(tmp_path)
+
         data = {
             "status": "ok",
             "monitors": monitors,
@@ -590,6 +606,8 @@ def get_kuma_summary():
         cache_set('kuma', data)
         return data
     except Exception as e:
+        if 'tmp_path' in locals() and os.path.exists(tmp_path):
+            os.unlink(tmp_path)
         degraded = {"status": "degraded", "error": str(e)}
         cache_set('kuma', degraded)
         return degraded
@@ -1356,10 +1374,11 @@ def _collect_full_data():
     ports["pinkcady_3000"] = check_port_fast(PINK_IP, 3000, timeout=0.5)
     ports["pinkcady_5000"] = check_port_fast(PINK_IP, 5000, timeout=0.5)
     ports["tailscale_pinkcady"] = True
-    # --- LOCAL MONITORING STACK (Grafana/Prometheus/cAdvisor/Kuma) — truthful status ---
-    # NOTE: Grafana runs on port 3002 (maps to container port 3000)
+    # --- LOCAL MONITORING STACK (Grafana/Prometheus/cAdvisor/MC) — truthful status ---
+    # NOTE: Grafana runs on port 3002 (maps to container port 3000).
+    # Mission Control moved 3000/3001 -> 3100 (2026-08-31). Kuma retired.
     for p, name in [(3002, "grafana"), (9090, "prometheus"), (8081, "cadvisor"),
-                    (3001, "kuma"), (8188, "comfyui_art")]:
+                    (3100, "mission_control"), (8188, "comfyui_art")]:
         ports[f"port_{p}"] = check_port_fast(SQUID_IP, p, timeout=0.5)
         ports[f"{name}_{p}"] = ports[f"port_{p}"]
 
@@ -1607,9 +1626,9 @@ class DashboardHandler(BaseHTTPRequestHandler):
         elif path == '/api/fleet/verify' or path == '/api/fleet/verify/':
             self.handle_fleet_verify_api()
         elif path == '/api/fleet/data' or path == '/api/fleet/data/':
-            return self.handle_local_proxy_json('http://127.0.0.1:5001/api/fleet/data', keep_path=True)
+            return self.handle_local_proxy_json('http://127.0.0.1:5000/api/fleet/data', keep_path=True)
         elif path.startswith('/api/fleet/compute'):
-            self.handle_local_proxy_json('http://127.0.0.1:5001/api/fleet/compute', keep_path=True)
+            self.handle_local_proxy_json('http://127.0.0.1:5000/api/fleet/compute', keep_path=True)
         elif path == '/api/network/alerts' or path == '/api/network/alerts/':
             self.handle_network_alerts_api()
         elif path == '/api/security' or path == '/api/security/':
@@ -1645,13 +1664,13 @@ class DashboardHandler(BaseHTTPRequestHandler):
         elif path == '/api/data/sources/status':
             self.handle_local_data_source_status_api()
         elif path.startswith('/api/data/sources'):
-            self.handle_local_proxy_json('http://127.0.0.1:5001/api/data/sources', keep_path=True)
+            self.handle_local_proxy_json('http://127.0.0.1:5000/api/data/sources', keep_path=True)
         elif path == '/api/schwab/auth-url':
             return self.handle_local_schwab_auth_url_api()
         elif path == '/api/schwab/oauth/callback':
             return self.handle_local_schwab_oauth_callback_api()
         elif path == '/api/schwab/account_snapshot':
-            return self.handle_local_proxy_json('http://127.0.0.1:5001/api/schwab/account_snapshot')
+            return self.handle_local_proxy_json('http://127.0.0.1:5000/api/schwab/account_snapshot')
         elif path.startswith('/api/schwab'):
             self.handle_local_schwab_status_api()
         elif path == '/api/healthz':
@@ -1679,63 +1698,63 @@ class DashboardHandler(BaseHTTPRequestHandler):
         elif path == '/api/signals' or path.startswith('/api/signals/'):
             self.handle_local_signals_api()
         elif path.startswith('/api/augur/scan/status'):
-            self.handle_local_proxy_json('http://127.0.0.1:5001/api/augur/scan/status')
+            self.handle_local_proxy_json('http://127.0.0.1:5000/api/augur/scan/status')
         elif path.startswith('/api/augur/augmented_signals'):
-            self.handle_local_proxy_json('http://127.0.0.1:5001/api/augur/augmented_signals')
+            self.handle_local_proxy_json('http://127.0.0.1:5000/api/augur/augmented_signals')
         elif path in ('/api/augur/oco', '/api/augur/oco/') or path.startswith('/api/augur/oco/'):
             self.handle_local_api_stub(path, default_body={"orders": [], "count": 0, "mode": "paper"})
         elif path == '/api/augur/bracket' or path == '/api/augur/bracket/' or (path.startswith('/api/augur/bracket/') and not path.startswith('/api/augur/bracket/info')):
             self.handle_local_api_stub(path, default_body={"orders": [], "count": 0, "mode": "paper"})
         elif path.startswith('/api/augur/bracket/info'):
-            self.handle_local_proxy_json(f'http://127.0.0.1:5001{path}')
+            self.handle_local_proxy_json(f'http://127.0.0.1:5000{path}')
         elif path.startswith('/api/augur/manual_signal'):
             self.handle_local_manual_signal_api()
         elif path.startswith('/api/auth/login'):
-            self.handle_local_proxy_json('http://127.0.0.1:5001/api/auth/login', methods=['POST'])
+            self.handle_local_proxy_json('http://127.0.0.1:5000/api/auth/login', methods=['POST'])
         elif path.startswith('/api/auth/logout'):
-            self.handle_local_proxy_json('http://127.0.0.1:5001/api/auth/logout', methods=['POST'])
+            self.handle_local_proxy_json('http://127.0.0.1:5000/api/auth/logout', methods=['POST'])
         elif path.startswith('/api/auth/status'):
-            self.handle_local_proxy_json('http://127.0.0.1:5001/api/auth/status')
+            self.handle_local_proxy_json('http://127.0.0.1:5000/api/auth/status')
         elif path.startswith('/api/auth/whoami'):
-            self.handle_local_proxy_json('http://127.0.0.1:5001/api/auth/whoami')
+            self.handle_local_proxy_json('http://127.0.0.1:5000/api/auth/whoami')
         elif path.startswith('/api/auth/profiles'):
-            self.handle_local_proxy_json('http://127.0.0.1:5001/api/auth/profiles')
+            self.handle_local_proxy_json('http://127.0.0.1:5000/api/auth/profiles')
         elif path.startswith('/api/auth/profile'):
-            self.handle_local_proxy_json('http://127.0.0.1:5001/api/auth/profile', methods=['PATCH'])
+            self.handle_local_proxy_json('http://127.0.0.1:5000/api/auth/profile', methods=['PATCH'])
         elif path.startswith('/api/auth/verify'):
             self.handle_local_auth_verify_api()
         elif path.startswith('/api/auth/register'):
-            self.handle_local_proxy_json('http://127.0.0.1:5001/api/auth/register', methods=['POST'])
+            self.handle_local_proxy_json('http://127.0.0.1:5000/api/auth/register', methods=['POST'])
         elif path.startswith('/api/auth'):
-            self.handle_local_proxy_json('http://127.0.0.1:5001/api/auth', keep_path=True)
+            self.handle_local_proxy_json('http://127.0.0.1:5000/api/auth', keep_path=True)
         elif path.startswith('/api/augur'):
-            self.handle_local_proxy_json('http://127.0.0.1:5001/api/augur', keep_path=True)
+            self.handle_local_proxy_json('http://127.0.0.1:5000/api/augur', keep_path=True)
         elif path.startswith('/api/alpaca'):
-            self.handle_local_proxy_json('http://127.0.0.1:5001/api/alpaca', keep_path=True)
+            self.handle_local_proxy_json('http://127.0.0.1:5000/api/alpaca', keep_path=True)
         elif path == '/api/trade' or path == '/api/trade/':
             self.handle_local_api_stub(path, default_body={'error':'trade endpoint not implemented'})
         elif path == '/api/execute' or path == '/api/execute/':
             self.handle_local_api_stub(path, default_body={'error':'execute endpoint not implemented'})
         elif path.startswith('/api/trades'):
-            self.handle_local_proxy_json('http://127.0.0.1:5001/api/trades', keep_path=True)
+            self.handle_local_proxy_json('http://127.0.0.1:5000/api/trades', keep_path=True)
         elif path.startswith('/api/settings'):
-            self.handle_local_proxy_json('http://127.0.0.1:5001/api/settings', keep_path=True)
+            self.handle_settings_api()
         elif path.startswith('/api/ticker_fundamentals'):
-            self.handle_local_proxy_json('http://127.0.0.1:5001/api/ticker_fundamentals', keep_path=True)
+            self.handle_local_proxy_json('http://127.0.0.1:5000/api/ticker_fundamentals', keep_path=True)
         elif path == '/api/fundamentals' or path == '/api/fundamentals/':
             self.handle_fundamentals_index()
         elif path.startswith('/api/fundamentals'):
-            self.handle_local_proxy_json('http://127.0.0.1:5001/api/fundamentals', keep_path=True)
+            self.handle_local_proxy_json('http://127.0.0.1:5000/api/fundamentals', keep_path=True)
         elif path == '/api/sectors' or path == '/api/sectors/':
             self.handle_sectors_api()
         elif path in ('/api/killswitch', '/api/killswitch/', '/api/killswitch/trading','/api/killswitch/trading/','/api/killswitch/learning','/api/killswitch/learning/', '/api/killswitch/timeout', '/api/killswitch/timeout/'):
             self.handle_killswitch_api(path)
         elif path.startswith('/api/positions'):
-            self.handle_local_proxy_json('http://127.0.0.1:5001/api/positions', keep_path=True)
+            self.handle_local_proxy_json('http://127.0.0.1:5000/api/positions', keep_path=True)
         elif path == '/api/schwab/auth-url':
             return self.handle_local_schwab_auth_url_api()
         elif path.startswith('/api/paper_trades'):
-            self.handle_local_proxy_json('http://127.0.0.1:5001/api/paper_trades', keep_path=True)
+            self.handle_local_proxy_json('http://127.0.0.1:5000/api/paper_trades', keep_path=True)
         elif path == '/api/wazuh' or path.startswith('/api/wazuh/'):
             self.handle_local_api_stub('/api/wazuh', default_body={'wazuh': {'status': 'unavailable', 'note': 'Wazuh manager/agents not reporting via local API'}})
         elif path == '/api/stealthattack' or path.startswith('/api/stealthattack/'):
@@ -1847,7 +1866,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
         elif path in ['/api/fodavp/stop', '/api/fodavp/stop/']:
             self.handle_fodavp_stop()
         elif path.startswith('/api/'):
-            self.handle_proxy_api('http://127.0.0.1:5001', keep_path=True)
+            self.handle_proxy_api('http://127.0.0.1:5000', keep_path=True)
         else:
             # SPA catch-all: serve dashboard HTML for any client-side route
             self.handle_html()
@@ -1932,7 +1951,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
     def handle_tr3asure_mAp_status_api(self):
         payload = {
             "integration": "CaptainDashboard -> tr3asure_mAp",
-            "backend_base": "http://127.0.0.1:5001",
+            "backend_base": "http://127.0.0.1:5000",
             "mode": "local",
             "sync_status": {"last_sync": time.time(), "trello_synced": True, "augur_synced": True},
         }
@@ -2357,9 +2376,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
         # This eliminates the dependency on schwab_streamer and pandas modules
         try:
             path = f"/api/augur/bracket/info/{ticker}"
-            self.handle_local_proxy_json(f'http://127.0.0.1:5001{path}')
-        except Exception as exc:
-            self._json_err(500, f"Backend proxy failed: {str(exc)}")
+            self.handle_local_proxy_json(f'http://127.0.0.1:5000{path}')
         except Exception as exc:
             self._json_err(500, str(exc))
 
@@ -2367,6 +2384,10 @@ class DashboardHandler(BaseHTTPRequestHandler):
         try:
             import json as _json
             from trade_executor import captain_place_trade
+        except Exception as _imp:
+            self._json_err(500, f'trade_executor unavailable: {_imp}')
+            return
+        try:
             length = int(self.headers.get('Content-Length', '0'))
             data = _json.loads(self.rfile.read(length).decode('utf-8') or '{}') if length else {}
             ticker = (data.get('ticker') or '').upper().strip()
@@ -2619,7 +2640,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
                 "grafana": "http://192.168.0.39:3002",
                 "prometheus": "http://192.168.0.39:9090",
                 "cadvisor": "http://192.168.0.39:8081",
-                "kuma": "http://192.168.0.39:3001",
+                "mission_control": "http://127.0.0.1:3100/api/status?action=health",
             }
             summary = {}
             for name, url in targets.items():
@@ -2833,7 +2854,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
     def handle_local_signals_api(self):
         body = {"timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(), "count": 0, "signals": []}
         try:
-            req = urllib.request.Request('http://127.0.0.1:5001/api/signals', method='GET')
+            req = urllib.request.Request('http://127.0.0.1:5000/api/signals', method='GET')
             with urllib.request.urlopen(req, timeout=5) as r:
                 upstream = json.loads(r.read())
             if isinstance(upstream, dict):
@@ -2863,11 +2884,11 @@ class DashboardHandler(BaseHTTPRequestHandler):
             try:
                 import urllib.request as _u
                 live_endpoints = [
-                    ('augur_status', 'http://127.0.0.1:5001/api/augur/status'),
-                    ('signals', 'http://127.0.0.1:5001/api/signals'),
-                    ('last_signal', 'http://127.0.0.1:5001/api/augur/last_signal'),
-                    ('alpaca_status', 'http://127.0.0.1:5001/api/data/alpaca/status'),
-                    ('alpaca_smoke', 'http://127.0.0.1:5001/api/alpaca/smoke_test'),
+                    ('augur_status', 'http://127.0.0.1:5000/api/augur/status'),
+                    ('signals', 'http://127.0.0.1:5000/api/signals'),
+                    ('last_signal', 'http://127.0.0.1:5000/api/augur/last_signal'),
+                    ('alpaca_status', 'http://127.0.0.1:5000/api/data/alpaca/status'),
+                    ('alpaca_smoke', 'http://127.0.0.1:5000/api/alpaca/smoke_test'),
                 ]
                 for name, url in live_endpoints:
                     try:
@@ -2923,7 +2944,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
                 self.wfile.write(json.dumps(payload, indent=2).encode('utf-8'))
                 return
             import urllib.request as _u
-            req = _u.Request(f"http://127.0.0.1:5001/api/bots/{bot_id}/graduation_status",
+            req = _u.Request(f"http://127.0.0.1:5000/api/bots/{bot_id}/graduation_status",
                              method="GET")
             with _u.urlopen(req, timeout=10) as r:
                 payload = json.loads(r.read())
@@ -2943,9 +2964,9 @@ class DashboardHandler(BaseHTTPRequestHandler):
         self.end_headers()
         try:
             endpoints = [
-                ("portfolio", "http://127.0.0.1:5001/api/portfolio/paper"),
-                ("scheduler", "http://127.0.0.1:5001/api/scheduler/state"),
-                ("risk",      "http://127.0.0.1:5001/api/risk/daily"),
+                ("portfolio", "http://127.0.0.1:5000/api/portfolio/paper"),
+                ("scheduler", "http://127.0.0.1:5000/api/scheduler/state"),
+                ("risk",      "http://127.0.0.1:5000/api/risk/daily"),
             ]
             import urllib.request as _u
             result = {"generated": datetime.datetime.now(timezone.utc).isoformat()}
@@ -4398,8 +4419,8 @@ class DashboardHandler(BaseHTTPRequestHandler):
             import urllib.request as _u
             statuses = {}
             endpoints = [
-                ('sectors', 'http://127.0.0.1:5001/api/fundamentals/sectors'),
-                ('progress', 'http://127.0.0.1:5001/api/fundamentals/progress'),
+                ('sectors', 'http://127.0.0.1:5000/api/fundamentals/sectors'),
+                ('progress', 'http://127.0.0.1:5000/api/fundamentals/progress'),
             ]
             for name, url in endpoints:
                 try:
@@ -4409,7 +4430,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
                     statuses[name] = {'status': 'unavailable', 'error': str(exc)}
             payload = {
                 'endpoint': '/api/fundamentals',
-                'backend': 'http://127.0.0.1:5001',
+                'backend': 'http://127.0.0.1:5000',
                 'available_paths': [
                     '/api/fundamentals/<ticker>',
                     '/api/fundamentals/download',
@@ -4426,7 +4447,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
     def handle_sectors_api(self):
         self._json_ok({
             'endpoint': '/api/sectors',
-            'backend': 'http://127.0.0.1:5001',
+            'backend': 'http://127.0.0.1:5000',
             'status': 'unavailable',
             'note': 'backend /api/fundamentals/sectors returned 404; safe stub active',
         })
@@ -4567,6 +4588,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
             'grafana': 'http://127.0.0.1:3002',
             'prometheus': 'http://127.0.0.1:9090',
             'cadvisor': 'http://127.0.0.1:8081',
+            'mission_control': 'http://127.0.0.1:3100/api/status?action=health',
         }
         services = {}
         for name, url in targets.items():
@@ -4744,6 +4766,49 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.wfile.write(_json.dumps(payload, indent=2).encode('utf-8'))
         except Exception as e:
             self.wfile.write(json.dumps({"error": str(e)}).encode('utf-8'))
+
+    settings_file = Path(SCRIPT_DIR) / 'state' / 'dashboard_settings.json'
+
+    def handle_settings_api(self):
+        if self.command == 'GET':
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            try:
+                if self.settings_file.exists():
+                    data = json.loads(self.settings_file.read_text(encoding='utf-8'))
+                else:
+                    data = {
+                        'monitoring_interval': 10,
+                        'alert_threshold': 3,
+                        'theme': 'void',
+                        'auto_refresh': True,
+                        'fleet_monitor': True,
+                        'offline_queue': False
+                    }
+                self.wfile.write(json.dumps(data).encode('utf-8'))
+            except Exception as e:
+                self.wfile.write(json.dumps({'error': str(e)}).encode('utf-8'))
+        else:
+            length = int(self.headers.get('Content-Length', '0'))
+            body = self.rfile.read(length) if length else b'{}'
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            try:
+                data = json.loads(body.decode('utf-8') or '{}')
+                if not isinstance(data, dict):
+                    raise ValueError('settings payload must be a JSON object')
+                existing = {}
+                if self.settings_file.exists():
+                    existing = json.loads(self.settings_file.read_text(encoding='utf-8'))
+                existing.update(data)
+                self.settings_file.write_text(json.dumps(existing, indent=2), encoding='utf-8')
+                self.wfile.write(json.dumps({'ok': True, 'settings': existing}).encode('utf-8'))
+            except Exception as e:
+                self.wfile.write(json.dumps({'error': str(e)}).encode('utf-8'))
 
     def handle_opsec_api(self):
         self.send_response(200)
