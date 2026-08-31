@@ -1,0 +1,24 @@
+# VOID-local Mission Control overlay.
+# Use via ./void-mc.sh (which passes -f docker-compose.yml -f docker-compose.void.yml).
+# Do NOT rely on docker-compose.override.yml — it appended a second :3001 mapping
+# (compose merges `ports`), which is why MC ended up on both :3000 and :3001.
+# Here we set NO `ports:` — the single host binding comes from the base file's
+# "${MC_PORT:-3000}:3000" with MC_PORT=3100 in .env.
+services:
+  mission-control:
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    environment:
+      - MC_ALLOWED_HOSTS=localhost,127.0.0.1,::1
+      - MC_COOKIE_SECURE=0        # local http, not https
+      - MC_COOKIE_SAMESITE=lax
+    networks:
+      mc-internal:
+
+networks:
+  mc-internal:
+    driver: bridge
+    internal: true

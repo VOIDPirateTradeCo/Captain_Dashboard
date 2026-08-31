@@ -1,5 +1,9 @@
 'use client'
 
+// VOID: lights up the (upstream-dormant) plugin registry — registers VOID nav
+// items + panels. Only edit to a tracked upstream file. See README-VOID.md.
+import '@/lib/plugins-void'
+
 import { createElement, useEffect, useMemo, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { NavRail } from '@/components/layout/nav-rail'

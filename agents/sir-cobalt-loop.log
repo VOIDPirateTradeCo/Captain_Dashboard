@@ -1,0 +1,4 @@
+[mc] register sir-cobalt -> http://localhost:3100
+{"ok":true,"action":"register","framework":"generic"}
+[mc] 02:59:43 assignments: 0
+[mc] register sir-cobalt -> http://localhost:3100
