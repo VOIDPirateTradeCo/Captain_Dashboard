@@ -70,6 +70,20 @@ def load_json(path, default=None):
         pass
     return default if default is not None else {}
 
+
+def _http_json(url, timeout=3, headers=None):
+    """GET `url` and parse JSON. Returns (data, None) on success, (None, 'reason')
+    on any failure. Never raises — this collector must degrade gracefully per
+    source so one dead service can't blank the whole fleet-health view."""
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": "CaptainDashboard",
+                                                   "Accept": "application/json",
+                                                   **(headers or {})})
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            return json.loads(r.read().decode("utf-8")), None
+    except Exception as e:
+        return None, f"{type(e).__name__}: {e}"
+
 # Crew agent heartbeats — ship_name -> {last_seen, data}
 CREW_HEARTBEATS = {}
 
@@ -1844,7 +1858,16 @@ class DashboardHandler(BaseHTTPRequestHandler):
         elif path in ('/api/cadvisor', '/api/cadvisor/'):
             self._json_ok({"cadvisor": {"running": check_port_fast('127.0.0.1', 8081, timeout=0.6), "port": 8081, "containers": len(get_docker_containers()), "mode": "paper", "live": True}})
         elif path in ('/api/prometheus', '/api/prometheus/'):
-            self._json_ok({"prometheus": {"running": check_port_fast('127.0.0.1', 9090, timeout=0.6), "port": 9090, "alerts": 0, "mode": "paper", "live": True}})
+            _prom_up = check_port_fast('127.0.0.1', 9090, timeout=0.6)
+            _al, _ae = (_http_json('http://127.0.0.1:9090/api/v1/alerts', timeout=3)
+                        if _prom_up else (None, 'prometheus_down'))
+            _alerts = (_al or {}).get('data', {}).get('alerts', []) if not _ae else []
+            self._json_ok({"prometheus": {
+                "running": _prom_up, "port": 9090,
+                "alerts": sum(1 for a in _alerts if a.get('state') == 'firing'),
+                "alerts_pending": sum(1 for a in _alerts if a.get('state') == 'pending'),
+                "mode": "paper", "live": True,
+            }})
         elif path in ('/api/pipeline', '/api/pipeline/'):
             self.handle_local_api_stub(path, default_body={"pipeline": {"status": "idle", "running": False, "steps_completed": 0, "mode": "paper"}})
         elif path in ('/api/research', '/api/research/'):
@@ -2630,29 +2653,123 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.wfile.write(json.dumps({"error": str(e), "traceback": error_detail}).encode('utf-8'))
 
     def handle_monitor_api(self):
-        """Monitoring status summary for the Captain Dashboard."""
+        """Hive-mind network-monitoring rollup for the Captain's dashboard / an MC
+        panel: service reachability + live Prometheus alerts + scrape-target
+        health + Mission Control agent roster + tr3asure fleet connectivity, plus
+        one top-level verdict (green | amber | red). Every source degrades
+        independently — a dead service becomes {ok:false,error:...}, never a 500."""
         self.send_response(200)
         self.send_header('Content-Type', 'application/json')
         self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Cache-Control', 'no-store')
         self.end_headers()
-        try:
-            targets = {
-                "grafana": "http://192.168.0.39:3002",
-                "prometheus": "http://192.168.0.39:9090",
-                "cadvisor": "http://192.168.0.39:8081",
-                "mission_control": "http://127.0.0.1:3100/api/status?action=health",
+
+        PROM = "http://127.0.0.1:9090"
+        MC   = "http://127.0.0.1:3100"
+        TRE  = "http://127.0.0.1:5000"
+        out = {"generated_at": datetime.datetime.now(datetime.timezone.utc).isoformat()}
+
+        # ── 1. service reachability (cheap GET) ──────────────────────────
+        reach = {}
+        for name, url in {
+            "grafana":        "http://127.0.0.1:3002/api/health",
+            "prometheus":     f"{PROM}/-/healthy",
+            "cadvisor":       "http://127.0.0.1:8081/healthz",
+            "mission_control": f"{MC}/api/status?action=health",
+        }.items():
+            try:
+                req = urllib.request.Request(url, headers={"User-Agent": "CaptainDashboard"})
+                with urllib.request.urlopen(req, timeout=3) as r:
+                    reach[name] = {"ok": 200 <= r.status < 400, "status": r.status}
+            except Exception as e:
+                reach[name] = {"ok": False, "error": type(e).__name__}
+        out["services"] = reach
+
+        # ── 2. Prometheus firing/pending alerts ──────────────────────────
+        adata, aerr = _http_json(f"{PROM}/api/v1/alerts", timeout=4)
+        if aerr:
+            out["alerts"] = {"ok": False, "error": aerr, "firing": 0, "pending": 0, "items": []}
+        else:
+            al = (adata or {}).get("data", {}).get("alerts", [])
+            items = [{
+                "name": a.get("labels", {}).get("alertname"),
+                "state": a.get("state"),
+                "severity": a.get("labels", {}).get("severity", "unknown"),
+                "node": a.get("labels", {}).get("node") or a.get("labels", {}).get("instance"),
+                "summary": a.get("annotations", {}).get("summary", ""),
+                "since": a.get("activeAt"),
+            } for a in al]
+            out["alerts"] = {
+                "ok": True,
+                "firing":  sum(1 for a in al if a.get("state") == "firing"),
+                "pending": sum(1 for a in al if a.get("state") == "pending"),
+                "items": items,
             }
-            summary = {}
-            for name, url in targets.items():
-                try:
-                    req = urllib.request.Request(url, headers={"User-Agent": "CaptainDashboard"})
-                    with urllib.request.urlopen(req, timeout=3) as r:
-                        summary[name] = {"url": url, "status": str(r.status)}
-                except Exception as e:
-                    summary[name] = {"url": url, "status": f"error: {type(e).__name__}"}
-            self.wfile.write(json.dumps(summary, indent=2, default=str).encode('utf-8'))
+
+        # ── 3. Prometheus scrape-target health ──────────────────────────
+        tdata, terr = _http_json(f"{PROM}/api/v1/targets?state=active", timeout=4)
+        if terr:
+            out["targets"] = {"ok": False, "error": terr}
+        else:
+            tg = (tdata or {}).get("data", {}).get("activeTargets", [])
+            down = [{
+                "job": t.get("labels", {}).get("job"),
+                "node": t.get("labels", {}).get("node"),
+                "instance": t.get("labels", {}).get("instance"),
+                "err": t.get("lastError", ""),
+            } for t in tg if t.get("health") != "up"]
+            out["targets"] = {
+                "ok": True,
+                "total": len(tg),
+                "up": sum(1 for t in tg if t.get("health") == "up"),
+                "down": down,
+            }
+
+        # ── 4. Mission Control agent roster ─────────────────────────────
+        mc_key = (os.environ.get("MISSION_CONTROL_API_KEY", "")
+                  or os.environ.get("MC_API_KEY", "")).strip()
+        mdata, merr = _http_json(f"{MC}/api/agents", timeout=4,
+                                 headers={"x-api-key": mc_key} if mc_key else None)
+        if merr:
+            out["mc_agents"] = {"ok": False, "error": merr}
+        else:
+            rows = mdata if isinstance(mdata, list) else (mdata or {}).get("agents", [])
+            out["mc_agents"] = {
+                "ok": True,
+                "online": sum(1 for a in rows if str(a.get("status", "")).lower() == "online"),
+                "total": len(rows),
+                "agents": [{
+                    "id": a.get("agent_id") or a.get("id"),
+                    "name": a.get("name"),
+                    "status": a.get("status"),
+                    "runtime": a.get("runtime") or a.get("runtime_type"),
+                } for a in rows],
+            }
+
+        # ── 5. tr3asure fleet connectivity (best effort) ────────────────
+        fdata, ferr = _http_json(f"{TRE}/api/fleet/connectivity", timeout=4)
+        if ferr:
+            out["tr3asure_fleet"] = {"ok": False, "error": ferr}
+        else:
+            nodes = (fdata or {}).get("nodes", fdata if isinstance(fdata, list) else [])
+            out["tr3asure_fleet"] = {"ok": True, "nodes": nodes}
+
+        # ── 6. one verdict ─────────────────────────────────────────────
+        firing = out.get("alerts", {}).get("firing", 0)
+        crit   = any(i.get("severity") == "critical" and i.get("state") == "firing"
+                     for i in out.get("alerts", {}).get("items", []))
+        svc_bad = any(not v.get("ok") for v in reach.values())
+        if crit or (svc_bad and firing):
+            out["verdict"] = "red"
+        elif firing or svc_bad or out.get("alerts", {}).get("pending", 0):
+            out["verdict"] = "amber"
+        else:
+            out["verdict"] = "green"
+
+        try:
+            self.wfile.write(json.dumps(out, indent=2, default=str).encode('utf-8'))
         except Exception as e:
-            self.wfile.write(json.dumps({"error": str(e)}).encode('utf-8'))
+            self.wfile.write(json.dumps({"error": str(e), "verdict": "unknown"}).encode('utf-8'))
 
     def handle_kuma_api(self):
         """Kuma status panel proxy — shells out to Kuma DB via docker cp."""
