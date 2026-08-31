@@ -11,6 +11,12 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+    healthcheck:
+      test: ["CMD", "node", "/app/healthcheck.js"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
     environment:
       - MC_ALLOWED_HOSTS=localhost,127.0.0.1,::1
       - MC_COOKIE_SECURE=0        # local http, not https
