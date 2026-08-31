@@ -18,7 +18,7 @@ services:
       retries: 3
       start_period: 20s
     environment:
-      - MC_ALLOWED_HOSTS=localhost,127.0.0.1,::1
+      - MC_ALLOWED_HOSTS=localhost,127.0.0.1,::1,squidstation,squidstation.local,100.83.247.14,192.168.0.39
       - MC_COOKIE_SECURE=0        # local http, not https
       - MC_COOKIE_SAMESITE=lax
     networks:
