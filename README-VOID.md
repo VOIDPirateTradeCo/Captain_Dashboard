@@ -33,9 +33,11 @@ dormant Gitea image. Moved to **:3100** (single binding). `:3000`/`:3001` are no
 - **Model: pull.** Every agent (`sir-cobalt` via the `claude` runtime, `sir-green` via Hermes,
   Miss Pink, Sir Azure) registers with MC and polls `POST /api/adapters` for assignments
   (`register → heartbeat 5m → assignments → report`). MC is the shared task board + human UI.
-- **Why not push-dispatch:** MC runs in Docker with no host mounts, so it can't see
-  `~/.claude` / `~/.hermes` and `RUNTIME_CAPABILITIES.hermes.dispatch = false` upstream.
-  Push-dispatch (MC → runtime CLI) is a separate follow-up (VOID Ops card).
+- **Why not push-dispatch to Hermes:** the MC container has no `hermes` binary, no
+  `~/.hermes` mount, `HOME=/nonexistent` — it cannot spawn the host CLI. Decided
+  (VOID Ops 12124): **OpenClaw is MC's push gateway**, Hermes stays pull-model.
+  `RUNTIME_CAPABILITIES.hermes.dispatch = false` is correct and stays. The
+  MC→Hermes-CLI dispatcher card (12077) is a dead end — recommend close.
 - **Agent record:** created once via `POST /api/agents` (operator action). `sir-cobalt` = id 1,
   role `dev`, runtime `claude`.
 - **Projects:** `tr3asure mAp` (TRE), `Captain's Dashboard` (CAP), `Torus Coffee` (TOR),
@@ -63,6 +65,17 @@ curl -X POST http://localhost:3100/api/agents -H "x-api-key: $MISSION_CONTROL_AP
 # then run the loop
 ./agents/mc-agent-loop.sh <agent-id> "<Display Name>" code,review
 ```
+
+## VOID panels (registered in `src/lib/plugins-void.ts`)
+
+| Nav item | Panel file | Shows |
+|---|---|---|
+| ⚓ Fleet (VOID) | `void-fleet-panel.tsx` | ships / local rig / Docker / PINKCADY boot verdict |
+| 🐋 Security (VOID) | `void-security-panel.tsx` | CrowdSec / Suricata / Zeek, OPSEC, OODA scanner, WHITE WHALE box |
+| 📈 Monitoring (VOID) | `void-monitoring-panel.tsx` | Prometheus + cAdvisor iframes; Grafana / NetBox links |
+| 📚 Vault (VOID) | `void-vault-panel.tsx` | git-sync repo table + vault stats + OPSEC red/green |
+| 🩺 Hive Health (VOID) | `void-hivehealth-panel.tsx` | **one green/amber/red verdict** from `/api/void-proxy/monitor` — service reachability + live Prometheus alerts (from `dashboard/monitoring/fleet_alerts.yml`) + scrape-target up/down + MC agent roster + tr3asure fleet. VOID Ops 12159 + 12160. |
+| 🔌 VOID wiring | `void-placeholder-panel.tsx` | collector-OK dot (Phase 0 sanity) |
 
 ## Adding a VOID panel (Phase 0 wiring — trello /c/GxKtde1b)
 

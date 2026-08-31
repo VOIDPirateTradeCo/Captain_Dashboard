@@ -25,7 +25,12 @@ This file is that card's deliverable.
 
 **New work since this plan was written (not in the phases above):**
 - **Prometheus alert rules** (card 12159, commit `850355c`) — `dashboard/monitoring/fleet_alerts.yml`, 10 rules (node/GPU/cAdvisor down, host CPU/RAM/disk pressure + 24h fill prediction, container down/OOM). Live via SIGHUP. The `monitoring` tab disposition below should now read "NATIVE monitor + alerts feed".
-- **`/api/monitor` fleet-health rollup** (card 12160, commit `5d5dc37`) — the "small health-grid in VOID-PANEL" this plan calls for (`monitoring` / `rig-report` rows) is now backed by one endpoint: services + live alerts + scrape-target up/down + MC agent roster + tr3asure fleet + `verdict`. **MC-consumable now** via `GET /api/void-proxy/monitor` (already allow-listed). A panel to render it is a small Phase-1/2 add.
+- **`/api/monitor` fleet-health rollup** (card 12160, commit `5d5dc37`) — one endpoint:
+  services + live alerts + scrape-target up/down + MC agent roster + tr3asure fleet +
+  `verdict`. **Now rendered** by the new `🩺 Hive Health (VOID)` MC panel
+  (`void-hivehealth-panel.tsx`, registered in `plugins-void.ts`; tsc + eslint + `next build`
+  clean). This is the "small health-grid in VOID-PANEL" the disposition table calls for on
+  the `monitoring` / `rig-report` rows — done.
 - **WHITE WHALE collector-side hardened** (cards 12131 + 12158) — passphrase hash now resolves from `_KEY_VAULT/secrets.env`, no plaintext literal anywhere, activation runs through `verify_passphrase()`. The §6 risk "WHITE WHALE is classified" is half-addressed on the collector; the MC-panel side still needs `admin` RBAC + a separate secret at Phase 2.
 - **MC → Hermes push-dispatcher (card 12077): DEAD END — recommend close.** Hermes headless contract exists (`hermes chat --query-file - --oneshot -Q --yolo …`) but the MC container has no hermes binary / no `~/.hermes` mount / `HOME=/nonexistent`, and card 12124 already decided OpenClaw is MC's push gateway + Hermes stays pull-model. `agent-runtimes.ts` `hermes.dispatch=false` is correct and stays. Confirms §1d for the CLI path specifically.
 
