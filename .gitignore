@@ -10,3 +10,5 @@ dashboard/bots/.env.sirgreen
 # in mission-control/.env + docker-compose.void.yml.
 mission-control/
 _archive/
+.env
+.env.*
