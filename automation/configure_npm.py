@@ -28,7 +28,7 @@ def configure_npm():
     htpasswd_content = f"captain:{captain_hash}\npink:{pink_hash}\n"
 
     # Write htpasswd file to temp and copy into container
-    with tempfile.NamedTemporaryFile(mode='w', suffix='.htpasswd', delete=False) as f:
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.htpasswd', delete=False, dir=Path(__file__).resolve().parent.parent / 'state') as f:
         f.write(htpasswd_content)
         tmp_htpasswd = f.name
 
@@ -71,7 +71,7 @@ server {{
 """
 
     # Write config to temp file and copy into container
-    with tempfile.NamedTemporaryFile(mode='w', suffix='.conf', delete=False) as f:
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.conf', delete=False, dir=Path(__file__).resolve().parent.parent / 'state') as f:
         f.write(nginx_config)
         tmp_conf = f.name
 

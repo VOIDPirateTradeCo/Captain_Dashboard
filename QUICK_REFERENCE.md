@@ -10,7 +10,7 @@ Generated: 2026-08-12T14:52:47.553734
 | 02_Automation | Automation scripts, launchers, card scripts | 49 items |
 | 03_Projects | All project code and planning docs | 516 items |
 | 04_Business_Operations | Business ops, scripts, state files | 18 items |
-| 05_AI_Operating_System | AI brains, prompts, system configs | 29 items |
+| 03_AI_Operating_System | AI brains, prompts, system configs | 29 items |
 | 06_Crew_Roster | Crew rosters and personnel docs | 6 items |
 | 07_Resources | Lore, templates, research, tools | 562 items |
 | 08_Daily_Life | Daily logs, dashboards, session handoffs | 41 items |
@@ -56,11 +56,11 @@ Generated: 2026-08-12T14:52:47.553734
 | Crew Member | Role | Primary Location |
 |-------------|------|------------------|
 | Captain Brewbeard Ledgerbane | Captain | Captain_Dashboard, 00_Vault_Index |
-| Sir Green | VOID Ops | 05_AI_Operating_System, 04_Business_Operations |
-| Miss Pink | Torus Ops | 05_AI_Operating_System, Shared_With_Pink |
-| Sir Azure | AI Art | 05_AI_Operating_System, 11_Artifacts |
-| Sir Violet | Quill/Scribe | 05_AI_Operating_System, 07_Resources |
-| Sir Cobalt | Tech/Dev | 05_AI_Operating_System, 03_Projects |
+| Sir Green | VOID Ops | 03_AI_Operating_System, 04_Business_Operations |
+| Miss Pink | Torus Ops | 03_AI_Operating_System, Shared_With_Pink |
+| Sir Azure | AI Art | 03_AI_Operating_System, 11_Artifacts |
+| Sir Violet | Quill/Scribe | 03_AI_Operating_System, 07_Resources |
+| Sir Cobalt | Tech/Dev | 03_AI_Operating_System, 03_Projects |
 
 ## Quick Commands
 

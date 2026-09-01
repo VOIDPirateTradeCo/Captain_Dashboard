@@ -11,5 +11,9 @@ COPY fodavp_watcher.py /app/fodavp_watcher.py
 # Create mount points
 RUN mkdir -p /fleet/automation/fodavp /fleet/evidence
 
+# Allow Trello credentials from env vars as fallback
+ENV TRELLO_KEY=""
+ENV TRELLO_TOKEN=""
+
 # Run watcher
 CMD ["python3", "/app/fodavp_watcher.py"]

@@ -53,18 +53,32 @@ def _add_label_to_card(card_id: str, label_id: str) -> None:
             timeout=15
         )
 
+def _cred_blob(cred):
+    blob = cred.get('CredentialBlob') or b''
+    if isinstance(blob, str):
+        blob = blob.encode('utf-8')
+    return blob.strip(chr(0)).decode('utf-8', errors='replace').strip()
+
 def load_trello_credentials():
-    """Load Trello API credentials from Windows Credential Manager"""
+    """Load Trello API credentials from Windows Credential Manager or env vars"""
+    env_key = os.environ.get('TRELLO_KEY')
+    env_token = os.environ.get('TRELLO_TOKEN')
+    if env_key and env_token:
+        log("CRED", "Loaded Trello credentials from environment variables")
+        return env_key, env_token
+
     try:
         import win32cred
-        key_cred = win32cred.CredRead('TRELLO_KEY@VOID_Pirate_Secrets', 1)
-        token_cred = win32cred.CredRead('TRELLO_TOKEN@VOID_Pirate_Secrets', 1)
-        KEY = key_cred['CredentialBlob'].decode('utf-16-le').strip('\x00').strip()
-        TOKEN = token_cred['CredentialBlob'].decode('utf-16-le').strip('\x00').strip()
-        return KEY, TOKEN
+        key_cred = win32cred.CredRead('TRELLO_KEY@VOID_Pirate_Secrets', win32cred.CRED_TYPE_GENERIC)
+        token_cred = win32cred.CredRead('TRELLO_TOKEN@VOID_Pirate_Secrets', win32cred.CRED_TYPE_GENERIC)
+        KEY, TOKEN = _cred_blob(key_cred), _cred_blob(token_cred)
+        if KEY and TOKEN:
+            log("CRED", "Loaded Trello credentials from Windows Credential Manager")
+            return KEY, TOKEN
     except Exception as e:
-        log("ERROR", f"Failed to load Trello credentials: {e}")
-        return None, None
+        log("ERROR", f"Failed to load Trello credentials from Windows Credential Manager: {e}")
+
+    return None, None
 
 def find_targets(card_id=None, max_candidates=5):
     """F.IND — Locate 1-5 target cards"""

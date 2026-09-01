@@ -1,0 +1,648 @@
+const API = '/api/status';
+const WHALE_API = '/api/whale';
+const FLEET_CONNECTIVITY_API = '/api/fleet/connectivity';
+const FLEET_QUEUE_API = '/api/fleet/queue/status';
+const FLEET_OFFLINE_DATASET_API = '/api/fleet/offline-dataset/path';
+const DASHBOARD_CONFIG = {
+  host: '192.168.0.39',
+  ships: {
+    SQUIDSTATION: '192.168.0.39',
+    PINKCADY: '192.168.0.3',
+    STEALTHATTACK: '192.168.0.32',
+    GATEWAY: '192.168.0.1'
+  },
+  ports: {
+    npm: 81,
+    gitea: 3000,
+    grafana: 3002,
+    kuma: 3001,
+    prometheus: 9090,
+    cadvisor: 8081,
+    dashboard: 8080,
+    backend: 5001
+  }
+};
+
+// SHA-256 hash function
+async function sha256(str) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(str);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// Add a log entry
+function addLog(message, severity = 'info') {
+    const log = document.getElementById('live-log');
+    const now = new Date();
+    const timeStr = `[${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}]`;
+    const colorClass = severity === 'error' ? 'offline' : severity === 'warn' ? 'warning' : 'online';
+    const entry = document.createElement('div');
+    entry.className = 'log-entry new';
+    entry.innerHTML = `<span class="time">${timeStr}</span> <span class="${colorClass}">${message}</span>`;
+    log.insertBefore(entry, log.firstChild);
+    // Keep only last 20 entries
+    while (log.children.length > 20) {
+        log.removeChild(log.lastChild);
+    }
+}
+
+// WHITE WHALE passphrase unlock
+async function unlockWhale() {
+    const input = document.getElementById('whale-passphrase');
+    const error = document.getElementById('whale-error');
+    const passphrase = input.value;
+
+    if (!passphrase) {
+        error.textContent = 'Enter passphrase to unlock';
+        error.className = 'whale-message whale-error-msg';
+        return;
+    }
+
+    error.textContent = '🔐 Authenticating...';
+    error.className = 'whale-message';
+
+    const hash = await sha256(passphrase);
+
+    try {
+        const resp = await fetch(`${WHALE_API}?passphrase_hash=${hash}&threat_detected=true`, {cache: 'no-store'});
+        const data = await resp.json();
+
+        if (data.error) {
+            error.textContent = '❌ ' + data.error;
+            error.className = 'whale-message whale-error-msg';
+            addLog(`WHITE WHALE unlock ATTEMPT FAILED`, 'error');
+            return;
+        }
+
+        if (data.white_whale_hash_verified) {
+            document.body.classList.add('whale-unlocked');
+            error.textContent = '✅ WHITE WHALE protocols unlocked!';
+            error.className = 'whale-message whale-success';
+            addLog(`WHITE WHALE PROTOCOLS UNLOCKED by Captain`, 'info');
+
+            // Populate WHITE WHALE protocol steps
+            const wp = data.white_whale_protocol || {};
+            setText('whale-step-1', `${wp.step_1_vault_lockdown ? wp.step_1_vault_lockdown.status : '—'}${wp.step_1_vault_lockdown ? ' — ' + wp.step_1_vault_lockdown.detail : ''}`, wp.step_1_vault_lockdown && wp.step_1_vault_lockdown.status === 'PASS' ? 'online' : 'offline');
+            setText('whale-step-2', `${wp.step_2_encrypted_channel ? wp.step_2_encrypted_channel.status : '—'}${wp.step_2_encrypted_channel ? ' — ' + wp.step_2_encrypted_channel.detail : ''}`, wp.step_2_encrypted_channel && wp.step_2_encrypted_channel.status === 'ESTABLISHED' ? 'online' : 'offline');
+            setText('whale-step-3', `${wp.step_3_no_secrets_git ? wp.step_3_no_secrets_git.status : '—'}${wp.step_3_no_secrets_git ? ' — ' + wp.step_3_no_secrets_git.detail : ''}`, wp.step_3_no_secrets_git && wp.step_3_no_secrets_git.status === 'PASS' ? 'online' : 'offline');
+            setText('whale-unlocked-at', data.unlocked_at || 'unknown');
+
+            // BLACK WHALE
+            const bw = data.black_whale || {};
+            setText('black-whale-threats', bw.threats_detected || 0, bw.threats_detected === 0 ? 'online' : 'offline');
+            setText('black-whale-status', bw.status || 'UNKNOWN', bw.threats_detected === 0 ? 'online' : 'offline');
+            setText('black-whale-total', bw.total_devices || 0);
+
+            // GREEN WHALE
+            const gw = data.green_whale || {};
+            setText('green-whale-status', gw.status || 'UNKNOWN', gw.status && gw.status === 'HEALTHY' ? 'online' : 'offline');
+            const checks = gw.checks || {};
+            const passing = Object.values(checks).filter(v => v).length;
+            const total = Object.keys(checks).length;
+            setText('green-whale-checks', `${passing}/${total} checks passing`, passing === total ? 'online' : 'offline');
+            setText('green-whale-maint', gw.maintenance_needed ? '⚠️ YES' : '✅ NO', gw.maintenance_needed ? 'offline' : 'online');
+
+            // GREEN WHALE port checks
+            for (const [label, elId] of [['npm_port_81', 'gw-port-81'], ['nginx_port_80', 'gw-port-80'],
+                                         ['docker_api', 'gw-port-2376'], ['health_check', 'gw-port-9999'],
+                                         ['dashboard', 'gw-port-8080'], ['smb_vault', 'gw-port-445']]) {
+                const up = checks[label];
+                setText(elId, up ? '🟢 UP' : '🔴 DOWN', up ? 'online' : 'offline');
+            }
+
+            // Unknown devices list
+            const unknownList = document.getElementById('unknown-devices-list');
+            const unknowns = bw.unknown_devices || [];
+            if (unknowns.length === 0) {
+                unknownList.innerHTML = '<div class="online">✅ No unknown devices detected — network is secure</div>';
+            } else {
+                unknownList.innerHTML = unknowns.map(d =>
+                    `<div class="status-item"><span class="label">${d.ip}</span><span class="value">${d.hostname || 'Unknown device'}</span></div>`
+                ).join('');
+            }
+        } else {
+            error.textContent = '❌ Invalid passphrase';
+            error.className = 'whale-message whale-error-msg';
+            addLog(`WHITE WHALE unlock FAILED — invalid passphrase`, 'error');
+        }
+    } catch(e) {
+        error.textContent = '❌ Network error — check connection';
+        error.className = 'whale-message whale-error-msg';
+        addLog(`WHITE WHALE unlock error: ${e.message}`, 'error');
+    }
+}
+
+function setText(id, text, cls = '') {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.innerHTML = cls ? `<span class="${cls}">${text}</span>` : text;
+}
+
+function setPorts(id, ports) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (!ports || ports.length === 0) {
+        el.innerHTML = '<span style="color:#666;">—</span>';
+        return;
+    }
+    el.innerHTML = ports.slice(0, 6).map(p => `<span class="port-tag">${p}</span>`).join('') +
+        (ports.length > 6 ? `<span class="port-tag">+${ports.length - 6}</span>` : '');
+}
+
+function setShipStatus(id, status) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (status === 'online') {
+        el.innerHTML = '<span class="ship-online">🟢 ONLINE</span>';
+    } else {
+        el.innerHTML = '<span class="ship-offline">🔴 OFFLINE</span>';
+    }
+}
+
+async function updateDashboard() {
+    try {
+        const resp = await fetch(API, {cache: 'no-store'});
+        const d = await resp.json();
+
+        document.getElementById('timestamp').textContent = new Date().toLocaleString();
+
+        const logMsg = [];
+
+        // Ships
+        const ships = d.ships || {};
+        setShipStatus('ship-squid', ships.SQUIDSTATION);
+        setShipStatus('ship-pink', ships.PINKCADY);
+        setShipStatus('ship-azure', ships.STEALTHATTACK);
+
+        // Ship details
+        const details = d.ship_details || {};
+        setText('ip-squid', details.SQUIDSTATION?.ip || '—');
+        setText('role-squid', details.SQUIDSTATION?.role || '—');
+        setText('ip-pink', details.PINKCADY?.ip || '—');
+        setText('role-pink', details.PINKCADY?.role || '—');
+        setText('ip-azure', details.STEALTHATTACK?.ip || '—');
+        setText('role-azure', details.STEALTHATTACK?.role || '—');
+
+        // Latency
+        const lat = d.latency || {};
+        setText('latency-squid', lat.squid || '—');
+        setText('latency-pink', lat.pink || '—');
+        setText('latency-azure', lat.stealthattack || '—');
+
+        // Ship ports
+        setPorts('ports-squid', details.SQUIDSTATION?.ports || []);
+        setPorts('ports-pink', details.PINKCADY?.ports || []);
+        setPorts('ports-azure', details.STEALTHATTACK?.ports || []);
+
+        // Network services
+        const ports = d.services?.network_ports || {};
+        for (const [k, elId] of [['port_80', 'port-80'], ['port_81', 'port-81'], ['port_2376', 'port-2376'],
+                                  ['port_9999', 'port-9999'], ['port_8080', 'port-8080']]) {
+            const up = ports[k];
+            setText(elId, up ? '🟢 UP' : '🔴 DOWN', up ? 'online' : 'offline');
+        }
+
+        // Containers
+        const c = d.containers || {};
+        setText('container-total', c.total || 0);
+        setText('container-running', c.running || 0, 'online');
+        setText('fleet-count', c.fleet || 0);
+        setText('security-count', c.security || 0);
+        setText('k8s-count', c.k8s || 0);
+        const pct = c.total > 0 ? Math.round((c.running / c.total) * 100) : 0;
+        const pb = document.getElementById('container-progress');
+        if (pb) {
+            pb.style.width = pct + '%';
+            pb.style.background = pct === 100 ? '#56fb88' : pct > 50 ? '#fbae42' : '#f85149';
+        }
+
+        // Fleet connectivity
+        applyFleetConnectivity();
+
+        // Container names
+        const names = c.names || [];
+        const namesEl = document.getElementById('container-names');
+        if (namesEl) {
+            namesEl.textContent = names.join(' | ') || 'No containers';
+        }
+
+        // Devices
+        const net = d.network || {};
+        setText('device-count', net.total_devices || 0);
+
+        // Scan badge
+        const scanBadge = document.getElementById('scan-badge');
+        if (scanBadge) {
+            if (net.total_devices > 0) {
+                scanBadge.innerHTML = '<span class="badge-ok">FULL SCAN ACTIVE</span>';
+            } else {
+                scanBadge.innerHTML = '<span class="scanning-badge">SCANNING 192.168.0.0/24</span>';
+            }
+        }
+
+        const tbody = document.getElementById('device-table-body');
+        if (tbody) {
+            const knownIps = new Set(Object.values(details || {}).map(s => s.ip));
+            tbody.innerHTML = (net.devices || []).map((dev, i) => {
+                const portTags = (dev.ports || []).slice(0, 8).map(p => `<span class="port-tag">${p}</span>`).join('');
+                const known = knownIps.has(dev.ip);
+                const cls = dev.status === 'up' ? 'online' : 'offline';
+                const name = known ? dev.hostname : (dev.hostname || '<unknown>');
+                return `<tr><td>${i+1}</td><td>${dev.ip}</td><td>${name}</td><td>${dev.mac || '—'}</td><td>${dev.vendor || '—'}</td><td class="${cls}">${dev.status}</td><td>${portTags || '—'}</td></tr>`;
+            }).join('');
+        }
+
+        // Vault
+        const v = d.vault || {};
+        setText('vault-files', `${v.file_count || 0} files`);
+        setText('vault-size', `${v.size_mb || 0} MB`);
+        setText('vault-git', v.git_clean ? '✅ Clean' : '⚠️ Modified');
+        setText('vault-mount', v.mounted ? '✅ Mounted' : '❌ Not Mounted', v.mounted ? 'online' : 'offline');
+        setText('git-commit', v.latest_commit || 'unknown');
+        setText('uncommitted-files', v.uncommitted_files > 0 ? `⚠️ ${v.uncommitted_files}` : '✅ None', v.uncommitted_files === 0 ? 'online' : 'offline');
+
+        // OPSEC
+        const o = d.opsec || {};
+        setText('opsec-git', o.shared_with_pink_gitignored ? '✅ YES' : '❌ NO', o.shared_with_pink_gitignored ? 'online' : 'offline');
+        setText('opsec-secrets', o.real_secrets_tracked === 0 ? '✅ 0' : `❌ ${o.real_secrets_tracked}`, o.real_secrets_tracked === 0 ? 'online' : 'offline');
+        setText('opsec-chinese', o.chinese_content_files === 0 ? '✅ 0' : `⚠️ ${o.chinese_content_files}`, o.chinese_content_files === 0 ? 'online' : 'offline');
+        setText('opsec-allclear', o.all_clear ? '✅ SECURE' : '⚠️ CHECKS', o.all_clear ? 'online' : 'offline');
+
+        // Comms
+        const comms = d.comms?.inboxes || {};
+        setText('inbox-pink', `${comms.PINKCADY_INBOX >= 0 ? comms.PINKCADY_INBOX : 'N/A'} msgs`);
+        setText('inbox-green', `${comms.SIR_GREEN_INBOX >= 0 ? comms.SIR_GREEN_INBOX : 'N/A'} msgs`);
+        setText('inbox-torus', `${comms.TORUS_COFFEE_REPORTS >= 0 ? comms.TORUS_COFFEE_REPORTS : 'N/A'} files`);
+
+        // Cipher
+        const cipher = d.cipher || {};
+        setText('cipher-encode', cipher['encode_pirate.py'] ? '✅ Present' : '❌ Missing', cipher['encode_pirate.py'] ? 'online' : 'offline');
+        setText('cipher-decode', cipher['decode_pirate.py'] ? '✅ Present' : '❌ Missing', cipher['decode_pirate.py'] ? 'online' : 'offline');
+        setText('cipher-doc', cipher['TIDAL_TONGUE_CIPHER.md'] ? '✅ Present' : '❌ Missing', cipher['TIDAL_TONGUE_CIPHER.md'] ? 'online' : 'offline');
+
+        // Tools classification
+        const tools = d.tools?.classification_levels || [];
+        const toolsEl = document.getElementById('tools-list');
+        if (toolsEl) {
+            if (tools.length === 0) {
+                toolsEl.innerHTML = '<div class="terminal-scan">No tool data</div>';
+            } else {
+                toolsEl.innerHTML = tools.map(t => {
+                    const cls = t.status === 'RUNNING' || t.status === 'IMPLEMENTED' || t.status === 'CATALOGED' ? 'online' : 'warning';
+                    const auth = (t.authorized || []).join(', ');
+                    return `<div class="status-item"><span class="label">${t.name}</span><span class="value">${t.classification} • ${t.status} • ${auth}</span></div>`;
+                }).join('');
+            }
+        }
+
+        // Health status
+        const hs = d.health_status;
+        if (hs !== 'VERIFIED' && hs !== 'OK') {
+            addLog(`HEALTH CHECK: ${d.health_message || 'issues detected'}`, 'warn');
+        }
+
+        // Add periodic log entry
+        if (Math.random() > 0.7) {
+            logMsg.push(`Fleet status: ${c.running}/${c.total} containers running`);
+            logMsg.push(`Network: ${net.total_devices || 0} devices visible`);
+        }
+        logMsg.forEach(msg => addLog(msg));
+
+    } catch(e) {
+        document.getElementById('timestamp').textContent = 'ERROR: cannot reach API';
+        addLog(`API connection error: ${e.message}`, 'error');
+        console.error(e);
+    }
+}
+
+// Handle Enter key on passphrase input
+document.getElementById('whale-passphrase').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') unlockWhale();
+});
+
+// Initial load
+updateDashboard();
+// Auto-refresh every 10 seconds
+setInterval(updateDashboard, 10000);
+// Per-stat live updates — consolidated to single shared status fetch to avoid rate-limit storm and race against updateDashboard
+setInterval(async () => {
+  try {
+    const resp = await fetch(API, {cache:'no-store'});
+    const d = await resp.json();
+    applyAll(d);
+  } catch (e) {}
+}, 10000);
+
+function applyShips(ships, details, latency) {
+  for (const [key, elId] of [['SQUIDSTATION','ship-squid'],['PINKCADY','ship-pink'],['STEALTHATTACK','ship-azure']]) {
+    setShipStatus(elId, ships[key] || 'offline');
+  }
+  setText('latency-squid', latency?.squid || '—');
+  setText('latency-pink', latency?.pink || '—');
+  setText('latency-azure', latency?.stealthattack || '—');
+  for (const [key, elId] of [['SQUIDSTATION','ports-squid'],['PINKCADY','ports-pink'],['STEALTHATTACK','ports-azure']]) {
+    setPorts(elId, details?.[key]?.ports || []);
+  }
+}
+
+function applyServices(services) {
+  const ports = services.network_ports || {};
+  for (const [k, elId] of [['port_80','port-80'],['port_81','port-81'],['port_2376','port-2376'],['port_9999','port-9999'],['port_8080','port-8080']]) {
+    setText(elId, ports[k] ? '🟢 UP' : '🔴 DOWN', ports[k] ? 'online' : 'offline');
+  }
+}
+
+function applyInternalServices(internal) {
+  const el = document.getElementById('internal-services-list');
+  if (!el) return;
+  const entries = Object.entries(internal || {});
+  if (!entries.length) {
+    el.innerHTML = '<div class="terminal-scan">No internal service data</div>';
+    return;
+  }
+  el.innerHTML = entries.map(([name, up]) => `<div class="status-item"><span class="label">${name}</span><span class="value ${up ? 'online' : 'offline'}">${up ? '🟢 UP' : '🔴 DOWN'}</span></div>`).join('');
+}
+
+function applyTailscaleCrew(tailscale) {
+  const el = document.getElementById('tailscale-crew-list');
+  if (!el) return;
+  const entries = Object.entries(tailscale || {});
+  if (!entries.length) {
+    el.innerHTML = '<div class="terminal-scan">No Tailscale crew data</div>';
+    return;
+  }
+  el.innerHTML = entries.map(([name, up]) => `<div class="status-item"><span class="label">${name}</span><span class="value ${up ? 'online' : 'offline'}">${up ? '🟢 REACHABLE' : '🔴 UNREACHABLE'}</span></div>`).join('');
+}
+
+function applyNetwork(network, shipDetails) {
+  setText('device-count', network.total_devices || 0);
+  const scanBadge = document.getElementById('scan-badge');
+  if (scanBadge) {
+    scanBadge.innerHTML = (network.total_devices > 0)
+      ? '<span class="badge-ok">FULL SCAN ACTIVE</span>'
+      : '<span class="scanning-badge">SCANNING 192.168.0.0/24</span>';
+  }
+  const tbody = document.getElementById('device-table-body');
+  if (tbody) {
+    const knownIps = new Set(Object.values(shipDetails || {}).map(s => s.ip));
+    tbody.innerHTML = (network.devices || []).map((dev, i) => {
+      const portTags = (dev.ports || []).slice(0, 8).map(p => `<span class="port-tag">${p}</span>`).join('');
+      const cls = dev.status === 'up' ? 'online' : 'offline';
+      const name = knownIps.has(dev.ip) ? dev.hostname : (dev.hostname || '<unknown>');
+      return `<tr><td>${i+1}</td><td>${dev.ip}</td><td>${name}</td><td>${dev.mac || '—'}</td><td>${dev.vendor || '—'}</td><td class="${cls}">${dev.status}</td><td>${portTags || '—'}</td></tr>`;
+    }).join('');
+  }
+}
+
+function applyTools(tools, healthStatus, healthMessage) {
+  const toolsEl = document.getElementById('tools-list');
+  if (!toolsEl) return;
+  if (!tools || Object.keys(tools).length === 0) {
+    toolsEl.innerHTML = '<div class="terminal-scan">No tool data</div>';
+    return;
+  }
+  toolsEl.innerHTML = Object.entries(tools).map(([name, tool]) => {
+    const status = tool.status || 'UNKNOWN';
+    const cls = status === 'RUNNING' || status === 'IMPLEMENTED' || status === 'CATALOGED' ? 'online' : 'warning';
+    const auth = (tool.authorized || []).join(', ');
+    return `<div class="status-item"><span class="label">${name}</span><span class="value">${tool.classification || '—'} • ${status} • ${auth}</span></div>`;
+  }).join('');
+  if (healthStatus && healthStatus !== 'VERIFIED' && healthStatus !== 'OK') {
+    addLog(`HEALTH CHECK: ${healthMessage || 'issues detected'}`, 'warn');
+  }
+}
+
+function applyVault(vault) {
+  setText('vault-files', `${vault.file_count || 0} files`);
+  setText('vault-size', `${vault.size_mb || 0} MB`);
+  setText('vault-git', vault.git_clean ? '✅ Clean' : '⚠️ Modified');
+  setText('vault-mount', vault.mounted ? '✅ Mounted' : '❌ Not Mounted', vault.mounted ? 'online' : 'offline');
+  setText('git-commit', vault.latest_commit || 'unknown');
+  setText('uncommitted-files', vault.uncommitted_files > 0 ? `⚠️ ${vault.uncommitted_files}` : '✅ None', vault.uncommitted_files === 0 ? 'online' : 'offline');
+}
+
+function applyOpsec(opsec) {
+  setText('opsec-git', opsec.shared_with_pink_gitignored ? '✅ YES' : '❌ NO', opsec.shared_with_pink_gitignored ? 'online' : 'offline');
+  setText('opsec-secrets', opsec.real_secrets_tracked === 0 ? '✅ 0' : `❌ ${opsec.real_secrets_tracked}`, opsec.real_secrets_tracked === 0 ? 'online' : 'offline');
+  setText('opsec-chinese', opsec.chinese_content_files === 0 ? '✅ 0' : `⚠️ ${opsec.chinese_content_files}`, opsec.chinese_content_files === 0 ? 'online' : 'offline');
+  setText('opsec-allclear', opsec.all_clear ? '✅ SECURE' : '⚠️ CHECKS', opsec.all_clear ? 'online' : 'offline');
+}
+
+function applyComms(comms, cipher) {
+  setText('inbox-pink', `${comms.PINKCADY_INBOX >= 0 ? comms.PINKCADY_INBOX : 'N/A'} msgs`);
+  setText('inbox-green', `${comms.SIR_GREEN_INBOX >= 0 ? comms.SIR_GREEN_INBOX : 'N/A'} msgs`);
+  setText('inbox-torus', `${comms.TORUS_COFFEE_REPORTS >= 0 ? comms.TORUS_COFFEE_REPORTS : 'N/A'} files`);
+  setText('cipher-encode', cipher['encode_pirate.py'] ? '✅ Present' : '❌ Missing', cipher['encode_pirate.py'] ? 'online' : 'offline');
+  setText('cipher-decode', cipher['decode_pirate.py'] ? '✅ Present' : '❌ Missing', cipher['decode_pirate.py'] ? 'online' : 'offline');
+  setText('cipher-doc', cipher['TIDAL_TONGUE_CIPHER.md'] ? '✅ Present' : '❌ Missing', cipher['TIDAL_TONGUE_CIPHER.md'] ? 'online' : 'offline');
+}
+
+function applyGithub(github) {
+  const el = document.getElementById('github-issues-list');
+  if (!el) return;
+  const repo = github?.repo || '';
+  const issues = github?.issues || [];
+  const fallback = github?.source === 'github_fallback';
+  const error = fallback ? (github?.error || 'GitHub feed unavailable') : '';
+  if (!repo) {
+    el.innerHTML = '<div class="terminal-scan">GitHub repo not configured</div>';
+    return;
+  }
+  const header = `<div class="status-item"><span class="label">Repo</span><span class="value">${repo}${error ? ` — ${error}` : ''}</span></div>`;
+  if (!issues.length) {
+    el.innerHTML = `${header}<div class="terminal-scan">No open issues to display</div>`;
+    return;
+  }
+  el.innerHTML = header + issues.map(i => {
+    const labels = (i.labels || []).map(l => `<span class="port-tag">${l}</span>`).join(' ');
+    return `<div class="status-item"><span class="label">#${i.number}</span><span class="value">${i.title} ${labels} <a href="${i.url}" target="_blank" class="metric">Open</a></span></div>`;
+  }).join('');
+}
+
+function buildQuickLinks() {
+  const grid = document.getElementById('quick-links-grid');
+  if (!grid) return;
+  const links = [
+    { label: 'NPM Admin', href: `http://${DASHBOARD_CONFIG.host}:${DASHBOARD_CONFIG.ports.npm}` },
+    { label: 'Gitea', href: `http://${DASHBOARD_CONFIG.host}:${DASHBOARD_CONFIG.ports.gitea}` },
+    { label: 'Grafana', href: `http://${DASHBOARD_CONFIG.host}:${DASHBOARD_CONFIG.ports.grafana}` },
+    { label: 'Kuma', href: `http://${DASHBOARD_CONFIG.host}:${DASHBOARD_CONFIG.ports.kuma}` },
+    { label: 'Prometheus', href: `http://${DASHBOARD_CONFIG.host}:${DASHBOARD_CONFIG.ports.prometheus}` },
+    { label: 'cAdvisor', href: `http://${DASHBOARD_CONFIG.host}:${DASHBOARD_CONFIG.ports.cadvisor}` },
+    { label: 'VOID Ops', href: 'https://trello.com/b/E801tUD3/void-ops', external: true },
+    { label: 'Lore Writing', href: 'https://trello.com/b/MK3o45Dg/lore-writing', external: true },
+    { label: 'API Status', href: '/api/status' },
+  ];
+  grid.innerHTML = links.map(l => `<a href="${l.href}" ${l.external ? 'target="_blank" rel="noopener noreferrer"' : ''} class="metric">${l.label}</a>`).join('');
+}
+
+function applyAll(d) {
+  try { if (d.ships) applyShips(d.ships, d.ship_details, d.latency); } catch (e) {}
+  try { if (d.services) applyServices(d.services); } catch (e) {}
+  try { if (d.network) applyNetwork(d.network, d.ship_details); } catch (e) {}
+  try { if (d.tools) applyTools(d.tools || {}, d.health_status, d.health_message); } catch (e) {}
+  try { if (d.vault) applyVault(d.vault); } catch (e) {}
+  try { if (d.opsec) applyOpsec(d.opsec); } catch (e) {}
+  try { if (d.comms) applyComms(d.comms, d.cipher); } catch (e) {}
+  try { if (d.internal_services) applyInternalServices(d.internal_services); } catch (e) {}
+  try { if (d.tailscale_status) applyTailscaleCrew(d.tailscale_status); } catch (e) {}
+  try { if (d.github) applyGithub(d.github); } catch (e) {}
+}
+
+async function applyFleetConnectivity() {
+    try {
+        const r = await fetch(FLEET_CONNECTIVITY_API, {cache: 'no-store'});
+        if (!r.ok) return;
+        const data = await r.json();
+        const nodes = data?.nodes?.nodes || data?.nodes || [];
+        const tbody = document.getElementById('fleet-connectivity-body');
+        if (!tbody) return;
+        const knownIps = new Set((data?.nodes?.nodes || []).map(n => n.ip));
+        const rows = nodes.map((n, i) => {
+            const status = n.online ? 'online' : 'offline';
+            const tag = n.online ? '🟢 ONLINE' : '🔴 OFFLINE';
+            return `<tr><td>${i+1}</td><td>${n.name}</td><td>${n.ip}</td><td class="${status}">${tag}</td></tr>`;
+        }).join('');
+        tbody.innerHTML = rows || '<tr><td colspan="4">No fleet data</td></tr>';
+        const summary = document.getElementById('fleet-connectivity-summary');
+        if (summary) summary.textContent = `${nodes.length} node(s)`;
+    } catch (e) {}
+}
+
+async function applyQueueStatus() {
+    try {
+        const r = await fetch(FLEET_QUEUE_API, {cache: 'no-store'});
+        if (!r.ok) return;
+        const data = await r.json();
+        const q = data?.queue || {};
+        const queued = document.getElementById('queue-queued');
+        const delivered = document.getElementById('queue-delivered');
+        if (queued) queued.textContent = q.queued ?? '—';
+        if (delivered) delivered.textContent = q.delivered ?? '—';
+    } catch (e) {}
+}
+
+async function applyOfflineDatasetPath() {
+    try {
+        const r = await fetch(FLEET_OFFLINE_DATASET_API, {cache: 'no-store'});
+        if (!r.ok) return;
+        const data = await r.json();
+        const el = document.getElementById('offline-dataset-path');
+        if (el) el.textContent = data?.path || '—';
+    } catch (e) {}
+}
+
+/* ==================== FODAVP BUTTON HANDLERS ==================== */
+function activateFodavp() {
+    const btn = document.getElementById('fodavpActivateBtn');
+    const status = document.getElementById('fodavpStatus');
+    const detail = document.getElementById('fodavpDetail');
+    
+    btn.disabled = true;
+    btn.textContent = '⚡ ACTIVATING...';
+    status.textContent = '🔵 ACTIVATING';
+    detail.textContent = 'Starting FODAVP engine...';
+    
+    fetch('/api/fodavp/trigger', {method: 'POST'})
+        .then(response => response.json())
+        .then(data => {
+            status.textContent = '🟢 RUNNING';
+            detail.textContent = 'Cycle started: ' + new Date().toLocaleTimeString();
+            setTimeout(updateFodavpStatus, 5000);
+            window.fodavpPoll = setInterval(updateFodavpStatus, 30000);
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.textContent = '⚔️ ACTIVATE FODAVP PROTOCAL ⚡';
+            }, 3000);
+        })
+        .catch(err => {
+            status.textContent = '🔴 ERROR';
+            detail.textContent = 'Activation failed: ' + err.message;
+            btn.disabled = false;
+            btn.textContent = '⚔️ ACTIVATE FODAVP PROTOCAL ⚡';
+        });
+}
+
+function stopFodavp() {
+    if (!confirm('🛑 STOP ALL FODAVP SYSTEMS?\nThis will terminate the fleet automation engine immediately.')) return;
+    
+    fetch('/api/stop-fodavp', {method: 'POST'})
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('fodavpStatus').textContent = '🟡 STOPPED';
+            document.getElementById('fodavpDetail').textContent = 'Stopped: ' + new Date().toLocaleTimeString();
+            clearInterval(window.fodavpPoll);
+        })
+        .catch(err => {
+            console.error('Stop failed:', err);
+        });
+}
+
+function updateFodavpStatus() {
+    fetch('/api/fodavp-status')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('fodavpEvidence').textContent = (data.evidence_count || 0) + ' files';
+            document.getElementById('fodavpFleet').textContent = 
+                'SQUIDSTATION: ' + (data.squid || '🟡') + ' | PINKCADY: ' + (data.pink || '🟡') + ' | STEALTH: ' + (data.stealth || '🟡');
+            document.getElementById('fodavpRate').textContent = data.cycle_rate || '~30s/cycle';
+            if (data.running) {
+                document.getElementById('fodavpStatus').textContent = '🟢 RUNNING';
+            }
+        })
+        .catch(err => {
+            console.warn('Status check failed:', err);
+        });
+}
+
+function loadSettings() {
+    fetch('/api/settings')
+        .then(r => r.ok ? r.json() : Promise.reject(r.status))
+        .then(data => {
+            if (data.error) return;
+            const set = (id, val) => { const el = document.getElementById(id); if (!el) return; if (el.type === 'checkbox') el.checked = !!val; else el.value = val ?? ''; };
+            set('setting-monitoring_interval', data.monitoring_interval);
+            set('setting-alert_threshold', data.alert_threshold);
+            set('setting-theme', data.theme);
+            set('setting-auto_refresh', data.auto_refresh);
+            set('setting-fleet_monitor', data.fleet_monitor);
+            set('setting-offline_queue', data.offline_queue);
+        })
+        .catch(err => console.warn('Settings load failed:', err));
+}
+
+function saveSettings() {
+    const payload = {
+        monitoring_interval: parseInt(document.getElementById('setting-monitoring_interval')?.value || '10', 10),
+        alert_threshold: parseInt(document.getElementById('setting-alert_threshold')?.value || '3', 10),
+        theme: document.getElementById('setting-theme')?.value || 'void',
+        auto_refresh: document.getElementById('setting-auto_refresh')?.checked ?? true,
+        fleet_monitor: document.getElementById('setting-fleet_monitor')?.checked ?? true,
+        offline_queue: document.getElementById('setting-offline_queue')?.checked ?? false,
+    };
+    const status = document.getElementById('settings-status');
+    if (status) status.textContent = 'Saving...';
+    fetch('/api/settings', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload)})
+        .then(r => r.ok ? r.json() : Promise.reject(r.status))
+        .then(data => {
+            if (status) status.textContent = data.ok ? 'Saved' : 'Save failed';
+        })
+        .catch(err => {
+            if (status) status.textContent = 'Save failed';
+            console.warn('Settings save failed:', err);
+        });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(updateFodavpStatus, 2000);
+    window.fodavpPoll = setInterval(updateFodavpStatus, 30000);
+    buildQuickLinks();
+    loadSettings();
+    updateDashboard();
+    setInterval(() => updateDashboard().catch(() => {}), 10000);
+    setInterval(applyFleetConnectivity, 15000);
+    setInterval(applyQueueStatus, 15000);
+    setInterval(applyOfflineDatasetPath, 60000);
+});
