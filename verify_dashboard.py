@@ -5,7 +5,10 @@ _HERE = Path(__file__).resolve().parent            # <business>/Captain_Dashboar
 _BUSINESS_ROOT = _HERE.parent                       # <business>
 
 # Resolve the vault via canonical_paths; fall back to the business root layout.
-sys.path.insert(0, str(_HERE / 'dashboard'))
+# canonical_paths.py moved out of the retired dashboard/ subdir in the 2026-09
+# reorg — it now sits next to this file under Captain_Dashboard/.
+sys.path.insert(0, str(_HERE))
+sys.path.insert(0, str(_HERE / 'dashboard'))   # legacy fallback
 try:
     from canonical_paths import VAULT_PATH
 except Exception:

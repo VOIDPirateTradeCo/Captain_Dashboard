@@ -1,8 +1,0 @@
-[2026-08-20T08:19:22.949982] ENGINE: 🍳⚔️ FODAVP Protocol Engine v2.0
-[2026-08-20T08:19:22.957543] ENGINE: F.IND → O.RIENT → D.ECIDE → A.CT → V.ERIFY → PERSIST
-[2026-08-20T08:19:22.964552] ENGINE: 🚀 CYCLE INITIATED — FODAVP_20260820_081922
-[2026-08-20T08:19:22.972036] F.IND: Locating up to 5 candidate cards...
-[2026-08-20T08:19:22.978452] ERROR: Failed to load Trello credentials: No module named 'win32cred'
-[2026-08-20T08:19:22.985182] F.IND: ERROR: Trello credentials not available
-[2026-08-20T08:19:22.990990] ENGINE: No actionable targets — cycle complete
-[2026-08-20T08:19:22.998710] ENGINE: No actionable targets — cycle complete

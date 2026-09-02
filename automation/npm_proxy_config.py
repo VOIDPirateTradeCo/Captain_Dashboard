@@ -207,7 +207,7 @@ except Exception as e:
 '''
 
     # Write the script to a temp file and exec it in the container
-    script_name = "/app/state/create_proxy.py"
+    script_name = "/tmp/create_proxy.py"
     run_docker_cmd([
         "sh", "-c", f"cat > {script_name} << 'HERMES_EOF'\n{npm_py_script}\nHERMES_EOF"
     ])
@@ -289,10 +289,10 @@ print("OK")
 '''
 
     run_docker_cmd([
-        "sh", "-c", f"cat > /app/state/create_auth.py << 'HERMES_EOF'\n{auth_script}\nHERMES_EOF"
+        "sh", "-c", f"cat > /tmp/create_auth.py << 'HERMES_EOF'\n{auth_script}\nHERMES_EOF"
     ])
 
-    result = run_docker_cmd(["python3", "/app/state/create_auth.py"], timeout=15)
+    result = run_docker_cmd(["python3", "/tmp/create_auth.py"], timeout=15)
     print(f"  {result.strip()[:200] if result else '[WARN] No output from auth creation'}")
 
     # Step 5: Reload Nginx

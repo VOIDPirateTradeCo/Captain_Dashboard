@@ -1,33 +1,3 @@
-[2026-08-23T15:36:49.483287] WATCHER: 👁️ FODAVP Watcher started — monitoring for trigger flag
-[2026-08-23T15:36:49.485385] WATCHER: Trigger file: /fleet/automation/fodavp/.fodavp_trigger
-[2026-08-23T15:36:49.494696] WATCHER: Engine path: /fleet/automation/fodavp/fodavp_engine.py
-[2026-08-25T13:55:36.970188] WATCHER: 👁️ FODAVP Watcher started — monitoring for trigger flag
-[2026-08-25T13:55:36.985634] WATCHER: Trigger file: /fleet/automation/fodavp/.fodavp_trigger
-[2026-08-25T13:55:36.997466] WATCHER: Engine path: /fleet/automation/fodavp/fodavp_engine.py
-[2026-08-25T13:59:12.545653] WATCHER: 👁️ FODAVP Watcher started — monitoring for trigger flag
-[2026-08-25T13:59:12.551426] WATCHER: Trigger file: /fleet/automation/fodavp/.fodavp_trigger
-[2026-08-25T13:59:12.562205] WATCHER: Engine path: /fleet/automation/fodavp/fodavp_engine.py
-[2026-08-26T05:02:07.652234] WATCHER: 👁️ FODAVP Watcher started — monitoring for trigger flag
-[2026-08-26T05:02:07.674245] WATCHER: Trigger file: /fleet/automation/fodavp/.fodavp_trigger
-[2026-08-26T05:02:07.683526] WATCHER: Engine path: /fleet/automation/fodavp/fodavp_engine.py
-[2026-08-27T12:58:35.035576] WATCHER: 👁️ FODAVP Watcher started — monitoring for trigger flag
-[2026-08-27T12:58:35.054386] WATCHER: Trigger file: /fleet/automation/fodavp/.fodavp_trigger
-[2026-08-27T12:58:35.062752] WATCHER: Engine path: /fleet/automation/fodavp/fodavp_engine.py
-[2026-08-29T14:52:21.810829] WATCHER: 👁️ FODAVP Watcher started — monitoring for trigger flag
-[2026-08-29T14:52:21.819689] WATCHER: Trigger file: /fleet/automation/fodavp/.fodavp_trigger
-[2026-08-29T14:52:21.829511] WATCHER: Engine path: /fleet/automation/fodavp/fodavp_engine.py
-[2026-08-30T02:27:54.656393] WATCHER: 👁️ FODAVP Watcher started — monitoring for trigger flag
-[2026-08-30T02:27:54.670166] WATCHER: Trigger file: /fleet/automation/fodavp/.fodavp_trigger
-[2026-08-30T02:27:54.682345] WATCHER: Engine path: /fleet/automation/fodavp/fodavp_engine.py
-[2026-08-30T09:37:28.473095] WATCHER: 👁️ FODAVP Watcher started — monitoring for trigger flag
-[2026-08-30T09:37:28.487472] WATCHER: Trigger file: /fleet/automation/fodavp/.fodavp_trigger
-[2026-08-30T09:37:28.498436] WATCHER: Engine path: /fleet/automation/fodavp/fodavp_engine.py
-[2026-08-31T14:15:44.505668] WATCHER: 👁️ FODAVP Watcher started — monitoring for trigger flag
-[2026-08-31T14:15:44.521170] WATCHER: Trigger file: /fleet/automation/fodavp/.fodavp_trigger
-[2026-08-31T14:15:44.541581] WATCHER: Engine path: /fleet/automation/fodavp/fodavp_engine.py
-[2026-09-01T09:34:37.663489] WATCHER: 👁️ FODAVP Watcher started — monitoring for trigger flag
-[2026-09-01T09:34:37.674072] WATCHER: Trigger file: /fleet/automation/fodavp/.fodavp_trigger
-[2026-09-01T09:34:37.682540] WATCHER: Engine path: /fleet/automation/fodavp/fodavp_engine.py
-[2026-09-01T09:47:16.505520] WATCHER: 👁️ FODAVP Watcher started — monitoring for trigger flag
-[2026-09-01T09:47:16.515628] WATCHER: Trigger file: /fleet/automation/fodavp/.fodavp_trigger
-[2026-09-01T09:47:16.523505] WATCHER: Engine path: /fleet/automation/fodavp/fodavp_engine.py
+[2026-09-02T06:03:28.350846] WATCHER: 👁️ FODAVP Watcher started — monitoring for trigger flag
+[2026-09-02T06:03:28.352625] WATCHER: Trigger file: /fleet/automation/fodavp/.fodavp_trigger
+[2026-09-02T06:03:28.360483] WATCHER: Engine path: /fleet/automation/fodavp/fodavp_engine.py

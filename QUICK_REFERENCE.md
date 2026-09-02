@@ -33,13 +33,13 @@ Generated: 2026-08-12T14:52:47.553734
 
 ## Live Dashboard
 
-- **Location**: `Captain_Dashboard/dashboard/`
-- **Port**: 8080
-- **Health**: `http://127.0.0.1:8080/health`
+- **Location**: Mission Control `:3100` (Docker/Next.js)
+- **Port**: 3100 (HTTPS, self-signed)
+- **Health**: `https://127.0.0.1:3100/api/health`
 - **Key files**:
-  - `dashboard_server.py` - Main server
-  - `services/health_check.py` - Health monitoring
-  - `automation/fleet_comms_sync.py` - Crew sync
+  - Mission Control Next.js app at `mission-control/`
+  - Fleet, security, hive-health panels in MC
+  - Retired legacy Python dashboard → archived at `_archive/dashboard-v3-python/`
 
 ## Website Code
 
@@ -66,7 +66,7 @@ Generated: 2026-08-12T14:52:47.553734
 
 ```bash
 # Check dashboard health
-curl http://127.0.0.1:8080/health
+curl -k https://127.0.0.1:3100/api/health
 
 # View content map
 cat Obsidian_Vault/00_Vault_Index/CONTENT_MAP_20260812.md

@@ -1,9 +1,0 @@
-{
-  "timestamp": "2026-08-20T08:31:51.524188+00:00",
-  "source": "dashboard_button",
-  "endpoint": "/api/fodavp/trigger",
-  "action": "activate_fodavp",
-  "engine_exit_code": 0,
-  "engine_stdout": "[03:31:40] ENGINE: \ud83c\udf73\u2694\ufe0f FODAVP Protocol Engine v2.0\n[03:31:40] ENGINE: F.IND \u2192 O.RIENT \u2192 D.ECIDE \u2192 A.CT \u2192 V.ERIFY \u2192 PERSIST\n[03:31:40] ENGINE: \ud83d\ude80 CYCLE INITIATED \u2014 FODAVP_20260820_033140\n[03:31:40] F.IND: Locating up to 5 candidate cards...\n[03:31:42] F.IND: Found 5 candidates: P0 \u2192 P0\n[03:31:42] F.IND:   1. [BxUs8x45] Follow-up: Crownless Fortune project blocks (score: 60)\n[03:31:42] F.IND:   2. [HxU09T9D] [CF-81] Fail-closed guard (guardCheck.js) (score: 60)\n[03:31:42] F.IND:   3. [QzrcsKnu] [CF",
-  "engine_stderr": ""
-}

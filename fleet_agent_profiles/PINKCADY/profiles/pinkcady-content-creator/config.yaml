@@ -1,0 +1,9 @@
+model: openrouter/moonshotai/kimi-k2.5
+provider: auto
+toolsets:
+  - all
+max_turns: 100
+token_budget:
+  max_context_window: 80000
+  prefer_free: true
+  paid_escalation: false

@@ -1,0 +1,9 @@
+model: openai/codex-mini-latest
+provider: auto
+toolsets:
+  - all
+max_turns: 100
+token_budget:
+  max_context_window: 100000
+  prefer_free: true
+  paid_escalation: true

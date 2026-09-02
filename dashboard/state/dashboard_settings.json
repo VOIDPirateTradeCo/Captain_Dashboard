@@ -1,9 +1,0 @@
-{
-  "monitoring_interval": 10,
-  "alert_threshold": 3,
-  "theme": "void",
-  "auto_refresh": true,
-  "fleet_monitor": true,
-  "offline_queue": false,
-  "test": true
-}
