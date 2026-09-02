@@ -9,6 +9,7 @@ import { logger } from '@/lib/logger'
 import { runOpenClaw } from '@/lib/command'
 import { denyUnscopedResourceForStrictWorkspace } from '@/lib/workspace-isolation'
 import { backupDeleteSchema, validateBody } from '@/lib/validation'
+import { replicateBackup, getReplicationTargets, DEFAULT_BACKUP_TARGETS } from '@/lib/backup-replication'
 
 const BACKUP_DIR = join(dirname(config.dbPath), 'backups')
 const MAX_BACKUPS = 10
@@ -119,6 +120,12 @@ export async function POST(request: NextRequest) {
       ip_address: ipAddress,
     })
 
+    const replicationResults = await Promise.allSettled([replicateBackup(backupPath)]).then((settled) => {
+      const raw = settled[0]
+      if (raw.status === 'fulfilled') return raw.value
+      return DEFAULT_BACKUP_TARGETS.map((target) => ({ targetId: target.id, ok: false, error: raw.reason?.message || 'replication_failed' }))
+    })
+
     // Prune old backups beyond MAX_BACKUPS
     pruneOldBackups()
 
@@ -129,6 +136,7 @@ export async function POST(request: NextRequest) {
         size: stat.size,
         created_at: Math.floor(stat.mtimeMs / 1000),
       },
+      replication: replicationResults,
     })
   } catch (error: any) {
     logger.error({ err: error }, 'Backup failed')

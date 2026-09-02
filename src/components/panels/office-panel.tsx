@@ -502,6 +502,8 @@ export function OfficePanel() {
   const [selectedHotspot, setSelectedHotspot] = useState<OfficeHotspot | null>(null)
   const [agentActionOverrides, setAgentActionOverrides] = useState<Map<number, OfficeAction>>(new Map())
   const [officeEvents, setOfficeEvents] = useState<OfficeEvent[]>([])
+  const [officeError, setOfficeError] = useState<string | null>(null)
+  const [officeOffline, setOfficeOffline] = useState(false)
   const [roomLayoutState, setRoomLayoutState] = useState<MapRoom[]>(() => ROOM_LAYOUT.map((room) => ({ ...room })))
   const [mapPropsState, setMapPropsState] = useState<MapProp[]>(() => MAP_PROPS.map((prop) => ({ ...prop })))
   const [showSidebar, setShowSidebar] = useState(true)
@@ -534,12 +536,19 @@ export function OfficePanel() {
   const fetchAgents = useCallback(async () => {
     let nextLocalAgents: Agent[] = []
     let nextSessionAgents: Agent[] = []
+    let fetchError: string | null = null
 
     try {
       const [agentData, sessionData] = await Promise.all([
-        apiFetch<{ agents?: Agent[] }>('/api/agents').catch(() => null),
+        apiFetch<{ agents?: Agent[] }>('/api/agents').catch((err) => {
+          fetchError = err instanceof Error ? err.message : 'agents fetch failed'
+          return null
+        }),
         isLocalMode
-          ? apiFetch<{ sessions?: SessionAgentRow[] }>('/api/sessions').catch(() => null)
+          ? apiFetch<{ sessions?: SessionAgentRow[] }>('/api/sessions').catch((err) => {
+              fetchError = err instanceof Error ? err.message : 'sessions fetch failed'
+              return null
+            })
           : Promise.resolve(null),
       ])
 
@@ -549,7 +558,7 @@ export function OfficePanel() {
       }
 
       if (isLocalMode && sessionData) {
-        const rows = Array.isArray(sessionData.sessions) ? sessionData.sessions : []
+        const rows: SessionAgentRow[] = Array.isArray(sessionData.sessions) ? sessionData.sessions : []
         const byAgent = new Map<string, Agent>()
         let idx = 0
 
@@ -596,7 +605,9 @@ export function OfficePanel() {
         nextSessionAgents = Array.from(byAgent.values())
         setSessionAgents(nextSessionAgents)
       }
-    } catch { /* ignore */ }
+    } catch (err) {
+      if (!fetchError) fetchError = err instanceof Error ? err.message : 'office load failed'
+    }
 
     if (isLocalMode) {
       const hasAnyAgents = nextLocalAgents.length > 0 || nextSessionAgents.length > 0
@@ -611,6 +622,7 @@ export function OfficePanel() {
       }
     }
 
+    setOfficeError(fetchError)
     setLoading(false)
   }, [isLocalMode])
 
@@ -1551,6 +1563,35 @@ export function OfficePanel() {
 
   if ((loading || (isLocalMode && localBootstrapping)) && visibleDisplayAgents.length === 0) {
     return <Loader variant="panel" label={isLocalMode ? t('loadingLocalSessions') : t('loadingOffice')} />
+  }
+
+  if (officeError && visibleDisplayAgents.length === 0) {
+    return (
+      <div className="p-6 space-y-4">
+        <div className="border-b border-border pb-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-foreground">{t('title')}</h1>
+              <p className="text-muted-foreground mt-1">{t('subtitle')}</p>
+            </div>
+          </div>
+        </div>
+        <div className="rounded-md border border-border bg-card p-4 text-sm text-muted-foreground">
+          <div className="font-semibold text-foreground">Captain's Office is offline</div>
+          <div className="mt-1">{officeError}</div>
+          <div className="mt-2">Showing empty office layout. Retrying in the background...</div>
+        </div>
+        <div className="rounded-md border border-border bg-black/20 p-4 text-xs text-muted-foreground">
+          <div className="mb-2 text-void-amber">Office degraded — no live crew data</div>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="rounded border border-white/5 bg-black/30 p-2">Engine Bay</div>
+            <div className="rounded border border-white/5 bg-black/30 p-2">Bridge</div>
+            <div className="rounded border border-white/5 bg-black/30 p-2">Operations</div>
+            <div className="rounded border border-white/5 bg-black/30 p-2">Research</div>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (

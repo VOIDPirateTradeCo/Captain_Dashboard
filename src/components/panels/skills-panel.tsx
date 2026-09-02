@@ -38,6 +38,26 @@ interface SkillContentResponse {
   security?: { status: string; issues: Array<{ severity: string; rule: string; description: string; line?: number }> }
 }
 
+interface FleetSkillRow {
+  name: string
+  tier: 'core' | 'reference' | 'archive'
+  owner: string
+}
+interface FleetSkillsResponse {
+  generated: string | null
+  count: number
+  tiers: Record<string, number>
+  ships: Record<string, { total: number; core: number; reference: number; archive: number }>
+  skills: FleetSkillRow[]
+}
+interface FleetSkillsSyncResponse {
+  generated: string | null
+  count: number
+  tiers: Record<string, number>
+  ships: Record<string, { lastSync: string | null; pending: number; integrity: 'ok' | 'degraded' | 'unknown'; localCount: number }>
+  assignments: Array<{ name: string; tier: 'core' | 'reference' | 'archive'; owner: string }>
+  totalAssignments: number
+}
 interface RegistrySkill {
   slug: string
   name: string
@@ -84,6 +104,7 @@ const SOURCE_LABELS: Record<string, string> = {
   'project-codex': '.codex/skills (project)',
   'openclaw': '~/.openclaw/skills (gateway)',
   'workspace': '~/.openclaw/workspace/skills',
+  'shared-vault': 'Captain_Dashboard/shared-skills-vault (fleet shared)',
 }
 
 function getSourceLabel(source: string): string {
@@ -137,6 +158,11 @@ export function SkillsPanel() {
     message?: string
     securityStatus?: string
   } | null>(null)
+  const [fleetSkills, setFleetSkills] = useState<FleetSkillRow[]>([])
+  const [fleetSkillsSummary, setFleetSkillsSummary] = useState<FleetSkillsResponse['ships'] | null>(null)
+  const [fleetSkillsSync, setFleetSkillsSync] = useState<FleetSkillsSyncResponse | null>(null)
+  const [fleetSkillsLoading, setFleetSkillsLoading] = useState(false)
+  const [fleetSkillsError, setFleetSkillsError] = useState<string | null>(null)
 
   useEffect(() => {
     setIsMounted(true)
@@ -382,6 +408,46 @@ export function SkillsPanel() {
     } catch { /* best-effort */ }
   }
 
+  const loadFleetSkills = async () => {
+    setFleetSkillsLoading(true)
+    setFleetSkillsError(null)
+    try {
+      const [skillsRes, syncRes] = await Promise.all([
+        apiFetch<FleetSkillsResponse>('/api/fleet/skills', { cache: 'no-store' }),
+        apiFetch<FleetSkillsSyncResponse>('/api/fleet/skills/sync', { cache: 'no-store' }),
+      ])
+      setFleetSkills(skillsRes.skills || [])
+      setFleetSkillsSummary(skillsRes.ships || null)
+      setFleetSkillsSync(syncRes || null)
+    } catch (err) {
+      setFleetSkillsError(skillApiMessage(err, 'Failed to load fleet skills'))
+    } finally {
+      setFleetSkillsLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    loadFleetSkills().catch(() => {})
+  }, [])
+
+  const shipBadge = (ship: string) => {
+    const color =
+      ship === 'SQUIDSTATION'
+        ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+        : ship === 'STEALTHATTACK'
+          ? 'bg-sky-500/10 text-sky-400 border-sky-500/30'
+          : ship === 'PINKCADY'
+            ? 'bg-pink-500/10 text-pink-400 border-pink-500/30'
+            : 'bg-secondary/50 text-muted-foreground border-border'
+    return <span className={`text-2xs rounded-full border px-2 py-0.5 ${color}`}>{ship}</span>
+  }
+
+  const integrityBadge = (value?: 'ok' | 'degraded' | 'unknown') => {
+    if (value === 'ok') return <span className="text-2xs text-emerald-400">ok</span>
+    if (value === 'degraded') return <span className="text-2xs text-amber-400">degraded</span>
+    return <span className="text-2xs text-muted-foreground/50">unknown</span>
+  }
+
   const scanAllSkills = async () => {
     const skills = skillsList || []
     if (skills.length === 0) return
@@ -515,36 +581,84 @@ export function SkillsPanel() {
 
             {/* Scan All progress / results */}
             {scanAll && (
-              <div className="space-y-2">
-                {scanAll.running && (
-                  <div className="space-y-1.5">
-                    <div className="flex items-center justify-between text-2xs text-muted-foreground">
-                      <span>{t('scanning')} <span className="text-foreground font-medium">{scanAll.current}</span></span>
-                      <span>{scanAll.done}/{scanAll.total}</span>
+              <>
+                <div className="space-y-2">
+                  {scanAll.running && (
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between text-2xs text-muted-foreground">
+                        <span>{t('scanning')} <span className="text-foreground font-medium">{scanAll.current}</span></span>
+                        <span>{scanAll.done}/{scanAll.total}</span>
+                      </div>
+                      <div className="h-1.5 rounded-full bg-secondary overflow-hidden">
+                        <div
+                          className="h-full rounded-full bg-primary transition-all duration-300"
+                          style={{ width: `${(scanAll.done / scanAll.total) * 100}%` }}
+                        />
+                      </div>
                     </div>
-                    <div className="h-1.5 rounded-full bg-secondary overflow-hidden">
-                      <div
-                        className="h-full rounded-full bg-primary transition-all duration-300"
-                        style={{ width: `${(scanAll.done / scanAll.total) * 100}%` }}
-                      />
+                  )}
+                  {!scanAll.running && (
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3 text-2xs">
+                        <span className="text-emerald-400">{scanAll.results.clean} clean</span>
+                        {scanAll.results.warning > 0 && <span className="text-amber-400">{scanAll.results.warning} warning</span>}
+                        {scanAll.results.rejected > 0 && <span className="text-rose-400">{scanAll.results.rejected} rejected</span>}
+                        {scanAll.results.error > 0 && <span className="text-destructive">{scanAll.results.error} errors</span>}
+                        <span className="text-muted-foreground">— {t('skillsScanned', { count: scanAll.total })}</span>
+                      </div>
+                      <button onClick={() => setScanAll(null)} className="text-2xs text-muted-foreground/50 hover:text-foreground">{t('dismiss')}</button>
                     </div>
-                  </div>
-                )}
-                {!scanAll.running && (
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3 text-2xs">
-                      <span className="text-emerald-400">{scanAll.results.clean} clean</span>
-                      {scanAll.results.warning > 0 && <span className="text-amber-400">{scanAll.results.warning} warning</span>}
-                      {scanAll.results.rejected > 0 && <span className="text-rose-400">{scanAll.results.rejected} rejected</span>}
-                      {scanAll.results.error > 0 && <span className="text-destructive">{scanAll.results.error} errors</span>}
-                      <span className="text-muted-foreground">— {t('skillsScanned', { count: scanAll.total })}</span>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                  {(fleetSkillsSummary ? Object.entries(fleetSkillsSummary) : []).map(([ship, data]) => (
+                    <div key={ship} className="rounded-md border border-border bg-secondary/30 p-2">
+                      <div className="flex items-center justify-between">
+                        <div className="text-xs font-medium text-foreground">{ship}</div>
+                        {shipBadge(ship)}
+                      </div>
+                      <div className="mt-1 text-2xs text-muted-foreground">
+                        {data.total} skills • {data.core} core • {data.reference} reference
+                      </div>
+                      {fleetSkillsSync?.ships?.[ship] && (
+                        <div className="mt-1 text-2xs text-muted-foreground">
+                          sync: {integrityBadge(fleetSkillsSync.ships[ship].integrity)} • pending {fleetSkillsSync.ships[ship].pending}
+                        </div>
+                      )}
                     </div>
-                    <button onClick={() => setScanAll(null)} className="text-2xs text-muted-foreground/50 hover:text-foreground">{t('dismiss')}</button>
-                  </div>
-                )}
-              </div>
+                  ))}
+                </div>
+                {fleetSkillsError && <p className="text-xs text-destructive">{fleetSkillsError}</p>}
+              </>
             )}
-            <div className="grid grid-cols-1 md:grid-cols-[240px_1fr_auto] gap-2">
+
+              <div className="rounded-lg border border-border bg-card p-3 space-y-2">
+              <div className="flex items-center justify-between gap-2">
+                <div className="text-xs text-muted-foreground">Fleet skills manifest</div>
+                <div className="flex items-center gap-1.5">
+                  <Button variant="outline" size="xs" onClick={loadFleetSkills} disabled={fleetSkillsLoading}>
+                    {fleetSkillsLoading ? 'Refreshing...' : 'Refresh manifest'}
+                  </Button>
+                </div>
+              </div>
+              <div className="max-h-56 overflow-y-auto divide-y divide-border rounded-md border border-border">
+                {fleetSkills.length === 0 && !fleetSkillsLoading && (
+                  <div className="px-3 py-3 text-xs text-muted-foreground">No manifest data loaded.</div>
+                )}
+                {fleetSkills.map((skill) => (
+                  <div key={skill.name} className="px-3 py-2 flex items-center justify-between gap-2">
+                    <div className="min-w-0">
+                      <div className="text-xs text-foreground truncate">{skill.name}</div>
+                      <div className="text-2xs text-muted-foreground">{skill.tier}</div>
+                    </div>
+                    {shipBadge(skill.owner)}
+                  </div>
+                ))}
+              </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
               <select
                 value={createSource}
                 onChange={(e) => setCreateSource(e.target.value)}
@@ -558,6 +672,7 @@ export function SkillsPanel() {
                   <option value="openclaw">{SOURCE_LABELS['openclaw']}</option>
                 )}
                 <option value="workspace">{SOURCE_LABELS['workspace']}</option>
+                <option value="shared-vault">{SOURCE_LABELS['shared-vault']}</option>
               </select>
               <input
                 value={createName}
@@ -705,6 +820,7 @@ export function SkillsPanel() {
                   <option value="openclaw">{SOURCE_LABELS['openclaw']}</option>
                 )}
                 <option value="workspace">{SOURCE_LABELS['workspace']}</option>
+                <option value="shared-vault">{SOURCE_LABELS['shared-vault']}</option>
               </select>
             </div>
           </div>

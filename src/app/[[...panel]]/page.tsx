@@ -32,6 +32,8 @@ import { MultiGatewayPanel } from '@/components/panels/multi-gateway-panel'
 import { GatewayControlPanel } from '@/components/panels/gateway-control-panel'
 import { SuperAdminPanel } from '@/components/panels/super-admin-panel'
 import { OfficePanel } from '@/components/panels/office-panel'
+import { CaptainOfficePanel } from '@/components/panels/captain-office-panel'
+import { FleetPanel } from '@/components/panels/fleet-panel'
 import { GitHubSyncPanel } from '@/components/panels/github-sync-panel'
 import { SkillsPanel } from '@/components/panels/skills-panel'
 import { LocalAgentsDocPanel } from '@/components/panels/local-agents-doc-panel'
@@ -43,6 +45,9 @@ import { ExecApprovalPanel } from '@/components/panels/exec-approval-panel'
 import { SystemMonitorPanel } from '@/components/panels/system-monitor-panel'
 import { ChatPagePanel } from '@/components/panels/chat-page-panel'
 import { ChatPanel } from '@/components/chat/chat-panel'
+import { VoidHiveHealthPanel } from '@/components/panels/void-hivehealth-panel'
+import { VoidMarketPanel } from '@/components/panels/void-market-panel'
+import { VoidSecurityPanel } from '@/components/panels/void-security-panel'
 import { STORAGE_GATEWAY_URL } from '@/lib/device-identity'
 import { getPluginPanel } from '@/lib/plugins'
 import { shouldRedirectDashboardToHttps } from '@/lib/browser-security'
@@ -626,6 +631,14 @@ function ContentRouter({ tab }: { tab: string }) {
       return <GitHubSyncPanel />
     case 'office':
       return <OfficePanel />
+    case 'fleet':
+      return <FleetPanel />
+    case 'hive-health':
+      return <VoidHiveHealthPanel />
+    case 'void-market':
+      return <VoidMarketPanel />
+    case 'captain-office':
+      return <CaptainOfficePanel />
     case 'monitor':
       return <SystemMonitorPanel />
     case 'skills':
@@ -637,7 +650,8 @@ function ContentRouter({ tab }: { tab: string }) {
       if (isLocal) return <LocalModeUnavailable panel={tab} />
       return <NodesPanel />
     case 'security':
-      return <SecurityAuditPanel />
+    case 'void-security':
+      return <VoidSecurityPanel />
     case 'debug':
       return <DebugPanel />
     case 'exec-approvals':

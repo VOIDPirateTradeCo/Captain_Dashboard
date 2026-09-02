@@ -122,6 +122,10 @@ function getSkillRoots(): SkillRoot[] {
   const workspaceSkills = resolveSkillRoot('MC_SKILLS_WORKSPACE_DIR', join(workspaceDir, 'skills'))
   roots.push({ source: 'workspace', path: workspaceSkills })
 
+  // Fleet shared skills vault
+  const sharedVault = resolveSkillRoot('MC_SKILLS_SHARED_VAULT_DIR', 'Captain_Dashboard/shared-skills-vault')
+  roots.push({ source: 'shared-vault', path: sharedVault })
+
   // Dynamic: scan for workspace-<agent> directories
   try {
     const { readdirSync, existsSync } = require('node:fs') as typeof import('node:fs')

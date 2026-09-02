@@ -83,7 +83,7 @@ export async function POST(request: NextRequest) {
       try {
         // Try with tools.profile first; drop it for gateways that reject the field.
         try {
-          result = await callOpenClawGateway('sessions_spawn', spawnPayload, 15_000)
+          result = await callOpenClawGateway('sessions_spawn', spawnPayload, 60_000)
         } catch (toolsError: any) {
           const rawErr = String(toolsError?.message || '').toLowerCase()
           const isToolsSchemaError =
@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
           if (!isToolsSchemaError) throw toolsError
           const fallbackPayload = { ...spawnPayload }
           delete (fallbackPayload as any).tools
-          result = await callOpenClawGateway('sessions_spawn', fallbackPayload, 15_000)
+          result = await callOpenClawGateway('sessions_spawn', fallbackPayload, 60_000)
           compatibilityFallbackUsed = true
         }
       } catch (spawnError: any) {
@@ -100,7 +100,7 @@ export async function POST(request: NextRequest) {
         // `agent` method instead of surfacing "unknown method: sessions_spawn".
         if (!isUnknownMethodError(spawnError)) throw spawnError
         logger.info('sessions_spawn unavailable on gateway; falling back to modern agent invocation')
-        result = await callOpenClawGateway('agent', agentPayload, 15_000)
+        result = await callOpenClawGateway('agent', agentPayload, 60_000)
         compatibilityFallbackUsed = true
         invocationMethod = 'agent'
       }

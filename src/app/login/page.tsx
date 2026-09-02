@@ -91,10 +91,8 @@ export default function LoginPage() {
   // Advanced settings state
   const [advancedOpen, setAdvancedOpen] = useState(false)
   const [gatewayPreset, setGatewayPreset] = useState<string>(() => {
-    // Auto-select wss:// preset when the page is served over HTTPS (reverse proxy)
-    if (typeof window !== 'undefined' && window.location.protocol === 'https:') {
-      return 'wss://127.0.0.1:18789'
-    }
+    // Localhost gateways speak plain ws:// — TLS is terminated at the MC proxy,
+    // not at the gateway itself. Always use ws:// for loopback addresses.
     return 'ws://127.0.0.1:18789'
   })
   const [gatewayCustom, setGatewayCustom] = useState('')

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import net from 'node:net'
 import os from 'node:os'
-import { existsSync, statSync } from 'node:fs'
+import { existsSync, readFileSync, statSync } from 'node:fs'
 import path from 'node:path'
 import { runCommand, runOpenClaw, runClawdbot } from '@/lib/command'
 import { config } from '@/lib/config'
@@ -635,12 +635,23 @@ async function getCapabilities(request?: NextRequest, includeGlobalRuntime = tru
     }
   }
 
-  const gateway = includeGlobalRuntime && (gatewayReachable || await isPortOpen(config.gatewayHost, config.gatewayPort))
-
   const openclawHome = includeGlobalRuntime && Boolean(
     (config.openclawStateDir && existsSync(config.openclawStateDir)) ||
-    (config.openclawConfigPath && existsSync(config.openclawConfigPath))
+      (config.openclawConfigPath && existsSync(config.openclawConfigPath))
   )
+
+  let gatewayConfigured = false
+  if (includeGlobalRuntime && openclawHome && config.openclawConfigPath && existsSync(config.openclawConfigPath)) {
+    try {
+      const parsed = JSON.parse(readFileSync(config.openclawConfigPath, 'utf8'))
+      const gw = (parsed?.gateway ?? {}) as Record<string, any>
+      gatewayConfigured = Boolean(gw?.port && (gw?.mode === 'local' || gw?.mode === 'remote' || gw?.bind))
+    } catch {
+      // ignore bad config
+    }
+  }
+
+  const gateway = includeGlobalRuntime && (gatewayReachable || gatewayConfigured || await isPortOpen(config.gatewayHost, config.gatewayPort))
 
   const claudeProjectsPath = path.join(config.claudeHome, 'projects')
   const claudeHome = includeGlobalRuntime && existsSync(claudeProjectsPath)

@@ -20,6 +20,24 @@ import { denyUnscopedResourceForStrictWorkspace } from '@/lib/workspace-isolatio
 
 type BuiltinCategory = 'ai' | 'search' | 'social' | 'messaging' | 'devtools' | 'security' | 'infra' | 'productivity' | 'browser'
 
+interface FreeModelEntry {
+  id: string
+  model: string
+  provider: string
+  tier: 'free' | 'freemium'
+  unlimited: boolean
+  notes?: string
+}
+
+const FREE_MODEL_POOL: FreeModelEntry[] = [
+  { id: 'stepfun-step-3.7-flash-free', model: 'stepfun/step-3.7-flash:free', provider: 'stepfun', tier: 'free', unlimited: true, notes: 'Free unlimited low context; hard tasks should escalate.' },
+  { id: 'openrouter-anthropic-claude-sonnet-4', model: 'openrouter/anthropic/claude-sonnet-4', provider: 'openrouter', tier: 'freemium', unlimited: false, notes: 'Free-tier Claude via OpenRouter; watch rate limits.' },
+  { id: 'moonshot-kimi-k2-thinking', model: 'moonshot/kimi-k2-thinking', provider: 'moonshot', tier: 'freemium', unlimited: false },
+  { id: 'openrouter-moonshot-kimi-k2.5', model: 'openrouter/moonshotai/kimi-k2.5', provider: 'openrouter', tier: 'freemium', unlimited: false },
+  { id: 'openai-codex-mini-latest', model: 'openai/codex-mini-latest', provider: 'openai', tier: 'freemium', unlimited: false },
+  { id: 'ollama-qwen2.5-coder-14b', model: 'ollama/qwen2.5-coder:14b', provider: 'ollama', tier: 'free', unlimited: true, notes: 'Local only; requires Ollama.' },
+]
+
 interface IntegrationDef {
   id: string
   name: string
@@ -50,6 +68,7 @@ const INTEGRATIONS: IntegrationDef[] = [
   { id: 'nvidia', name: 'NVIDIA', category: 'ai', envVars: ['NVIDIA_API_KEY'], vaultItem: 'openclaw-nvidia-api-key' },
   { id: 'moonshot', name: 'Moonshot / Kimi', category: 'ai', envVars: ['MOONSHOT_API_KEY'], vaultItem: 'openclaw-moonshot-api-key' },
   { id: 'ollama', name: 'Ollama (Local)', category: 'ai', envVars: ['OLLAMA_API_KEY'], vaultItem: 'openclaw-ollama-api-key' },
+  { id: 'fal', name: 'fal.ai (Fel)', category: 'ai', envVars: ['FAL_API_KEY'], vaultItem: 'openclaw-fal-api-key', testable: true, recommendation: 'Free-tier video/image generation. Get a key at fal.ai and use sparingly to avoid paid upgrades.' },
 
   // Search
   { id: 'brave', name: 'Brave Search', category: 'search', envVars: ['BRAVE_API_KEY'], vaultItem: 'openclaw-brave-api-key' },
@@ -459,6 +478,8 @@ export async function GET(request: NextRequest) {
     categories: Object.entries(allCategories)
       .sort(([, a], [, b]) => a.order - b.order)
       .map(([id, meta]) => ({ id, label: meta.label })),
+    freeModels: FREE_MODEL_POOL,
+    freeModelCount: FREE_MODEL_POOL.length,
     opAvailable,
     envPath: getEnvPath(),
   })

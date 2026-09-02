@@ -287,6 +287,16 @@ export function IntegrationsPanel() {
     )
   }
 
+  const [freeModels, setFreeModels] = useState<Array<{ id: string; model: string; provider: string; tier: string; unlimited: boolean; notes?: string }>>([])
+
+  useEffect(() => {
+    apiFetch<{ freeModels?: Array<{ id: string; model: string; provider: string; tier: string; unlimited: boolean; notes?: string }> }>('/api/integrations')
+      .then((data) => {
+        if (Array.isArray(data.freeModels)) setFreeModels(data.freeModels)
+      })
+      .catch(() => {})
+  }, [])
+
   const filteredIntegrations = integrations.filter(i => i.category === activeCategory)
   const connectedCount = integrations.filter(i => i.status === 'connected').length
 
@@ -355,6 +365,31 @@ export function IntegrationsPanel() {
           feedback.ok ? 'bg-green-500/10 text-green-400' : 'bg-destructive/10 text-destructive'
         }`}>
           {feedback.text}
+        </div>
+      )}
+
+      {/* Free model pool */}
+      {freeModels.length > 0 && (
+        <div className="bg-card border border-border rounded-lg p-4 space-y-2">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-semibold text-foreground">Free-tier model pool</h3>
+              <p className="text-2xs text-muted-foreground">Use these first for easy/normal tasks. Hard tasks can escalate to paid Claude only.</p>
+            </div>
+            <span className="text-2xs px-2 py-1 rounded bg-green-500/10 text-green-400 border border-green-500/30">{freeModels.length} free models</span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2">
+            {freeModels.map((m) => (
+              <div key={m.id} className="rounded-md border border-border/70 bg-secondary/30 px-3 py-2 space-y-1">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-medium text-foreground">{m.model}</span>
+                  <span className={`text-2xs px-1.5 py-0.5 rounded border ${m.unlimited ? 'border-green-500/40 text-green-500 bg-green-500/10' : 'border-border text-muted-foreground bg-background'}`}>{m.tier}{m.unlimited ? ' · unlimited' : ''}</span>
+                </div>
+                <div className="text-2xs text-muted-foreground">{m.provider}</div>
+                {m.notes && <div className="text-2xs text-muted-foreground/80">{m.notes}</div>}
+              </div>
+            ))}
+          </div>
         </div>
       )}
 

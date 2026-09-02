@@ -4,13 +4,6 @@ import { getDatabase } from '@/lib/db'
 import { buildGatewayWebSocketUrl } from '@/lib/gateway-url'
 import { getDetectedGatewayToken } from '@/lib/gateway-runtime'
 import { denyUnscopedResourceForStrictWorkspace } from '@/lib/workspace-isolation'
-import {
-  isTailscaleServe,
-  refreshTailscaleCache,
-  getCachedTailscaleWeb,
-  hasGwPathHandler,
-  findTailscaleServePort,
-} from '@/lib/tailscale-serve'
 
 interface GatewayEntry {
   id: number
@@ -42,18 +35,14 @@ function inferBrowserProtocol(request: NextRequest): 'http:' | 'https:' {
 
 const LOCALHOST_HOSTS = new Set(['127.0.0.1', 'localhost', '::1'])
 
-/** Hostnames reachable from the server but NOT from the user's browser. */
 function isNonBrowserReachableHost(host: string): boolean {
   const h = (host || '').toLowerCase().trim()
   if (LOCALHOST_HOSTS.has(h)) return true
-  // Docker-internal hostnames — browser cannot resolve these
   if (h === 'host.docker.internal' || h === 'host-gateway') return true
-  // Docker bridge network IPs (172.17.x.x, 172.18.x.x, etc.)
   if (/^172\.(1[6-9]|2\d|3[01])\./.test(h)) return true
   return false
 }
 
-/** Extract the browser-facing hostname from the request. */
 function getBrowserHostname(request: NextRequest): string {
   const origin = request.headers.get('origin') || request.headers.get('referer') || ''
   if (origin) {
@@ -61,43 +50,6 @@ function getBrowserHostname(request: NextRequest): string {
   }
   const hostHeader = request.headers.get('host') || ''
   return hostHeader.split(':')[0]
-}
-
-/**
- * When the gateway is on localhost but the browser is remote, resolve the
- * correct WebSocket URL the browser should use.
- *
- * - Tailscale Serve mode: `wss://<dashboard-host>/gw` (Tailscale proxies /gw to localhost gateway)
- * - Otherwise: rewrite host to dashboard hostname with the gateway port
- */
-function resolveRemoteGatewayUrl(
-  gateway: { host: string; port: number },
-  request: NextRequest,
-): string | null {
-  const normalized = (gateway.host || '').toLowerCase().trim()
-  if (!isNonBrowserReachableHost(normalized)) return null // browser-reachable host — use normal path
-
-  const browserHost = getBrowserHostname(request)
-  if (!browserHost || LOCALHOST_HOSTS.has(browserHost.toLowerCase())) return null // local access
-
-  // Browser is remote — determine the correct proxied URL
-  if (isTailscaleServe()) {
-    // Check for a /gw path-based proxy first
-    refreshTailscaleCache()
-    const web = getCachedTailscaleWeb()
-    if (hasGwPathHandler(web)) {
-      return `wss://${browserHost}/gw`
-    }
-    // Port-based proxy: find the Tailscale Serve port that proxies to the gateway port
-    const tsPort = findTailscaleServePort(web, gateway.port)
-    if (tsPort) {
-      return `wss://${browserHost}:${tsPort}`
-    }
-  }
-
-  // No Tailscale Serve — try direct connection to dashboard host on gateway port
-  const protocol = inferBrowserProtocol(request) === 'https:' ? 'wss' : 'ws'
-  return `${protocol}://${browserHost}:${gateway.port}`
 }
 
 function ensureTable(db: ReturnType<typeof getDatabase>) {
@@ -120,14 +72,7 @@ function ensureTable(db: ReturnType<typeof getDatabase>) {
   `)
 }
 
-/**
- * POST /api/gateways/connect
- * Resolves websocket URL and token for a selected gateway without exposing tokens in list payloads.
- */
 export async function POST(request: NextRequest) {
-  // Any authenticated dashboard user may initiate a gateway websocket connect.
-  // Restricting this to operator can cause startup fallback to connect without auth,
-  // which then fails as "device identity required".
   const auth = requireRole(request, 'viewer')
   if ('error' in auth) return NextResponse.json({ error: auth.error }, { status: auth.status })
   const isolationDeny = denyUnscopedResourceForStrictWorkspace(auth.user, 'runtime_configuration', new URL(request.url).pathname)
@@ -153,37 +98,35 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Gateway not found' }, { status: 404 })
   }
 
-  // Prefer an explicitly configured browser WebSocket URL when provided.
-  // This is required for reverse-proxy setups where the browser-facing gateway
-  // lives on a different host/path than the server-side localhost gateway.
-  const explicitBrowserWsUrl = String(process.env.NEXT_PUBLIC_GATEWAY_URL || '').trim()
+  const normalized = (gateway.host || '').toLowerCase().trim()
+  const browserHost = getBrowserHostname(request)
+  const browserProto = inferBrowserProtocol(request)
+  const wsProto = browserProto === 'https:' ? 'wss:' : 'ws:'
 
-  // When gateway host is localhost but the browser is remote (e.g. Tailscale),
-  // resolve the correct browser-accessible WebSocket URL.
-  const remoteUrl = explicitBrowserWsUrl || resolveRemoteGatewayUrl(gateway, request)
-  const ws_url = remoteUrl || buildGatewayWebSocketUrl({
-    host: gateway.host,
-    port: gateway.port,
-    browserProtocol: inferBrowserProtocol(request),
-  })
+  let ws_url: string
+  if (LOCALHOST_HOSTS.has(normalized) || isNonBrowserReachableHost(normalized)) {
+    // Browser is on the same host as MC — connect directly to localhost gateway
+    ws_url = `ws://127.0.0.1:${gateway.port}`
+  } else {
+    ws_url = buildGatewayWebSocketUrl({
+      host: gateway.host,
+      port: gateway.port,
+      browserProtocol: browserProto,
+    })
+  }
 
   const dbToken = (gateway.token || '').trim()
   const detectedToken = gateway.is_primary === 1 ? getDetectedGatewayToken() : ''
   const token = detectedToken || dbToken
 
-  // Keep runtime DB aligned with detected OpenClaw gateway token for primary gateway.
   if (gateway.is_primary === 1 && detectedToken && detectedToken !== dbToken) {
     try {
       db.prepare('UPDATE gateways SET token = ?, updated_at = (unixepoch()) WHERE id = ?').run(detectedToken, gateway.id)
     } catch {
-      // Non-fatal: connect still succeeds with detected token even if persistence fails.
+      // Non-fatal
     }
   }
 
-  // Only return the real secret token to operator+ roles. Viewer-role
-  // callers still get connection metadata (ws_url) so existing flows
-  // that merely need to know a gateway exists keep working, but the
-  // actual bearer credential is no longer exposed to the lowest trust tier.
   const canSeeToken = ROLE_LEVELS[auth.user.role] >= ROLE_LEVELS['operator']
 
   return NextResponse.json({

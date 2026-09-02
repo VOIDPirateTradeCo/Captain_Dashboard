@@ -4,6 +4,7 @@ node_modules
 .next
 .env
 *.md
+!AGENTS.md
 .github
 ops/*
 !ops/templates/
@@ -13,3 +14,4 @@ scripts/*
 !scripts/check-node-version.mjs
 !scripts/prepare-standalone-artifact.mjs
 !scripts/load-env.sh
+!scripts/mc-https-proxy.js

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { Loader } from '@/components/ui/loader'
@@ -74,6 +74,12 @@ interface SessionCostEntry {
 // ── Helpers ──────────────────────────────────────────
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d', '#ffc658', '#ff6b6b']
+
+const isFreeModel = (model?: string) => {
+  if (!model) return false
+  const key = model.toLowerCase()
+  return /ollama|kimi|codex-mini|openrouter|anthropic\/claude-sonnet-4|claude-haiku/.test(key) && !/opus/.test(key)
+}
 
 const formatNumber = (num: number) => {
   if (num >= 1_000_000) return (num / 1_000_000).toFixed(1) + 'M'
@@ -190,6 +196,44 @@ export function CostTrackerPanel() {
   const agentList = byAgentData?.agents || []
   const maxAgentCost = Math.max(...agentList.map(a => a.total_cost), 0.0001)
 
+  const freeRouterSummary = useMemo(() => {
+    if (!agentList.length) return null
+    const freeModels = new Set<string>()
+    const paidModels = new Set<string>()
+    let totalCtx = 0
+    let ctxCount = 0
+    for (const agent of agentList) {
+      for (const m of agent.models || []) {
+        const key = (m.model || '').toLowerCase()
+        if (!key) continue
+        const ctx = typeof (m as any).context_window === 'number' ? (m as any).context_window : 0
+        if (ctx > 0) { totalCtx += ctx; ctxCount++ }
+        if (/(ollama|kimi|codex-mini|openrouter\/moonshot|openrouter\/anthropic)/.test(key)) freeModels.add(key)
+        else paidModels.add(key)
+      }
+    }
+    return {
+      freeModelCount: freeModels.size,
+      paidModelCount: paidModels.size,
+      avgContextWindow: ctxCount ? Math.round(totalCtx / ctxCount) : 0,
+      freeSample: Array.from(freeModels).slice(0, 5),
+      paidSample: Array.from(paidModels).slice(0, 5),
+    }
+  }, [agentList])
+
+  const ctxWarnings = useMemo(() => {
+    if (!agentList.length) return [] as Array<{ agent: string; model: string; context_window?: number }>
+    const out: Array<{ agent: string; model: string; context_window?: number }> = []
+    for (const agent of agentList) {
+      for (const m of agent.models || []) {
+        const key = (m.model || '').toLowerCase()
+        const ctx = typeof (m as any).context_window === 'number' ? (m as any).context_window : undefined
+        if (ctx && ctx > 100_000) out.push({ agent: agent.agent || 'agent', model: m.model || 'unknown', context_window: ctx })
+      }
+    }
+    return out.slice(0, 20)
+  }, [agentList])
+
   const getAgentTasks = (agentName: string): TaskCostEntry[] => {
     if (!taskData) return []
     const entry = taskData.agents[agentName]
@@ -198,63 +242,77 @@ export function CostTrackerPanel() {
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 md:p-6 max-w-7xl mx-auto space-y-6">
       {/* Header */}
-      <div className="border-b border-border pb-4">
-        <div className="flex items-center justify-between flex-wrap gap-3">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">{t('title')}</h1>
-            <p className="text-muted-foreground mt-1">{t('subtitle')}</p>
-          </div>
-          <div className="flex items-center gap-3">
-            {/* View tabs */}
-            <div className="flex rounded-lg border border-border overflow-hidden">
-              {(['overview', 'agents', 'sessions', 'tasks'] as const).map(v => (
-                <button
-                  key={v}
-                  onClick={() => setView(v)}
-                  className={`px-3 py-1.5 text-xs font-medium transition-colors ${
-                    view === v ? 'bg-primary text-primary-foreground' : 'bg-card text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  {v.charAt(0).toUpperCase() + v.slice(1)}
-                </button>
-              ))}
-            </div>
-            {/* Timeframe */}
-            <div className="flex space-x-1">
-              {(['hour', 'day', 'week', 'month'] as const).map(tf => (
-                <Button key={tf} onClick={() => setTimeframe(tf)} variant={timeframe === tf ? 'default' : 'secondary'} size="sm">
-                  {tf.charAt(0).toUpperCase() + tf.slice(1)}
-                </Button>
-              ))}
-            </div>
-          </div>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">{t('title')}</h1>
+          <p className="text-sm text-muted-foreground mt-1">{t('subtitle')}</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <select
+            value={timeframe}
+            onChange={(e) => setTimeframe(e.target.value as Timeframe)}
+            className="bg-surface-1 border border-border rounded px-2 py-1 text-xs"
+          >
+            <option value="hour">{t('timeframes.hour')}</option>
+            <option value="day">{t('timeframes.day')}</option>
+            <option value="week">{t('timeframes.week')}</option>
+            <option value="month">{t('timeframes.month')}</option>
+          </select>
+          <Button onClick={loadData} variant="secondary" size="xs" disabled={isLoading}>
+            {isLoading ? t('loading') : t('refresh')}
+          </Button>
         </div>
       </div>
 
-      {isLoading && !usageStats ? (
-        <Loader variant="panel" label={t('loadingCostData')} />
-      ) : view === 'overview' ? (
+      {/* View tabs */}
+      <div className="flex rounded-md border border-border overflow-hidden">
+        {(['overview', 'agents', 'sessions', 'tasks'] as View[]).map(v => (
+          <button key={v} onClick={() => setView(v)}
+            className={`px-3 py-1.5 text-xs font-medium ${view === v ? 'bg-primary text-primary-foreground' : 'bg-card text-muted-foreground hover:text-foreground'}`}>
+            {t(`views.${v}`)}
+          </button>
+        ))}
+      </div>
+
+      {view === 'overview' && (
         <OverviewView
-          stats={usageStats} trendData={trendData} agentSummary={agentSummary}
-          taskData={taskData} timeframe={timeframe} chartMode={chartMode}
-          setChartMode={setChartMode} exportData={exportData} isExporting={isExporting}
+          stats={summary ? { summary, models: usageStats!.models, sessions: usageStats!.sessions, timeframe: usageStats!.timeframe, recordCount: usageStats!.recordCount } : null}
+          trendData={trendData}
+          agentSummary={agentSummary}
+          taskData={taskData}
+          timeframe={timeframe}
+          chartMode={chartMode}
+          setChartMode={setChartMode}
+          exportData={exportData}
+          isExporting={isExporting}
+          onRefresh={loadData}
+          freeRouterSummary={freeRouterSummary}
+          ctxWarnings={ctxWarnings}
+        />
+      )}
+      {view === 'agents' && (
+        <AgentsView
+          agents={agentList}
+          summary={agentSummary}
+          maxCost={maxAgentCost}
+          expandedAgent={expandedAgent}
+          setExpandedAgent={setExpandedAgent}
+          getAgentTasks={getAgentTasks}
           onRefresh={loadData}
         />
-      ) : view === 'agents' ? (
-        <AgentsView
-          agents={agentList} summary={agentSummary} maxCost={maxAgentCost}
-          expandedAgent={expandedAgent} setExpandedAgent={setExpandedAgent}
-          getAgentTasks={getAgentTasks} onRefresh={loadData}
-        />
-      ) : view === 'sessions' ? (
+      )}
+      {view === 'sessions' && (
         <SessionsView
-          sessionCosts={sessionCosts} sessions={sessions}
-          sessionSort={sessionSort} setSessionSort={setSessionSort}
+          sessions={sessionCosts}
+          sort={sessionSort}
+          onSortChange={setSessionSort}
+          onRefresh={loadSessionCosts}
         />
-      ) : (
-        <TasksView taskData={taskData} onRefresh={loadData} />
+      )}
+      {view === 'tasks' && (
+        <TasksView taskData={taskData} getAgentTasks={getAgentTasks} />
       )}
     </div>
   )
@@ -264,14 +322,26 @@ export function CostTrackerPanel() {
 
 function OverviewView({
   stats, trendData, agentSummary, taskData, timeframe, chartMode, setChartMode,
-  exportData, isExporting, onRefresh,
+  exportData, isExporting, onRefresh, freeRouterSummary, ctxWarnings,
 }: {
-  stats: UsageStats | null; trendData: TrendData | null
-  agentSummary: ByAgentResponse['summary'] | undefined; taskData: TaskCostsResponse | null
-  timeframe: Timeframe; chartMode: 'incremental' | 'cumulative'
+  stats: UsageStats | null
+  trendData: TrendData | null
+  agentSummary: ByAgentResponse['summary'] | undefined
+  taskData: TaskCostsResponse | null
+  timeframe: Timeframe
+  chartMode: 'incremental' | 'cumulative'
   setChartMode: (m: 'incremental' | 'cumulative') => void
-  exportData: (f: 'json' | 'csv') => void; isExporting: boolean
+  exportData: (f: 'json' | 'csv') => void
+  isExporting: boolean
   onRefresh: () => void
+  freeRouterSummary: {
+    freeModelCount: number
+    paidModelCount: number
+    avgContextWindow: number
+    freeSample: string[]
+    paidSample: string[]
+  } | null
+  ctxWarnings: Array<{ agent: string; model: string; context_window?: number }>
 }) {
   const t = useTranslations('costTracker')
   if (!stats) {
@@ -293,7 +363,7 @@ function OverviewView({
   const pieData = modelData.slice(0, 6).map(m => ({ name: m.name, value: m.cost }))
 
   const trendChartData = (() => {
-    if (!trendData?.trends) return []
+    if (!trendData?.trends) return [] as Array<{ time: string; tokens: number; cost: number; requests: number }>
     const raw = trendData.trends.map(t => ({
       time: new Date(t.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       tokens: t.tokens, cost: t.cost, requests: t.requests,
@@ -345,6 +415,36 @@ function OverviewView({
         </div>
       </div>
 
+      {/* Free-token router + context budget summary */}
+        <div className="grid md:grid-cols-3 gap-4">
+          <div className="bg-card border border-border rounded-lg p-5">
+            <h3 className="text-sm font-semibold text-foreground mb-2">Free-token router</h3>
+            <div className="text-xs text-muted-foreground space-y-1">
+              <div>Free models routed: <span className="text-foreground">{freeRouterSummary?.freeModelCount ?? 0}</span></div>
+              <div>Paid models in use: <span className="text-foreground">{freeRouterSummary?.paidModelCount ?? 0}</span></div>
+              <div>Avg context window: <span className="text-foreground">{freeRouterSummary?.avgContextWindow ? formatNumber(freeRouterSummary.avgContextWindow) : '-'}</span></div>
+              <div>Free samples: <span className="text-foreground">{freeRouterSummary?.freeSample?.join(', ') || '-'}</span></div>
+              <div>Paid samples: <span className="text-foreground">{freeRouterSummary?.paidSample?.join(', ') || '-'}</span></div>
+            </div>
+          </div>
+          <div className="bg-card border border-border rounded-lg p-5 md:col-span-2">
+            <h3 className="text-sm font-semibold text-foreground mb-2">Context window watch</h3>
+            {ctxWarnings.length === 0 ? (
+              <div className="text-xs text-muted-foreground">No context windows above 100K tokens detected.</div>
+            ) : (
+              <div className="space-y-2">
+                {ctxWarnings.map((w, i) => (
+                  <div key={`${w.agent}-${w.model}-${i}`} className="flex items-center justify-between text-xs bg-secondary rounded px-3 py-2">
+                    <div className="text-muted-foreground">{w.agent}</div>
+                    <div className="font-mono text-foreground">{w.model}</div>
+                    <div className="text-orange-400">{formatNumber(w.context_window ?? 0)} ctx</div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
       {/* Charts */}
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Trend chart */}
@@ -354,8 +454,7 @@ function OverviewView({
             <div className="flex rounded-md border border-border overflow-hidden">
               {(['incremental', 'cumulative'] as const).map(m => (
                 <button key={m} onClick={() => setChartMode(m)}
-                  className={`px-2 py-1 text-[10px] font-medium ${chartMode === m ? 'bg-primary text-primary-foreground' : 'bg-card text-muted-foreground hover:text-foreground'}`}
-                >{m === 'incremental' ? t('perTurn') : t('cumulative')}</button>
+                  className={`px-2 py-1 text-[10px] font-medium ${chartMode === m ? 'bg-primary text-primary-foreground' : 'bg-card text-muted-foreground hover:text-foreground'}`}>{m === 'incremental' ? t('perTurn') : t('cumulative')}</button>
               ))}
             </div>
           </div>
@@ -520,132 +619,95 @@ function AgentsView({
         </div>
       </div>
 
-      {/* Cost bar chart */}
-      <div className="bg-card border border-border rounded-lg p-6">
-        <h2 className="text-xl font-semibold mb-4">{t('perAgentCost')}</h2>
-        <div className="h-64">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={agents.slice(0, 12).map(a => ({
-              name: a.agent.length > 12 ? a.agent.slice(0, 11) + '\u2026' : a.agent,
-              cost: Number(a.total_cost.toFixed(4)),
-            }))}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" tick={{ fontSize: 11 }} /><YAxis tick={{ fontSize: 11 }} />
-              <Tooltip formatter={(v) => formatCost(Number(v))} />
-              <Bar dataKey="cost" fill="#0088FE" name="Cost ($)" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      {/* Agent detail rows */}
-      <div className="bg-card border border-border rounded-lg p-6">
-        <h2 className="text-xl font-semibold mb-4">{t('agentBreakdown')}</h2>
-        <div className="space-y-2 max-h-[600px] overflow-y-auto">
-          {agents.map(agent => {
-            const costShare = (agent.total_cost / Math.max(summary.total_cost, 0.0001)) * 100
-            const isExpanded = expandedAgent === agent.agent
-            const agentTasks = getAgentTasks(agent.agent)
-            return (
-              <div key={agent.agent} className="border border-border rounded-lg overflow-hidden">
-                <Button onClick={() => setExpandedAgent(isExpanded ? null : agent.agent)}
-                  variant="ghost" className="w-full p-4 h-auto flex items-center justify-between text-left">
-                  <div className="flex items-center gap-3 min-w-0">
-                    <span className="font-medium text-foreground truncate">{agent.agent}</span>
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-secondary text-muted-foreground shrink-0">
-                      {agent.session_count} session{agent.session_count !== 1 ? 's' : ''}
-                    </span>
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-500 shrink-0">
-                      {agent.request_count} req{agent.request_count !== 1 ? 's' : ''}
-                    </span>
-                    {agentTasks.length > 0 && (
-                      <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/10 text-green-500 shrink-0">
-                        {agentTasks.length} task{agentTasks.length !== 1 ? 's' : ''}
-                      </span>
-                    )}
+      {/* Agent rows */}
+      <div className="space-y-4">
+        {agents.map(agent => {
+          const tasks = getAgentTasks(agent.agent)
+          const isExpanded = expandedAgent === agent.agent
+          return (
+            <div key={agent.agent} className="bg-card border border-border rounded-lg overflow-hidden">
+              <button
+                onClick={() => setExpandedAgent(isExpanded ? null : agent.agent)}
+                className="w-full px-5 py-4 flex items-center justify-between hover:bg-secondary/50 transition-colors"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold">
+                    {agent.agent.charAt(0).toUpperCase()}
                   </div>
-                  <div className="flex items-center gap-4 text-sm shrink-0">
-                    <div className="w-24 hidden md:block">
-                      <div className="w-full bg-secondary rounded-full h-2">
-                        <div className="bg-blue-500 h-2 rounded-full" style={{ width: `${(agent.total_cost / maxCost) * 100}%` }} />
-                      </div>
+                  <div className="text-left">
+                    <div className="font-medium text-foreground">{agent.agent}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {agent.session_count} sessions · {agent.request_count} requests · last active {new Date(agent.last_active).toLocaleString()}
                     </div>
-                    <div className="text-right">
-                      <div className="font-medium text-foreground">{formatCost(agent.total_cost)}</div>
-                      <div className="text-xs text-muted-foreground">{costShare.toFixed(1)}%</div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-muted-foreground">{formatNumber(agent.total_tokens)}</div>
-                      <div className="text-xs text-muted-foreground">{t('tokens')}</div>
-                    </div>
-                    <svg className={`w-4 h-4 text-muted-foreground transition-transform ${isExpanded ? 'rotate-180' : ''}`}
-                      viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-                      <polyline points="4,6 8,10 12,6" />
-                    </svg>
                   </div>
-                </Button>
-
-                {isExpanded && (
-                  <div className="px-4 pb-4 border-t border-border bg-secondary/30">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-3 mb-3">
-                      <div><div className="text-xs text-muted-foreground">{t('inputTokens')}</div><div className="text-sm font-medium">{formatNumber(agent.total_input_tokens)}</div></div>
-                      <div><div className="text-xs text-muted-foreground">{t('outputTokens')}</div><div className="text-sm font-medium">{formatNumber(agent.total_output_tokens)}</div></div>
-                      <div><div className="text-xs text-muted-foreground">{t('ioRatio')}</div><div className="text-sm font-medium">{agent.total_output_tokens > 0 ? (agent.total_input_tokens / agent.total_output_tokens).toFixed(2) : '-'}</div></div>
-                      <div><div className="text-xs text-muted-foreground">{t('lastActive')}</div><div className="text-sm font-medium">{new Date(agent.last_active).toLocaleDateString()}</div></div>
-                    </div>
-
-                    <div className="flex gap-2 mb-3">
-                      <Button variant={expandedSection === 'tasks' ? 'default' : 'ghost'} size="sm" onClick={(e) => { e.stopPropagation(); setExpandedSection('tasks') }}>Tasks ({agentTasks.length})</Button>
-                      <Button variant={expandedSection === 'models' ? 'default' : 'ghost'} size="sm" onClick={(e) => { e.stopPropagation(); setExpandedSection('models') }}>Models ({agent.models.length})</Button>
-                    </div>
-
-                    {expandedSection === 'tasks' && (
-                      <div className="text-sm">
-                        {agentTasks.length === 0 ? (
-                          <div className="text-xs text-muted-foreground italic py-2">{t('noTaskCosts')}</div>
-                        ) : (
-                          <div className="space-y-1.5">
-                            {agentTasks.map(task => (
-                              <div key={task.taskId} className="flex items-center justify-between text-xs">
-                                <div className="flex items-center gap-2 min-w-0 flex-1">
-                                  <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${
-                                    task.priority === 'critical' ? 'bg-red-500/10 text-red-500' :
-                                    task.priority === 'high' ? 'bg-orange-500/10 text-orange-500' :
-                                    task.priority === 'medium' ? 'bg-yellow-500/10 text-yellow-500' :
-                                    'bg-secondary text-muted-foreground'
-                                  }`}>{task.priority}</span>
-                                  {task.project.ticketRef && <span className="text-muted-foreground font-mono">{task.project.ticketRef}</span>}
-                                  <span className="text-foreground truncate">{task.title}</span>
-                                </div>
-                                <span className="font-medium text-foreground w-16 text-right shrink-0">{formatCost(task.stats.totalCost)}</span>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    )}
-
-                    {expandedSection === 'models' && agent.models.length > 0 && (
-                      <div className="space-y-1.5">
-                        {agent.models.map(m => (
-                          <div key={m.model} className="flex items-center justify-between text-xs">
-                            <span className="text-muted-foreground truncate">{getModelDisplayName(m.model)}</span>
-                            <div className="flex gap-4 shrink-0">
-                              <span>{formatNumber(m.input_tokens)} in</span>
-                              <span>{formatNumber(m.output_tokens)} out</span>
-                              <span>{m.request_count} reqs</span>
-                              <span className="font-medium text-foreground w-16 text-right">{formatCost(m.cost)}</span>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                </div>
+                <div className="flex items-center gap-6">
+                  <div className="text-right">
+                    <div className="text-sm font-medium text-foreground">{formatNumber(agent.total_tokens)}</div>
+                    <div className="text-xs text-muted-foreground">tokens</div>
                   </div>
-                )}
-              </div>
-            )
-          })}
-        </div>
+                  <div className="text-right">
+                    <div className="text-sm font-medium text-green-500">{formatCost(agent.total_cost)}</div>
+                    <div className="text-xs text-muted-foreground">cost</div>
+                  </div>
+                  <div className="w-24">
+                    <div className="w-full bg-secondary rounded-full h-2">
+                      <div className="bg-primary h-2 rounded-full" style={{ width: `${(agent.total_cost / maxCost) * 100}%` }} />
+                    </div>
+                  </div>
+                </div>
+              </button>
+
+              {isExpanded && (
+                <div className="px-5 py-4 border-t border-border bg-surface-1/30">
+                  <div className="flex gap-2 mb-4">
+                    <button onClick={() => setExpandedSection('models')}
+                      className={`px-3 py-1 text-xs rounded ${expandedSection === 'models' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground'}`}>
+                      {t('models')}
+                    </button>
+                    <button onClick={() => setExpandedSection('tasks')}
+                      className={`px-3 py-1 text-xs rounded ${expandedSection === 'tasks' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground'}`}>
+                      {t('tasks')} ({tasks.length})
+                    </button>
+                  </div>
+
+                  {expandedSection === 'models' && (
+                    <div className="space-y-2">
+                      {agent.models.map((m, i) => (
+                        <div key={i} className="flex items-center justify-between text-sm bg-secondary rounded px-3 py-2">
+                          <div className="text-muted-foreground">{getModelDisplayName(m.model)}</div>
+                          <div className={`text-xs px-1.5 py-0.5 rounded border ${isFreeModel(m.model) ? 'border-green-500/40 text-green-500 bg-green-500/10' : 'border-border text-muted-foreground bg-background'}`}>{isFreeModel(m.model) ? 'Free' : 'Paid'}</div>
+                          <div className="text-foreground">{formatNumber(m.request_count)} requests</div>
+                          <div className="text-foreground">{formatNumber(m.input_tokens + m.output_tokens)} tokens</div>
+                          <div className="text-green-500">{formatCost(m.cost)}</div>
+                        </div>
+                      ))}
+                      {agent.models.length === 0 && (
+                        <div className="text-sm text-muted-foreground">{t('noModelData')}</div>
+                      )}
+                    </div>
+                  )}
+
+                  {expandedSection === 'tasks' && (
+                    <div className="space-y-2">
+                      {tasks.map(task => (
+                        <div key={task.taskId} className="flex items-center justify-between text-sm bg-secondary rounded px-3 py-2">
+                          <div className="text-foreground">#{task.taskId} {task.title}</div>
+                          <div className="text-muted-foreground">{task.status}</div>
+                          <div className="text-foreground">{formatNumber(task.stats.totalTokens)} tokens</div>
+                          <div className="text-green-500">{formatCost(task.stats.totalCost)}</div>
+                        </div>
+                      ))}
+                      {tasks.length === 0 && (
+                        <div className="text-sm text-muted-foreground">{t('noTaskData')}</div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )
+        })}
       </div>
     </div>
   )
@@ -654,143 +716,143 @@ function AgentsView({
 // ── Sessions View ──────────────────────────────────
 
 function SessionsView({
-  sessionCosts, sessions, sessionSort, setSessionSort,
+  sessions, sort, onSortChange, onRefresh,
 }: {
-  sessionCosts: SessionCostEntry[]; sessions: any[]
-  sessionSort: 'cost' | 'tokens' | 'requests' | 'recent'
-  setSessionSort: (s: 'cost' | 'tokens' | 'requests' | 'recent') => void
+  sessions: SessionCostEntry[]; sort: 'cost' | 'tokens' | 'requests' | 'recent'
+  onSortChange: (s: 'cost' | 'tokens' | 'requests' | 'recent') => void; onRefresh: () => void
 }) {
   const t = useTranslations('costTracker')
-  const sorted = [...sessionCosts].sort((a, b) => {
-    switch (sessionSort) {
-      case 'cost': return b.totalCost - a.totalCost
-      case 'tokens': return b.totalTokens - a.totalTokens
-      case 'requests': return b.requestCount - a.requestCount
-      case 'recent': return (b.lastSeen || '').localeCompare(a.lastSeen || '')
-      default: return 0
-    }
-  })
+
+  const sorted = useMemo(() => {
+    const arr = [...sessions]
+    arr.sort((a, b) => {
+      switch (sort) {
+        case 'tokens': return b.totalTokens - a.totalTokens
+        case 'requests': return b.requestCount - a.requestCount
+        case 'recent': return new Date(b.lastSeen).getTime() - new Date(a.lastSeen).getTime()
+        default: return b.totalCost - a.totalCost
+      }
+    })
+    return arr
+  }, [sessions, sort])
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-3">
-        <span className="text-sm text-muted-foreground">{t('sortBy')}:</span>
-        {(['cost', 'tokens', 'requests', 'recent'] as const).map(s => (
-          <button key={s} onClick={() => setSessionSort(s)}
-            className={`px-2 py-1 text-xs rounded ${sessionSort === s ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground hover:text-foreground'}`}
-          >{s.charAt(0).toUpperCase() + s.slice(1)}</button>
-        ))}
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-semibold">{t('sessions')}</h2>
+        <div className="flex items-center gap-2">
+          <select value={sort} onChange={(e) => onSortChange(e.target.value as any)} className="bg-surface-1 border border-border rounded px-2 py-1 text-xs">
+            <option value="cost">{t('sortByCost')}</option>
+            <option value="tokens">{t('sortByTokens')}</option>
+            <option value="requests">{t('sortByRequests')}</option>
+            <option value="recent">{t('sortByRecent')}</option>
+          </select>
+          <Button onClick={onRefresh} variant="secondary" size="xs">{t('refresh')}</Button>
+        </div>
       </div>
 
-      {sorted.length === 0 ? (
-        <div className="text-center text-muted-foreground py-12">
-          <p className="text-lg mb-1">{t('noSessionCostData')}</p>
-          <p className="text-sm">{t('noSessionCostDataDesc')}</p>
-        </div>
-      ) : (
-        <div className="space-y-2">
-          {sorted.map(entry => {
-            const sessionInfo = sessions.find((s: any) => s.id === entry.sessionId)
-            return (
-              <div key={entry.sessionId} className="bg-card border border-border rounded-lg p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="min-w-0">
-                    <div className="font-medium text-foreground truncate">
-                      {entry.sessionKey || sessionInfo?.key || entry.sessionId}
-                    </div>
-                    <div className="text-xs text-muted-foreground flex items-center gap-2">
-                      {sessionInfo?.active && <span className="inline-block w-1.5 h-1.5 rounded-full bg-green-500" />}
-                      <span>{sessionInfo?.active ? t('activeStatus') : t('inactiveStatus')}</span>
-                      {entry.model && <span>| {getModelDisplayName(entry.model)}</span>}
-                      {sessionInfo?.kind && <span>| {sessionInfo.kind}</span>}
-                    </div>
-                  </div>
-                  <div className="text-right shrink-0">
-                    <div className="text-lg font-bold text-foreground">{formatCost(entry.totalCost)}</div>
-                    <div className="text-xs text-muted-foreground">{formatNumber(entry.totalTokens)} tokens</div>
-                  </div>
-                </div>
-                <div className="grid grid-cols-4 gap-4 text-xs text-muted-foreground border-t border-border/50 pt-2 mt-2">
-                  <div><span className="font-medium text-foreground">{entry.requestCount}</span> {t('requests')}</div>
-                  <div><span className="font-medium text-foreground">{formatNumber(entry.inputTokens || 0)}</span> {t('inShort')}</div>
-                  <div><span className="font-medium text-foreground">{formatNumber(entry.outputTokens || 0)}</span> {t('outShort')}</div>
-                  <div>{entry.totalTokens > 0 ? <span className="font-medium text-foreground">{formatCost(entry.totalCost / entry.requestCount)}</span> : '-'} {t('avgPerReq')}</div>
-                </div>
-              </div>
-            )
-          })}
-        </div>
-      )}
+      <div className="bg-card border border-border rounded-lg overflow-hidden">
+        <table className="w-full text-sm">
+          <thead className="bg-secondary">
+            <tr>
+              <th className="text-left px-4 py-2 text-muted-foreground font-medium">Session</th>
+              <th className="text-left px-4 py-2 text-muted-foreground font-medium">Model</th>
+              <th className="text-right px-4 py-2 text-muted-foreground font-medium">Tokens</th>
+              <th className="text-right px-4 py-2 text-muted-foreground font-medium">Cost</th>
+              <th className="text-right px-4 py-2 text-muted-foreground font-medium">Requests</th>
+              <th className="text-left px-4 py-2 text-muted-foreground font-medium">Last Seen</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border">
+            {sorted.map(s => (
+              <tr key={s.sessionId} className="hover:bg-secondary/50">
+                <td className="px-4 py-3 font-mono text-xs">{s.sessionId}</td>
+                <td className="px-4 py-3 text-xs">{s.model || '-'}</td>
+                <td className="px-4 py-3 text-right font-mono">{formatNumber(s.totalTokens)}</td>
+                <td className={`px-4 py-3 text-right ${isFreeModel(s.model) ? 'text-green-500' : 'text-amber-500'}`}>{formatCost(s.totalCost)}</td>
+                <td className="px-4 py-3 text-right">{s.requestCount}</td>
+                <td className="px-4 py-3 text-xs text-muted-foreground">{s.lastSeen ? new Date(s.lastSeen).toLocaleString() : '-'}</td>
+                <td className="px-4 py-3 text-xs">{isFreeModel(s.model) ? '🟢 free' : '🔴 paid'}</td>
+              </tr>
+            ))}
+            {sorted.length === 0 && (
+              <tr><td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">{t('noSessionData')}</td></tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }
 
 // ── Tasks View ──────────────────────────────────
 
-function TasksView({ taskData, onRefresh }: { taskData: TaskCostsResponse | null; onRefresh: () => void }) {
+function TasksView({
+  taskData, getAgentTasks,
+}: {
+  taskData: TaskCostsResponse | null
+  getAgentTasks: (name: string) => TaskCostEntry[]
+}) {
   const t = useTranslations('costTracker')
-  if (!taskData || taskData.tasks.length === 0) {
+
+  if (!taskData) {
     return (
       <div className="text-center text-muted-foreground py-12">
-        <div className="text-lg mb-2">{t('noTaskCostData')}</div>
-        <div className="text-sm">{t('noTaskCostDataDesc')}</div>
-        <Button onClick={onRefresh} className="mt-4">{t('refresh')}</Button>
+        <div className="text-lg mb-2">{t('noTaskData')}</div>
+        <Button onClick={() => {}} variant="outline" size="sm" className="mt-4 text-xs">{t('refresh')}</Button>
       </div>
     )
   }
 
   return (
     <div className="space-y-6">
-      {/* Summary */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-card border border-border rounded-lg p-5">
-          <div className="text-3xl font-bold text-foreground">{taskData.tasks.length}</div>
-          <div className="text-sm text-muted-foreground">{t('tasksWithCosts')}</div>
-        </div>
-        <div className="bg-card border border-border rounded-lg p-5">
           <div className="text-3xl font-bold text-foreground">{formatCost(taskData.summary.totalCost)}</div>
-          <div className="text-sm text-muted-foreground">{t('attributedCost')}</div>
+          <div className="text-sm text-muted-foreground">{t('totalCost')}</div>
         </div>
         <div className="bg-card border border-border rounded-lg p-5">
           <div className="text-3xl font-bold text-foreground">{formatNumber(taskData.summary.totalTokens)}</div>
-          <div className="text-sm text-muted-foreground">{t('attributedTokens')}</div>
+          <div className="text-sm text-muted-foreground">{t('totalTokens')}</div>
         </div>
         <div className="bg-card border border-border rounded-lg p-5">
-          <div className="text-3xl font-bold text-orange-500">{formatCost(taskData.unattributed.totalCost)}</div>
-          <div className="text-sm text-muted-foreground">{t('unattributed')}</div>
+          <div className="text-3xl font-bold text-foreground">{taskData.tasks.length}</div>
+          <div className="text-sm text-muted-foreground">{t('tasks')}</div>
+        </div>
+        <div className="bg-card border border-border rounded-lg p-5">
+          <div className="text-3xl font-bold text-foreground">{Object.keys(taskData.agents).length}</div>
+          <div className="text-sm text-muted-foreground">{t('agents')}</div>
         </div>
       </div>
 
-      {/* Task list */}
-      <div className="bg-card border border-border rounded-lg p-6">
-        <h2 className="text-xl font-semibold mb-4">{t('tasksByCost')}</h2>
-        <div className="space-y-2 max-h-[600px] overflow-y-auto">
-          {taskData.tasks.map(task => (
-            <div key={task.taskId} className="border border-border rounded-lg p-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 min-w-0 flex-1">
-                  <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium shrink-0 ${
-                    task.priority === 'critical' ? 'bg-red-500/10 text-red-500' :
-                    task.priority === 'high' ? 'bg-orange-500/10 text-orange-500' :
-                    task.priority === 'medium' ? 'bg-yellow-500/10 text-yellow-500' :
-                    'bg-secondary text-muted-foreground'
-                  }`}>{task.priority}</span>
-                  {task.project.ticketRef && <span className="text-xs text-muted-foreground font-mono shrink-0">{task.project.ticketRef}</span>}
-                  <span className="font-medium text-foreground truncate">{task.title}</span>
-                  <span className={`px-1.5 py-0.5 rounded text-[10px] shrink-0 ${
-                    task.status === 'done' ? 'bg-green-500/10 text-green-500' :
-                    task.status === 'in_progress' ? 'bg-blue-500/10 text-blue-500' :
-                    'bg-secondary text-muted-foreground'
-                  }`}>{task.status}</span>
-                </div>
-                <div className="text-right shrink-0 ml-3">
-                  <div className="font-medium text-foreground">{formatCost(task.stats.totalCost)}</div>
-                  <div className="text-xs text-muted-foreground">{formatNumber(task.stats.totalTokens)} {t('tokens')} | {task.stats.requestCount} {t('reqs')}</div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+      <div className="bg-card border border-border rounded-lg overflow-hidden">
+        <table className="w-full text-sm">
+          <thead className="bg-secondary">
+            <tr>
+              <th className="text-left px-4 py-2 text-muted-foreground font-medium">Task</th>
+              <th className="text-left px-4 py-2 text-muted-foreground font-medium">Status</th>
+              <th className="text-left px-4 py-2 text-muted-foreground font-medium">Priority</th>
+              <th className="text-left px-4 py-2 text-muted-foreground font-medium">Assigned</th>
+              <th className="text-right px-4 py-2 text-muted-foreground font-medium">Tokens</th>
+              <th className="text-right px-4 py-2 text-muted-foreground font-medium">Cost</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border">
+            {taskData.tasks.map(task => (
+              <tr key={task.taskId} className="hover:bg-secondary/50">
+                <td className="px-4 py-3">#{task.taskId} {task.title}</td>
+                <td className="px-4 py-3 capitalize">{task.status}</td>
+                <td className="px-4 py-3 capitalize">{task.priority}</td>
+                <td className="px-4 py-3 text-xs">{task.assignedTo || '-'}</td>
+                <td className="px-4 py-3 text-right font-mono">{formatNumber(task.stats.totalTokens)}</td>
+                <td className="px-4 py-3 text-right text-green-500">{formatCost(task.stats.totalCost)}</td>
+              </tr>
+            ))}
+            {taskData.tasks.length === 0 && (
+              <tr><td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">{t('noTaskData')}</td></tr>
+            )}
+          </tbody>
+        </table>
       </div>
     </div>
   )

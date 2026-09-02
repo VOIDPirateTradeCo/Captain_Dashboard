@@ -68,6 +68,8 @@ COPY --from=build /app/.next/standalone ./
 COPY --from=build /app/.next/static ./.next/static
 COPY --from=build /app/public ./public
 COPY --from=build /app/src/lib/schema.sql ./src/lib/schema.sql
+COPY certs/ /app/certs/
+COPY scripts/mc-https-proxy.js /app/scripts/mc-https-proxy.js
 # node-pty is a native addon; Next standalone tracing can omit built artifacts.
 # Copy the fully installed package (including native binary artifacts) from deps stage.
 COPY --from=deps /app/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty ./node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
