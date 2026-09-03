@@ -345,7 +345,7 @@ export function SecurityAuditPanel() {
   })
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6" role="region" aria-label="Security Audit">
       {/* Header */}
       <div className="border-b border-border pb-4">
         <div className="flex items-center justify-between">

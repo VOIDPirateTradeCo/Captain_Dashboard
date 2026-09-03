@@ -65,7 +65,7 @@ export function VoidMarketPanel() {
   }
 
   return (
-    <div className="rounded-lg border border-border/30 bg-surface-1/20 p-4">
+    <div className="rounded-lg border border-border/30 bg-surface-1/20 p-4" role="region" aria-label="Void Market">
       <div className="flex items-center justify-between mb-3">
         <div>
           <h3 className="text-sm font-medium">Market</h3>

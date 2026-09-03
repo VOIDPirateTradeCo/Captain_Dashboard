@@ -1,6 +1,7 @@
 import { NextRequest , NextResponse } from 'next/server'
 import { eventBelongsToWorkspace, eventBus, ServerEvent } from '@/lib/event-bus'
 import { requireRole } from '@/lib/auth'
+import { readLimiter } from '@/lib/rate-limit'
 
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
@@ -12,6 +13,9 @@ export const runtime = 'nodejs'
 export async function GET(request: NextRequest) {
   const auth = requireRole(request, 'viewer')
   if ('error' in auth) return NextResponse.json({ error: auth.error }, { status: auth.status })
+
+  const rateCheck = readLimiter(request)
+  if (rateCheck) return rateCheck
 
   const encoder = new TextEncoder()
 

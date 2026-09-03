@@ -86,7 +86,7 @@ export function VoidVaultPanel() {
   const opsecOk = Boolean(opsecClear)
 
   return (
-    <div className="p-6 space-y-6 max-w-5xl">
+    <div className="p-6 space-y-6 max-w-5xl" role="region" aria-label="Void Vault">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-lg font-semibold text-foreground">Vault (VOID)</h1>

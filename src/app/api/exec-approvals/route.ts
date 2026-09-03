@@ -102,7 +102,8 @@ async function getAllowlist(): Promise<NextResponse> {
       return NextResponse.json({ agents: {}, hash: computeHash('') })
     }
     logger.warn({ err }, 'Failed to read exec-approvals config')
-    return NextResponse.json({ error: `Failed to read config: ${err.message}` }, { status: 500 })
+    logger.error({ err }, 'Failed to read exec-approval config')
+    return NextResponse.json({ error: 'Failed to read config' }, { status: 500 })
   }
 }
 
@@ -174,7 +175,8 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ ok: true, hash: computeHash(newRaw) })
   } catch (err: any) {
     logger.error({ err }, 'Failed to save exec-approvals config')
-    return NextResponse.json({ error: `Failed to save: ${err.message}` }, { status: 500 })
+    logger.error({ err }, 'Failed to save exec-approval')
+    return NextResponse.json({ error: 'Failed to save' }, { status: 500 })
   }
 }
 

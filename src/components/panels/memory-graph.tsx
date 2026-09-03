@@ -332,7 +332,7 @@ export function MemoryGraph() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-full" style={{ background: '#11111b' }}>
+      <div className="flex items-center justify-center h-full" role="region" aria-label="Memory Graph" style={{ background: '#11111b' }}>
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 rounded-full border-2 border-[#cba6f7]/30 border-t-[#cba6f7] animate-spin" />
           <span className="text-[#6c7086] text-sm font-mono">{t('loading')}</span>

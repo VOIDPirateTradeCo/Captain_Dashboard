@@ -140,7 +140,7 @@ export function AgentSquadPanel() {
   }
 
   return (
-    <div className="h-full flex flex-col bg-gray-900">
+    <div className="h-full flex flex-col bg-gray-900" role="region" aria-label="Agent Squad">
       {/* Header */}
       <div className="flex justify-between items-center p-4 border-b border-gray-700">
         <div className="flex items-center gap-4">

@@ -26,7 +26,7 @@ export function DebugPanel() {
   }
 
   return (
-    <div className="m-4">
+    <div className="m-4" role="region" aria-label="Debug">
       <div className="flex gap-1 mb-4 border-b border-border pb-2">
         {(['status', 'health', 'models', 'apicall'] as const).map((tab) => (
           <Button

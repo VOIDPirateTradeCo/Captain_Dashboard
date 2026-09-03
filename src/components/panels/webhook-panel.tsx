@@ -252,7 +252,7 @@ export function WebhookPanel() {
   }
 
   return (
-    <div className="p-5 space-y-4">
+    <div className="p-5 space-y-4" role="region" aria-label="Webhook">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>

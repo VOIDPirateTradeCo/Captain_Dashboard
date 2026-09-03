@@ -81,7 +81,7 @@ export function NotificationsPanel() {
   }
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col" role="region" aria-label="Notifications">
       <div className="flex justify-between items-center p-4 border-b border-border shrink-0">
         <h2 className="text-xl font-bold text-foreground">{t('title')}</h2>
         <Button

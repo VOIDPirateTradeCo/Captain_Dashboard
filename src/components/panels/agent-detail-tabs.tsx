@@ -159,7 +159,7 @@ export function OverviewTab({
   }
 
   return (
-    <div className="p-5">
+    <div className="p-5" role="region" aria-label="Agent Detail Tabs.Tsx">
       <div className="grid md:grid-cols-[1fr_1fr] gap-5">
         {/* Left Column — Agent Details */}
         <div className="space-y-4">
@@ -699,7 +699,7 @@ export function TasksTab({ agent }: { agent: Agent }) {
 
   if (loading) {
     return (
-      <div className="p-6 flex items-center justify-center py-8">
+      <div className="p-6 flex items-center justify-center py-8" role="region" aria-label="Agent Detail Tabs.Tsx">
         <Loader variant="inline" label={t('loadingTasks')} />
       </div>
     )

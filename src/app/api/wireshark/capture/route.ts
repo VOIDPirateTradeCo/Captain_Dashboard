@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { requireRole } from '@/lib/auth'
+import { readLimiter, mutationLimiter } from '@/lib/rate-limit'
 
 export const runtime = 'nodejs'
 
@@ -24,6 +25,9 @@ export async function POST(request: Request) {
   } catch {
     return NextResponse.json({ error: 'forbidden', message: 'Admin role required' }, { status: 403 })
   }
+
+  const rateCheck = mutationLimiter(request)
+  if (rateCheck) return rateCheck
 
   let body: Record<string, unknown>
   try {
@@ -61,6 +65,9 @@ export async function GET(request: Request) {
   } catch {
     return NextResponse.json({ error: 'forbidden', message: 'Admin role required' }, { status: 403 })
   }
+
+  const rateCheck = readLimiter(request)
+  if (rateCheck) return rateCheck
 
   const url = new URL(request.url)
   const jobId = url.searchParams.get('job_id') || undefined

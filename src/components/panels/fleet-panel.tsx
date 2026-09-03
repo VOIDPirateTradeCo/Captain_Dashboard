@@ -151,7 +151,7 @@ export function FleetPanel() {
   }, [ships])
 
   return (
-    <div className="relative min-h-[60vh] space-y-4">
+    <div className="relative min-h-[60vh] space-y-4" role="region" aria-label="Fleet">
       {/* Animated background layer */}
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_40%_at_50%_-10%,hsl(var(--void-cyan)/0.08),transparent)]" />

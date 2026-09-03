@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { logger } from '@/lib/logger'
 import { requireRole } from '@/lib/auth'
 import { getDatabase } from '@/lib/db'
 import { mutationLimiter } from '@/lib/rate-limit'
@@ -109,7 +110,8 @@ export async function POST(request: NextRequest) {
       .get(result.lastInsertRowid, workspaceId) as AlertRule
     return NextResponse.json({ rule }, { status: 201 })
   } catch (err: any) {
-    return NextResponse.json({ error: err.message || 'Failed to create rule' }, { status: 500 })
+    logger.error({ err }, 'Failed to create alert rule')
+    return NextResponse.json({ error: 'Failed to create rule' }, { status: 500 })
   }
 }
 

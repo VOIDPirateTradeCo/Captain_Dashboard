@@ -1567,7 +1567,7 @@ export function OfficePanel() {
 
   if (officeError && visibleDisplayAgents.length === 0) {
     return (
-      <div className="p-6 space-y-4">
+      <div className="p-6 space-y-4" role="region" aria-label="Office">
         <div className="border-b border-border pb-4">
           <div className="flex items-center justify-between">
             <div>

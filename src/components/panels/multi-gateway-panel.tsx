@@ -219,7 +219,7 @@ export function MultiGatewayPanel() {
   }
 
   return (
-    <div className="p-4 md:p-6 max-w-5xl mx-auto space-y-6">
+    <div className="p-4 md:p-6 max-w-5xl mx-auto space-y-6" role="region" aria-label="Multi Gateway">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>

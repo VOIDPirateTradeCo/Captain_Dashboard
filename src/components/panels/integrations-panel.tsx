@@ -271,7 +271,7 @@ export function IntegrationsPanel() {
   // Loading state
   if (loading) {
     return (
-      <div className="p-6 flex items-center gap-2">
+      <div className="p-6 flex items-center gap-2" role="region" aria-label="Integrations">
         <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
         <span className="text-sm text-muted-foreground">{t('loading')}</span>
       </div>

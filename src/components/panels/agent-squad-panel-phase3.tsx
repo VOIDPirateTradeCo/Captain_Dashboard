@@ -382,7 +382,7 @@ export function AgentSquadPanelPhase3() {
   }
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col" role="region" aria-label="Agent Squad Panel Phase3.Tsx">
       {/* Header */}
       <div className="flex justify-between items-center p-4 border-b border-border shrink-0">
         <div className="flex items-center gap-4">

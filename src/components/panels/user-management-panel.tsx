@@ -239,7 +239,7 @@ export function UserManagementPanel() {
 
   if (currentUser?.role !== 'admin') {
     return (
-      <div className="p-8 text-center">
+      <div className="p-8 text-center" role="region" aria-label="User Management">
         <div className="text-lg font-semibold text-foreground mb-2">{t('accessDenied')}</div>
         <p className="text-sm text-muted-foreground">{t('adminRequired')}</p>
       </div>

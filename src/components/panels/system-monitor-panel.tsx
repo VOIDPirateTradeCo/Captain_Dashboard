@@ -165,7 +165,7 @@ export function SystemMonitorPanel() {
 
   if (!latest) {
     return (
-      <div className="p-5 flex items-center justify-center h-64 text-muted-foreground">
+      <div className="p-5 flex items-center justify-center h-64 text-muted-foreground" role="region" aria-label="System Monitor">
         {error ? `Error: ${error}` : 'Loading system metrics...'}
       </div>
     )

@@ -237,7 +237,7 @@ export function PipelineTab() {
   const activeRuns = runs.filter(r => r.status === 'running')
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3" role="region" aria-label="Pipeline Tab.Tsx">
       {/* Result message */}
       {result && (
         <div className={`text-xs px-2 py-1 rounded ${result.ok ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'}`}>
@@ -447,7 +447,7 @@ export function PipelineTab() {
 /** Full step visualization with boxes and arrows */
 function PipelineViz({ steps }: { steps: PipelineStep[] }) {
   return (
-    <div className="flex items-center gap-1 overflow-x-auto py-1">
+    <div className="flex items-center gap-1 overflow-x-auto py-1" role="region" aria-label="Pipeline Tab.Tsx">
       {steps.map((s, i) => (
         <div key={i} className="flex items-center gap-1 shrink-0">
           <div className="flex flex-col items-center gap-0.5">

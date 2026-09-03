@@ -105,7 +105,7 @@ export function ExecApprovalPanel() {
   }
 
   return (
-    <div className="m-4">
+    <div className="m-4" role="region" aria-label="Exec Approval">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">

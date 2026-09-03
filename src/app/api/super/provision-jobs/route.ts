@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireRole } from '@/lib/auth'
+import { readLimiter, mutationLimiter } from '@/lib/rate-limit'
 import { getDatabase } from '@/lib/db'
 import { listProvisionJobs } from '@/lib/super-admin'
 
@@ -10,15 +11,20 @@ export async function GET(request: NextRequest) {
   const auth = requireRole(request, 'admin')
   if ('error' in auth) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
+  const rateCheck = readLimiter(request)
+  if (rateCheck) return rateCheck
+
   const { searchParams } = new URL(request.url)
   const tenant_id = searchParams.get('tenant_id')
   const status = searchParams.get('status') || undefined
   const limit = Math.min(parseInt(searchParams.get('limit') || '100', 10), 200)
+  const offset = parseInt(searchParams.get('offset') || '0')
 
   const jobs = listProvisionJobs({
     tenant_id: tenant_id ? parseInt(tenant_id, 10) : undefined,
     status,
     limit,
+    offset,
   })
 
   return NextResponse.json({ jobs })
@@ -30,6 +36,9 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const auth = requireRole(request, 'admin')
   if ('error' in auth) return NextResponse.json({ error: auth.error }, { status: auth.status })
+
+  const rateCheck = mutationLimiter(request)
+  if (rateCheck) return rateCheck
 
   try {
     const db = getDatabase()

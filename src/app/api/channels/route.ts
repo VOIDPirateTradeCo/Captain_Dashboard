@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireRole } from '@/lib/auth'
+import { readLimiter, mutationLimiter } from '@/lib/rate-limit'
 import { config } from '@/lib/config'
 import { logger } from '@/lib/logger'
 import { getDetectedGatewayToken } from '@/lib/gateway-runtime'
@@ -75,6 +76,9 @@ async function isGatewayReachable(): Promise<boolean> {
 export async function GET(request: NextRequest) {
   const auth = requireRole(request, 'viewer')
   if ('error' in auth) return NextResponse.json({ error: auth.error }, { status: auth.status })
+
+  const rateCheck = readLimiter(request)
+  if (rateCheck) return rateCheck
 
   const { searchParams } = new URL(request.url)
   const action = searchParams.get('action')
@@ -164,6 +168,9 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const auth = requireRole(request, 'operator')
   if ('error' in auth) return NextResponse.json({ error: auth.error }, { status: auth.status })
+
+  const rateCheck = mutationLimiter(request)
+  if (rateCheck) return rateCheck
 
   const body = await request.json().catch(() => null)
   if (!body || !body.action) {

@@ -309,7 +309,7 @@ export function ActivityFeedPanel() {
   const groupedByDay = isAgentView ? groupByDay(activities) : {}
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col" role="region" aria-label="Activity Feed">
       {/* Header */}
       <div className="flex justify-between items-center p-4 border-b border-border shrink-0">
         <div className="flex items-center gap-3">

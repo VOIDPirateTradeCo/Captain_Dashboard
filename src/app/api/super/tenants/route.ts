@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireRole } from '@/lib/auth'
+import { readLimiter, mutationLimiter } from '@/lib/rate-limit'
 import { createTenantAndBootstrapJob, listTenants } from '@/lib/super-admin'
 
 /**
@@ -8,6 +9,9 @@ import { createTenantAndBootstrapJob, listTenants } from '@/lib/super-admin'
 export async function GET(request: NextRequest) {
   const auth = requireRole(request, 'admin')
   if ('error' in auth) return NextResponse.json({ error: auth.error }, { status: auth.status })
+
+  const rateCheck = readLimiter(request)
+  if (rateCheck) return rateCheck
 
   return NextResponse.json({ tenants: listTenants() })
 }
@@ -18,6 +22,9 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const auth = requireRole(request, 'admin')
   if ('error' in auth) return NextResponse.json({ error: auth.error }, { status: auth.status })
+
+  const rateCheck = mutationLimiter(request)
+  if (rateCheck) return rateCheck
 
   try {
     const body = await request.json()

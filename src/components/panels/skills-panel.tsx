@@ -500,7 +500,7 @@ export function SkillsPanel() {
   }
 
   return (
-    <div className="p-4 md:p-6 max-w-6xl mx-auto space-y-4">
+    <div className="p-4 md:p-6 max-w-6xl mx-auto space-y-4" role="region" aria-label="Skills">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h2 className="text-lg font-semibold text-foreground">{t('title')}</h2>

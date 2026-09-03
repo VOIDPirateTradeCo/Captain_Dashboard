@@ -70,7 +70,7 @@ export function GatewayControlPanel() {
 
   if (loading) {
     return (
-      <div className="p-6">
+      <div className="p-6" role="region" aria-label="Gateway Control">
         <h2 className="text-lg font-semibold mb-4">{t('title')}</h2>
         <div className="flex items-center justify-center py-12"><Loader /></div>
       </div>

@@ -1,6 +1,8 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { existsSync } from 'node:fs'
 import { APP_VERSION } from '@/lib/version'
+import { requireRole } from '@/lib/auth'
+import { readLimiter } from '@/lib/rate-limit'
 
 const GITHUB_RELEASES_URL =
   'https://api.github.com/repos/builderz-labs/mission-control/releases/latest'
@@ -18,7 +20,13 @@ function compareSemver(a: string, b: string): number {
   return 0
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const auth = requireRole(request, 'viewer')
+  if ('error' in auth) return NextResponse.json({ error: auth.error }, { status: auth.status })
+
+  const rateCheck = readLimiter(request)
+  if (rateCheck) return rateCheck
+
   try {
     const res = await fetch(GITHUB_RELEASES_URL, {
       headers: { Accept: 'application/vnd.github+json' },

@@ -1,11 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { config } from '@/lib/config'
 import { logger } from '@/lib/logger'
+import { requireRole } from '@/lib/auth'
+import { readLimiter } from '@/lib/rate-limit'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 export async function GET(request: NextRequest) {
+  const auth = requireRole(request, 'viewer')
+  if ('error' in auth) return NextResponse.json({ error: auth.error }, { status: auth.status })
+
+  const rateCheck = readLimiter(request)
+  if (rateCheck) return rateCheck
+
   // If this is a WebSocket upgrade request, the browser is trying to connect
   // through the MC proxy path. We can't actually handle WS in a route handler,
   // so return the direct localhost URL and let the browser connect directly.

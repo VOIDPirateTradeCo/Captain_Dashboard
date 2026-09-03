@@ -68,7 +68,7 @@ export function LocalAgentsDocPanel() {
   }
 
   return (
-    <div className="mt-4 mx-4 rounded-lg border border-border bg-card overflow-hidden">
+    <div className="mt-4 mx-4 rounded-lg border border-border bg-card overflow-hidden" role="region" aria-label="Local Agents Doc">
       <div className="px-4 py-3 border-b border-border flex items-center justify-between gap-3">
         <div className="min-w-0">
           <h3 className="text-sm font-semibold text-foreground">{t('title')}</h3>

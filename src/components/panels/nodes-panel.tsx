@@ -164,7 +164,7 @@ export function NodesPanel() {
   const totalDeviceCount = devices.length + pendingCount
 
   return (
-    <div className="m-4">
+    <div className="m-4" role="region" aria-label="Nodes">
       <div className="flex items-center gap-3 mb-4">
         <h2 className="text-lg font-semibold text-foreground">{t('title')}</h2>
         <span

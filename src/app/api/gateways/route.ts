@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { logger } from '@/lib/logger'
 import { requireRole } from '@/lib/auth'
 import { getDatabase } from '@/lib/db'
 import { getDetectedGatewayPort, getDetectedGatewayToken } from '@/lib/gateway-runtime'
@@ -136,7 +137,8 @@ export async function POST(request: NextRequest) {
     if (err.message?.includes('UNIQUE')) {
       return NextResponse.json({ error: 'A gateway with that name already exists' }, { status: 409 })
     }
-    return NextResponse.json({ error: err.message || 'Failed to add gateway' }, { status: 500 })
+    logger.error({ err }, 'Failed to add gateway')
+    return NextResponse.json({ error: 'Failed to add gateway' }, { status: 500 })
   }
 }
 

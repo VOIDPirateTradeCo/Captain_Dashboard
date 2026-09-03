@@ -390,7 +390,7 @@ export function SettingsPanel() {
 
   if (error) {
     return (
-      <div className="p-6">
+      <div className="p-6" role="region" aria-label="Settings">
         <div className="bg-destructive/10 text-destructive rounded-lg p-4 text-sm">{error}</div>
       </div>
     )

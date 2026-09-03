@@ -292,7 +292,7 @@ export function listTenants() {
   }))
 }
 
-export function listProvisionJobs(filters: { tenant_id?: number; status?: string; limit?: number } = {}) {
+export function listProvisionJobs(filters: { tenant_id?: number; status?: string; limit?: number; offset?: number } = {}) {
   const db = getDatabase()
   const where: string[] = ['1=1']
   const params: any[] = []
@@ -307,7 +307,8 @@ export function listProvisionJobs(filters: { tenant_id?: number; status?: string
   }
 
   const limit = Math.min(Math.max(Number(filters.limit || 100), 1), 500)
-  params.push(limit)
+  const offset = Math.max(Number(filters.offset || 0), 0)
+  params.push(limit, offset)
 
   const rows = db.prepare(`
     SELECT pj.*, t.slug as tenant_slug, t.display_name as tenant_display_name
@@ -315,7 +316,7 @@ export function listProvisionJobs(filters: { tenant_id?: number; status?: string
     JOIN tenants t ON t.id = pj.tenant_id
     WHERE ${where.join(' AND ')}
     ORDER BY pj.created_at DESC, pj.id DESC
-    LIMIT ?
+    LIMIT ? OFFSET ?
   `).all(...params) as Array<ProvisionJob & { tenant_slug: string; tenant_display_name: string }>
 
   return rows.map((row) => ({

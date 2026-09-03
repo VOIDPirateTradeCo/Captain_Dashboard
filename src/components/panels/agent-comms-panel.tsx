@@ -377,7 +377,7 @@ export function AgentCommsPanel() {
 
   if (loading && !commsData && logs.length === 0) {
     return (
-      <div className="p-6 flex items-center justify-center">
+      <div className="p-6 flex items-center justify-center" role="region" aria-label="Agent Comms">
         <div className="flex items-center gap-2 text-muted-foreground">
           <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
           <span className="text-sm">{t('connecting')}</span>

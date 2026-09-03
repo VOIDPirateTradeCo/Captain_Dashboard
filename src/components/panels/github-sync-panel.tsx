@@ -296,7 +296,7 @@ export function GitHubSyncPanel() {
 
   if (loading) {
     return (
-      <div className="p-6 flex flex-col items-center justify-center gap-3 min-h-[200px]">
+      <div className="p-6 flex flex-col items-center justify-center gap-3 min-h-[200px]" role="region" aria-label="Github Sync">
         <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
         <span className="text-sm text-muted-foreground">{t('loading')}</span>
       </div>

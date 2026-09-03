@@ -578,7 +578,7 @@ export function SuperAdminPanel() {
 
   if (currentUser?.role !== 'admin') {
     return (
-      <div className="p-8 text-center">
+      <div className="p-8 text-center" role="region" aria-label="Super Admin">
         <div className="text-lg font-semibold text-foreground mb-2">{t('accessDenied')}</div>
         <p className="text-sm text-muted-foreground">{t('accessDeniedDesc')}</p>
       </div>

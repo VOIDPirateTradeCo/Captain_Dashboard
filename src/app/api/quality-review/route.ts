@@ -2,13 +2,16 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getDatabase, db_helpers } from '@/lib/db'
 import { requireRole } from '@/lib/auth'
 import { validateBody, qualityReviewSchema } from '@/lib/validation'
-import { mutationLimiter } from '@/lib/rate-limit'
+import { readLimiter, mutationLimiter } from '@/lib/rate-limit'
 import { logger } from '@/lib/logger'
 import { eventBus } from '@/lib/event-bus'
 
 export async function GET(request: NextRequest) {
   const auth = requireRole(request, 'viewer')
   if ('error' in auth) return NextResponse.json({ error: auth.error }, { status: auth.status })
+
+  const rateCheck = readLimiter(request)
+  if (rateCheck) return rateCheck
 
   try {
     const db = getDatabase()

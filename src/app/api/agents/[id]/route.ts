@@ -138,7 +138,8 @@ export async function PUT(
       values.push(agent.id, workspaceId)
       db.prepare(`UPDATE agents SET ${fields.join(', ')} WHERE id = ? AND workspace_id = ?`).run(...values)
     } catch (err: any) {
-      return NextResponse.json({ error: `Save failed: ${err.message}` }, { status: 500 })
+      logger.error({ err }, 'Agent save failed')
+      return NextResponse.json({ error: 'Save failed' }, { status: 500 })
     }
 
     if (shouldWriteToGateway) {
@@ -158,8 +159,9 @@ export async function PUT(
         } catch (revertErr: any) {
           logger.error({ err: revertErr, agent: agent.name }, 'Failed to revert DB after gateway write failure')
         }
+        logger.error({ err }, 'Gateway config update failed')
         return NextResponse.json(
-          { error: `Save failed: unable to update gateway config: ${err.message}` },
+          { error: 'Save failed: unable to update gateway config' },
           { status: 502 }
         )
       }
@@ -206,7 +208,7 @@ export async function PUT(
     })
   } catch (error: any) {
     logger.error({ err: error }, 'PUT /api/agents/[id] error')
-    return NextResponse.json({ error: error.message || 'Failed to update agent' }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to update agent' }, { status: 500 })
   }
 }
 

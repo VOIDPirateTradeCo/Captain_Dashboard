@@ -520,7 +520,7 @@ export function MemoryBrowserPanel() {
   const viewTabs = ['files', ...(!isLocal ? ['graph'] : []), 'health', 'pipeline', ...(hermesInstalled ? ['hermes'] : [])] as const
 
   return (
-    <div className="h-[calc(100vh-3.5rem)] flex flex-col overflow-hidden">
+    <div className="h-[calc(100vh-3.5rem)] flex flex-col overflow-hidden" role="region" aria-label="Memory Browser">
       {/* Top bar */}
       <div className="flex items-center gap-1 px-3 py-2 border-b border-border bg-[hsl(var(--surface-0))]">
         <button

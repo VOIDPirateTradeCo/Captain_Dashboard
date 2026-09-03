@@ -251,7 +251,7 @@ export function OrchestrationBar() {
   const errorCount = agents.filter(a => a.status === 'error').length
 
   return (
-    <div className="border-b border-border bg-card/50">
+    <div className="border-b border-border bg-card/50" role="region" aria-label="Orchestration Bar">
       {/* Tab bar */}
       <div className="flex items-center gap-1 px-4 pt-2">
         {(['command', 'templates', 'pipelines', 'fleet'] as const).map(tab => (

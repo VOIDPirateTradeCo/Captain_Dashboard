@@ -54,7 +54,8 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ issues, total: issues.length, repo })
   } catch (error: any) {
     logger.error({ err: error }, 'GET /api/github error')
-    return NextResponse.json({ error: error.message || 'Failed to fetch issues' }, { status: 500 })
+    logger.error({ err: error }, 'Failed to fetch GitHub issues')
+    return NextResponse.json({ error: 'Failed to fetch issues' }, { status: 500 })
   }
 }
 
@@ -93,7 +94,8 @@ export async function POST(request: NextRequest) {
     }
   } catch (error: any) {
     logger.error({ err: error }, `POST /api/github action=${action} error`)
-    return NextResponse.json({ error: error.message || 'GitHub action failed' }, { status: 500 })
+    logger.error({ err: error }, 'GitHub action failed')
+    return NextResponse.json({ error: 'GitHub action failed' }, { status: 500 })
   }
 }
 

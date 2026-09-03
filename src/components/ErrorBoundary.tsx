@@ -55,6 +55,23 @@ export class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     log.error('Panel error:', error, errorInfo)
+    // Server-side error logging for observability
+    try {
+      const errorPayload = {
+        message: error.message,
+        stack: error.stack,
+        componentStack: errorInfo.componentStack,
+        timestamp: new Date().toISOString(),
+        url: typeof window !== 'undefined' ? window.location.href : 'unknown'
+      }
+      // Fire-and-forget to error logging endpoint
+      fetch('/api/log/error', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(errorPayload),
+        keepalive: true
+      }).catch(() => { /* silent - logging is best-effort */ })
+    } catch { /* silent - logging is best-effort */ }
   }
 
   render() {

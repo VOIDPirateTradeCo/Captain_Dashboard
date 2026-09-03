@@ -112,7 +112,7 @@ export function VoidSecurityPanel() {
   const o = opsec.data?.opsec
 
   return (
-    <div className="p-6 space-y-6 max-w-4xl">
+    <div className="p-6 space-y-6 max-w-4xl" role="region" aria-label="Void Security">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-lg font-semibold text-foreground">Security</h1>

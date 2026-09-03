@@ -1,5 +1,7 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { runOpenClaw } from '@/lib/command'
+import { requireRole } from '@/lib/auth'
+import { readLimiter } from '@/lib/rate-limit'
 
 const GITHUB_RELEASES_URL =
   'https://api.github.com/repos/openclaw/openclaw/releases/latest'
@@ -18,7 +20,13 @@ function compareSemver(a: string, b: string): number {
 
 const headers = { 'Cache-Control': 'public, max-age=3600' }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const auth = requireRole(request, 'viewer')
+  if ('error' in auth) return NextResponse.json({ error: auth.error }, { status: auth.status })
+
+  const rateCheck = readLimiter(request)
+  if (rateCheck) return rateCheck
+
   let installed: string | null = null
 
   try {

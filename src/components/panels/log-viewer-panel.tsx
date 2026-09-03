@@ -216,7 +216,7 @@ export function LogViewerPanel() {
   log.debug(`Store has ${logs.length} logs, filtered to ${filteredLogs.length}`)
 
   return (
-    <div className="flex flex-col h-full p-6 space-y-4">
+    <div className="flex flex-col h-full p-6 space-y-4" role="region" aria-label="Log Viewer">
       <div className="border-b border-border pb-4">
         <h1 className="text-3xl font-bold text-foreground">{t('title')}</h1>
         <p className="text-muted-foreground mt-2">

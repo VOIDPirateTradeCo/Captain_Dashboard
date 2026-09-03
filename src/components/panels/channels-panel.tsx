@@ -708,7 +708,7 @@ export function ChannelsPanel() {
   // Loading state
   if (loading) {
     return (
-      <div className="m-4">
+      <div className="m-4" role="region" aria-label="Channels">
         <div className="flex items-center gap-2 mb-6">
           <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
           <span className="text-sm text-muted-foreground">{t('loadingChannels')}</span>

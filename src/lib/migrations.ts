@@ -1565,6 +1565,58 @@ const migrations: Migration[] = [
       `)
     }
   },
+  {
+    id: '057_missing_tables',
+    up: (db) => {
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS agent_keys (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          agent_id INTEGER NOT NULL,
+          key_hash TEXT NOT NULL UNIQUE,
+          created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+          expires_at INTEGER,
+          FOREIGN KEY (agent_id) REFERENCES agents(id) ON DELETE CASCADE
+        );
+        CREATE INDEX IF NOT EXISTS idx_agent_keys_agent_id ON agent_keys(agent_id);
+        CREATE INDEX IF NOT EXISTS idx_agent_keys_key_hash ON agent_keys(key_hash);
+
+        CREATE TABLE IF NOT EXISTS fleet_mesh (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          ship_key TEXT NOT NULL,
+          mesh_ip TEXT,
+          status TEXT NOT NULL DEFAULT 'offline',
+          last_seen INTEGER,
+          UNIQUE(ship_key, mesh_ip)
+        );
+        CREATE INDEX IF NOT EXISTS idx_fleet_mesh_ship_key ON fleet_mesh(ship_key);
+        CREATE INDEX IF NOT EXISTS idx_fleet_mesh_status ON fleet_mesh(status);
+
+        CREATE TABLE IF NOT EXISTS ship_agents (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          ship_key TEXT NOT NULL,
+          agent_id INTEGER NOT NULL,
+          status TEXT NOT NULL DEFAULT 'offline',
+          last_seen INTEGER,
+          FOREIGN KEY (agent_id) REFERENCES agents(id) ON DELETE CASCADE,
+          UNIQUE(ship_key, agent_id)
+        );
+        CREATE INDEX IF NOT EXISTS idx_ship_agents_ship_key ON ship_agents(ship_key);
+        CREATE INDEX IF NOT EXISTS idx_ship_agents_agent_id ON ship_agents(agent_id);
+
+        CREATE TABLE IF NOT EXISTS device_inventory (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          mac TEXT,
+          ip TEXT,
+          name TEXT,
+          type TEXT,
+          first_seen INTEGER NOT NULL DEFAULT (unixepoch()),
+          last_seen INTEGER
+        );
+        CREATE INDEX IF NOT EXISTS idx_device_inventory_mac ON device_inventory(mac);
+        CREATE INDEX IF NOT EXISTS idx_device_inventory_ip ON device_inventory(ip);
+      `)
+    }
+  },
 ]
 
 export function runMigrations(db: Database.Database) {

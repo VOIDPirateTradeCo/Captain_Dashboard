@@ -194,7 +194,7 @@ export function AuditTrailPanel() {
 
   if (error) {
     return (
-      <div className="p-6">
+      <div className="p-6" role="region" aria-label="Audit Trail">
         <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-4 text-sm text-red-400">
           {error}
         </div>

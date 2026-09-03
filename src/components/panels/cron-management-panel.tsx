@@ -715,7 +715,7 @@ export function CronManagementPanel() {
         : calendarDate.toLocaleDateString(undefined, { month: 'long', year: 'numeric' })
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6" role="region" aria-label="Cron Management">
       <div className="border-b border-border pb-4">
         <div className="flex items-center justify-between">
           <div>

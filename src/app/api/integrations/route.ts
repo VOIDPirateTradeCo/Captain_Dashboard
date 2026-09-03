@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { logger } from '@/lib/logger'
 import { requireRole } from '@/lib/auth'
 import { logAuditEvent } from '@/lib/db'
 import { config } from '@/lib/config'
@@ -856,7 +857,8 @@ async function handleTest(
 
     return NextResponse.json(result)
   } catch (err: any) {
-    return NextResponse.json({ ok: false, detail: err.message || 'Connection failed' })
+    logger.error({ err }, 'Integration connection failed')
+    return NextResponse.json({ ok: false, detail: 'Connection failed' })
   }
 }
 
@@ -939,8 +941,9 @@ async function handlePull(
       redacted: redactValue(value),
     })
   } catch (err: any) {
+    logger.error({ err }, '1Password pull failed')
     return NextResponse.json({
-      error: `1Password pull failed: ${err.message}`,
+      error: '1Password pull failed',
     }, { status: 500 })
   }
 }
@@ -1017,7 +1020,8 @@ async function handlePullAll(
 
       results.push({ id: integration.id, envVar, ok: true, detail: `Pulled ${envVar}` })
     } catch (err: any) {
-      results.push({ id: integration.id, envVar, ok: false, detail: err.message || 'Failed' })
+      logger.error({ err, integrationId: integration.id, envVar }, 'Integration pull failed')
+    results.push({ id: integration.id, envVar, ok: false, detail: 'Failed' })
     }
   }
 

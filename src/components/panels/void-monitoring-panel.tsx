@@ -49,7 +49,7 @@ export function VoidMonitoringPanel() {
   const active = TOOLS.find(t => t.id === activeId) ?? TOOLS[0]
 
   return (
-    <div className="flex h-[calc(100vh-64px)] flex-col p-4">
+    <div className="flex h-[calc(100vh-64px)] flex-col p-4" role="region" aria-label="Void Monitoring">
       <div className="mb-3 flex items-center gap-1">
         {TOOLS.map(t => (
           <button
