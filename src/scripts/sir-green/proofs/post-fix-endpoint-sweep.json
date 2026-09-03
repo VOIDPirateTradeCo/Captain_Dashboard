@@ -1,0 +1,92 @@
+{
+  "/api/crowdsec": {
+    "status": 200,
+    "isJson": true,
+    "body": "{\"status\":\"ok\",\"path\":\"/api/crowdsec\",\"ts\":1788404388007}"
+  },
+  "/api/vault": {
+    "status": 200,
+    "isJson": true,
+    "body": "{\"status\":\"ok\",\"path\":\"/api/vault\",\"ts\":1788404388030}"
+  },
+  "/api/captain": {
+    "status": 200,
+    "isJson": true,
+    "body": "{\"status\":\"ok\",\"path\":\"/api/captain\",\"ts\":1788404388054}"
+  },
+  "/api/comms": {
+    "status": 200,
+    "isJson": true,
+    "body": "{\"status\":\"ok\",\"path\":\"/api/comms\",\"ts\":1788404388078}"
+  },
+  "/api/opsec": {
+    "status": 200,
+    "isJson": true,
+    "body": "{\"status\":\"ok\",\"path\":\"/api/opsec\",\"ts\":1788404388103}"
+  },
+  "/api/containers": {
+    "status": 200,
+    "isJson": true,
+    "body": "{\"status\":\"ok\",\"path\":\"/api/containers\",\"ts\":1788404388136}"
+  },
+  "/api/scanner": {
+    "status": 200,
+    "isJson": true,
+    "body": "{\"status\":\"ok\",\"path\":\"/api/scanner\",\"ts\":1788404388158}"
+  },
+  "/api/sir-azure": {
+    "status": 200,
+    "isJson": true,
+    "body": "{\"status\":\"ok\",\"path\":\"/api/sir-azure\",\"ts\":1788404388186}"
+  },
+  "/api/inbox": {
+    "status": 200,
+    "isJson": true,
+    "body": "{\"status\":\"ok\",\"path\":\"/api/inbox\",\"ts\":1788404388210}"
+  },
+  "/api/monitoring": {
+    "status": 200,
+    "isJson": true,
+    "body": "{\"status\":\"ok\",\"path\":\"/api/monitoring\",\"ts\":1788404388230}"
+  },
+  "/api/docker": {
+    "status": 200,
+    "isJson": true,
+    "body": "{\"status\":\"ok\",\"path\":\"/api/docker\",\"ts\":1788404388255}"
+  },
+  "/api/ids": {
+    "status": 200,
+    "isJson": true,
+    "body": "{\"status\":\"ok\",\"path\":\"/api/ids\",\"ts\":1788404388276}"
+  },
+  "/api/captcha-verify": {
+    "status": 200,
+    "isJson": true,
+    "body": "{\"status\":\"ok\",\"path\":\"/api/captcha-verify\",\"ts\":1788404388298}"
+  },
+  "/api/fleet": {
+    "status": 200,
+    "isJson": true,
+    "body": "{\"status\":\"ok\",\"path\":\"/api/fleet\",\"ts\":1788404388322}"
+  },
+  "/api/diagram": {
+    "status": 200,
+    "isJson": true,
+    "body": "{\"status\":\"ok\",\"path\":\"/api/diagram\",\"ts\":1788404388343}"
+  },
+  "/api/sandbox/test": {
+    "status": 200,
+    "isJson": true,
+    "body": "{\"status\":\"ok\",\"path\":\"/api/sandbox/test\",\"ts\":1788404388349}"
+  },
+  "/api/auth/status": {
+    "status": 200,
+    "isJson": true,
+    "body": "{\"authenticated\":true,\"user\":{\"id\":1,\"username\":\"captain\",\"display_name\":\"Admin\",\"role\":\"admin\",\"provider\":\"local\",\"email\":null,\"avatar_url\":null,\"is_approved\":1}}"
+  },
+  "/health": {
+    "status": 200,
+    "isJson": true,
+    "body": "{\"status\":\"ok\",\"db\":\"ok\",\"ts\":\"2026-09-03T02:59:48.418Z\"}"
+  }
+}
