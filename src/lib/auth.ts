@@ -350,7 +350,10 @@ export function updateUser(id: number, updates: { display_name?: string; role?: 
 
   if (updates.display_name !== undefined) { fields.push('display_name = ?'); params.push(updates.display_name) }
   if (updates.role !== undefined) { fields.push('role = ?'); params.push(updates.role) }
-  if (updates.password !== undefined) { fields.push('password_hash = ?'); params.push(hashPassword(updates.password)) }
+  if (updates.password !== undefined) {
+    if (updates.password.length < 12) throw new Error('Password must be at least 12 characters')
+    fields.push('password_hash = ?'); params.push(hashPassword(updates.password))
+  }
   if (updates.email !== undefined) { fields.push('email = ?'); params.push(updates.email) }
   if (updates.avatar_url !== undefined) { fields.push('avatar_url = ?'); params.push(updates.avatar_url) }
   if (updates.is_approved !== undefined) { fields.push('is_approved = ?'); params.push(updates.is_approved) }

@@ -1,1 +1,9 @@
-{"user":{"id":1,"username":"captain","display_name":"Admin","role":"admin","provider":"local","email":null,"avatar_url":null,"workspace_id":1,"tenant_id":1}}
+{
+  "status": 200,
+  "headers": {
+    "set-cookie": [
+      "mc-session=6467929a90dfa6d7e44a9348036d9ac782e6d108a17718d2c29a1c38e922e882; Path=/; Expires=Thu, 10 Sep 2026 02:54:02 GMT; Max-Age=604800; HttpOnly; SameSite=strict"
+    ]
+  },
+  "body": "{\"user\":{\"id\":1,\"username\":\"captain\",\"display_name\":\"Admin\",\"role\":\"admin\",\"provider\":\"local\",\"email\":null,\"avatar_url\":null,\"workspace_id\":1,\"tenant_id\":1}}"
+}

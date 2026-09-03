@@ -1,0 +1,60 @@
+﻿server_url: http://192.168.0.39:8080
+listen_addr: 0.0.0.0:8080
+metrics_listen_addr: 0.0.0.0:9090
+trusted_proxies: []
+noise:
+  private_key_path: /var/lib/headscale/noise_private.key
+prefixes:
+  v4: 100.64.0.0/10
+  v6: fd7a:115c:a1e0::/48
+  allocation: sequential
+derp:
+  server:
+    enabled: true
+    region_id: 999
+    region_code: "headscale"
+    region_name: "VOID Embedded DERP"
+    verify_clients: true
+    stun_listen_addr: "0.0.0.0:3478"
+    private_key_path: /var/lib/headscale/derp_server_private.key
+    automatically_add_embedded_derp_region: true
+    ipv4: 198.51.100.1
+    ipv6: 2001:db8::1
+  urls: []
+  paths: []
+  auto_update_enabled: false
+  update_frequency: 3h
+disable_check_updates: false
+node:
+  expiry: 0
+  ephemeral:
+    inactivity_timeout: 30m
+  routes:
+    ha:
+      probe_interval: 10s
+      probe_timeout: 5s
+database:
+  type: sqlite
+  debug: false
+  gorm:
+    prepare_stmt: true
+    parameterized_queries: true
+    skip_err_record_not_found: true
+    slow_threshold: 1000
+  sqlite:
+    path: /var/lib/headscale/db.sqlite
+    write_ahead_log: true
+    wal_autocheckpoint: 1000
+logtail:
+  enabled: false
+taildrop:
+  enabled: true
+auto_update:
+  enabled: false
+dns:
+  magic_dns: true
+  nameservers:
+    global:
+      - 1.1.1.1
+      - 8.8.8.8
+  base_domain: void.local

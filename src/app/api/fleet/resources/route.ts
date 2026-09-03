@@ -3,12 +3,21 @@ import { requireRole } from '@/lib/auth'
 import { readLimiter } from '@/lib/rate-limit'
 import { getDatabase } from '@/lib/db'
 
-const SHIPS = [
-  { key: 'SQUIDSTATION', host: '192.168.0.39', port: 3000 },
-  { key: 'STEALTHATTACK', host: '192.168.0.68', port: 3000 },
-  { key: 'PINKCADY', host: '192.168.0.3', port: 3000 },
-  { key: 'TORUSLAPTOP', host: '192.168.0.3', port: 3000 },
-] as const
+// Load ships from env or use defaults
+function getShips(): Array<{ key: string; host: string; port: number }> {
+  const shipsEnv = process.env.FLEET_SHIPS
+  if (shipsEnv) {
+    try {
+      return JSON.parse(shipsEnv)
+    } catch { /* use defaults */ }
+  }
+  return [
+    { key: 'SQUIDSTATION', host: '192.168.0.39', port: 3100 },
+    { key: 'STEALTHATTACK', host: '100.110.238.68', port: 3000 },
+    { key: 'PINKCADY', host: '100.106.235.103', port: 3000 },
+    { key: 'TORUSLAPTOP', host: '192.168.0.3', port: 3000 },
+  ]
+}
 
 export async function GET(request: NextRequest) {
   const auth = requireRole(request, 'viewer')
@@ -39,8 +48,8 @@ async function loadLocalAgents() {
         name: row.name,
         ship: config.ship || 'SQUIDSTATION',
         framework: 'mission-control',
-        status: row.status,
-        last_seen: row.last_seen,
+        status: row.status || 'offline',
+        last_seen: row.last_seen || Math.floor(Date.now() / 1000),
         capabilities: config.capabilities || [],
         shares: config.shares || [],
         security: !!config.security,
@@ -53,6 +62,7 @@ async function loadLocalAgents() {
 }
 
 async function loadRemoteAgents() {
+  const SHIPS = getShips()
   const results = await Promise.allSettled(
     SHIPS.map((ship) => fetchShipAgents(ship))
   )
@@ -71,17 +81,25 @@ async function loadRemoteAgents() {
 async function fetchShipAgents(ship: { key: string; host: string; port: number }) {
   try {
     const controller = new AbortController()
-    const timer = setTimeout(() => controller.abort(), 3000)
+    const timer = setTimeout(() => controller.abort(), 5000)
 
-    const response = await fetch(`http://${ship.host}:${ship.port}/api/agents`, {
-      method: 'GET',
-      signal: controller.signal,
-      headers: { Accept: 'application/json' },
-    })
+    const candidatePaths = ['/api/agents', '/agents', '/']
+    let response: Response | null = null
+    for (const path of candidatePaths) {
+      try {
+        response = await fetch(`http://${ship.host}:${ship.port}${path}`, {
+          method: 'GET',
+          signal: controller.signal,
+          headers: { Accept: 'application/json' },
+        })
+        if (response) break
+      } catch {
+        response = null
+      }
+    }
 
     clearTimeout(timer)
-
-    if (!response.ok) return []
+    if (!response || !response.ok) return []
 
     const data = await response.json().catch(() => ({ agents: [] }))
     const agents = Array.isArray(data.agents) ? data.agents : []

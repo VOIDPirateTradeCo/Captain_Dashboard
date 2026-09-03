@@ -1,0 +1,17 @@
+{
+  "/api/fleet/mesh/verify": {
+    "error": "read ECONNRESET"
+  },
+  "/api/fleet/resources": {
+    "error": "read ECONNRESET"
+  },
+  "/api/fleet/connectivity": {
+    "error": "read ECONNRESET"
+  },
+  "/api/auth/status": {
+    "error": "read ECONNRESET"
+  },
+  "/health": {
+    "error": "read ECONNRESET"
+  }
+}

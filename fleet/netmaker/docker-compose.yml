@@ -1,0 +1,23 @@
+services:
+  netmaker:
+    image: gravitl/netmaker:v0.22.0
+    container_name: netmaker
+    restart: unless-stopped
+    ports:
+      - "8082:8081"
+      - "51820:51820/udp"
+      - "5555:5555"
+    environment:
+      - SERVER_NAME=192.168.0.39
+      - API_PORT=8081
+      - GRPC_PORT=5555
+      - DNS_MODE=off
+      - DEFAULT_NETWORK=void-mesh
+      - TELEMETRY=off
+    volumes:
+      - netmaker_data:/root
+    cap_add:
+      - NET_ADMIN
+      - SYS_ADMIN
+volumes:
+  netmaker_data:

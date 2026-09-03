@@ -109,7 +109,11 @@ export function UserManagementPanel() {
     }
   }, [t])
 
-  useEffect(() => { fetchAll() }, [fetchAll])
+  useEffect(() => {
+    let active = true
+    fetchAll().finally(() => { if (active) setLoading(false) })
+    return () => { active = false }
+  }, [fetchAll])
 
   const pendingRequests = requests.filter((r) => r.status === 'pending')
 

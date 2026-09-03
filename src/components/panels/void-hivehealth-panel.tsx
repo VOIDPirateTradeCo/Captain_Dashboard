@@ -108,6 +108,7 @@ export function VoidHiveHealthPanel() {
   const targets = d?.targets
   const agents = d?.mc_agents
   const collectorDown = Boolean(mon.err)
+  const collectorLoading = mon.loading
 
   const shipStatus = (() => {
     const connectivityShips = conn.data?.ships ?? {}
@@ -150,16 +151,18 @@ export function VoidHiveHealthPanel() {
         <div className="rounded-lg border border-border bg-card p-4">
           <h2 className="text-sm font-medium text-foreground">Services</h2>
           <div className="mt-2 grid gap-2 sm:grid-cols-2 md:grid-cols-4">
-            {collectorDown
-              ? <p className="text-xs text-muted-foreground">unavailable</p>
-              : services.map(([name, s]) => (
-                  <div key={name} className="flex items-center gap-2 text-xs">
-                    {dot(s.ok)}
-                    <span className="text-foreground">{name}</span>
-                    <span className="text-muted-foreground">{s.ok ? s.status : (s.error || 'down')}</span>
-                  </div>
-                ))}
-            {!collectorDown && services.length === 0 && <p className="text-xs text-muted-foreground">{mon.loading ? 'loading…' : 'no data'}</p>}
+            {services.map(([name, s]) => (
+              <div key={name} className="flex items-center gap-2 text-xs">
+                {dot(s.ok)}
+                <span className="text-foreground">{name}</span>
+                <span className="text-muted-foreground">{s.ok ? s.status : (s.error || 'down')}</span>
+              </div>
+            ))}
+            {services.length === 0 && (
+              <p className="text-xs text-muted-foreground">
+                {collectorLoading ? 'loading…' : collectorDown ? 'collector unavailable — no service snapshot' : 'no data'}
+              </p>
+            )}
           </div>
         </div>
 
@@ -190,27 +193,22 @@ export function VoidHiveHealthPanel() {
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-medium text-foreground">Prometheus alerts</h2>
             <span className="text-xs text-muted-foreground">
-              {collectorDown ? 'unavailable' : alerts?.ok ? `${alerts.firing ?? 0} firing · ${alerts.pending ?? 0} pending` : (alerts?.error || '—')}
+              {collectorDown ? 'collector degraded' : alerts?.ok ? `${alerts.firing ?? 0} firing · ${alerts.pending ?? 0} pending` : (alerts?.error || '—')}
             </span>
           </div>
           <div className="mt-2 space-y-1">
-            {collectorDown
-              ? <p className="text-xs text-muted-foreground">unavailable</p>
-              : <>
-                  {(alerts?.items || []).slice(0, 12).map((a, i) => (
-                    <div key={i} className="flex flex-wrap items-center gap-2 text-xs border-b border-border/40 pb-1 last:border-0">
-                      <span className={`inline-block h-2 w-2 rounded-full ${a.state === 'firing' ? 'bg-red-500' : 'bg-yellow-500'}`} />
-                      <span className="text-foreground">{a.name}</span>
-                      {a.node && <span className="font-mono text-[11px] text-muted-foreground">{a.node}</span>}
-                      {sev(a.severity)}
-                      {a.summary && <span className="text-muted-foreground">— {a.summary}</span>}
-                    </div>
-                  ))}
-                  {alerts?.ok && (alerts.items || []).length === 0 && (
-                    <p className="text-xs text-green-500">no alerts firing</p>
-                  )}
-                </>
-            }
+            {(alerts?.items || []).slice(0, 12).map((a, i) => (
+              <div key={i} className="flex flex-wrap items-center gap-2 text-xs border-b border-border/40 pb-1 last:border-0">
+                <span className={`inline-block h-2 w-2 rounded-full ${a.state === 'firing' ? 'bg-red-500' : 'bg-yellow-500'}`} />
+                <span className="text-foreground">{a.name}</span>
+                {a.node && <span className="font-mono text-[11px] text-muted-foreground">{a.node}</span>}
+                {sev(a.severity)}
+                {a.summary && <span className="text-muted-foreground">— {a.summary}</span>}
+              </div>
+            ))}
+            {((alerts?.items || []).length === 0) && (
+              <p className="text-xs text-muted-foreground">{collectorLoading ? 'loading…' : collectorDown ? 'collector degraded — no alert snapshot' : 'no alerts firing'}</p>
+            )}
           </div>
         </div>
 
@@ -219,25 +217,20 @@ export function VoidHiveHealthPanel() {
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-medium text-foreground">Scrape targets</h2>
             <span className="text-xs text-muted-foreground">
-              {collectorDown ? 'unavailable' : targets?.ok ? `${targets.up ?? 0}/${targets.total ?? 0} up` : (targets?.error || '—')}
+              {collectorDown ? 'collector degraded' : targets?.ok ? `${targets.up ?? 0}/${targets.total ?? 0} up` : (targets?.error || '—')}
             </span>
           </div>
           <div className="mt-2 space-y-1">
-            {collectorDown
-              ? <p className="text-xs text-muted-foreground">unavailable</p>
-              : <>
-                  {(targets?.down || []).map((t, i) => (
-                    <div key={i} className="flex items-center gap-2 text-xs">
-                      <span className="inline-block h-2 w-2 rounded-full bg-red-500" />
-                      <span className="text-foreground">{t.job}</span>
-                      <span className="font-mono text-[11px] text-muted-foreground">{t.node || t.instance}</span>
-                    </div>
-                  ))}
-                  {targets?.ok && (targets.down || []).length === 0 && (
-                    <p className="text-xs text-green-500">all targets up</p>
-                  )}
-                </>
-            }
+            {(targets?.down || []).map((t, i) => (
+              <div key={i} className="flex items-center gap-2 text-xs">
+                <span className="inline-block h-2 w-2 rounded-full bg-red-500" />
+                <span className="text-foreground">{t.job}</span>
+                <span className="font-mono text-[11px] text-muted-foreground">{t.node || t.instance}</span>
+              </div>
+            ))}
+            {((targets?.down || []).length === 0) && (
+              <p className="text-xs text-muted-foreground">{collectorLoading ? 'loading…' : collectorDown ? 'collector degraded — no target snapshot' : 'all targets up'}</p>
+            )}
           </div>
         </div>
       </div>
@@ -248,25 +241,20 @@ export function VoidHiveHealthPanel() {
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-medium text-foreground">Mission Control agents</h2>
             <span className="text-xs text-muted-foreground">
-              {collectorDown ? 'unavailable' : agents?.ok ? `${agents.online ?? 0}/${agents.total ?? 0} online` : (agents?.error || '—')}
+              {collectorDown ? 'collector degraded' : agents?.ok ? `${agents.online ?? 0}/${agents.total ?? 0} online` : (agents?.error || '—')}
             </span>
           </div>
           <div className="mt-2 space-y-1">
-            {collectorDown
-              ? <p className="text-xs text-muted-foreground">unavailable</p>
-              : <>
-                  {(agents?.agents || []).map((a, i) => (
-                    <div key={i} className="flex items-center gap-2 text-xs">
-                      <span className={`inline-block h-2 w-2 rounded-full ${String(a.status).toLowerCase() === 'online' ? 'bg-green-500' : 'bg-red-500'}`} />
-                      <span className="text-foreground">{a.name}</span>
-                      <span className="text-muted-foreground">{a.status}{a.runtime ? ` · ${a.runtime}` : ''}</span>
-                    </div>
-                  ))}
-                  {(agents?.agents || []).length === 0 && (
-                    <p className="text-xs text-muted-foreground">{mon.loading ? 'loading…' : 'no agents'}</p>
-                  )}
-                </>
-            }
+            {(agents?.agents || []).map((a, i) => (
+              <div key={i} className="flex items-center gap-2 text-xs">
+                <span className={`inline-block h-2 w-2 rounded-full ${String(a.status).toLowerCase() === 'online' ? 'bg-green-500' : 'bg-red-500'}`} />
+                <span className="text-foreground">{a.name}</span>
+                <span className="text-muted-foreground">{a.status}{a.runtime ? ` · ${a.runtime}` : ''}</span>
+              </div>
+            ))}
+            {(agents?.agents || []).length === 0 && (
+              <p className="text-xs text-muted-foreground">{collectorLoading ? 'loading…' : collectorDown ? 'collector degraded — no agent snapshot' : 'no agents'}</p>
+            )}
           </div>
         </div>
 
@@ -274,7 +262,7 @@ export function VoidHiveHealthPanel() {
         <div className="rounded-lg border border-border bg-card p-4">
           <h2 className="text-sm font-medium text-foreground">tr3asure fleet</h2>
           {collectorDown ? (
-            <p className="mt-2 text-xs text-muted-foreground">unavailable</p>
+            <p className="mt-2 text-xs text-muted-foreground">collector degraded</p>
           ) : d?.tr3asure_fleet?.ok ? (
             <p className="mt-2 text-xs text-muted-foreground">
               {(d.tr3asure_fleet.nodes || []).length} node(s) reported by the tr3asure backend

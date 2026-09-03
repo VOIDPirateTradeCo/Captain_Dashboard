@@ -1,0 +1,34 @@
+{
+  "agents": [
+    {
+      "agentId": "sir-azure",
+      "name": "Sir Azure",
+      "framework": "hermes",
+      "ship": "STEALTHATTACK",
+      "scope": "gpu-art",
+      "capabilities": ["art", "video", "audio", "gpu"],
+      "tokenBudget": {
+        "mode": "fallbackModels",
+        "preferFree": true,
+        "hardStopPaid": false,
+        "contextWindowHardCap": 200000,
+        "paidEscalation": ["anthropic/claude-sonnet-4-20250514"]
+      }
+    },
+    {
+      "agentId": "stealthattack-host",
+      "name": "STEALTHATTACK Host",
+      "framework": "hermes",
+      "ship": "STEALTHATTACK",
+      "scope": "gpu-art",
+      "capabilities": ["host", "mesh", "gpu"],
+      "tokenBudget": {
+        "mode": "fallbackModels",
+        "preferFree": true,
+        "hardStopPaid": false,
+        "contextWindowHardCap": 200000,
+        "paidEscalation": []
+      }
+    }
+  ]
+}

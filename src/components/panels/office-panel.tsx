@@ -1644,7 +1644,7 @@ export function OfficePanel() {
           <p className="text-sm mt-1">{t('emptyDeckSubtitle')}</p>
         </div>
       ) : viewMode === 'office' ? (
-        <div className={`grid grid-cols-1 ${showSidebar ? 'xl:grid-cols-[220px_1fr]' : 'xl:grid-cols-1'} gap-4`}>
+        <div className={`grid grid-cols-1 ${showSidebar ? 'xl:grid-cols-[220px_1fr]' : 'xl:grid-cols-1'} gap-4`} aria-busy={loading || isLocalMode}>
           {showSidebar && (
           <div className="void-panel text-foreground p-3 h-fit">
             <div className="flex items-center justify-between mb-2">

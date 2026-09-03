@@ -1,0 +1,28 @@
+services:
+  miss-pink:
+    environment:
+      - AGENT_ID=miss-pink
+      - AGENT_NAME=Miss Pink
+      - AGENT_CAPS=commander,torus,coordination
+      - MC_BASE=https://192.168.0.39:3100
+      - SHIP_NAME=PINKCADY
+      - SHIP_IP=192.168.0.180
+    networks:
+      - void-net
+    restart: unless-stopped
+
+  torus-coffee-bot:
+    environment:
+      - AGENT_ID=torus-coffee-bot
+      - AGENT_NAME=Torus Coffee Bot
+      - AGENT_CAPS=comms,orders,menu
+      - MC_BASE=https://192.168.0.39:3100
+      - SHIP_NAME=PINKCADY
+      - SHIP_IP=192.168.0.180
+    networks:
+      - void-net
+    restart: unless-stopped
+
+networks:
+  void-net:
+    external: true

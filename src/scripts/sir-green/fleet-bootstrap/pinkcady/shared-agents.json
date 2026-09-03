@@ -1,0 +1,34 @@
+{
+  "agents": [
+    {
+      "agentId": "miss-pink",
+      "name": "Miss Pink",
+      "framework": "hermes",
+      "ship": "PINKCADY",
+      "scope": "torus-coffee",
+      "capabilities": ["commander", "torus", "coordination"],
+      "tokenBudget": {
+        "mode": "fallbackModels",
+        "preferFree": true,
+        "hardStopPaid": false,
+        "contextWindowHardCap": 200000,
+        "paidEscalation": ["anthropic/claude-sonnet-4-20250514"]
+      }
+    },
+    {
+      "agentId": "torus-coffee-bot",
+      "name": "Torus Coffee Bot",
+      "framework": "hermes",
+      "ship": "PINKCADY",
+      "scope": "torus-coffee",
+      "capabilities": ["comms", "orders", "menu"],
+      "tokenBudget": {
+        "mode": "fallbackModels",
+        "preferFree": true,
+        "hardStopPaid": false,
+        "contextWindowHardCap": 200000,
+        "paidEscalation": []
+      }
+    }
+  ]
+}

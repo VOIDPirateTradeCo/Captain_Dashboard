@@ -1,0 +1,4 @@
+{
+  "url": "https://127.0.0.1:3100/api/panels/hivehealth",
+  "error": "connect ECONNREFUSED 127.0.0.1:3100"
+}

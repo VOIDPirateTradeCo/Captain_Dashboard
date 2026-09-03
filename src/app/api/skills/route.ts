@@ -124,7 +124,8 @@ function getSkillRoots(): SkillRoot[] {
 
   // Fleet shared skills vault
   const sharedVault = resolveSkillRoot('MC_SKILLS_SHARED_VAULT_DIR', 'Captain_Dashboard/shared-skills-vault')
-  roots.push({ source: 'shared-vault', path: sharedVault })
+  const normalizedSharedVault = join(cwd, sharedVault)
+  roots.push({ source: 'shared-vault', path: normalizedSharedVault })
 
   // Dynamic: scan for workspace-<agent> directories
   try {

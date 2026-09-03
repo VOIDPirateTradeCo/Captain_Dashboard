@@ -1,0 +1,23 @@
+{
+  "master_verified_at": "2026-09-02T20:45:00Z",
+  "master_ingress": "https://192.168.0.39:3100",
+  "auth": "captain/admin verified",
+  "endpoints": {
+    "/health": "200 ok",
+    "/api/auth/me": "200 captain",
+    "/api/agents": "200 agents",
+    "/api/fleet/connectivity": "200 ship status",
+    "/api/fleet/resources": "200 resources",
+    "/api/settings": "200 settings",
+    "/api/backup": "200 backups listed"
+  },
+  "fleet_connectivity": {
+    "SQUIDSTATION": "reachable",
+    "PINKCADY": "not reachable from master",
+    "STEALTHATTACK": "not reachable from master"
+  },
+  "blockers": [
+    "PINKCADY not reachable from master on 192.168.0.3:3000",
+    "Miss Pink must ensure PINKCADY MC is running and reachable"
+  ]
+}

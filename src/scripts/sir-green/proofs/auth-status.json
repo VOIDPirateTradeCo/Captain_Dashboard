@@ -1,0 +1,17 @@
+{
+  "url": "http://127.0.0.1:3100/api/auth/status",
+  "status": 200,
+  "body": {
+    "authenticated": true,
+    "user": {
+      "id": 1,
+      "username": "captain",
+      "display_name": "Admin",
+      "role": "admin",
+      "provider": "local",
+      "email": null,
+      "avatar_url": null,
+      "is_approved": 1
+    }
+  }
+}

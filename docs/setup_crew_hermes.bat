@@ -22,7 +22,7 @@ REM Create profile directory
 set PROFILE_DIR=%LOCALAPPDATA%\hermes\profiles\%AGENT_ID%
 if not exist "%PROFILE_DIR%" mkdir "%PROFILE_DIR%"
 
-REM Create profile.yaml
+REM Create profile.yaml — workdir is ship-relative (no hardcoded captain persona / absolute path)
 (
 echo # %AGENT_NAME% — Hermes Profile
 echo name: %AGENT_ID%
@@ -32,7 +32,6 @@ echo # Crew context
 echo crew:
 echo   role: %AGENT_NAME%
 echo   ship: %SHIP%
-echo   captain: Captain Brewbeard Ledgerbane
 echo.
 echo # Skills loaded by default
 echo skills:
@@ -40,8 +39,8 @@ for %%s in (%SKILLS:,= %) do (
     echo   - %%s
 )
 echo.
-echo # Working directory
-echo workdir: C:/Users/kidsm/Documents/My Docs/VOID Pirate Trading Co/Captain_Dashboard/mission-control
+echo # Working directory — ship-relative so it works on any machine
+echo workdir: %~dp0..
 echo.
 echo # Memory
 echo memory:
@@ -66,24 +65,26 @@ if exist "%LOCALAPPDATA%\hermes\config.yaml" (
     exit /b 1
 )
 
-REM Register with Mission Control
+REM Register with Mission Control — uses /api/adapters (standardized endpoint) + MC API key
 echo.
 echo === Registering with Mission Control ===
 
 set MC_KEY=
-for /f "tokens=2 delims==" %%k in ('findstr "^API_KEY=" "%USERPROFILE%\Documents\My Docs\VOID Pirate Trading Co\Captain_Dashboard\mission-control\.env" 2^>nul') do set MC_KEY=%%k
+for /f "tokens=2 delims==" %%k in ('findstr "^API_KEY=" "%~dp0..\..\.env" 2^>nul') do set MC_KEY=%%k
 
 if "%MC_KEY%"=="" (
     echo ⚠ Could not find Mission Control API key. Register manually:
-    echo   curl -X POST http://localhost:3100/api/agents/register ^
+    echo   curl -X POST http://YOUR_MC_URL:3100/api/adapters ^
     echo     -H "Content-Type: application/json" ^
-    echo     -H "x-api-key: YOUR_KEY" ^
-    echo     -d "{\"name\":\"%AGENT_ID%\",\"role\":\"agent\",\"capabilities\":[\"code\",\"review\"],\"framework\":\"hermes\"}"
+    echo     -H "x-api-key: YOUR_API_KEY" ^
+    echo     -H "X-Agent-Name: %AGENT_ID%" ^
+    echo     -d "{\"framework\":\"generic\",\"action\":\"register\",\"payload\":{\"agentId\":\"%AGENT_ID%\",\"name\":\"%AGENT_NAME%\",\"metadata\":{\"host\":\"%COMPUTERNAME%\",\"ship\":\"%SHIP%\",\"capabilities\":[\"code\",\"review\"]}}}"
 ) else (
-    curl -s -X POST http://localhost:3100/api/agents/register ^
+    curl -sS -X POST "http://%COMPUTERNAME%:3100/api/adapters" ^
       -H "Content-Type: application/json" ^
       -H "x-api-key: %MC_KEY%" ^
-      -d "{\"name\":\"%AGENT_ID%\",\"role\":\"agent\",\"capabilities\":[\"code\",\"review\"],\"framework\":\"hermes\"}"
+      -H "X-Agent-Name: %AGENT_ID%" ^
+      -d "{\"framework\":\"generic\",\"action\":\"register\",\"payload\":{\"agentId\":\"%AGENT_ID%\",\"name\":\"%AGENT_NAME%\",\"metadata\":{\"host\":\"%COMPUTERNAME%\",\"ship\":\"%SHIP%\",\"capabilities\":[\"code\",\"review\"]}}}"
     echo ✓ Registered with MC
 )
 

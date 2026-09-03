@@ -1,0 +1,36 @@
+{
+  "url": "http://127.0.0.1:3100/api/fleet/connectivity",
+  "status": 200,
+  "body": {
+    "status": "ok",
+    "generated_at": 1788408942665,
+    "ships": {
+      "SQUIDSTATION": {
+        "reachable": true,
+        "latency_ms": 0,
+        "last_seen": 1788408940,
+        "status": 200,
+        "body": "{\"status\":\"ok\",\"db\":\"ok\"}"
+      },
+      "STEALTHATTACK": {
+        "reachable": true,
+        "latency_ms": 23,
+        "last_seen": 1788408940,
+        "status": 200,
+        "body": "{\"status\":\"ok\",\"db\":\"ok\",\"ts\":\"2026-09-03T04:16:15.496Z\"}"
+      },
+      "PINKCADY": {
+        "reachable": false,
+        "latency_ms": 2014,
+        "last_seen": null,
+        "error": "no_response"
+      },
+      "TORUSLAPTOP": {
+        "reachable": false,
+        "latency_ms": 2014,
+        "last_seen": null,
+        "error": "no_response"
+      }
+    }
+  }
+}

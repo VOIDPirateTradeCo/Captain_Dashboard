@@ -350,7 +350,7 @@ from datetime import datetime, timezone
 
 logger = logging.getLogger("hooks.mission-control")
 
-MC_URL = os.environ.get("MC_URL", "http://localhost:3000")
+MC_URL = os.environ.get("MC_URL", "https://192.168.0.39:3100")
 MC_API_KEY = os.environ.get("MC_API_KEY", "")
 
 

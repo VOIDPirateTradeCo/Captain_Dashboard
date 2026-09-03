@@ -188,12 +188,20 @@ export function proxy(request: NextRequest) {
   const method = request.method.toUpperCase()
   if (['POST', 'PUT', 'DELETE', 'PATCH'].includes(method)) {
     const origin = request.headers.get('origin')
+    const referer = request.headers.get('referer')
+    let originHost: string
     if (origin) {
-      let originHost: string
       try { originHost = new URL(origin).host } catch { originHost = '' }
-      if (originHost && !requestHosts.some((h) => hostsMatchForCsrf(h, originHost))) {
-        return addSecurityHeaders(NextResponse.json({ error: 'CSRF origin mismatch' }, { status: 403 }), request)
-      }
+    } else if (referer) {
+      try { originHost = new URL(referer).host } catch { originHost = '' }
+    } else {
+      originHost = ''
+    }
+    if (!originHost) {
+      return addSecurityHeaders(NextResponse.json({ error: 'CSRF: missing origin' }, { status: 403 }), request)
+    }
+    if (!requestHosts.some((h) => hostsMatchForCsrf(h, originHost))) {
+      return addSecurityHeaders(NextResponse.json({ error: 'CSRF origin mismatch' }, { status: 403 }), request)
     }
   }
 

@@ -1,0 +1,52 @@
+{
+  "url": "http://127.0.0.1:3100/api/fleet/mesh/verify",
+  "status": 200,
+  "body": {
+    "status": "ok",
+    "generated_at": 1788407747165,
+    "ships": {
+      "SQUIDSTATION": {
+        "reachable": false,
+        "latency_ms": 18,
+        "last_seen": null,
+        "error": "no_response"
+      },
+      "STEALTHATTACK": {
+        "reachable": false,
+        "latency_ms": 2013,
+        "last_seen": null,
+        "error": "no_response"
+      },
+      "STEALTHATTACK_TAILSCALE": {
+        "reachable": true,
+        "latency_ms": 21,
+        "last_seen": 1788407745,
+        "status": 200,
+        "body": "{\"status\":\"ok\",\"db\":\"ok\",\"ts\":\"2026-09-03T03:56:20.042Z\"}"
+      },
+      "PINKCADY": {
+        "reachable": false,
+        "latency_ms": 2012,
+        "last_seen": null,
+        "error": "no_response"
+      },
+      "PINKCADY_TAILSCALE": {
+        "reachable": false,
+        "latency_ms": 2012,
+        "last_seen": null,
+        "error": "no_response"
+      },
+      "TORUSLAPTOP": {
+        "reachable": false,
+        "latency_ms": 2012,
+        "last_seen": null,
+        "error": "no_response"
+      }
+    },
+    "mesh_summary": {
+      "total_endpoints": 6,
+      "reachable": 1,
+      "unreachable": 5
+    }
+  }
+}

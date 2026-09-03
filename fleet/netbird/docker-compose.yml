@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  netbird:
+    image: netbirdio/netbird:latest
+    container_name: netbird_mgmt
+    restart: unless-stopped
+    ports:
+      - "33073:33073"
+      - "80:80"
+      - "443:443"
+    environment:
+      - NB_MGMT_API_PORT=80
+      - NB_MGMT_API_HTTPS_PORT=443
+      - NB_SIGNAL_PORT=33073
+      - NB_DOMAIN=192.168.0.39
+    volumes:
+      - netbird_data:/var/lib/netbird
+    cap_add:
+      - NET_ADMIN
+      - SYS_ADMIN
+    security_opt:
+      - apparmor=unconfined
+
+volumes:
+  netbird_data:

@@ -1550,7 +1550,21 @@ const migrations: Migration[] = [
         db.exec(`ALTER TABLE agents ADD COLUMN claude_base_session_created_at TEXT DEFAULT NULL`)
       }
     }
-  }
+  },
+  {
+    id: '056_failed_logins',
+    up: (db) => {
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS failed_logins (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          username TEXT NOT NULL UNIQUE,
+          failed_count INTEGER NOT NULL DEFAULT 0,
+          last_failed_at INTEGER NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_failed_logins_username ON failed_logins(username);
+      `)
+    }
+  },
 ]
 
 export function runMigrations(db: Database.Database) {

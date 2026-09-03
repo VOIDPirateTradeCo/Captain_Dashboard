@@ -1,0 +1,42 @@
+{
+  "podcast_mp3": {
+    "description": "Convert raw audio/video to podcast MP3",
+    "command": "ffmpeg -i INPUT.wav -af 'highpass=f=80,lowpass=f=12000,acompressor=threshold=-20dB:ratio=3:attack=20:release=1000,loudnorm=I=-16:TP=-1.5' -b:a 192k OUTPUT.mp3",
+    "output_bitrate": "192k",
+    "sample_rate": "48000"
+  },
+  "youtube_mp4": {
+    "description": "H.264 MP4 for YouTube upload",
+    "command": "ffmpeg -i INPUT.mp4 -c:v libx264 -preset fast -crf 18 -b:v 20M -maxrate 25M -bufsize 40M -c:a aac -b:a 320k -ar 48000 -movflags +faststart OUTPUT.mp4",
+    "resolution": "1920x1080",
+    "fps": "30",
+    "video_bitrate": "20M",
+    "audio_bitrate": "320k"
+  },
+  "tiktok_vertical": {
+    "description": "Crop to 9:16 vertical for TikTok",
+    "command": "ffmpeg -i INPUT.mp4 -vf 'crop=1080:1920:(iw-1080)/2:(ih-1920)/2,scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:-1:-1:color=black' -c:v libx264 -preset fast -crf 18 -b:v 8M -c:a aac -b:a 192k -ar 48000 -movflags +faststart OUTPUT.mp4",
+    "resolution": "1080x1920",
+    "fps": "30",
+    "video_bitrate": "8M",
+    "audio_bitrate": "192k"
+  },
+  "podcast_from_video": {
+    "description": "Extract audio from video and convert to podcast MP3",
+    "command": "ffmpeg -i INPUT.mp4 -vn -af 'highpass=f=80,lowpass=f=12000,acompressor=threshold=-20dB:ratio=3:attack=20:release=1000,loudnorm=I=-16:TP=-1.5' -b:a 192k OUTPUT.mp3",
+    "output_bitrate": "192k",
+    "sample_rate": "48000"
+  },
+  "thumbnail_gif": {
+    "description": "Generate animated GIF thumbnail for social",
+    "command": "ffmpeg -ss 00:00:05 -t 3 -i INPUT.mp4 -vf 'fps=10,scale=480:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=64[p];[s1][p]paletteuse' -loop 0 OUTPUT.gif",
+    "duration": "3s",
+    "fps": "10"
+  },
+  "batch_tiktok_clips": {
+    "description": "Batch process long video into 60s TikTok clips",
+    "command": "ffmpeg -i INPUT.mp4 -ss 00:01:00 -t 60 -vf 'crop=1080:1920:(iw-1080)/2:(ih-1920)/2,scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:-1:-1:color=black' -c:v libx264 -preset fast -crf 18 -b:v 8M -c:a aac -b:a 192k -ar 48000 clip_01.mp4",
+    "clip_duration": "60s",
+    "note": "Change -ss and -t for each clip"
+  }
+}

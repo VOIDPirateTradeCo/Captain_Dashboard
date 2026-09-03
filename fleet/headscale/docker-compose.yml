@@ -1,0 +1,13 @@
+services:
+  headscale:
+    image: headscale/headscale:latest
+    container_name: headscale
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+      - "3478:3478/udp"
+    volumes:
+      - headscale_data:/var/lib/headscale
+      - ./config:/etc/headscale
+volumes:
+  headscale_data:
