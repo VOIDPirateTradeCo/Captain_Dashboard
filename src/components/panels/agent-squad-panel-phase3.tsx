@@ -349,6 +349,21 @@ export function AgentSquadPanelPhase3() {
     return new Date(timestamp * 1000).toLocaleDateString()
   }
 
+  const getAgentBudgetLabel = (agent: Agent) => {
+    try {
+      const cfg = typeof agent.config === 'string' ? JSON.parse(agent.config) : agent.config
+      const budget = cfg?.tokenBudget
+      if (!budget || typeof budget !== 'object') return 'default'
+      const mode = typeof budget.mode === 'string' ? budget.mode.trim() : 'legacy'
+      const hardStop = typeof budget.hardStopPaid === 'boolean' && budget.hardStopPaid
+      const preferFree = typeof budget.preferFree === 'boolean' && budget.preferFree
+      const suffix = hardStop ? ' · hard stop paid' : preferFree ? ' · prefer free' : ''
+      return `${mode}${suffix}`
+    } catch {
+      return 'default'
+    }
+  }
+
   // Check if agent had recent heartbeat (within 30 minutes)
   const hasRecentHeartbeat = (agent: Agent) => {
     if (!agent.last_seen) return false
@@ -390,6 +405,61 @@ export function AgentSquadPanelPhase3() {
               {t('activeHeartbeats', { count: agents.filter(hasRecentHeartbeat).length })}
             </span>
           </div>
+
+          {/* Token Budget Summary */}
+          {(() => {
+            const budgetCounts = agents.reduce((acc, agent) => {
+              try {
+                const cfg = typeof agent.config === 'string' ? JSON.parse(agent.config) : agent.config
+                const budget = cfg?.tokenBudget
+                if (!budget || typeof budget !== 'object') return acc
+                const mode = typeof budget.mode === 'string' ? budget.mode.trim() || 'legacy' : 'legacy'
+                acc[mode] = (acc[mode] || 0) + 1
+              } catch { /* ignore */ }
+              return acc
+            }, {} as Record<string, number>)
+
+            const entries = Object.entries(budgetCounts)
+            if (entries.length === 0) return null
+
+            const hardStopCount = agents.reduce((count, agent) => {
+              try {
+                const cfg = typeof agent.config === 'string' ? JSON.parse(agent.config) : agent.config
+                const budget = cfg?.tokenBudget
+                if (!budget || typeof budget !== 'object') return count
+                return count + (typeof budget.hardStopPaid === 'boolean' && budget.hardStopPaid ? 1 : 0)
+              } catch { return count }
+            }, 0)
+
+            const preferFreeCount = agents.reduce((count, agent) => {
+              try {
+                const cfg = typeof agent.config === 'string' ? JSON.parse(agent.config) : agent.config
+                const budget = cfg?.tokenBudget
+                if (!budget || typeof budget !== 'object') return count
+                return count + (typeof budget.preferFree === 'boolean' && budget.preferFree ? 1 : 0)
+              } catch { return count }
+            }, 0)
+
+            return (
+              <div className="flex flex-wrap gap-2 text-xs text-amber-300/80">
+                {entries.map(([mode, count]) => (
+                  <span key={mode} className="px-1.5 py-0.5 rounded border border-amber-500/20 bg-amber-500/10">
+                    {mode}: {count}
+                  </span>
+                ))}
+                {hardStopCount > 0 ? (
+                  <span className="px-1.5 py-0.5 rounded border border-rose-500/20 bg-rose-500/10 text-rose-200">
+                    hardStopPaid: {hardStopCount}
+                  </span>
+                ) : null}
+                {preferFreeCount > 0 ? (
+                  <span className="px-1.5 py-0.5 rounded border border-emerald-500/20 bg-emerald-500/10 text-emerald-200">
+                    preferFree: {preferFreeCount}
+                  </span>
+                ) : null}
+              </div>
+            )
+          })()}
         </div>
         
         <div className="flex gap-2">
@@ -539,6 +609,17 @@ export function AgentSquadPanelPhase3() {
                       ))}
                     </div>
                   )}
+
+                  {/* Token budget badge */}
+                  {(() => {
+                    const budgetLabel = getAgentBudgetLabel(agent)
+                    if (!budgetLabel) return null
+                    return (
+                      <div className="text-[11px] text-amber-300/80 mb-2 pl-0.5">
+                        {budgetLabel}
+                      </div>
+                    )
+                  })()}
 
                   {/* Footer: last seen + actions */}
                   <div className="flex items-center justify-between mt-2 pt-2 border-t border-border/30">

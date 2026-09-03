@@ -86,12 +86,13 @@ export function AgentRuntimesSection({ showFeedback }: Props) {
       setRuntimes(data.runtimes || [])
       setIsDocker(data.isDocker || false)
       setRuntimeInstallsEnabled(data.runtimeInstallsEnabled === true)
-    } catch {
-      // ignore
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to load runtimes'
+      showFeedback(false, message)
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [showFeedback])
 
   useEffect(() => { fetchRuntimes() }, [fetchRuntimes])
 
@@ -118,8 +119,9 @@ export function AgentRuntimesSection({ showFeedback }: Props) {
               fetchRuntimes()
             }
           }
-        } catch {
-          // ignore
+        } catch (err) {
+          const message = err instanceof Error ? err.message : 'Job status update failed'
+          showFeedback(false, message)
         }
       }
     }, 1000)
@@ -137,8 +139,9 @@ export function AgentRuntimesSection({ showFeedback }: Props) {
         const runtimeJob = data.job
         setActiveJobs(prev => ({ ...prev, [runtimeId]: runtimeJob }))
       }
-    } catch {
-      showFeedback(false, 'Failed to start install')
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to start install'
+      showFeedback(false, message)
     }
   }
 
@@ -152,8 +155,8 @@ export function AgentRuntimesSection({ showFeedback }: Props) {
       await navigator.clipboard.writeText(data.yaml)
       showFeedback(true, 'Docker compose snippet copied')
     } catch (err) {
-      if (!isRuntimeTransportFailure(err)) return
-      showFeedback(false, 'Failed to copy')
+      const message = err instanceof Error ? err.message : 'Failed to copy'
+      showFeedback(false, message)
     }
   }
 
@@ -347,7 +350,22 @@ export function AgentRuntimesSection({ showFeedback }: Props) {
                     {installFailed && (
                       <div className="mt-2 space-y-1">
                         <p className="text-2xs text-red-400">Install failed: {job?.error || 'Unknown error'}</p>
-                        <Button variant="ghost" size="sm" disabled={!runtimeInstallsEnabled} onClick={() => handleInstall(rt.id)} className="text-2xs h-6 px-2">Retry</Button>
+                        <div className="flex flex-wrap gap-1">
+                          <Button variant="ghost" size="sm" disabled={!runtimeInstallsEnabled} onClick={() => handleInstall(rt.id)} className="text-2xs h-6 px-2">Retry</Button>
+                          <Button variant="ghost" size="sm" onClick={() => handleDetect(rt.id)} className="text-2xs h-6 px-2">Refresh Detection</Button>
+                          <Button variant="ghost" size="sm" onClick={() => setSetupRuntime(rt.id as 'openclaw' | 'hermes' | 'claude' | 'codex' | 'opencode')} className="text-2xs h-6 px-2">Open Setup</Button>
+                          {isDocker && (
+                            <Button variant="ghost" size="sm" onClick={() => handleCopyCompose(rt.id)} className="text-2xs h-6 px-2">Sidecar YAML</Button>
+                          )}
+                          {job?.output && (
+                            <Button variant="ghost" size="sm" onClick={() => setExpandedOutput(expandedOutput === `fail-${rt.id}` ? null : `fail-${rt.id}`)} className="text-2xs h-6 px-2">View Output</Button>
+                          )}
+                        </div>
+                        {job?.output && expandedOutput === `fail-${rt.id}` && (
+                          <pre className="mt-1 p-2 rounded bg-black/20 text-[10px] font-mono text-muted-foreground/70 max-h-40 overflow-auto whitespace-pre-wrap">
+                            {job.output}
+                          </pre>
+                        )}
                       </div>
                     )}
 

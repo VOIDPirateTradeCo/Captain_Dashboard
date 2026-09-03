@@ -67,6 +67,7 @@ function getSkillRoots(): Array<{ source: string; path: string }> {
     { source: 'project-codex', path: process.env.MC_SKILLS_PROJECT_CODEX_DIR || join(cwd, '.codex', 'skills') },
     { source: 'openclaw', path: process.env.MC_SKILLS_OPENCLAW_DIR || join(openclawState, 'skills') },
     { source: 'workspace', path: process.env.MC_SKILLS_WORKSPACE_DIR || join(process.env.OPENCLAW_WORKSPACE_DIR || process.env.MISSION_CONTROL_WORKSPACE_DIR || join(openclawState, 'workspace'), 'skills') },
+    { source: 'shared-vault', path: process.env.MC_SKILLS_SHARED_VAULT_DIR || 'Captain_Dashboard/shared-skills-vault' },
   ]
 
   // Dynamic: scan for workspace-<agent> directories
@@ -144,7 +145,7 @@ export async function syncSkillsFromDisk(): Promise<{ ok: boolean; message: stri
     }
 
     // Fetch current DB rows (only local sources, not registry-installed via slug)
-    const localSources = ['user-agents', 'user-codex', 'project-agents', 'project-codex', 'openclaw', 'workspace']
+    const localSources = ['user-agents', 'user-codex', 'project-agents', 'project-codex', 'openclaw', 'workspace', 'shared-vault']
     // Also include any dynamic workspace-* sources from disk
     for (const s of diskSkills) {
       if (s.source.startsWith('workspace-') && !localSources.includes(s.source)) {

@@ -1,0 +1,106 @@
+{
+  "/api/agents": {
+    "status": 401,
+    "body": "{\"error\":\"Unauthorized\"}"
+  },
+  "/api/fleet/connectivity": {
+    "status": 401,
+    "body": "{\"error\":\"Unauthorized\"}"
+  },
+  "/api/fleet/mesh/verify": {
+    "status": 401,
+    "body": "{\"error\":\"Unauthorized\"}"
+  },
+  "/api/skills": {
+    "status": 401,
+    "body": "{\"error\":\"Unauthorized\"}"
+  },
+  "/api/status": {
+    "status": 401,
+    "body": "{\"error\":\"Unauthorized\"}"
+  },
+  "/api/settings": {
+    "status": 401,
+    "body": "{\"error\":\"Unauthorized\"}"
+  },
+  "/api/backup": {
+    "status": 401,
+    "body": "{\"error\":\"Unauthorized\"}"
+  },
+  "/api/vault": {
+    "status": 401,
+    "body": "{\"error\":\"Unauthorized\"}"
+  },
+  "/api/captain": {
+    "status": 401,
+    "body": "{\"error\":\"Unauthorized\"}"
+  },
+  "/api/comms": {
+    "status": 401,
+    "body": "{\"error\":\"Unauthorized\"}"
+  },
+  "/api/opsec": {
+    "status": 401,
+    "body": "{\"error\":\"Unauthorized\"}"
+  },
+  "/api/containers": {
+    "status": 401,
+    "body": "{\"error\":\"Unauthorized\"}"
+  },
+  "/api/scanner": {
+    "status": 401,
+    "body": "{\"error\":\"Unauthorized\"}"
+  },
+  "/api/sir-azure": {
+    "status": 401,
+    "body": "{\"error\":\"Unauthorized\"}"
+  },
+  "/api/inbox": {
+    "status": 401,
+    "body": "{\"error\":\"Unauthorized\"}"
+  },
+  "/api/monitoring": {
+    "status": 401,
+    "body": "{\"error\":\"Unauthorized\"}"
+  },
+  "/api/docker": {
+    "status": 401,
+    "body": "{\"error\":\"Unauthorized\"}"
+  },
+  "/api/ids": {
+    "status": 401,
+    "body": "{\"error\":\"Unauthorized\"}"
+  },
+  "/api/crowdsec": {
+    "status": 401,
+    "body": "{\"error\":\"Unauthorized\"}"
+  },
+  "/api/captcha-verify": {
+    "status": 401,
+    "body": "{\"error\":\"Unauthorized\"}"
+  },
+  "/api/fleet": {
+    "status": 401,
+    "body": "{\"error\":\"Unauthorized\"}"
+  },
+  "/api/diagram": {
+    "status": 401,
+    "body": "{\"error\":\"Unauthorized\"}"
+  },
+  "/api/sandbox/test": {
+    "status": 401,
+    "body": "{\"error\":\"Unauthorized\"}"
+  },
+  "/health": {
+    "status": 200,
+    "body": "{\"status\":\"ok\",\"db\":\"ok\",\"ts\":\"2026-09-03T02:43:11.908Z\"}"
+  },
+  "/api/auth/status": {
+    "status": 200,
+    "body": "{\"authenticated\":false,\"user\":null}"
+  },
+  "/api/auth/me": {
+    "status": 401,
+    "body": "{\"error\":\"Authentication required\"}"
+  }
+}

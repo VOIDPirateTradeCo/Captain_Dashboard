@@ -311,7 +311,7 @@ export const RUNTIME_CAPABILITIES: Record<RuntimeId, RuntimeCapabilities> = {
     receipts: { ...NO_RECEIPTS, telemetry: true }, // gateway session token stats
   },
   hermes: {
-    dispatch: false, // no dispatcher branch; runtime_type: 'hermes' provisions profiles only
+    dispatch: true, // callHermesViaCli — hermes chat -q --oneshot
     session_resume: false,
     pty: false,
     workspace_cwd: false,

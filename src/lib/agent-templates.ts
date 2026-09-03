@@ -56,13 +56,78 @@ export interface OpenClawAgentConfig {
   memorySearch?: AgentMemorySearchConfig
 }
 
-export interface AgentTemplate {
+export type TokenBudgetMode = 'freeModelsFirst' | 'fallbackModels' | 'preferFree' | 'paidEscalation' | 'hardStopPaid'
+
+export interface TokenBudget {
+  mode?: TokenBudgetMode
+  maxContextWindow?: number
+  contextWindowHardCap?: number
+  preferFree?: boolean
+  paidEscalation?: boolean | string[]
+  hardStopPaid?: boolean
+  freeModels?: string[]
+  freeModelsFirst?: string[]
+  fallbackModels?: string[]
+  dispatchHardBudgetUsd?: number
+}
+
+export function normalizeTokenBudget(raw: unknown): TokenBudget | undefined {
+  if (!raw || typeof raw !== 'object') return undefined
+  const budget = raw as Record<string, unknown>
+
+  const toNumber = (value: unknown): number | undefined => {
+    if (typeof value === 'number' && Number.isFinite(value)) return value
+    return undefined
+  }
+
+  const toStringArray = (value: unknown): string[] => {
+    if (!Array.isArray(value)) return []
+    return value
+      .map((entry) => (typeof entry === 'string' ? entry.trim() : ''))
+      .filter((entry): entry is string => entry.length > 0)
+  }
+
+  const legacyMode = (): TokenBudgetMode | null => {
+    if (typeof budget.mode === 'string' && ['freeModelsFirst','fallbackModels','preferFree','paidEscalation','hardStopPaid'] satisfies TokenBudgetMode[] && (['freeModelsFirst','fallbackModels','preferFree','paidEscalation','hardStopPaid'] as readonly TokenBudgetMode[]).includes(budget.mode as TokenBudgetMode)) {
+      return budget.mode as TokenBudgetMode
+    }
+    const preferFree = typeof budget.preferFree === 'boolean' && budget.preferFree
+    const hardStopPaid = typeof budget.hardStopPaid === 'boolean' && budget.hardStopPaid
+    const paidEscalationBool = typeof budget.paidEscalation === 'boolean' && budget.paidEscalation
+    if (hardStopPaid) return 'hardStopPaid'
+    if (paidEscalationBool) return 'paidEscalation'
+    if (preferFree) return 'preferFree'
+    return 'fallbackModels'
+  }
+
+  const mode: TokenBudgetMode = legacyMode() ?? 'fallbackModels'
+  const paidEscalationRaw = toStringArray(budget.paidEscalation)
+  const paidEscalation = paidEscalationRaw.length > 0 ? paidEscalationRaw : mode === 'paidEscalation' ? ['anthropic/claude-sonnet-4-20250514'] : []
+  const freeModels = toStringArray(budget.freeModels).length > 0 ? toStringArray(budget.freeModels) : toStringArray(budget.freeModelsFirst)
+  const fallbackModels = toStringArray(budget.fallbackModels).length > 0 ? toStringArray(budget.fallbackModels) : ['openai/codex-mini-latest', 'ollama/qwen2.5-coder:14b']
+
+  return {
+    mode,
+    maxContextWindow: toNumber(budget.maxContextWindow) ?? 128_000,
+    contextWindowHardCap: toNumber(budget.contextWindowHardCap) ?? toNumber(budget.maxContextWindow) ?? 0,
+    preferFree: typeof budget.preferFree === 'boolean' ? budget.preferFree : mode !== 'paidEscalation',
+    paidEscalation,
+    hardStopPaid: typeof budget.hardStopPaid === 'boolean' ? budget.hardStopPaid : mode === 'hardStopPaid',
+    freeModels,
+    freeModelsFirst: freeModels,
+    fallbackModels,
+    dispatchHardBudgetUsd: toNumber(budget.dispatchHardBudgetUsd),
+  }
+}
+
+export type AgentTemplate = {
   type: string
   label: string
   description: string
   emoji: string
   modelTier: 'opus' | 'sonnet' | 'haiku'
   toolCount: number
+  tokenBudget?: TokenBudget
   config: Omit<OpenClawAgentConfig, 'id' | 'workspace' | 'agentDir'>
 }
 
@@ -88,7 +153,6 @@ export function getEffectiveToolGroups(): Record<string, readonly string[]> {
   for (const provider of getPluginToolProviders()) {
     const groupId = provider.id
     if (merged[groupId]) {
-      // Append new tools that aren't already in the group
       const existing = new Set(merged[groupId])
       for (const tool of provider.tools) {
         if (!existing.has(tool)) merged[groupId].push(tool)
@@ -108,6 +172,7 @@ const SONNET_FALLBACKS = [
   'openrouter/moonshotai/kimi-k2.5',
   'nvidia/moonshotai/kimi-k2-instruct',
   'openai/codex-mini-latest',
+  'stepfun/step-3.7-flash:free',
   'ollama/qwen2.5-coder:14b',
 ]
 
@@ -117,12 +182,14 @@ const OPUS_FALLBACKS = [
   'nvidia/moonshotai/kimi-k2-instruct',
   'openrouter/moonshotai/kimi-k2.5',
   'openai/codex-mini-latest',
+  'stepfun/step-3.7-flash:free',
 ]
 
 const HAIKU_FALLBACKS = [
   'anthropic/claude-sonnet-4-20250514',
   'ollama/qwen2.5-coder:14b',
   'openai/codex-mini-latest',
+  'stepfun/step-3.7-flash:free',
 ]
 
 export const AGENT_TEMPLATES: AgentTemplate[] = [
@@ -133,6 +200,17 @@ export const AGENT_TEMPLATES: AgentTemplate[] = [
     emoji: '\ud83e\udded',
     modelTier: 'opus',
     toolCount: 23,
+    tokenBudget: {
+      mode: 'fallbackModels',
+      maxContextWindow: 200_000,
+      contextWindowHardCap: 200_000,
+      preferFree: false,
+      paidEscalation: ['anthropic/claude-sonnet-4-20250514'],
+      hardStopPaid: false,
+      freeModels: [],
+      freeModelsFirst: [],
+      fallbackModels: ['openai/codex-mini-latest', 'ollama/qwen2.5-coder:14b'],
+    },
     config: {
       model: {
         primary: 'anthropic/claude-opus-4-5',
@@ -175,6 +253,17 @@ export const AGENT_TEMPLATES: AgentTemplate[] = [
     emoji: '\ud83d\udee0\ufe0f',
     modelTier: 'sonnet',
     toolCount: 21,
+    tokenBudget: {
+      mode: 'preferFree',
+      maxContextWindow: 128_000,
+      contextWindowHardCap: 128_000,
+      preferFree: true,
+      paidEscalation: ['anthropic/claude-sonnet-4-20250514'],
+      hardStopPaid: false,
+      freeModels: [],
+      freeModelsFirst: [],
+      fallbackModels: ['openai/codex-mini-latest', 'stepfun/step-3.7-flash:free', 'ollama/qwen2.5-coder:14b'],
+    },
     config: {
       model: {
         primary: 'anthropic/claude-sonnet-4-20250514',
@@ -219,6 +308,17 @@ export const AGENT_TEMPLATES: AgentTemplate[] = [
     emoji: '\u2699\ufe0f',
     modelTier: 'sonnet',
     toolCount: 15,
+    tokenBudget: {
+      mode: 'preferFree',
+      maxContextWindow: 128_000,
+      contextWindowHardCap: 128_000,
+      preferFree: true,
+      paidEscalation: ['anthropic/claude-sonnet-4-20250514'],
+      hardStopPaid: false,
+      freeModels: [],
+      freeModelsFirst: [],
+      fallbackModels: ['openai/codex-mini-latest', 'ollama/qwen2.5-coder:14b'],
+    },
     config: {
       model: {
         primary: 'anthropic/claude-sonnet-4-20250514',
@@ -261,6 +361,17 @@ export const AGENT_TEMPLATES: AgentTemplate[] = [
     emoji: '\ud83d\udd2c',
     modelTier: 'haiku',
     toolCount: 7,
+    tokenBudget: {
+      mode: 'hardStopPaid',
+      maxContextWindow: 100_000,
+      contextWindowHardCap: 100_000,
+      preferFree: true,
+      paidEscalation: [],
+      hardStopPaid: true,
+      freeModels: ['openai/codex-mini-latest', 'ollama/qwen2.5-coder:14b'],
+      freeModelsFirst: ['openai/codex-mini-latest', 'ollama/qwen2.5-coder:14b'],
+      fallbackModels: ['openrouter/anthropic/claude-sonnet-4'],
+    },
     config: {
       model: {
         primary: 'anthropic/claude-haiku-4-5',
@@ -299,6 +410,17 @@ export const AGENT_TEMPLATES: AgentTemplate[] = [
     emoji: '\ud83d\udd0d',
     modelTier: 'sonnet',
     toolCount: 8,
+    tokenBudget: {
+      mode: 'preferFree',
+      maxContextWindow: 128_000,
+      contextWindowHardCap: 128_000,
+      preferFree: true,
+      paidEscalation: ['anthropic/claude-sonnet-4-20250514'],
+      hardStopPaid: false,
+      freeModels: [],
+      freeModelsFirst: [],
+      fallbackModels: ['openai/codex-mini-latest', 'ollama/qwen2.5-coder:14b'],
+    },
     config: {
       model: {
         primary: 'anthropic/claude-sonnet-4-20250514',
@@ -338,6 +460,17 @@ export const AGENT_TEMPLATES: AgentTemplate[] = [
     emoji: '\u270f\ufe0f',
     modelTier: 'haiku',
     toolCount: 9,
+    tokenBudget: {
+      mode: 'hardStopPaid',
+      maxContextWindow: 100_000,
+      contextWindowHardCap: 100_000,
+      preferFree: true,
+      paidEscalation: [],
+      hardStopPaid: true,
+      freeModels: ['openai/codex-mini-latest', 'ollama/qwen2.5-coder:14b'],
+      freeModelsFirst: ['openai/codex-mini-latest', 'ollama/qwen2.5-coder:14b'],
+      fallbackModels: ['openrouter/anthropic/claude-sonnet-4'],
+    },
     config: {
       model: {
         primary: 'anthropic/claude-haiku-4-5',
@@ -380,6 +513,17 @@ export const AGENT_TEMPLATES: AgentTemplate[] = [
     emoji: '\ud83d\udee1\ufe0f',
     modelTier: 'sonnet',
     toolCount: 10,
+    tokenBudget: {
+      mode: 'preferFree',
+      maxContextWindow: 128_000,
+      contextWindowHardCap: 128_000,
+      preferFree: true,
+      paidEscalation: ['anthropic/claude-sonnet-4-20250514'],
+      hardStopPaid: false,
+      freeModels: [],
+      freeModelsFirst: [],
+      fallbackModels: ['openai/codex-mini-latest', 'ollama/qwen2.5-coder:14b'],
+    },
     config: {
       model: {
         primary: 'anthropic/claude-sonnet-4-20250514',

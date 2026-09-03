@@ -133,6 +133,16 @@ function getConfigPath(): string | null {
 }
 
 function resolveAgentWorkspacePath(workspace: string): string {
+  // Normalize Windows absolute paths (e.g. "C:\c\Users\...") to Linux paths
+  // under the container's OpenClaw state dir bind mount.
+  const windowsDrive = /^[A-Za-z]:\[\w\/.-]+$/
+  if (windowsDrive.test(workspace)) {
+    const linuxRelative = workspace.replace(/^[A-Za-z]:/i, '').replace(/\\/g, '/')
+    if (!config.openclawStateDir) {
+      throw new Error('OPENCLAW_STATE_DIR not configured')
+    }
+    return resolveWithin(config.openclawStateDir, linuxRelative)
+  }
   if (isAbsolute(workspace)) return resolve(workspace)
   if (!config.openclawStateDir) {
     throw new Error('OPENCLAW_STATE_DIR not configured')

@@ -254,6 +254,38 @@ export function OverviewTab({
             </div>
 
             <div className="grid grid-cols-[100px_1fr] gap-2 items-center text-sm">
+              <span className="text-muted-foreground">Token budget</span>
+              <span className="text-foreground font-mono text-xs">
+                {(() => {
+                  try {
+                    const cfg = typeof (agent as any).config === 'string' ? JSON.parse((agent as any).config) : (agent as any).config
+                    const budget = cfg?.tokenBudget
+                    if (!budget || typeof budget !== 'object') return 'default'
+                    const mode = typeof budget.mode === 'string' ? budget.mode.trim() : 'legacy'
+                    const hardStop = typeof budget.hardStopPaid === 'boolean' && budget.hardStopPaid
+                    const preferFree = typeof budget.preferFree === 'boolean' && budget.preferFree
+                    const ctx = typeof budget.maxContextWindow === 'number' ? budget.maxContextWindow : null
+                    const cap = typeof budget.contextWindowHardCap === 'number' ? budget.contextWindowHardCap : null
+                    const free = Array.isArray(budget.freeModels) ? budget.freeModels : []
+                    const fallback = Array.isArray(budget.fallbackModels) ? budget.fallbackModels : []
+                    const paid = Array.isArray(budget.paidEscalation) ? budget.paidEscalation : []
+                    const lines = [mode]
+                    if (ctx || cap) lines.push(`ctx=${ctx ?? '—'} cap=${cap ?? '—'}`)
+                    if (hardStop) lines.push('hardStopPaid')
+                    else if (preferFree) lines.push('preferFree')
+                    else lines.push('paidOK')
+                    if (free.length) lines.push(`free=${free.length}`)
+                    if (fallback.length) lines.push(`fallback=${fallback.length}`)
+                    if (paid.length) lines.push(`paidEscalation=${paid.length}`)
+                    return lines.join(' · ')
+                  } catch {
+                    return 'default'
+                  }
+                })()}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-[100px_1fr] gap-2 items-center text-sm">
               <span className="text-muted-foreground">{t('sessionKey')}</span>
               {editing ? (
                 <input

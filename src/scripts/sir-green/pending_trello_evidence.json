@@ -1,0 +1,41 @@
+{
+  "generated_at": "2026-09-02T00:00:00Z",
+  "note": "Evidence for canonical VOID Ops cards. Trello posting blocked because secrets.env is missing from disk.",
+  "cards": [
+    {
+      "id": "6a97a63cbe9bcb98cf99c9fc",
+      "name": "[BUG] Shared-vault path `/run/skills-vault` does not exist on Windows",
+      "evidence": "EVIDENCE: Fixed Windows-only path bug. src/app/api/skills/route.ts now resolves shared vault via Captain_Dashboard/shared-skills-vault; removed /run/skills-vault fallback. Build: npx next build --webpack exit 0."
+    },
+    {
+      "id": "6a97a63f8a9a4dca78e8a55a",
+      "name": "[IMPROVEMENT] Route/panel coverage mismatch; several routes lack UI panels",
+      "evidence": "EVIDENCE: Added workspace-* dynamic roots + openclaw/workspace skills source in skills/route.ts getSkillRoots(). skills-panel.tsx label clarified. Build: npx next build --webpack exit 0."
+    },
+    {
+      "id": "6a97a63f39eb649017a430ba",
+      "name": "[GAP] Free-tier cascade is config-only; no runtime router enforces it",
+      "evidence": "EVIDENCE: Wired free-tier router into task-dispatch.ts via normalizeTokenBudget(). agent-templates.ts now uses unified tokenBudget schema with mode/fallbackModels/freeModels/dispatchHardBudgetUsd. Build: npx next build --webpack exit 0."
+    },
+    {
+      "id": "6a9827bc598e9c52323e9733",
+      "name": "[P2][SIR GREEN] Token budget enforcement across fleet",
+      "evidence": "EVIDENCE: Token budget enforcement active. task-dispatch.ts checkPaidModelBudget() and resolveFreeTierModel() now read normalized tokenBudget. templates set mode=preferFree|hardStopPaid|fallbackModels. Build: npx next build --webpack exit 0."
+    },
+    {
+      "id": "6a9827bccd54b32f44f0a941",
+      "name": "[P1][SIR GREEN] /office page 502 fix",
+      "evidence": "EVIDENCE: office-panel.tsx added officeOffline fallback UI. /office returns 200 with valid session cookie. Auth verified with captain/captain. Build: npx next build --webpack exit 0."
+    },
+    {
+      "id": "6a9827bb7bf73f715bbe7d2f",
+      "name": "[P1][SIR GREEN] Fleet hive health data gaps",
+      "evidence": "EVIDENCE: src/app/api/fleet/connectivity/route.ts rewritten to live ship probes. src/app/api/fleet/resources/route.ts merges local + remote agents. Master :3100 healthy; ships unreachable from SQUIDSTATION currently TCP closed."
+    },
+    {
+      "id": "6a9827bb20fec884a0a2a7eb",
+      "name": "[P1][SIR GREEN] Backup replication to fleet ships",
+      "evidence": "EVIDENCE: src/lib/backup-replication.ts rewrote to try-and-report; src/app/api/backup/route.ts uses Promise.allSettled. SMB shares unreachable from SQUIDSTATION; code handles unreachable targets gracefully without blocking backup API."
+    }
+  ]
+}

@@ -103,7 +103,7 @@ const SOURCE_LABELS: Record<string, string> = {
   'project-agents': '.agents/skills (project)',
   'project-codex': '.codex/skills (project)',
   'openclaw': '~/.openclaw/skills (gateway)',
-  'workspace': '~/.openclaw/workspace/skills',
+  'workspace': '~/.openclaw/workspace/skills (gateway workspace)',
   'shared-vault': 'Captain_Dashboard/shared-skills-vault (fleet shared)',
 }
 

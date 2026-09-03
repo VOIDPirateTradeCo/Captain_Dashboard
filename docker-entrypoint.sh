@@ -47,5 +47,18 @@ if [ -z "$API_KEY" ] || [ "$API_KEY" = "generate-a-random-key" ]; then
   export API_KEY
 fi
 
-printf '[entrypoint] Starting server\n'
+# --- HTTPS proxy for HSTS + Secure cookies ---
+# Start the proxy in the background; Next.js still listens on 3000 internally.
+printf '[entrypoint] Starting HTTPS proxy on %s\n' "${MC_PORT:-3100}"
+node /app/scripts/mc-https-proxy.js > /app/.data/https-proxy.log 2>&1 &
+PROXY_PID=$!
+
+# Wait for proxy to be ready
+sleep 2
+if ! kill -0 "$PROXY_PID" 2>/dev/null; then
+  printf '[entrypoint] HTTPS proxy failed to start; check .data/https-proxy.log\n' >&2
+  exit 1
+fi
+
+printf '[entrypoint] Starting Next.js server on port %s\n' "${PORT:-3000}"
 exec node server.js

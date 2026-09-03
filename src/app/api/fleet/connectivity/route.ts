@@ -1,13 +1,16 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { requireRole } from '@/lib/auth'
-import { readLimiter } from '@/lib/rate-limit'
+import { NextRequest, NextResponse } from 'next/server';
+import { requireRole } from '@/lib/auth';
+import { readLimiter } from '@/lib/rate-limit';
+import https from 'node:https';
 
 const SHIPS = [
-  { key: 'SQUIDSTATION', host: '192.168.0.39', port: 3000 },
-  { key: 'STEALTHATTACK', host: '192.168.0.68', port: 3000 },
-  { key: 'PINKCADY', host: '192.168.0.3', port: 3000 },
-  { key: 'TORUSLAPTOP', host: '192.168.0.3', port: 3000 },
+  { key: 'SQUIDSTATION', host: '192.168.0.39', port: 3100, protocol: 'https' },
+  { key: 'STEALTHATTACK', host: '192.168.0.68', port: 3000, protocol: 'http' },
+  { key: 'PINKCADY', host: '192.168.0.3', port: 3000, protocol: 'http' },
+  { key: 'TORUSLAPTOP', host: '192.168.0.3', port: 3000, protocol: 'http' },
 ] as const
+
+const httpsAgent = new https.Agent({ rejectUnauthorized: false })
 
 export async function GET(request: NextRequest) {
   const auth = requireRole(request, 'viewer')
@@ -42,16 +45,18 @@ export async function GET(request: NextRequest) {
   return NextResponse.json(response)
 }
 
-async function probeShip(ship: { key: string; host: string; port: number }) {
+async function probeShip(ship: { key: string; host: string; port: number; protocol: 'http' | 'https' }) {
   const start = Date.now()
   try {
     const controller = new AbortController()
     const timer = setTimeout(() => controller.abort(), 2000)
 
-    const response = await fetch(`http://${ship.host}:${ship.port}/health`, {
+    const response = await fetch(`${ship.protocol}://${ship.host}:${ship.port}/health`, {
       method: 'GET',
       signal: controller.signal,
       headers: { Accept: 'application/json' },
+      // @ts-ignore-next-line
+      agent: ship.protocol === 'https' ? httpsAgent : undefined,
     })
 
     clearTimeout(timer)

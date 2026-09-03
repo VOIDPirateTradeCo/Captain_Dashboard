@@ -1,0 +1,72 @@
+{
+  "generated_at": "2026-09-02T00:00:00Z",
+  "master": {
+    "build": "green",
+    "dev_server_port": 3000,
+    "master_ingress": "https://192.168.0.39:3100",
+    "auth": "captain/captain verified",
+    "token_budget_ui": "agent-squad-panel-phase3.tsx shows mode + hardStopPaid + preferFree counts + per-card budget label",
+    "fleet_connectivity": "probes SQUIDSTATION via HTTPS on 3100 with rejectUnauthorized=false",
+    "trello_credentials": "recovered from Windows Credential Manager"
+  },
+  "torus_ops_cards": [
+    {
+      "card_id": "6a986f2c00f9b564696eb06d",
+      "name": "PINKCADY Mission Control setup — Torus Coffee Company",
+      "list": "Miss Pink's Inbox",
+      "labels": ["miss-pink", "mission control"]
+    },
+    {
+      "card_id": "6a987701b4c29d8cc5a807e5",
+      "name": "Clone Captain_Dashboard and build Mission Control on PINKCADY",
+      "list": "P2 - Med High"
+    },
+    {
+      "card_id": "6a9877011423f5ea72b96b74",
+      "name": "Create PINKCADY .env pointing to master SQUIDSTATION Mission Control",
+      "list": "P2 - Med High"
+    },
+    {
+      "card_id": "6a987703dbd2f62bd4bf7ec8",
+      "name": "Configure Torus Coffee agents and free-tier model cascade on PINKCADY",
+      "list": "P2 - Med High"
+    },
+    {
+      "card_id": "6a987703717e926f5a466ab2",
+      "name": "Verify Miss Pink heartbeat and task feed from master Mission Control",
+      "list": "P2 - Med High"
+    },
+    {
+      "card_id": "6a9877029d11d23b4a1228b1",
+      "name": "Create Torus Coffee shared vault directories on PINKCADY",
+      "list": "Miss Pink's Inbox"
+    },
+    {
+      "card_id": "6a98776a910b46fad115b942",
+      "name": "[P0] Register miss-pink with master Mission Control — exact curl command",
+      "list": "P0 - Alert / Critical / Do Now"
+    },
+    {
+      "card_id": "6a98798b24355bf40e186dbc",
+      "name": "[P2] PINKCADY local runtime readiness checklist — paste output back here",
+      "list": "P2 - Med High"
+    },
+    {
+      "card_id": "6a987ae1b64a45fb980e4ad3",
+      "name": "[P0] PINKCADY must use HTTPS port 3100 for master SQUIDSTATION — do not use HTTP 3000",
+      "list": "P0 - Alert / Critical / Do Now"
+    }
+  ],
+  "bootstrap_artifacts": [
+    "src/scripts/sir-green/pinkcady-bootstrap/README.md",
+    "src/scripts/sir-green/pinkcady-bootstrap/env.example",
+    "src/scripts/sir-green/pinkcady-bootstrap/docker-compose.pink.yml",
+    "src/scripts/sir-green/pinkcady-bootstrap/setup-shared-vault.ps1",
+    "src/scripts/sir-green/miss-pink-pinkcady-mc-setup.md",
+    "src/scripts/sir-green/miss-pink-shared-vault-layout.md"
+  ],
+  "blocked": [
+    "git push to github.com times out from SQUIDSTATION",
+    "shell HTTP to 127.0.0.1:3000 hangs on this Windows install despite listener healthy"
+  ]
+}

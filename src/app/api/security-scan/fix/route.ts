@@ -1,5 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { existsSync, readFileSync, writeFileSync, chmodSync, statSync } from 'node:fs'
+import { platform } from 'node:os'
+
+function getConfigPermissionState(path: string) {
+  if (platform() === 'win32') {
+    try {
+      const { execSync } = require('child_process')
+      const output = execSync(`icacls "${path}"`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] })
+      const hasNonOwnerAllow = /(?<!\w)(BUILTIN|Users|Everyone|Authenticated Users|S-1-5-32|S-1-1-0|S-1-5-11)\(?A\)?/i.test(output)
+      const hasOwnerFull = /S-1-5-21-\d+-\d+-\d+-\d+\(F\)/i.test(output)
+      return { mode: '600', compliant: hasOwnerFull && !hasNonOwnerAllow, raw: output.trim() }
+    } catch {
+      return { mode: 'unknown', compliant: false, raw: 'icacls_failed' }
+    }
+  }
+
+  const mode = (statSync(path).mode & 0o777).toString(8)
+  return { mode, compliant: mode === '600', raw: mode }
+}
 import { execFileSync } from 'node:child_process'
 import path from 'node:path'
 import crypto from 'node:crypto'
@@ -232,11 +250,17 @@ export async function POST(request: NextRequest) {
 
       // Fix config file permissions
       if (shouldFix('config_permissions')) try {
-        const stat = statSync(configPath)
-        const mode = (stat.mode & 0o777).toString(8)
-        if (mode !== '600') {
-          chmodSync(configPath, 0o600)
-          results.push({ id: 'config_permissions', name: 'OpenClaw config permissions', fixed: true, detail: `Changed from ${mode} to 600`, fixSafety: FIX_SAFETY['config_permissions'] })
+        const perm = getConfigPermissionState(configPath)
+        if (!perm.compliant) {
+          if (platform() === 'win32') {
+            const { execSync } = require('child_process')
+            execSync(`icacls "${configPath}" /inheritance:r /grant:r "${process.env.USERDOMAIN}\\${process.env.USERNAME}:(F)"`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] })
+          } else {
+            chmodSync(configPath, 0o600)
+          }
+          results.push({ id: 'config_permissions', name: 'OpenClaw config permissions', fixed: true, detail: `Set openclaw.json permissions to owner-only on ${platform()}`, fixSafety: FIX_SAFETY['config_permissions'] })
+        } else {
+          results.push({ id: 'config_permissions', name: 'OpenClaw config permissions', fixed: true, detail: 'Already owner-only/600-equivalent', fixSafety: FIX_SAFETY['config_permissions'] })
         }
       } catch (e: any) {
         results.push({ id: 'config_permissions', name: 'OpenClaw config permissions', fixed: false, detail: e.message, fixSafety: FIX_SAFETY['config_permissions'] })

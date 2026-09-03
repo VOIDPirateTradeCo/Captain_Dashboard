@@ -1,0 +1,52 @@
+[
+  {
+    "name": "[P1][SIR GREEN] Fleet MC port conflict audit",
+    "desc": "Goal: master dashboard at 192.168.0.39:3100 must be the only ingress.\nBug hunt: verify each ship PC runs localhost:3000 only for dev, not exposed on 3100.\nShips: SQUIDSTATION/192.168.0.39, PINKCADY/192.168.0.3, STEALTHATTACK/100.110.238.68.\nEvidence: curl each localhost:3000/health, confirm no 3100 listener except SQUIDSTATION master.",
+    "labels": ["sir-green", "captain's dashboard"]
+  },
+  {
+    "name": "[P1][SIR GREEN] STEALTHATTACK scoped data feed to master",
+    "desc": "Goal: Sir Azure / STEALTHATTACK data flows into SQUIDSTATION master MC.\nBug hunt: verify STEALTHATTACK MC at 192.168.0.68:3000 has /api/fleet/connectivity reporting reachable.\nVerify scoped endpoints (art/video/audio) proxy to master or sync via shared agent registry.\nFix: add relay route or proxy_pass for STEALTHATTACK→SQUIDSTATION.",
+    "labels": ["sir-green", "captain's dashboard"]
+  },
+  {
+    "name": "[P1][SIR GREEN] PINKCADY scoped data feed to master",
+    "desc": "Goal: Miss Pink / PINKCADY data flows into SQUIDSTATION master MC.\nBug hunt: verify PINKCADY MC at 192.168.0.3:3000 has /api/fleet/connectivity reporting reachable.\nVerify Torus Coffee scope data syncs to master via /api/fleet/storage or /api/fleet/tasks.\nFix: add relay route or proxy_pass for PINKCADY→SQUIDSTATION.",
+    "labels": ["sir-green", "captain's dashboard"]
+  },
+  {
+    "name": "[P1][SIR GREEN] Master MC reverse proxy for fleet data",
+    "desc": "Goal: 192.168.0.39:3100 ingests scoped fleet data from all ships.\nBug hunt: check nginx/caddy/Tailscale Serve config for proxy_pass to localhost:3000.\nVerify /api/fleet/* endpoints aggregate STEALTHATTACK/PINKCADY/SQUIDSTATION data.\nFix: add /api/fleet/upstream proxy blocks for each ship if missing.",
+    "labels": ["sir-green", "captain's dashboard"]
+  },
+  {
+    "name": "[P1][SIR GREEN] Fleet hive health data gaps",
+    "desc": "Goal: Hive Health panel shows all ships, no \"no agents\" gaps.\nBug hunt: verify /api/fleet/connectivity and /api/fleet/resources return data for all reachable ships.\nVerify collector-degraded rendering when a ship is offline.\nFix: add stale-data thresholds and offline placeholders.",
+    "labels": ["sir-green", "captain's dashboard"]
+  },
+  {
+    "name": "[P1][SIR GREEN] Backup replication to fleet ships",
+    "desc": "Goal: MC backups replicate to STEALTHATTACK and PINKCADY.\nBug hunt: test SMB reachability from SQUIDSTATION to 192.168.0.68\\Backups\\MissionControl and 192.168.0.3\\Backups\\MissionControl.\nVerify POST /api/backup returns replication: [{ok:true}].\nFix: configure SMB credentials or mapped drives if unreachable.",
+    "labels": ["sir-green", "captain's dashboard"]
+  },
+  {
+    "name": "[P1][SIR GREEN] /office page 502 fix",
+    "desc": "Goal: /office loads without 502 and renders live crew data.\nBug hunt: verify /office returns 200 with valid session cookie; check proxy headers.\nVerify office-panel.tsx fallback UI when data is missing.\nFix: add error boundary and retry logic for /api/agents and /api/sessions.",
+    "labels": ["sir-green", "captain's dashboard"]
+  },
+  {
+    "name": "[P2][SIR GREEN] Token budget enforcement across fleet",
+    "desc": "Goal: free-tier model cascade prevents charges on all ships.\nBug hunt: verify task-dispatch.ts budget enforcement on SQUIDSTATION, PINKCADY, STEALTHATTACK.\nVerify tokenBudget schema matches across fleet agents.json.\nFix: normalize schema and add budget alerts.",
+    "labels": ["sir-green", "captain's dashboard"]
+  },
+  {
+    "name": "[P2][SIR GREEN] OpenClaw security hardening fleet-wide",
+    "desc": "Goal: all ships have chmod 600 equivalent on openclaw.json and tool permissions set.\nBug hunt: verify C:\\Users\\<ship>\\.openclaw\\openclaw.json ACLs and tools.profile= coding.\nVerify tools.deny groups applied.\nFix: push secure_openclaw.ps1 to all ships via SMB/remote exec.",
+    "labels": ["sir-green", "captain's dashboard"]
+  },
+  {
+    "name": "[P2][SIR GREEN] Fleet data scope isolation",
+    "desc": "Goal: Sir Azure sees art data, Miss Pink sees Torus data, Sir Green sees ops data, master sees all.\nBug hunt: verify agents.json scopes and /api/agents route filters by ship/role.\nFix: add scope-based middleware to deny cross-ship data leaks.",
+    "labels": ["sir-green", "captain's dashboard"]
+  }
+]

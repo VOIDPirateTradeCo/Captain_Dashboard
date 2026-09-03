@@ -1,0 +1,20 @@
+{
+  "generated_at": "2026-09-02T00:00:00Z",
+  "source": "local repo + Windows Credential Manager",
+  "verified": [
+    "npx next build --webpack exit 0",
+    "trello card 6a986a303f8ec0a9ca61a97e created with labels sir-green, sir-cobalt, captain's dashboard",
+    "trello card 6a986f2c00f9b564696eb06d created on Torus Ops with labels miss-pink, mission control",
+    "trello evidence comments posted to both cards",
+    "agent-squad-panel-phase3.tsx shows mode + hardStopPaid + preferFree counts",
+    "trello-bridge.ts degrades gracefully when secrets.env is absent"
+  ],
+  "blocked": [
+    "shell HTTP to 127.0.0.1:3000 hangs on this Windows install despite listener healthy",
+    "git push to github.com times out from SQUIDSTATION"
+  ],
+  "evidence_comments": [
+    "6a986a303f8ec0a9ca61a97e",
+    "6a986f2c00f9b564696eb06d"
+  ]
+}

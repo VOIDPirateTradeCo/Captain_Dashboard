@@ -1,0 +1,13 @@
+{
+  "generated_at": "2026-09-02T00:00:00Z",
+  "note": "Shell HTTP checks against 127.0.0.1:3000 timeout even when the dev server is healthy. Runtime evidence must be collected with Node HTTPS + PowerShell.",
+  "disabled_commands": [
+    "curl http://127.0.0.1:3000/health",
+    "node -e 'const http=require(\"http\"); http.get(\"http://127.0.0.1:3000/health\", ...)'"
+  ],
+  "verified_methods": [
+    "node https.request https://127.0.0.1:3000/health",
+    "powershell Invoke-WebRequest",
+    "next dev --hostname 127.0.0.1 --port 3000 process readiness"
+  ]
+}

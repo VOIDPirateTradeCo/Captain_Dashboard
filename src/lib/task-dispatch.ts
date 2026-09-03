@@ -10,6 +10,7 @@ import {
 import { callOpenClawGateway } from './openclaw-gateway'
 import { eventBus } from './event-bus'
 import { logger } from './logger'
+import { normalizeTokenBudget, type TokenBudget } from '@/lib/agent-templates'
 import { config } from './config'
 import { getAllGatewaySessions } from './sessions'
 import { parseJsonlTranscript, readSessionJsonl, type TranscriptMessage } from './transcript-parser'
@@ -239,7 +240,85 @@ export function resolveCliDispatchCwd(input: unknown, workspaceRoot: string, tas
  * per-field override from tasks.metadata. All fields validated; anything
  * invalid degrades to "flag not passed" (today's behavior).
  */
-export function resolveCliSandboxOptions(
+/**
+ * Hard-paid-model budget enforcement for Mission Control dispatch.
+ *
+ * Reads a per-agent/task budget from `agent_config.tokenBudget.dispatchHardBudgetUsd`
+ * or `tasks.metadata.dispatch_hard_budget_usd`. When set, any dispatch whose
+ * computed dispatch model is not in the configured allowlist is rejected. If
+ * the task already exceeded the agent/task budget in `token_usage`, dispatch
+ * is also rejected regardless of model.
+ */
+export function checkPaidModelBudget(task: Pick<DispatchableTask, 'id' | 'agent_config' | 'metadata' | 'workspace_id'>, dispatchModel: string | null): { redirected: boolean; model?: string } | void {
+  const normalized = normalizeTokenBudget((() => {
+    try {
+      const parsed = JSON.parse(task.agent_config || '{}')
+      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) return parsed
+    } catch { /* ignore */ }
+    return {}
+  })())
+  if (!normalized) return
+  const tokenBudget = normalized
+  const mode = typeof tokenBudget.mode === 'string' ? tokenBudget.mode.trim() : 'fallbackModels'
+  const hardStopPaid = Boolean(tokenBudget.hardStopPaid)
+  const preferFree = Boolean(tokenBudget.preferFree)
+  const meta = safeParseMetadata(task.metadata)
+  const currentContextWindow = typeof meta.contextWindowUsed === 'number' ? meta.contextWindowUsed : 0
+  const hardCap = typeof tokenBudget.contextWindowHardCap === 'number' ? tokenBudget.contextWindowHardCap : 0
+
+  if (hardCap > 0 && currentContextWindow > hardCap) {
+    if (mode === 'hardStopPaid' || hardStopPaid) throw new Error(`Context window ${currentContextWindow} exceeds hard cap ${hardCap} for task TASK-${task.id}`)
+    const paidList = normalizeStringList(tokenBudget.paidEscalation)
+    if (paidList.length > 0) return { redirected: true, model: paidList[0] }
+  }
+
+  if (mode === 'hardStopPaid' || hardStopPaid) {
+    if (!dispatchModel || dispatchModel === 'paid' || /(?:claude|gpt-4|o1|o3)/i.test(dispatchModel || '')) {
+      throw new Error(`Paid model '${dispatchModel || 'unknown'}' is blocked by hardStopPaid budget for task TASK-${task.id}`)
+    }
+    const freeList = normalizeStringList(tokenBudget.freeModels)
+    const fallbackList = normalizeStringList(tokenBudget.fallbackModels)
+    const freeModel = pickFirstAvailable([...freeList, ...fallbackList])
+    if (freeModel) return { redirected: true, model: freeModel }
+  }
+
+  if (mode === 'preferFree' || preferFree) {
+    const freeList = normalizeStringList(tokenBudget.freeModels)
+    const fallbackList = normalizeStringList(tokenBudget.fallbackModels)
+    const freeModel = pickFirstAvailable([...freeList, ...fallbackList])
+    if (freeModel) return { redirected: true, model: freeModel }
+  }
+
+  const hardBudget = typeof tokenBudget.dispatchHardBudgetUsd === 'number' ? tokenBudget.dispatchHardBudgetUsd : null
+  if (hardBudget === null && hardBudget !== 0) return
+  if (typeof dispatchModel !== 'string' || !dispatchModel.trim()) return
+  const model = dispatchModel.trim()
+  const allowlist = Array.isArray(tokenBudget.paidEscalation) ? tokenBudget.paidEscalation.filter((entry: unknown) => typeof entry === 'string' && entry.trim()) : []
+  if (allowlist.length > 0 && !allowlist.some((allowed: string) => model.toLowerCase() === allowed.toLowerCase())) {
+    throw new Error(`Paid model '${model}' is outside the agent allowlist for task TASK-${task.id}`)
+  }
+  if (hardBudget <= 0) return
+  try {
+    const db = getDatabase()
+    const spent = db.prepare(`
+      SELECT COALESCE(SUM(cost_usd), 0) as spent
+      FROM token_usage
+      WHERE workspace_id = ?
+        AND session_id IN (
+          SELECT session_id FROM token_usage WHERE workspace_id = ? AND session_id LIKE 'task-${task.id}%' LIMIT 50
+        )
+    `).get(task.workspace_id, task.workspace_id) as { spent: number } | undefined
+    const totalSpent = typeof spent?.spent === 'number' ? spent.spent : 0
+    if (totalSpent > hardBudget) {
+      throw new Error(`Task TASK-${task.id} paid dispatch budget exceeded: $${totalSpent.toFixed(2)} > $${hardBudget}`)
+    }
+  } catch (error) {
+    if (error instanceof Error) throw error
+    logger.warn({ taskId: task.id }, 'Paid dispatch budget check failed')
+  }
+}
+
+function resolveCliSandboxOptions(
   task: Pick<DispatchableTask, 'id' | 'agent_config' | 'metadata'>,
   workspaceRoot: string = config.workspaceRoot,
 ): CliDispatchSandboxOptions {
@@ -681,6 +760,11 @@ function anthropicDispatchId(alias: 'opus' | 'sonnet' | 'haiku', fallback: strin
 }
 
 function classifyDirectModel(task: DispatchableTask): string {
+  // Free-tier runtime router: if the agent opts into tokenBudget routing,
+  // prefer free/fallback models before touching paid opus/sonnet/haiku.
+  const freeTierModel = resolveFreeTierModel(task)
+  if (freeTierModel) return freeTierModel
+
   // Check per-agent config override first
   if (task.agent_config) {
     try {
@@ -727,6 +811,67 @@ function classifyDirectModel(task: DispatchableTask): string {
 
   // Default → Sonnet
   return anthropicDispatchId('sonnet', 'claude-sonnet-4-6')
+}
+
+/** Free-tier model cascade router.
+ *
+ * Reads `agent_config.tokenBudget` and returns a model ID when free-tier
+ * routing should override the default complexity classifier. Returns null
+ * when the agent has no tokenBudget, when the policy forbids free routing,
+ * or when no usable free/fallback model is configured.
+ *
+ * tokenBudget shape (from agent-templates.ts):
+ * {
+ *   mode: 'freeModelsFirst' | 'fallbackModels' | 'preferFree' | 'paidEscalation' | 'hardStopPaid',
+ *   freeModels?: string[],
+ *   fallbackModels?: string[],
+ *   paidEscalation?: string[],
+ *   contextWindowHardCap?: number
+ * }
+ */
+function resolveFreeTierModel(task: DispatchableTask): string | null {
+  const normalized = normalizeTokenBudget((() => {
+    try {
+      const parsed = JSON.parse(task.agent_config || '{}')
+      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) return parsed
+    } catch { /* ignore */ }
+    return {}
+  })())
+  if (!normalized) return null
+  const tokenBudget = normalized
+  const mode = typeof tokenBudget.mode === 'string' ? tokenBudget.mode.trim() : ''
+  const meta = safeParseMetadata(task.metadata)
+  const currentContextWindow = typeof meta.contextWindowUsed === 'number' ? meta.contextWindowUsed : 0
+  const hardCap = typeof tokenBudget.contextWindowHardCap === 'number' ? tokenBudget.contextWindowHardCap : 0
+  if (hardCap > 0 && currentContextWindow > hardCap) {
+    if (mode === 'hardStopPaid') return null
+    return pickFirstAvailable(normalizeStringList(tokenBudget.paidEscalation))
+  }
+
+  const freeList = normalizeStringList(tokenBudget.freeModels)
+  const fallbackList = normalizeStringList(tokenBudget.fallbackModels)
+
+  if (mode === 'freeModelsFirst' && freeList.length > 0) return freeList[0]
+  if ((mode === 'freeModelsFirst' || mode === 'preferFree') && fallbackList.length > 0) return fallbackList[0]
+  if (mode === 'fallbackModels' && fallbackList.length > 0) return fallbackList[0]
+  if (mode === 'paidEscalation') return pickFirstAvailable(normalizeStringList(tokenBudget.paidEscalation))
+  if (mode === 'hardStopPaid') {
+    const model = pickFirstAvailable([...freeList, ...fallbackList])
+    return model ?? null
+  }
+  return null
+}
+
+function normalizeStringList(input: unknown): string[] {
+  if (!Array.isArray(input)) return []
+  return input
+    .map((entry) => (typeof entry === 'string' ? entry.trim() : ''))
+    .filter((entry) => entry.length > 0)
+}
+
+function pickFirstAvailable(models: unknown[]): string | null {
+  const list = normalizeStringList(models)
+  return list.length > 0 ? list[0] : null
 }
 
 function getAgentSoulContent(task: DispatchableTask): string | null {
@@ -1120,8 +1265,12 @@ async function dispatchViaClaudeSession(
   }
 
   const base = ensureClaudeBaseSession(task.agent_id)
-  const model = stripProviderPrefix(classifyDirectModel(task))
   const session = base.materialized ? { resume: base.sessionId } : { create: base.sessionId }
+  const model = stripProviderPrefix(classifyDirectModel(task))
+  const budgetResult = checkPaidModelBudget(task, model)
+  if (budgetResult?.redirected && budgetResult.model) {
+    return await callClaudeViaCli(task, prompt, stripProviderPrefix(budgetResult.model), session)
+  }
 
   try {
     const response = await callClaudeViaCli(task, prompt, model, session)
@@ -1153,6 +1302,91 @@ async function dispatchViaClaudeSession(
     })
     throw err
   }
+}
+
+async function callHermesViaGatewayWithModel(
+  task: DispatchableTask,
+  prompt: string,
+  model: string,
+  soul: string | null,
+): Promise<AgentResponseParsed> {
+  const messages: Array<{ role: string; content: string }> = []
+  if (soul) messages.push({ role: 'system', content: soul })
+  messages.push({ role: 'user', content: prompt })
+
+  const hermesEndpoint = process.env.HERMES_GATEWAY_URL || 'http://host.docker.internal:8644'
+  const res = await fetch(`${hermesEndpoint.replace(/\/$/, '')}/v1/chat/completions`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(process.env.HERMES_GATEWAY_TOKEN ? { Authorization: `Bearer ${process.env.HERMES_GATEWAY_TOKEN}` } : {}),
+    },
+    body: JSON.stringify({
+      model,
+      messages,
+      max_tokens: 4096,
+    }),
+  })
+
+  if (!res.ok) {
+    const errorText = await res.text().catch(() => '')
+    throw new Error(`Hermes gateway error ${res.status}: ${errorText.slice(0, 500)}`)
+  }
+
+  const data = await res.json()
+  const text = data?.choices?.[0]?.message?.content || data?.text || data?.output || null
+  const sessionId = data?.id || null
+
+  return { text, sessionId }
+}
+
+async function callHermesViaGateway(
+  task: DispatchableTask,
+  prompt: string,
+): Promise<AgentResponseParsed> {
+  const soul = getAgentSoulContent(task)
+  const model = classifyDirectModel(task)
+  const budgetResult = checkPaidModelBudget(task, model)
+  if (budgetResult?.redirected && budgetResult.model) {
+    logger.info({ taskId: task.id, originalModel: model, budgetModel: budgetResult.model }, 'Token budget redirected Hermes gateway model')
+    return callHermesViaGatewayWithModel(task, prompt, budgetResult.model, soul)
+  }
+
+  const messages: Array<{ role: string; content: string }> = []
+  if (soul) messages.push({ role: 'system', content: soul })
+  messages.push({ role: 'user', content: prompt })
+
+  logger.info(
+    { taskId: task.id, model, agent: task.agent_name },
+    'Dispatching task via Hermes gateway',
+  )
+
+  // Hermes gateway runs on the host at port 8644
+  const hermesEndpoint = process.env.HERMES_GATEWAY_URL || 'http://host.docker.internal:8644'
+  
+  const res = await fetch(`${hermesEndpoint.replace(/\/$/, '')}/v1/chat/completions`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(process.env.HERMES_GATEWAY_TOKEN ? { 'Authorization': `Bearer ${process.env.HERMES_GATEWAY_TOKEN}` } : {}),
+    },
+    body: JSON.stringify({
+      model,
+      messages,
+      max_tokens: 4096,
+    }),
+  })
+
+  if (!res.ok) {
+    const errorText = await res.text().catch(() => '')
+    throw new Error(`Hermes gateway error ${res.status}: ${errorText.slice(0, 500)}`)
+  }
+
+  const data = await res.json()
+  const text = data?.choices?.[0]?.message?.content || data?.text || data?.output || null
+  const sessionId = data?.id || null
+
+  return { text, sessionId }
 }
 
 async function callOpenAICompatible(
@@ -1369,12 +1603,11 @@ async function callLocalDirectly(task: DispatchableTask, prompt: string, model: 
 async function callDirectly(task: DispatchableTask, prompt: string): Promise<AgentResponseParsed> {
   const model = classifyDirectModel(task)
   const provider = pickProvider(model)
+  checkPaidModelBudget(task, model)
+
   if (provider === 'minimax') return callMiniMaxDirectly(task, prompt, model)
   if (provider === 'openai') return callOpenAIDirectly(task, prompt, model)
   if (provider === 'local') return callLocalDirectly(task, prompt, model)
-  // Anthropic: prefer the host Claude Code CLI when available - it uses the
-  // operator's existing login, no API key needed. Fall back to the API key
-  // path only if the CLI isn't installed.
   if (isClaudeCliAvailable()) return callClaudeViaCli(task, prompt, stripProviderPrefix(model))
   return callClaudeDirectly(task, prompt)
 }
@@ -1823,6 +2056,9 @@ export async function dispatchAssignedTasks(): Promise<{ ok: boolean; message: s
         // and callDirectly - a claude-runtime agent never falls back to a
         // less restrictive provider; failures surface as dispatch failures.
         agentResponse = await dispatchViaClaudeSession(task, prompt)
+      } else if (String(task.agent_runtime_type || '').toLowerCase() === 'hermes') {
+        // Hermes runtime: dispatch via Hermes gateway
+        agentResponse = await callHermesViaGateway(task, prompt)
       } else if (useDirectApi && !targetSession) {
         // Direct API dispatch - provider chosen by `dispatchModel`. No gateway needed.
         agentResponse = await callDirectly(task, prompt)

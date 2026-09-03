@@ -1,0 +1,18 @@
+# Mission Control — PINKCADY Crew Config Override
+# Copy this to: Captain_Dashboard/mission-control/docker-compose.pink.yml
+# Usage: docker compose -f docker-compose.yml -f docker-compose.pink.yml --profile miss-pink up -d
+
+version: '3.8'
+
+services:
+  mission-control:
+    environment:
+      - NEXT_PUBLIC_MC_API_URL=https://192.168.0.39:3100
+      - NEXT_PUBLIC_SHIP_NAME=PINKCADY
+      - NEXT_PUBLIC_SCOPE=torus-coffee
+      - MISSION_CONTROL_API_KEY=${MISSION_CONTROL_API_KEY}
+    volumes:
+      - ./PINKCADY_Shared/vault/skills:/app/vault/skills
+      - ./PINKCADY_Shared/vault/memory:/app/vault/memory
+      - ./PINKCADY_Shared/vault/hive-mind:/app/vault/hive-mind
+      - ./PINKCADY_Shared/vault/security:/app/vault/security
