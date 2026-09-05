@@ -97,6 +97,7 @@ function createServer() {
 
     const upstreamHeaders = { ...req.headers, connection: 'close' };
     upstreamHeaders['x-forwarded-proto'] = 'https';
+    upstreamHeaders['x-forwarded-host'] = req.headers.host || '';
 
     const proxyReq = http.request(
       {
