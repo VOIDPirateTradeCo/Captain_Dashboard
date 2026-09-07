@@ -28,7 +28,7 @@ function createServer() {
     const targetPath = req.url || '/';
     
     const targetPort = (targetPath.startsWith('/gateway-ws') || targetPath.startsWith('/__openclaw__')) ? GATEWAY_PORT : UPSTREAM_PORT;
-    const targetHost = 'localhost';
+    const targetHost = process.env.OPENCLAW_GATEWAY_HOST || 'host.docker.internal';
     
     console.log(`[proxy] -> ${targetHost}:${targetPort}`);
     
