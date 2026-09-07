@@ -6,9 +6,9 @@ dashboard/bots/.env.sirgreen
 /_SCRATCH/
 
 # Mission Control — upstream checkout (builderz-labs/mission-control), managed
-# via `git pull` inside it. Not tracked by this repo. VOID-local config lives
+# via `git pull` inside it. VOID-local config lives
 # in mission-control/.env + docker-compose.void.yml.
-mission-control/
+# !mission-control/
 _archive/
 .env
 .env.*
