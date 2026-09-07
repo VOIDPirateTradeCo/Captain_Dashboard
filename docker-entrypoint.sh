@@ -59,7 +59,7 @@ fi
 # --- HTTPS proxy for HSTS + Secure cookies ---
 # Start the proxy in the background; Next.js still listens on 3000 internally.
 printf '[entrypoint] Starting HTTPS proxy on %s\n' "${MC_PORT:-3100}"
-node /app/scripts/mc-https-proxy.js > /app/.data/https-proxy.log 2>&1 &
+node /app/scripts/mc-https-proxy.cjs > /app/.data/https-proxy.log 2>&1 &
 PROXY_PID=$!
 printf '[entrypoint] HTTPS proxy started PID=%s\n' "$PROXY_PID"
 
