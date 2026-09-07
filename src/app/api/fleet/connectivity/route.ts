@@ -39,7 +39,17 @@ export async function GET(request: NextRequest) {
   const SHIPS = getShips()
   const ships: Record<string, any> = {}
 
-  const selfResults = await Promise.allSettled(SHIPS.map((ship) => probeShip(ship)))
+  const localShipKey = getLocalShipKey()
+  const selfIp = getSelfIp()
+
+  const selfResults = await Promise.allSettled(
+    SHIPS.map((ship) => {
+      if (localShipKey && (ship.key === localShipKey || ship.host === selfIp)) {
+        return Promise.resolve({ reachable: true, latency_ms: 0, last_seen: Math.floor(Date.now() / 1000), status: 200, body: '{"status":"ok"}' })
+      }
+      return probeShip(ship)
+    }),
+  )
 
   for (let i = 0; i < SHIPS.length; i++) {
     const ship = SHIPS[i]
@@ -62,7 +72,6 @@ export async function GET(request: NextRequest) {
 
   const response = { status: 'ok', generated_at: Date.now(), ships }
 
-  const localShipKey = getLocalShipKey()
   if (localShipKey && response.ships[localShipKey]) {
     response.ships[localShipKey] = { reachable: true, latency_ms: 0, last_seen: Math.floor(Date.now() / 1000), status: 200, body: '{"status":"ok"}' }
   }
@@ -115,8 +124,14 @@ async function probeShip(ship: { key: string; host: string; port: number; protoc
 }
 
 function getLocalShipKey(): string | null {
+  const envKey = (process.env.FLEET_LOCAL_SHIP_KEY || '').trim().toUpperCase()
+  if (envKey) return envKey
+
   const hostname = (process.env.HOSTNAME || '').trim().toLowerCase()
   if (!hostname) return null
+  if (['localhost', '127.0.0.1', '0.0.0.0', '::1'].includes(hostname)) {
+    return 'SQUIDSTATION'
+  }
 
   const SHIPS = [
     { key: 'SQUIDSTATION', host: '192.168.0.39' },
