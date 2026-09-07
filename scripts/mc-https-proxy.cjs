@@ -101,7 +101,7 @@ function createServer() {
 
     const proxyReq = http.request(
       {
-        hostname: '127.0.0.1',
+        hostname: 'localhost',
         port: UPSTREAM_PORT,
         path: targetPath,
         method: req.method,

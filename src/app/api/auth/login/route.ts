@@ -13,7 +13,19 @@ export async function POST(request: Request) {
     const rateCheck = loginLimiter(request)
     if (rateCheck) return rateCheck
 
-    const { username, password } = await request.json()
+    let { username, password }: { username?: string; password?: string } = {}
+    const contentType = a.headers.get('content-type') || ''
+    if (contentType.includes('application/json')) {
+      const body = await a.json().catch(() => ({}))
+      username = body.username
+      password = body.password
+    } else {
+      const form = await a.formData().catch(() => null)
+      if (form) {
+        username = form.get('username')
+        password = form.get('password')
+      }
+    }
 
     if (!username || !password) {
       return NextResponse.json({ error: 'Username and password are required' }, { status: 400 })
