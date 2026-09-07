@@ -17,16 +17,16 @@ export interface OnboardingSessionDecision {
 export function getOnboardingSessionDecision(
   params: OnboardingSessionDecisionParams
 ): OnboardingSessionDecision {
-  if (!params.isAdmin || params.dismissedThisSession) {
+  if (params.dismissedThisSession) {
     return { shouldOpen: false, replayFromStart: false }
   }
 
-  if (params.serverShowOnboarding) {
-    return { shouldOpen: true, replayFromStart: false }
+  if (params.completed || params.skipped) {
+    return { shouldOpen: false, replayFromStart: false }
   }
 
-  if (params.completed || params.skipped) {
-    return { shouldOpen: true, replayFromStart: true }
+  if (params.isAdmin && params.serverShowOnboarding) {
+    return { shouldOpen: true, replayFromStart: false }
   }
 
   return { shouldOpen: false, replayFromStart: false }
