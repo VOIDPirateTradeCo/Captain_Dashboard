@@ -37,7 +37,7 @@ export function shouldShowOnboarding(params: {
   skipped: boolean
   isAdmin: boolean
 }): boolean {
-  return !params.completed && !params.skipped && params.isAdmin
+  return !params.completed && !params.skipped && !params.isAdmin
 }
 
 export function markStepCompleted(
