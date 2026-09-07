@@ -186,7 +186,7 @@ export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Skip CSRF checks for public auth endpoints so browser login works.
-  const isPublicAuthRoute = pathname === '/api/auth/login' || pathname === '/api/auth/logout'
+  const isPublicAuthRoute = pathname === '/api/auth/login' || pathname === '/api/auth/logout' || pathname === '/api/agents/bootstrap'
   if (isPublicAuthRoute) {
     const { response, nonce } = nextResponseWithNonce(request)
     return addSecurityHeaders(response, request, nonce)
