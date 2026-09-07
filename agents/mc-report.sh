@@ -7,7 +7,7 @@ AGENT_ID="${1:?usage: mc-report.sh <agentId> <taskId> <status> [notes]}"
 TASK_ID="${2:?taskId required}"
 STATUS="${3:?status required}"
 NOTES="${4:-}"
-MC="${MC_BASE:-http://localhost:3100}"
+MC="${MC_BASE:-https://127.0.0.1:3100}"
 for _l in "$HOME/.claude/scripts/load-void-secrets.sh" \
           "/c/Users/kidsm/.claude/scripts/load-void-secrets.sh" \
           "/mnt/c/Users/kidsm/.claude/scripts/load-void-secrets.sh"; do

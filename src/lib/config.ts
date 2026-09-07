@@ -30,7 +30,18 @@ const resolvedTokensPath = isBuildPhase
       path.join(resolvedDataDir, 'mission-control-tokens.json'))
   : (process.env.MISSION_CONTROL_TOKENS_PATH ||
       path.join(resolvedDataDir, 'mission-control-tokens.json'))
-const defaultOpenClawStateDir = path.join(os.homedir(), '.openclaw')
+const defaultOpenClawStateDir = (() => {
+  const home = os.homedir()
+  const defaultFromHome = path.join(home, '.openclaw')
+  try {
+    if (home && home !== '/nonexistent' && fs.existsSync(defaultFromHome)) {
+      return defaultFromHome
+    }
+  } catch {
+    // ignore permission errors and fall through
+  }
+  return defaultDataDir
+})()
 const explicitOpenClawConfigPath =
   process.env.OPENCLAW_CONFIG_PATH ||
   process.env.MISSION_CONTROL_OPENCLAW_CONFIG_PATH ||

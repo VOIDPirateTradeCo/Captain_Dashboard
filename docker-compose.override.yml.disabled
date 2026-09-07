@@ -1,6 +1,0 @@
-services:
-  mission-control:
-    ports:
-      - "3001:3000"
-    environment:
-      - PORT=3000

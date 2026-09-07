@@ -38,7 +38,7 @@ const TOOLS: Tool[] = [
   {
     id: 'netbox',
     label: 'NetBox',
-    url: 'http://192.168.0.39:8001',
+    url: 'http://localhost:8001',
     embeddable: false,
     note: 'NetBox sends X-Frame-Options: SAMEORIGIN and requires a login. To embed: set NETBOX_X_FRAME_OPTIONS and share a session.',
   },

@@ -14,7 +14,7 @@ CAPS="${3:-code,review}"
 ONCE=""
 [ "${4:-}" = "--once" ] && ONCE=1
 
-MC="${MC_BASE:-http://localhost:3100}"
+MC="${MC_BASE:-https://127.0.0.1:3100}"
 # find the secrets loader at $HOME (Git Bash) or the fixed Windows path (WSL/other)
 for _l in "$HOME/.claude/scripts/load-void-secrets.sh" \
           "/c/Users/kidsm/.claude/scripts/load-void-secrets.sh" \

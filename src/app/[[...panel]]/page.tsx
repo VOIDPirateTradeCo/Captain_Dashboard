@@ -48,6 +48,7 @@ import { ChatPanel } from '@/components/chat/chat-panel'
 import { VoidHiveHealthPanel } from '@/components/panels/void-hivehealth-panel'
 import { VoidMarketPanel } from '@/components/panels/void-market-panel'
 import { VoidSecurityPanel } from '@/components/panels/void-security-panel'
+
 import { STORAGE_GATEWAY_URL } from '@/lib/device-identity'
 import { getPluginPanel } from '@/lib/plugins'
 import { shouldRedirectDashboardToHttps } from '@/lib/browser-security'
@@ -652,6 +653,7 @@ function ContentRouter({ tab }: { tab: string }) {
     case 'security':
     case 'void-security':
       return <VoidSecurityPanel />
+
     case 'debug':
       return <DebugPanel />
     case 'exec-approvals':

@@ -59,6 +59,7 @@ function getImplicitAllowedHosts(): string[] {
     '127.0.0.1',
     '::1',
     normalizeHostname(os.hostname()),
+    '192.168.0.39',
   ].filter(Boolean)
 
   return [...new Set(candidates)]
@@ -184,24 +185,36 @@ export function proxy(request: NextRequest) {
 
   const { pathname } = request.nextUrl
 
+  // Skip CSRF checks for public auth endpoints so browser login works.
+  const isPublicAuthRoute = pathname === '/api/auth/login' || pathname === '/api/auth/logout'
+  if (isPublicAuthRoute) {
+    const { response, nonce } = nextResponseWithNonce(request)
+    return addSecurityHeaders(response, request, nonce)
+  }
+
   // CSRF Origin validation for mutating requests
   const method = request.method.toUpperCase()
   if (['POST', 'PUT', 'DELETE', 'PATCH'].includes(method)) {
-    const origin = request.headers.get('origin')
-    const referer = request.headers.get('referer')
-    let originHost: string
-    if (origin) {
-      try { originHost = new URL(origin).host } catch { originHost = '' }
-    } else if (referer) {
-      try { originHost = new URL(referer).host } catch { originHost = '' }
-    } else {
-      originHost = ''
-    }
-    if (!originHost) {
-      return addSecurityHeaders(NextResponse.json({ error: 'CSRF: missing origin' }, { status: 403 }), request)
-    }
-    if (!requestHosts.some((h) => hostsMatchForCsrf(h, originHost))) {
-      return addSecurityHeaders(NextResponse.json({ error: 'CSRF origin mismatch' }, { status: 403 }), request)
+    const apiKey = extractApiKeyFromRequest(request)
+    const looksLikeDbBackedApiKey = /^mca?_[a-f0-9]{48}$/i.test(apiKey)
+    const skipCsrfForApiKey = looksLikeDbBackedApiKey && pathname.startsWith('/api/')
+    if (!skipCsrfForApiKey) {
+      const origin = request.headers.get('origin')
+      const referer = request.headers.get('referer')
+      let originHost: string
+      if (origin) {
+        try { originHost = new URL(origin).host } catch { originHost = '' }
+      } else if (referer) {
+        try { originHost = new URL(referer).host } catch { originHost = '' }
+      } else {
+        originHost = ''
+      }
+      if (!originHost) {
+        return addSecurityHeaders(NextResponse.json({ error: 'CSRF: missing origin' }, { status: 403 }), request)
+      }
+      if (!requestHosts.some((h) => hostsMatchForCsrf(h, originHost))) {
+        return addSecurityHeaders(NextResponse.json({ error: 'CSRF origin mismatch' }, { status: 403 }), request)
+      }
     }
   }
 

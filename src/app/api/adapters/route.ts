@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { requireRole } from '@/lib/auth'
+import { requireRole, getUserFromRequest, ROLE_LEVELS } from '@/lib/auth'
 import { getAdapter, listAdapters } from '@/lib/adapters'
 import { agentHeartbeatLimiter } from '@/lib/rate-limit'
 import { logger } from '@/lib/logger'
@@ -27,8 +27,14 @@ export async function GET(request: NextRequest) {
  *   disconnect — Disconnect an agent
  */
 export async function POST(request: NextRequest) {
-  const auth = requireRole(request, 'operator')
+  const auth = requireRole(request, 'viewer')
   if ('error' in auth) return NextResponse.json({ error: auth.error }, { status: auth.status })
+
+  const user = getUserFromRequest(request)
+  const isAgentScoped = user && (user.id < 0 || String(user.username || '').startsWith('agent:'))
+  if (!isAgentScoped && (ROLE_LEVELS[auth.user.role] ?? -1) < ROLE_LEVELS['operator']) {
+    return NextResponse.json({ error: 'Requires operator role or higher' }, { status: 403 })
+  }
 
   const rateLimited = agentHeartbeatLimiter(request)
   if (rateLimited) return rateLimited

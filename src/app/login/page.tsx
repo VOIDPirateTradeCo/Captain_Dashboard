@@ -65,10 +65,7 @@ function GoogleIcon({ className }: { className?: string }) {
 
 const GATEWAY_URL_PRESETS = [
   'ws://127.0.0.1:18789',
-  'wss://127.0.0.1:18789',
   'ws://localhost:18789',
-  'wss://localhost:18789',
-  'wss://gateway:18789',
 ]
 
 const GATEWAY_CONNECTION_TIMEOUT_MS = 5000
@@ -133,42 +130,30 @@ export default function LoginPage() {
     }
   }
 
-  const handleTestConnection = () => {
+  const handleTestConnection = async () => {
     const url = getEffectiveGatewayUrl()
     if (!url) return
     setConnectionStatus('testing')
     setConnectionError('')
 
-    return new Promise<void>((resolve) => {
-      try {
-        const ws = new WebSocket(url)
-        const timeout = setTimeout(() => {
-          ws.close()
-          setConnectionStatus('failed')
-          setConnectionError('Connection timed out')
-          resolve()
-        }, GATEWAY_CONNECTION_TIMEOUT_MS)
+    try {
+      const healthUrl = url.replace(/^ws:\/\//, 'http://').replace(/^wss:\/\//, 'https://')
+      const res = await fetch(healthUrl.replace(/\/$/, '') + '/health', {
+        method: 'GET',
+        mode: 'cors',
+      })
 
-        ws.onopen = () => {
-          clearTimeout(timeout)
-          ws.close()
-          setConnectionStatus('success')
-          resolve()
-        }
-
-        ws.onerror = () => {
-          clearTimeout(timeout)
-          ws.close()
-          setConnectionStatus('failed')
-          setConnectionError('Could not connect')
-          resolve()
-        }
-      } catch {
+      if (res.ok) {
+        setConnectionStatus('success')
+        setConnectionError('')
+      } else {
         setConnectionStatus('failed')
-        setConnectionError('Invalid URL')
-        resolve()
+        setConnectionError(`HTTP ${res.status}`)
       }
-    })
+    } catch {
+      setConnectionStatus('failed')
+      setConnectionError('Could not connect')
+    }
   }
 
   const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ''
@@ -197,7 +182,16 @@ export default function LoginPage() {
 
     if (!res.ok) {
       const data = readLoginErrorPayload(await res.json().catch(() => null))
-      if (data.code === 'PENDING_APPROVAL') {
+      // Surface real backend error text/code so the Captain sees rate limits,
+      // invalid credentials, setup states, etc. instead of a generic failure.
+      const backendError = typeof data.error === 'string' ? data.error.trim() : ''
+      const backendCode = typeof data.code === 'string' ? data.code.trim() : ''
+      const displayMessage = backendError
+        || (backendCode === 'PENDING_APPROVAL' ? t('pendingApproval') : '')
+        || (backendCode === 'NO_USERS' ? t('noUsers') : '')
+        || t('loginFailed')
+
+      if (backendCode === 'PENDING_APPROVAL') {
         setPendingApproval(true)
         setNeedsSetup(false)
         setError('')
@@ -205,14 +199,14 @@ export default function LoginPage() {
         setGoogleLoading(false)
         return false
       }
-      if (data.code === 'NO_USERS') {
+      if (backendCode === 'NO_USERS') {
         setNeedsSetup(true)
         setError('')
         setLoading(false)
         setGoogleLoading(false)
         return false
       }
-      setError(data.error || t('loginFailed'))
+      setError(displayMessage)
       setPendingApproval(false)
       setNeedsSetup(false)
       setLoading(false)

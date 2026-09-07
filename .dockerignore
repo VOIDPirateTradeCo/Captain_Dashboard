@@ -5,6 +5,7 @@ node_modules
 .env
 *.md
 !AGENTS.md
+!docker-entrypoint.sh
 .github
 ops/*
 !ops/templates/

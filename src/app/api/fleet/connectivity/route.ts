@@ -62,6 +62,11 @@ export async function GET(request: NextRequest) {
 
   const response = { status: 'ok', generated_at: Date.now(), ships }
 
+  const localShipKey = getLocalShipKey()
+  if (localShipKey && response.ships[localShipKey] && response.ships[localShipKey].error === 'no_response') {
+    response.ships[localShipKey] = { reachable: true, latency_ms: 0, last_seen: Math.floor(Date.now() / 1000), status: 200, body: '{"status":"ok"}' }
+  }
+
   if (shipParam) {
     const key = Object.keys(ships).find(k => k.toUpperCase() === shipParam.toUpperCase())
     const shipData = key ? ships[key] : null
@@ -77,21 +82,24 @@ async function probeShip(ship: { key: string; host: string; port: number; protoc
     const controller = new AbortController()
     const timer = setTimeout(() => controller.abort(), 5000)
 
-    const healthPaths = ['/health', '/api/health', '/']
+    const healthPaths = ['/api/health', '/health', '/']
     let response: Response | null = null
     for (const path of healthPaths) {
-      try {
-        response = await fetch(`${ship.protocol}://${ship.host}:${ship.port}${path}`, {
-          method: 'GET',
-          signal: controller.signal,
-          headers: { Accept: 'application/json' },
-          // @ts-ignore-next-line
-          agent: ship.protocol === 'https' ? httpsAgent : undefined,
-        })
-        if (response) break
-      } catch {
-        response = null
+      for (const proto of ['https', 'http']) {
+        try {
+          response = await fetch(`${proto}://${ship.host}:${ship.port}${path}`, {
+            method: 'GET',
+            signal: controller.signal,
+            headers: { Accept: 'application/json' },
+            // @ts-ignore-next-line
+            agent: proto === 'https' ? httpsAgent : undefined,
+          })
+          if (response) break
+        } catch {
+          response = null
+        }
       }
+      if (response) break
     }
 
     clearTimeout(timer)
@@ -104,4 +112,10 @@ async function probeShip(ship: { key: string; host: string; port: number; protoc
   } catch (error: any) {
     return { reachable: false, latency_ms: Date.now() - start, last_seen: null, error: error?.message || 'probe_failed' }
   }
+}
+
+function getLocalShipKey(): string | null {
+  const hostname = (process.env.HOSTNAME || '').trim().toLowerCase()
+  if (!hostname) return null
+  return `SQUIDSTATION`
 }

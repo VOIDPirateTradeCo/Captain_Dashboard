@@ -70,7 +70,7 @@ export const FRAMEWORK_REGISTRY: Record<string, FrameworkInfo> = {
         'Poll /api/adapters for assignments or use SSE for push',
       ],
       exampleSnippet: `# Register your agent
-curl -X POST http://localhost:3000/api/adapters \\
+curl -X POST http://<MC_HOST>:3000/api/adapters \\
   -H "Content-Type: application/json" \\
   -H "x-api-key: YOUR_API_KEY" \\
   -d '{
@@ -84,7 +84,7 @@ curl -X POST http://localhost:3000/api/adapters \\
   }'
 
 # Send heartbeat
-curl -X POST http://localhost:3000/api/adapters \\
+curl -X POST http://<MC_HOST>:3000/api/adapters \\
   -H "Content-Type: application/json" \\
   -H "x-api-key: YOUR_API_KEY" \\
   -d '{
@@ -94,7 +94,7 @@ curl -X POST http://localhost:3000/api/adapters \\
   }'
 
 # Get assignments
-curl -X POST http://localhost:3000/api/adapters \\
+curl -X POST http://<MC_HOST>:3000/api/adapters \\
   -H "Content-Type: application/json" \\
   -H "x-api-key: YOUR_API_KEY" \\
   -d '{
@@ -119,7 +119,7 @@ curl -X POST http://localhost:3000/api/adapters \\
       ],
       exampleSnippet: `import requests
 
-MC_URL = "http://localhost:3000"
+MC_URL = "http://<MC_HOST>:3000"
 API_KEY = "YOUR_API_KEY"
 HEADERS = {"Content-Type": "application/json", "x-api-key": API_KEY}
 
@@ -168,7 +168,7 @@ requests.post(f"{MC_URL}/api/adapters", headers=HEADERS, json={
       exampleSnippet: `from crewai import Agent, Task, Crew
 import requests
 
-MC_URL = "http://localhost:3000"
+MC_URL = "http://<MC_HOST>:3000"
 HEADERS = {"Content-Type": "application/json", "x-api-key": "YOUR_API_KEY"}
 
 def register_crew_agent(agent: Agent):
@@ -219,7 +219,7 @@ def report_task_complete(agent_id: str, task_id: str, output: str):
 # AutoGen v0.4+ (ag2)
 from autogen import AssistantAgent, UserProxyAgent
 
-MC_URL = "http://localhost:3000"
+MC_URL = "http://<MC_HOST>:3000"
 HEADERS = {"Content-Type": "application/json", "x-api-key": "YOUR_API_KEY"}
 
 def register_autogen_agent(agent_name: str, system_message: str):
@@ -257,7 +257,7 @@ register_autogen_agent("Reviewer", "You review code for bugs...")`,
       ],
       exampleSnippet: `import Anthropic from "@anthropic-ai/sdk";
 
-const MC_URL = "http://localhost:3000";
+const MC_URL = "http://<MC_HOST>:3000";
 const HEADERS = { "Content-Type": "application/json", "x-api-key": "YOUR_API_KEY" };
 
 // Register your Claude SDK agent

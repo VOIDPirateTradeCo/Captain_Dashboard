@@ -25,6 +25,15 @@ if [ -f "$SECRETS_FILE" ]; then
   chmod 600 "$SECRETS_FILE"
 fi
 
+# Ensure OpenClaw config has restrictive permissions if mounted
+OPENCLAW_SRC="/run/openclaw/openclaw.json"
+OPENCLAW_LOCAL="/app/.data/openclaw.json"
+if [ -f "$OPENCLAW_SRC" ]; then
+  cp "$OPENCLAW_SRC" "$OPENCLAW_LOCAL"
+  chmod 600 "$OPENCLAW_LOCAL"
+  printf '[entrypoint] Copied OpenClaw config to %s with 600 perms\n' "$OPENCLAW_LOCAL"
+fi
+
 # Load previously generated secrets if they exist
 if [ -f "$SECRETS_FILE" ]; then
   printf '[entrypoint] Loading persisted secrets from .data\n'
@@ -52,25 +61,7 @@ fi
 printf '[entrypoint] Starting HTTPS proxy on %s\n' "${MC_PORT:-3100}"
 node /app/scripts/mc-https-proxy.js > /app/.data/https-proxy.log 2>&1 &
 PROXY_PID=$!
-
-# Wait for proxy to be ready (health-check loop instead of fixed sleep)
-MAX_RETRIES=10
-RETRY_COUNT=0
-while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
-  if kill -0 "$PROXY_PID" 2>/dev/null; then
-    # Proxy process is running — verify it's actually listening
-    if node -e "const http=require('http');const r=http.get('http://localhost:3001/api/status?action=health',s=>{process.exit(s.statusCode===200?0:1)});r.on('error',()=>process.exit(1));r.setTimeout(2000,()=>{r.destroy();process.exit(1)})" 2>/dev/null; then
-      printf '[entrypoint] HTTPS proxy is ready\n'
-      break
-    }
-  fi
-  RETRY_COUNT=$((RETRY_COUNT + 1))
-  if [ $RETRY_COUNT -eq $MAX_RETRIES ]; then
-    printf '[entrypoint] HTTPS proxy failed to start after %d retries; check .data/https-proxy.log\n' "$MAX_RETRIES" >&2
-    exit 1
-  fi
-  sleep 0.5
-done
+printf '[entrypoint] HTTPS proxy started PID=%s\n' "$PROXY_PID"
 
 printf '[entrypoint] Starting Next.js server on port %s\n' "${PORT:-3000}"
 exec node server.js

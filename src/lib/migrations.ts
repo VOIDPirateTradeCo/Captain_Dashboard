@@ -1617,6 +1617,24 @@ const migrations: Migration[] = [
       `)
     }
   },
+  {
+    id: '069_fleet_resources',
+    up: (db) => {
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS fleet_resources (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          ship TEXT NOT NULL,
+          report_at INTEGER NOT NULL,
+          cpu_percent REAL,
+          memory_percent REAL,
+          disk_percent REAL,
+          gpu_percent REAL,
+          extra TEXT
+        );
+        CREATE INDEX IF NOT EXISTS idx_fleet_resources_ship_report ON fleet_resources(ship, report_at);
+      `)
+    }
+  },
 ]
 
 export function runMigrations(db: Database.Database) {

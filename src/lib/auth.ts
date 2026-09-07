@@ -661,3 +661,57 @@ export function requireRole(
   }
   return { user }
 }
+
+export function requireAccess(
+  request: Request,
+  minRole: User['role'],
+  requiredScopes?: string[]
+): { user: User; error?: never; status?: never } | { user?: never; error: string; status: 401 | 403 } {
+  const roleResult = requireRole(request, minRole)
+  if (roleResult.error) return roleResult
+  const user = roleResult.user as User
+
+  if (requiredScopes && requiredScopes.length > 0 && user.agent_name && user.agent_id) {
+    const effectiveScopes = getEffectiveScopes(user)
+    const missing = requiredScopes.filter((scope) => !effectiveScopes.has(scope))
+    if (missing.length > 0) {
+      return { error: `Missing required scopes: ${missing.join(', ')}`, status: 403 }
+    }
+  }
+
+  return { user }
+}
+
+function getEffectiveScopes(user: User): Set<string> {
+  if (user.agent_name && user.agent_id) {
+    try {
+      const db = getDatabase()
+      const row = db.prepare(
+        `SELECT scopes FROM agent_api_keys WHERE agent_id = ? AND revoked_at IS NULL ORDER BY created_at DESC LIMIT 1`
+      ).get(user.agent_id) as { scopes: string } | undefined
+      if (row?.scopes) {
+        try {
+          const parsed = JSON.parse(row.scopes)
+          if (Array.isArray(parsed)) return new Set(parsed.map(String))
+        } catch {
+          // ignore malformed scopes
+        }
+      }
+    } catch {
+      // ignore missing table / startup race
+    }
+  }
+
+  const inferred = new Set<string>()
+  if (user.role === 'admin') {
+    inferred.add('admin')
+    inferred.add('operator')
+    inferred.add('viewer')
+  } else if (user.role === 'operator') {
+    inferred.add('operator')
+    inferred.add('viewer')
+  } else if (user.role === 'viewer') {
+    inferred.add('viewer')
+  }
+  return inferred
+}

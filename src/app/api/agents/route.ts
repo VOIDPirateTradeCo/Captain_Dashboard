@@ -5,7 +5,7 @@ import { getTemplate, buildAgentConfig } from '@/lib/agent-templates';
 import { writeAgentToConfig, enrichAgentConfigFromWorkspace } from '@/lib/agent-sync';
 import { rotateClaudeBaseSession } from '@/lib/claude-code-sessions';
 import { logAuditEvent } from '@/lib/db';
-import { requireRole } from '@/lib/auth';
+import { requireRole, requireAccess } from '@/lib/auth';
 import { mutationLimiter } from '@/lib/rate-limit';
 import { logger } from '@/lib/logger';
 import { validateBody, createAgentSchema } from '@/lib/validation';
@@ -19,7 +19,7 @@ import path from 'node:path';
  * Query params: status, role, limit, offset
  */
 export async function GET(request: NextRequest) {
-  const auth = requireRole(request, 'viewer')
+  const auth = requireAccess(request, 'viewer', ['agent:research', 'agent:self'])
   if ('error' in auth) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
   try {
@@ -151,7 +151,7 @@ export async function GET(request: NextRequest) {
  * POST /api/agents - Create a new agent
  */
 export async function POST(request: NextRequest) {
-  const auth = requireRole(request, 'operator');
+  const auth = requireAccess(request, 'admin', ['admin'])
   if ('error' in auth) return NextResponse.json({ error: auth.error }, { status: auth.status });
 
   const rateCheck = mutationLimiter(request);

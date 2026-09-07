@@ -1,8 +1,22 @@
 import { createHash, randomBytes } from 'crypto'
 import { NextRequest, NextResponse } from 'next/server'
-import { requireRole } from '@/lib/auth'
+import { requireRole, requireAccess, type User } from '@/lib/auth'
 import { getDatabase } from '@/lib/db'
 import { logger } from '@/lib/logger'
+
+function assertAgentAccess(
+  auth: { user: User; error?: never; status?: never } | { user?: never; error: string; status: 401 | 403 },
+  requestedAgentId: string | number
+): { user: User; error?: never; status?: never } | { user?: never; error: string; status: 401 | 403 } {
+  if ('error' in auth) return auth
+  const user = auth.user
+  const targetId = typeof requestedAgentId === 'string' ? Number(requestedAgentId) : requestedAgentId
+
+  if (user.role === 'admin') return auth
+  if (user.agent_name && user.agent_id === targetId) return auth
+
+  return { error: 'Forbidden', status: 403 }
+}
 
 const ALLOWED_SCOPES = new Set([
   'viewer',
@@ -86,11 +100,12 @@ export async function GET(
 ) {
   const auth = requireRole(request, 'admin')
   if ('error' in auth) return NextResponse.json({ error: auth.error }, { status: auth.status })
-
   try {
     const db = getDatabase()
     const resolved = await params
     const workspaceId = auth.user.workspace_id ?? 1
+    const access = assertAgentAccess(auth, resolved.id)
+    if ('error' in access) return NextResponse.json({ error: access.error }, { status: access.status })
     const agent = resolveAgent(db, resolved.id, workspaceId)
     if (!agent) return NextResponse.json({ error: 'Agent not found' }, { status: 404 })
 
