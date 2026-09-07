@@ -17,3 +17,4 @@ scripts/*
 !scripts/load-env.sh
 !scripts/mc-https-proxy.js
 !scripts/mc-https-proxy.cjs
+!scripts/start-standalone.cjs
