@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
     agents: items,
   }))
 
-  return NextResponse.json({ status: 'ok', generated_at: Date.now(), resources })
+  return NextResponse.json({ generated_at: Date.now(), count: resources.length, resources })
 }
 
 export async function POST(request: NextRequest) {

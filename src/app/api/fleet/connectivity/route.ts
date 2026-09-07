@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
   const response = { status: 'ok', generated_at: Date.now(), ships }
 
   const localShipKey = getLocalShipKey()
-  if (localShipKey && response.ships[localShipKey] && response.ships[localShipKey].error === 'no_response') {
+  if (localShipKey && response.ships[localShipKey]) {
     response.ships[localShipKey] = { reachable: true, latency_ms: 0, last_seen: Math.floor(Date.now() / 1000), status: 200, body: '{"status":"ok"}' }
   }
 
@@ -117,5 +117,16 @@ async function probeShip(ship: { key: string; host: string; port: number; protoc
 function getLocalShipKey(): string | null {
   const hostname = (process.env.HOSTNAME || '').trim().toLowerCase()
   if (!hostname) return null
-  return `SQUIDSTATION`
+
+  const SHIPS = [
+    { key: 'SQUIDSTATION', host: '192.168.0.39' },
+    { key: 'STEALTHATTACK', host: '100.110.238.68' },
+    { key: 'STEALTHATTACK_LAN', host: '192.168.0.68' },
+    { key: 'PINKCADY', host: '100.106.235.103' },
+    { key: 'PINKCADY_LAN', host: '192.168.0.180' },
+    { key: 'TORUSLAPTOP', host: '192.168.0.3' },
+  ]
+
+  const match = SHIPS.find(s => s.host === hostname || s.key.toLowerCase() === hostname)
+  return match ? match.key : null
 }
