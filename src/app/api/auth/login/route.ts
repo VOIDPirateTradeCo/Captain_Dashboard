@@ -14,16 +14,18 @@ export async function POST(request: Request) {
     if (rateCheck) return rateCheck
 
     let { username, password }: { username?: string; password?: string } = {}
-    const contentType = a.headers.get('content-type') || ''
+    const contentType = request.headers.get('content-type') || ''
     if (contentType.includes('application/json')) {
-      const body = await a.json().catch(() => ({}))
+      const body = await request.json().catch(() => ({}))
       username = body.username
       password = body.password
     } else {
-      const form = await a.formData().catch(() => null)
+      const form = await request.formData().catch(() => null)
       if (form) {
-        username = form.get('username')
-        password = form.get('password')
+        const rawUsername = form.get('username')
+        const rawPassword = form.get('password')
+        if (typeof rawUsername === 'string') username = rawUsername
+        if (typeof rawPassword === 'string') password = rawPassword
       }
     }
 
