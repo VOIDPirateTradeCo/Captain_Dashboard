@@ -64,4 +64,4 @@ PROXY_PID=$!
 printf '[entrypoint] HTTPS proxy started PID=%s\n' "$PROXY_PID"
 
 printf '[entrypoint] Starting Next.js server on port %s\n' "${PORT:-3000}"
-exec node server.js
+exec node /app/scripts/start-standalone.cjs node server.js
