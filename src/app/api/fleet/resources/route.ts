@@ -23,8 +23,15 @@ export async function GET(request: NextRequest) {
     if (!byShip[row.ship]) byShip[row.ship] = []
     byShip[row.ship].push(row)
   }
+  const resources = Object.entries(byShip).map(([ship, items]) => ({
+    ship,
+    last_seen: items[0]?.report_at ?? null,
+    status: items[0]?.ship ?? 'offline',
+    ...items[0],
+    agents: items,
+  }))
 
-  return NextResponse.json({ status: 'ok', generated_at: Date.now(), ships: byShip })
+  return NextResponse.json({ status: 'ok', generated_at: Date.now(), resources })
 }
 
 export async function POST(request: NextRequest) {
