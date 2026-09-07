@@ -40,11 +40,10 @@ export async function GET(request: NextRequest) {
   const ships: Record<string, any> = {}
 
   const localShipKey = getLocalShipKey()
-  const selfIp = getSelfIp()
 
   const selfResults = await Promise.allSettled(
     SHIPS.map((ship) => {
-      if (localShipKey && (ship.key === localShipKey || ship.host === selfIp)) {
+      if (localShipKey && ship.key === localShipKey) {
         return Promise.resolve({ reachable: true, latency_ms: 0, last_seen: Math.floor(Date.now() / 1000), status: 200, body: '{"status":"ok"}' })
       }
       return probeShip(ship)
@@ -144,4 +143,20 @@ function getLocalShipKey(): string | null {
 
   const match = SHIPS.find(s => s.host === hostname || s.key.toLowerCase() === hostname)
   return match ? match.key : null
+}
+
+function getSelfIp(): string | null {
+  try {
+    const interfaces = require('node:os').networkInterfaces()
+    for (const name of Object.keys(interfaces)) {
+      for (const iface of interfaces[name]) {
+        if (iface.family === 'IPv4' && !iface.internal) {
+          return iface.address
+        }
+      }
+    }
+  } catch {
+    // ignore
+  }
+  return null
 }
