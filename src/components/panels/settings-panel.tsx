@@ -977,6 +977,9 @@ export function SettingsPanel() {
       {/* Account / OAuth connection */}
       <AccountOAuthSection />
 
+      {/* Password change */}
+      <PasswordChangeSection />
+
       {/* Unsaved changes bar */}
       {hasChanges && (
         <div className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-card border border-border rounded-lg shadow-lg px-4 py-2.5 flex items-center gap-3 z-40">
@@ -1195,6 +1198,174 @@ function AccountOAuthSection() {
             {feedback.text}
           </div>
         )}
+      </div>
+    </div>
+  )
+}
+
+function PasswordChangeSection() {
+  const { currentUser } = useMissionControl()
+  const isAdmin = currentUser?.role === 'admin'
+  const [mode, setMode] = useState<'self' | 'admin'>(isAdmin ? 'admin' : 'self')
+  const [userId, setUserId] = useState<string>('')
+  const [currentPassword, setCurrentPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [users, setUsers] = useState<Array<{ id: number; username: string }>>([])
+  const [loadingUsers, setLoadingUsers] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [feedback, setFeedback] = useState<{ ok: boolean; text: string } | null>(null)
+
+  useEffect(() => {
+    if (!isAdmin) return
+    setLoadingUsers(true)
+    apiFetch<{ users?: Array<{ id: number; username: string }> }>('/api/auth/users', { cache: 'no-store' })
+      .then(data => {
+        setUsers(Array.isArray(data?.users) ? data.users : [])
+      })
+      .catch(() => setUsers([]))
+      .finally(() => setLoadingUsers(false))
+  }, [isAdmin])
+
+  const resetForm = () => {
+    setCurrentPassword('')
+    setNewPassword('')
+    setConfirmPassword('')
+    setFeedback(null)
+  }
+
+  const handleSubmit = async () => {
+    setFeedback(null)
+    if (!newPassword || newPassword.length < 12) {
+      setFeedback({ ok: false, text: 'New password must be at least 12 characters.' })
+      return
+    }
+    if (newPassword !== confirmPassword) {
+      setFeedback({ ok: false, text: 'Passwords do not match.' })
+      return
+    }
+    setSubmitting(true)
+    try {
+      if (mode === 'self') {
+        const res = await fetch('/api/auth/users/password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Origin': window.location.origin },
+          credentials: 'include',
+          body: JSON.stringify({ currentPassword, newPassword }),
+        })
+        const data = await res.json().catch(() => ({}))
+        if (!res.ok) throw new Error(data.error || 'Failed to change password')
+        setFeedback({ ok: true, text: 'Password updated.' })
+      } else {
+        if (!userId) throw new Error('Select a user to reset')
+        const res = await fetch('/api/auth/users/password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Origin': window.location.origin },
+          credentials: 'include',
+          body: JSON.stringify({ userId: Number(userId), newPassword }),
+        })
+        const data = await res.json().catch(() => ({}))
+        if (!res.ok) throw new Error(data.error || 'Failed to reset password')
+        setFeedback({ ok: true, text: `Password reset for ${data.user?.username || 'user'}.` })
+      }
+      resetForm()
+    } catch (err) {
+      setFeedback({ ok: false, text: err instanceof Error ? err.message : 'Password change failed' })
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center gap-2 pt-2">
+        <h3 className="text-sm font-medium text-foreground">Password</h3>
+      </div>
+      <div className="bg-card border border-border rounded-lg p-4 space-y-3">
+        {isAdmin && (
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => { setMode('self'); resetForm() }}
+              className={`px-3 py-1.5 rounded-md text-xs border transition-colors ${mode === 'self' ? 'border-primary bg-primary/10 text-foreground' : 'border-border hover:border-muted-foreground/30'}`}
+            >
+              Change my password
+            </button>
+            <button
+              onClick={() => { setMode('admin'); resetForm() }}
+              className={`px-3 py-1.5 rounded-md text-xs border transition-colors ${mode === 'admin' ? 'border-primary bg-primary/10 text-foreground' : 'border-border hover:border-muted-foreground/30'}`}
+            >
+              Reset user password
+            </button>
+          </div>
+        )}
+
+        {feedback && (
+          <div className={`rounded-md p-2.5 text-xs font-medium ${feedback.ok ? 'bg-green-500/10 text-green-400' : 'bg-destructive/10 text-destructive'}`}>
+            {feedback.text}
+          </div>
+        )}
+
+        {mode === 'admin' && isAdmin && (
+          <div>
+            <label className="block text-xs text-muted-foreground mb-1">User</label>
+            <select
+              value={userId}
+              onChange={e => setUserId(e.target.value)}
+              className="w-full px-2 py-1.5 text-sm bg-background border border-border rounded-md focus:border-primary focus:outline-hidden"
+            >
+              <option value="">Select user...</option>
+              {users.map(u => (
+                <option key={u.id} value={u.id}>{u.username}</option>
+              ))}
+            </select>
+            {loadingUsers && <p className="text-2xs text-muted-foreground mt-1">Loading users...</p>}
+          </div>
+        )}
+
+        {mode === 'self' && (
+          <div>
+            <label className="block text-xs text-muted-foreground mb-1">Current password</label>
+            <input
+              type="password"
+              value={currentPassword}
+              onChange={e => setCurrentPassword(e.target.value)}
+              className="w-full px-2 py-1.5 text-sm bg-background border border-border rounded-md focus:border-primary focus:outline-hidden"
+              autoComplete="current-password"
+            />
+          </div>
+        )}
+
+        <div>
+          <label className="block text-xs text-muted-foreground mb-1">New password</label>
+          <input
+            type="password"
+            value={newPassword}
+            onChange={e => setNewPassword(e.target.value)}
+            className="w-full px-2 py-1.5 text-sm bg-background border border-border rounded-md focus:border-primary focus:outline-hidden"
+            autoComplete="new-password"
+          />
+          <p className="text-2xs text-muted-foreground mt-1">Use 12+ characters. Mix letters, numbers, and symbols.</p>
+        </div>
+
+        <div>
+          <label className="block text-xs text-muted-foreground mb-1">Confirm new password</label>
+          <input
+            type="password"
+            value={confirmPassword}
+            onChange={e => setConfirmPassword(e.target.value)}
+            className="w-full px-2 py-1.5 text-sm bg-background border border-border rounded-md focus:border-primary focus:outline-hidden"
+            autoComplete="new-password"
+          />
+        </div>
+
+        <Button
+          onClick={handleSubmit}
+          disabled={submitting}
+          size="sm"
+          className="w-full"
+        >
+          {submitting ? 'Saving...' : mode === 'self' ? 'Change password' : 'Reset password'}
+        </Button>
       </div>
     </div>
   )
