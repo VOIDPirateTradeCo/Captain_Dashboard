@@ -1,9 +1,0 @@
-model: ollama/qwen2.5-coder:14b
-provider: auto
-toolsets:
-  - all
-max_turns: 100
-token_budget:
-  max_context_window: 120000
-  prefer_free: true
-  paid_escalation: true

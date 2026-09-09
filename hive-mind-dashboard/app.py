@@ -74,7 +74,7 @@ def service_status():
         "CrowdSec": ("url", "http://localhost:8082/health", []),
         "NPM": ("url", "http://localhost:81", []),
         "TorusWebsite": ("url", "http://localhost:3005", []),
-        "TorusPOS": ("url", "https://127.0.0.1:3100/health", ["-k"]),
+        "TorusPOS": ("url", "http://localhost:3100/health", []),
         "TorusInventory": ("url", "http://localhost:3200", []),
     }
     out = {}

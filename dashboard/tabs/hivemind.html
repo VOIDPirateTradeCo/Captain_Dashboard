@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hive Mind LLM</title>
+    <style>
+        body { background:#0b1d2e; color:#ffd700; font-family:sans-serif; padding:20px; margin:0; }
+        nav { background:#081726; padding:10px 20px; border-bottom:1px solid #1f3a55; }
+        nav a { color:#00aaff; text-decoration:none; margin-right:14px; font-size:14px; }
+        nav a:hover { color:#ffd700; }
+        h1 { color:#ffd700; }
+        .card { background:#122a3d; border:1px solid #1f3a55; padding:15px; margin:12px 0; border-radius:8px; }
+        .row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+        select, input, button, textarea {
+            background:#0a1f30; color:#ffd700; border:1px solid #1f3a55;
+            padding:8px 10px; border-radius:6px; font-size:14px;
+        }
+        button { cursor:pointer; background:#14406a; }
+        button:hover { background:#1d5b94; }
+        #chat { background:#0a1f30; padding:12px; border-radius:6px; min-height:160px; white-space:pre-wrap; }
+        .you { color:#00aaff; }
+        .bot { color:#ffd700; }
+        .status { color:#7fd1ff; font-size:13px; }
+        .err { color:#ff5555; }
+        pre { background:#0a1f30; padding:10px; border-radius:6px; overflow:auto; }
+    </style>
+</head>
+<body>
+<nav>
+    <a href="/tab/captain">⚓ Captain</a>
+    <a href="/tab/fleet">🛰️ Fleet</a>
+    <a href="/tab/security">🛡️ Security</a>
+    <a href="/tab/tickets">🎟️ Tickets</a>
+    <a href="/tab/hivemind">🧠 Hive Mind</a>
+    <a href="/tab/monitoring">📡 Monitoring</a>
+</nav>
+<h1>🧠 Hive Mind — Offline Local LLM</h1>
+<p class="status" id="status">Loading hive status...</p>
+<div class="card">
+    <div class="row">
+        <label>Model:</label>
+        <select id="model">
+            <option value="llama3.2:latest">llama3.2 (fast chat)</option>
+            <option value="qwen2.5-coder:14b">qwen2.5-coder:14b (code/reasoning)</option>
+        </select>
+        <input id="prompt" size="70" placeholder="Ask the local hive mind (runs offline on Sir Azure's GPU)...">
+        <button onclick="ask()">Send</button>
+    </div>
+</div>
+<div class="card">
+    <h3>Conversation</h3>
+    <div id="chat">Hive mind ready. All inference is local — no external API.</div>
+</div>
+<script>
+async function loadStatus(){
+    try {
+        const res = await fetch('/api/fleet/llm');
+        const d = await res.json();
+        const az = (d.sir_azure_models||[]).join(', ') || 'unreachable';
+        let s = `Primary (Sir Azure): ${az} | Local: ${(d.local_models||[]).join(', ')||'none'} | Hive ready: ${d.hive_mind_ready}`;
+        if (d.gpu) {
+            s += ` | GPU: ${d.gpu.name} — vRAM ${d.gpu.vram_used_gb}/${d.gpu.vram_total_gb}GB used, ${d.gpu.vram_free_gb}GB free`;
+        }
+        if (d.ollama_running_on_azure && d.ollama_running_on_azure.length) {
+            s += ` | Running: ${d.ollama_running_on_azure.join(', ')}`;
+        }
+        document.getElementById('status').textContent = s;
+    } catch(e){ document.getElementById('status').textContent = 'Status error: '+e.message; }
+}
+async function ask(){
+    const prompt = document.getElementById('prompt').value.trim();
+    const model = document.getElementById('model').value;
+    if(!prompt) return;
+    const chat = document.getElementById('chat');
+    chat.innerHTML += `\n<span class="you">You:</span> ${escapeHtml(prompt)}`;
+    document.getElementById('prompt').value='';
+    try {
+        const res = await fetch('/api/fleet/llm?model='+encodeURIComponent(model)+'&prompt='+encodeURIComponent(prompt));
+        const d = await res.json();
+        if(d.ok){
+            chat.innerHTML += `\n<span class="bot">Hive (${d.model} @ ${d.host}):</span> ${escapeHtml(d.response)}`;
+        } else {
+            chat.innerHTML += `\n<span class="err">Error:</span> ${escapeHtml(d.error||'unknown')}`;
+        }
+    } catch(e){
+        chat.innerHTML += `\n<span class="err">Error:</span> ${escapeHtml(e.message)}`;
+    }
+    chat.scrollTop = chat.scrollHeight;
+}
+function escapeHtml(s){ return (s||'').replace(/[&<>]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+document.getElementById('prompt').addEventListener('keydown', e=>{ if(e.key==='Enter') ask(); });
+loadStatus(); setInterval(loadStatus, 15000);
+</script>
+</body>
+</html>

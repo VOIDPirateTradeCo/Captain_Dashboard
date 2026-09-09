@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>White Whale Defense</title>
+    <style>
+        body { background:#0b1d2e; color:#ffd700; font-family:sans-serif; padding:20px; margin:0; }
+        nav { background:#081726; padding:10px 20px; border-bottom:1px solid #1f3a55; }
+        nav a { color:#00aaff; text-decoration:none; margin-right:14px; font-size:14px; }
+        nav a:hover { color:#ffd700; }
+        h1 { color:#ff5555; }
+        .card { background:#122a3d; border:1px solid #1f3a55; padding:15px; margin:12px 0; border-radius:8px; }
+        .lock { color:#ffaa00; }
+        .ok { color:#56fb88; }
+        input, button { background:#0a1f30; color:#ffd700; border:1px solid #1f3a55; padding:8px 10px; border-radius:6px; font-size:14px; }
+        button { cursor:pointer; background:#5a1020; }
+        button:hover { background:#7a1830; }
+        pre { background:#0a1f30; padding:10px; border-radius:6px; overflow:auto; color:#9fe7ff; }
+    </style>
+</head>
+<body>
+<nav>
+    <a href="/tab/captain">⚓ Captain</a>
+    <a href="/tab/fleet">🛰️ Fleet</a>
+    <a href="/tab/security">🛡️ Security</a>
+    <a href="/tab/tickets">🎟️ Tickets</a>
+    <a href="/tab/hivemind">🧠 Hive Mind</a>
+    <a href="/tab/art">🎨 AI Art</a>
+    <a href="/tab/whitewhale">🐋 White Whale</a>
+    <a href="/tab/monitoring">📡 Monitoring</a>
+</nav>
+<h1>🐋 WHITE WHALE — Super Defense Protocol</h1>
+<p class="lock">PASSPHRASE REQUIRED. This panel is the Captain's classified threat-response console.</p>
+<div class="card">
+    <h2>Unlock</h2>
+    <input id="pass" type="password" size="40" placeholder="captain passphrase">
+    <button onclick="unlock()">Unlock</button>
+    <label style="margin-left:10px;color:#7fd1ff;"><input type="checkbox" id="threat"> Declare threat detected (enables active response)</label>
+</div>
+<div class="card">
+    <h2>Status</h2>
+    <pre id="out">Locked.</pre>
+</div>
+<script>
+async function sha256(s){
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+    return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+async function unlock(){
+    const pw = document.getElementById('pass').value;
+    const threat = document.getElementById('threat').checked;
+    if(!pw){ document.getElementById('out').textContent='Enter passphrase.'; return; }
+    const hash = await sha256(pw);
+    try {
+        const url = '/api/whale?passphrase_hash='+hash+(threat?'&threat_detected=true':'');
+        const res = await fetch(url);
+        const d = await res.json();
+        document.getElementById('out').textContent = JSON.stringify(d, null, 2);
+    } catch(e){ document.getElementById('out').textContent = 'Error: '+e.message; }
+}
+</script>
+</body>
+</html>

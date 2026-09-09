@@ -1,0 +1,13 @@
+{
+  "SQUIDSTATION": {
+    "PINKCADY": {
+      "online": true,
+      "checks": {
+        "dashboard:9000": "200",
+        "crew_api:8090": "200",
+        "docker:2375": "ok"
+      },
+      "ts": null
+    }
+  }
+}

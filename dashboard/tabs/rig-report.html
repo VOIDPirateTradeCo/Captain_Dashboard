@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rig Report</title>
+    <style>
+        body { background:#02040a; color:#e2e8f0; font-family:'Segoe UI',monospace; padding:20px; margin:0; }
+        nav { background:#0f172a; padding:10px 20px; border-bottom:1px solid #1e293b; }
+        nav a { color:#7dd3fc; text-decoration:none; margin-right:14px; font-size:13px; }
+        nav a:hover { color:#fbbf24; }
+        h1 { color:#38bdf8; }
+        .card { background:rgba(15,23,42,0.65); border:1px solid #1e293b; border-radius:12px; padding:16px; margin:14px 0; }
+        pre { background:#000; padding:12px; border-radius:8px; color:#56fb88; overflow:auto; font-size:0.8em; }
+        .metric { color:#fbbf24; }
+    </style>
+</head>
+<body>
+<nav>
+    <a href="/">🏠 HQ</a><a href="/tab/fleet">🛰️ Fleet</a><a href="/tab/security">🛡️ Security</a>
+    <a href="/tab/tickets">🎟️ Tickets</a><a href="/tab/hivemind">🧠 Hive Mind</a><a href="/tab/art">🎨 AI Art</a>
+    <a href="/tab/whitewhale">🐋 White Whale</a><a href="/tab/monitoring">📡 Monitoring</a><a href="/tab/rig-report">⚙️ Rig Report</a>
+</nav>
+<h1>⚙️ RIG REPORT — Fleet Hardware & Capabilities</h1>
+<p class="metric">Live hardware status across the crew's machines (GPU, CPU, storage, LAN role).</p>
+<div class="card"><h3>Local Rig</h3><pre id="local">Loading...</pre></div>
+<div class="card"><h3>Fleet Mesh</h3><pre id="mesh">Loading...</pre></div>
+<div class="card"><h3>Full Data View</h3><pre id="dataview">Loading...</pre></div>
+<script>
+async function load(){
+    try { const r=await fetch('/api/rig-report'); const data=await r.json(); document.getElementById('local').textContent=JSON.stringify(data.local_rig,null,2); } catch(e){ document.getElementById('local').textContent='ERR '+e.message; }
+    try { const r=await fetch('/api/fleet/mesh'); const data=await r.json(); document.getElementById('mesh').textContent=JSON.stringify(data,null,2); } catch(e){ document.getElementById('mesh').textContent='ERR '+e.message; }
+    try { const r=await fetch('/api/dataview'); const data=await r.json(); document.getElementById('dataview').textContent=JSON.stringify(data,null,2); } catch(e){ document.getElementById('dataview').textContent='ERR '+e.message; }
+}
+load(); setInterval(load, 15000);
+</script>
+</body>
+</html>

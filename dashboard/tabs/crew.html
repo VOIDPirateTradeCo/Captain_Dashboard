@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Crew &amp; Personas</title>
+    <style>
+        body { background:#0b1d2e; color:#ffd700; font-family:'Segoe UI',sans-serif; padding:20px; margin:0; }
+        nav { background:#081726; padding:10px 20px; border-bottom:1px solid #1f3a55; margin:-20px -20px 18px; }
+        nav a { color:#00aaff; text-decoration:none; margin-right:14px; font-size:14px; }
+        nav a:hover { color:#ffd700; }
+        h1 { color:#ffd700; }
+        .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:14px; }
+        .card { background:#122a3d; border:1px solid #1f3a55; border-radius:12px; padding:16px; }
+        .role { color:#56fb88; font-weight:700; }
+        .perm { display:inline-block; background:#0a1f30; border:1px solid #1f3a55; border-radius:6px; padding:3px 8px; margin:2px; font-size:0.8em; color:#9fe7ff; }
+        .perm.owner { border-color:#ffd700; color:#ffd700; }
+        .perm.admin { border-color:#56fb88; color:#56fb88; }
+        .perm.no { border-color:#f85149; color:#f85149; opacity:0.7; }
+        .avatar-box { width:100%; height:120px; background:#0a1f30; border:1px dashed #1f3a55; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#5a7a99; margin-bottom:8px; font-size:0.85em; text-align:center; }
+        button { background:#5a1020; color:#ffd700; border:1px solid #ffd700; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:0.85em; }
+        button:hover { background:#7a1830; }
+        .status { color:#9fe7ff; font-size:0.8em; margin-top:6px; }
+        table { width:100%; border-collapse:collapse; font-size:0.82em; margin-top:10px; }
+        th,td { border:1px solid #1f3a55; padding:6px; text-align:left; }
+        th { color:#ffd700; }
+    </style>
+</head>
+<body>
+<nav>
+    <a href="/">🏠 HQ</a><a href="/tab/fleet">🛰️ Fleet</a><a href="/tab/security">🛡️ Security</a>
+    <a href="/tab/tickets">🎟️ Tickets</a><a href="/tab/hivemind">🧠 Hive Mind</a><a href="/tab/art">🎨 AI Art</a>
+    <a href="/tab/whitewhale">🐋 White Whale</a><a href="/tab/monitoring">📡 Monitoring</a><a href="/tab/crew">👥 Crew</a>
+</nav>
+<h1>👥 CREW &amp; PERSONAS — Shared Roles &amp; Permissions</h1>
+<p class="status">Single source of truth for local-network RBAC. Avatars generated locally via Sir Azure's ComfyUI/SDXL (offline).</p>
+<div class="grid" id="crew-grid"><div class="card">Loading crew registry...</div></div>
+<h2 style="color:#ffd700;margin-top:24px;">🔐 Permission Matrix</h2>
+<div class="card" id="matrix-card">Loading...</div>
+<h2 style="color:#ffd700;margin-top:24px;">🔐 Shared Crew Infrastructure</h2>
+<div class="card" id="infra-card">Loading...</div>
+<script>
+const SYSTEMS = ['github','dashboard','vault','discord','docker','ollama','comfyui'];
+function permClass(v){ return v==='owner'?'owner':(v==='admin'?'admin':(v==='no'?'no':'')); }
+async function load(){
+    try {
+        const reg = await (await fetch('/api/crew')).json();
+        const grid = document.getElementById('crew-grid');
+        grid.innerHTML = '';
+        for (const [key, p] of Object.entries(reg.personas||{})){
+            const role = reg.roles?.[key] || {};
+            const perms = SYSTEMS.map(s=>`<span class="perm ${permClass(role[s]||'')}">${s}:${role[s]||'—'}</span>`).join('');
+            const av = p.avatar_path ? `<img src="/dashboard/personas/avatars/${key}.png" style="max-width:100%;border-radius:8px;" onerror="this.style.display='none'">` : '🏴‍☠️ '+(p.display||key);
+            const div = document.createElement('div'); div.className='card';
+            div.innerHTML = `<div class="avatar-box">${av}</div>
+                <div class="role">${p.display||key} <span style="color:#9fe7ff">(${p.alias||''})</span></div>
+                <div style="color:#9fe7ff;font-size:0.85em;margin:4px 0;">${role.title||''} · ${role.clevel||''}</div>
+                <div>${perms}</div>
+                <button onclick="genAvatar('${key}')">🎨 Generate Avatar</button>
+                <div class="status" id="st-${key}">${p.avatar_status||'ready'}</div>`;
+            grid.appendChild(div);
+        }
+        let html = '<table><tr><th>Crew</th>'+SYSTEMS.map(s=>`<th>${s}</th>`).join('')+'</tr>';
+        for (const [key, role] of Object.entries(reg.roles||{})){
+            html += `<tr><td>${role.title||key}</td>`+SYSTEMS.map(s=>`<td>${role[s]||'—'}</td>`).join('')+'</tr>';
+        }
+        html += '</table>';
+        document.getElementById('matrix-card').innerHTML = html;
+    } catch(e){ document.getElementById('crew-grid').innerHTML = '<div class="card">ERR '+e.message+'</div>'; }
+    // infra
+    try {
+        const inf = await (await fetch('/api/crew/infra')).json();
+        const order = ['lldap','authelia','sillytavern','comfyui_sir_azure'];
+        document.getElementById('infra-card').innerHTML = order.map(n=>{
+            const s = inf[n]||{}; const cls = s.status==='online'?'online':'offline';
+            return `<span class="perm ${cls}">${n}: ${s.status}</span>`;
+        }).join(' ') + `<div class="status">${inf.note||''}</div>`;
+    } catch(e){ document.getElementById('infra-card').innerHTML='ERR '+e.message; }
+}
+async function genAvatar(who){
+    const st = document.getElementById('st-'+who);
+    st.textContent = '⏳ queuing…';
+    try {
+        const d = await (await fetch('/api/crew?action=avatar&who='+who)).json();
+        st.textContent = d.avatar_queued_for ? '✅ queued on Sir Azure ComfyUI' : (d.avatar_intent_recorded ? '📝 intent recorded (SDXL pending)' : ('⚠️ '+JSON.stringify(d).slice(0,80)));
+    } catch(e){ st.textContent = 'ERR '+e.message; }
+}
+load(); setInterval(load, 20000);
+</script>
+</body>
+</html>
