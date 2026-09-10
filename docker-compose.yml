@@ -1,0 +1,37 @@
+# Master Mission Control - Docker Compose
+# Deploys to PINKCADY (Docker Desktop)
+# Run from Captain_Dashboard root: docker compose up -d
+
+version: '3.9'
+
+services:
+  mission-control:
+    build:
+      context: ./mission-control
+      dockerfile: Dockerfile
+    image: voidpirate/mission-control:latest
+    container_name: mc-master
+    ports:
+      - "3100:3100"
+    environment:
+      - NODE_ENV=production
+      - PORT=3100
+      - HOSTNAME=0.0.0.0
+      - MC_ALLOWED_HOSTS=192.168.0.0/24,localhost,127.0.0.1
+      - MC_COOKIE_SECURE=0
+      - MC_ENABLE_HSTS=0
+      - TORUS_POS_URL=http://192.168.0.39:3101
+      - POS_API_KEY=torus-pos-default-key-change-me
+    volumes:
+      - mc-data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3100/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  mc-data:
+    name: mc-master-data
