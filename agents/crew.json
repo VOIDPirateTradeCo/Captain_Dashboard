@@ -1,0 +1,23 @@
+{
+  "master_mc": {
+    "host": "http://192.168.0.39:3100",
+    "api_key": "d5136b530f878123aba1d321c6972888b5181f7f13d0afa58d55c732f0bf989f"
+  },
+  "agents": [
+    {
+      "name": "Miss Pink",
+      "hostname": "PINKCADY",
+      "capabilities": ["workflow", "automation", "n8n"]
+    },
+    {
+      "name": "Sir Azure",
+      "hostname": "STEALTHATTACK",
+      "capabilities": ["art", "gpu", "voice", "music"]
+    },
+    {
+      "name": "Sir Green",
+      "hostname": "SQUIDSTATION",
+      "capabilities": ["code", "review", "ops", "security"]
+    }
+  ]
+}
