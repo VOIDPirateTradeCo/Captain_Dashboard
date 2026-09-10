@@ -1,843 +1,1002 @@
 {
-  "generated_at": "2026-09-10T11:39:10.201410",
-  "total_agents": 37,
+  "generated_at": "2026-09-10T11:41:54.788451",
+  "database": "C:\\Users\\kidsm\\Documents\\My Docs\\VOID Pirate Trading Co\\Captain_Dashboard\\mission-control\\.data\\mission-control.db",
   "stale_threshold_days": 7,
-  "stale_cutoff": "2026-09-03T11:39:10.201410",
   "summary": {
-    "total": 37,
-    "stale_count": 25,
-    "duplicate_count": 0,
-    "cleanup_count": 25,
+    "total_agents": 37,
+    "online": 1,
+    "offline": 36,
+    "stale_count": 30,
+    "duplicate_groups": 0,
     "firecrawl_total": 28,
-    "firecrawl_stale": 24
+    "firecrawl_stale": 28,
+    "remaining_after_cleanup": 7
   },
-  "all_agents": [
+  "agents": [
     {
-      "id": 41,
-      "name": "augur-ai",
-      "status": "offline",
-      "role": "agent",
-      "last_seen": null,
-      "created_at": "2026-09-04T21:20:00",
-      "capabilities": [],
-      "source": "manual",
-      "is_stale": false,
-      "is_duplicate": false
-    },
-    {
-      "id": 34,
       "name": "captain",
+      "hostname": "N/A",
       "status": "online",
-      "role": "Owner",
-      "last_seen": "2026-09-10T11:35:07",
-      "created_at": "2026-09-04T06:11:12",
+      "last_seen": "2026-09-08T12:05:04",
       "capabilities": [
         "all"
       ],
-      "source": "manual",
+      "runtime_type": null,
       "is_stale": false,
-      "is_duplicate": false
+      "last_seen_unix": 1788869104
     },
     {
-      "id": 1,
-      "name": "firecrawl",
-      "status": "offline",
-      "role": "agent",
-      "last_seen": null,
-      "created_at": "2026-09-02T06:50:44",
-      "capabilities": [],
-      "source": "local",
-      "is_stale": true,
-      "is_duplicate": false
-    },
-    {
-      "id": 2,
-      "name": "firecrawl-agent",
-      "status": "offline",
-      "role": "agent",
-      "last_seen": null,
-      "created_at": "2026-09-02T06:50:44",
-      "capabilities": [],
-      "source": "local",
-      "is_stale": true,
-      "is_duplicate": false
-    },
-    {
-      "id": 42,
-      "name": "firecrawl-company-directories",
-      "status": "offline",
-      "role": "agent",
-      "last_seen": null,
-      "created_at": "2026-09-08T08:43:49",
-      "capabilities": [],
-      "source": "local",
-      "is_stale": false,
-      "is_duplicate": false
-    },
-    {
-      "id": 4,
-      "name": "firecrawl-competitive-intel",
-      "status": "offline",
-      "role": "agent",
-      "last_seen": null,
-      "created_at": "2026-09-02T06:50:44",
-      "capabilities": [],
-      "source": "local",
-      "is_stale": true,
-      "is_duplicate": false
-    },
-    {
-      "id": 43,
-      "name": "firecrawl-crawl",
-      "status": "offline",
-      "role": "agent",
-      "last_seen": null,
-      "created_at": "2026-09-08T08:43:49",
-      "capabilities": [],
-      "source": "local",
-      "is_stale": false,
-      "is_duplicate": false
-    },
-    {
-      "id": 6,
-      "name": "firecrawl-dashboard-reporting",
-      "status": "offline",
-      "role": "agent",
-      "last_seen": null,
-      "created_at": "2026-09-02T06:50:44",
-      "capabilities": [],
-      "source": "local",
-      "is_stale": true,
-      "is_duplicate": false
-    },
-    {
-      "id": 7,
-      "name": "firecrawl-deep-research",
-      "status": "offline",
-      "role": "agent",
-      "last_seen": null,
-      "created_at": "2026-09-02T06:50:44",
-      "capabilities": [],
-      "source": "local",
-      "is_stale": true,
-      "is_duplicate": false
-    },
-    {
-      "id": 8,
-      "name": "firecrawl-demo-walkthrough",
-      "status": "offline",
-      "role": "agent",
-      "last_seen": null,
-      "created_at": "2026-09-02T06:50:44",
-      "capabilities": [],
-      "source": "local",
-      "is_stale": true,
-      "is_duplicate": false
-    },
-    {
-      "id": 9,
-      "name": "firecrawl-developer-index",
-      "status": "offline",
-      "role": "agent",
-      "last_seen": null,
-      "created_at": "2026-09-02T06:50:44",
-      "capabilities": [],
-      "source": "local",
-      "is_stale": true,
-      "is_duplicate": false
-    },
-    {
-      "id": 44,
-      "name": "firecrawl-download",
-      "status": "offline",
-      "role": "agent",
-      "last_seen": null,
-      "created_at": "2026-09-08T08:43:49",
-      "capabilities": [],
-      "source": "local",
-      "is_stale": false,
-      "is_duplicate": false
-    },
-    {
-      "id": 45,
-      "name": "firecrawl-interact",
-      "status": "offline",
-      "role": "agent",
-      "last_seen": null,
-      "created_at": "2026-09-08T08:43:49",
-      "capabilities": [],
-      "source": "local",
-      "is_stale": false,
-      "is_duplicate": false
-    },
-    {
-      "id": 12,
-      "name": "firecrawl-knowledge-base",
-      "status": "offline",
-      "role": "agent",
-      "last_seen": null,
-      "created_at": "2026-09-02T06:50:44",
-      "capabilities": [],
-      "source": "local",
-      "is_stale": true,
-      "is_duplicate": false
-    },
-    {
-      "id": 13,
-      "name": "firecrawl-knowledge-ingest",
-      "status": "offline",
-      "role": "agent",
-      "last_seen": null,
-      "created_at": "2026-09-02T06:50:44",
-      "capabilities": [],
-      "source": "local",
-      "is_stale": true,
-      "is_duplicate": false
-    },
-    {
-      "id": 14,
-      "name": "firecrawl-lead-gen",
-      "status": "offline",
-      "role": "agent",
-      "last_seen": null,
-      "created_at": "2026-09-02T06:50:44",
-      "capabilities": [],
-      "source": "local",
-      "is_stale": true,
-      "is_duplicate": false
-    },
-    {
-      "id": 15,
-      "name": "firecrawl-lead-research",
-      "status": "offline",
-      "role": "agent",
-      "last_seen": null,
-      "created_at": "2026-09-02T06:50:44",
-      "capabilities": [],
-      "source": "local",
-      "is_stale": true,
-      "is_duplicate": false
-    },
-    {
-      "id": 16,
-      "name": "firecrawl-map",
-      "status": "offline",
-      "role": "agent",
-      "last_seen": null,
-      "created_at": "2026-09-02T06:50:44",
-      "capabilities": [],
-      "source": "local",
-      "is_stale": true,
-      "is_duplicate": false
-    },
-    {
-      "id": 17,
-      "name": "firecrawl-market-research",
-      "status": "offline",
-      "role": "agent",
-      "last_seen": null,
-      "created_at": "2026-09-02T06:50:44",
-      "capabilities": [],
-      "source": "local",
-      "is_stale": true,
-      "is_duplicate": false
-    },
-    {
-      "id": 18,
-      "name": "firecrawl-monitor",
-      "status": "offline",
-      "role": "agent",
-      "last_seen": null,
-      "created_at": "2026-09-02T06:50:44",
-      "capabilities": [],
-      "source": "local",
-      "is_stale": true,
-      "is_duplicate": false
-    },
-    {
-      "id": 19,
-      "name": "firecrawl-parse",
-      "status": "offline",
-      "role": "agent",
-      "last_seen": null,
-      "created_at": "2026-09-02T06:50:44",
-      "capabilities": [],
-      "source": "local",
-      "is_stale": true,
-      "is_duplicate": false
-    },
-    {
-      "id": 20,
-      "name": "firecrawl-qa",
-      "status": "offline",
-      "role": "agent",
-      "last_seen": null,
-      "created_at": "2026-09-02T06:50:44",
-      "capabilities": [],
-      "source": "local",
-      "is_stale": true,
-      "is_duplicate": false
-    },
-    {
-      "id": 21,
-      "name": "firecrawl-research-index",
-      "status": "offline",
-      "role": "agent",
-      "last_seen": null,
-      "created_at": "2026-09-02T06:50:44",
-      "capabilities": [],
-      "source": "local",
-      "is_stale": true,
-      "is_duplicate": false
-    },
-    {
-      "id": 22,
-      "name": "firecrawl-research-papers",
-      "status": "offline",
-      "role": "agent",
-      "last_seen": null,
-      "created_at": "2026-09-02T06:50:44",
-      "capabilities": [],
-      "source": "local",
-      "is_stale": true,
-      "is_duplicate": false
-    },
-    {
-      "id": 23,
-      "name": "firecrawl-scrape",
-      "status": "offline",
-      "role": "agent",
-      "last_seen": null,
-      "created_at": "2026-09-02T06:50:44",
-      "capabilities": [],
-      "source": "local",
-      "is_stale": true,
-      "is_duplicate": false
-    },
-    {
-      "id": 24,
-      "name": "firecrawl-search",
-      "status": "offline",
-      "role": "agent",
-      "last_seen": null,
-      "created_at": "2026-09-02T06:50:44",
-      "capabilities": [],
-      "source": "local",
-      "is_stale": true,
-      "is_duplicate": false
-    },
-    {
-      "id": 25,
-      "name": "firecrawl-seo-audit",
-      "status": "offline",
-      "role": "agent",
-      "last_seen": null,
-      "created_at": "2026-09-02T06:50:44",
-      "capabilities": [],
-      "source": "local",
-      "is_stale": true,
-      "is_duplicate": false
-    },
-    {
-      "id": 26,
-      "name": "firecrawl-shop",
-      "status": "offline",
-      "role": "agent",
-      "last_seen": null,
-      "created_at": "2026-09-02T06:50:44",
-      "capabilities": [],
-      "source": "local",
-      "is_stale": true,
-      "is_duplicate": false
-    },
-    {
-      "id": 27,
-      "name": "firecrawl-website-design-clone",
-      "status": "offline",
-      "role": "agent",
-      "last_seen": null,
-      "created_at": "2026-09-02T06:50:44",
-      "capabilities": [],
-      "source": "local",
-      "is_stale": true,
-      "is_duplicate": false
-    },
-    {
-      "id": 28,
-      "name": "firecrawl-workflows",
-      "status": "offline",
-      "role": "agent",
-      "last_seen": null,
-      "created_at": "2026-09-02T06:50:44",
-      "capabilities": [],
-      "source": "local",
-      "is_stale": true,
-      "is_duplicate": false
-    },
-    {
-      "id": 30,
-      "name": "miss-pink",
-      "status": "offline",
-      "role": "agent",
-      "last_seen": "2026-09-04T03:01:35",
-      "created_at": "2026-09-03T04:58:39",
-      "capabilities": [
-        "commander",
-        "torus",
-        "coordination"
-      ],
-      "source": "manual",
-      "is_stale": false,
-      "is_duplicate": false
-    },
-    {
-      "id": 36,
-      "name": "mr-blue",
-      "status": "offline",
-      "role": "agent",
-      "last_seen": "2026-09-04T06:11:12",
-      "created_at": "2026-09-04T06:11:12",
-      "capabilities": [
-        "comms",
-        "phone",
-        "family"
-      ],
-      "source": "manual",
-      "is_stale": false,
-      "is_duplicate": false
-    },
-    {
-      "id": 31,
-      "name": "sir-azure",
-      "status": "offline",
-      "role": "agent",
-      "last_seen": "2026-09-04T03:01:35",
-      "created_at": "2026-09-03T04:58:39",
-      "capabilities": [
-        "code",
-        "review",
-        "art",
-        "gpu"
-      ],
-      "source": "manual",
-      "is_stale": false,
-      "is_duplicate": false
-    },
-    {
-      "id": 5,
-      "name": "sir-cobalt",
-      "status": "offline",
-      "role": "agent",
-      "last_seen": "2026-09-04T03:10:14",
-      "created_at": "2026-09-02T06:50:44",
-      "capabilities": [
-        "code",
-        "review",
-        "research",
-        "ops"
-      ],
-      "source": "local",
-      "is_stale": false,
-      "is_duplicate": false
-    },
-    {
-      "id": 3,
-      "name": "sir-green",
-      "status": "offline",
-      "role": "Captains AI Assistant \u2014 Sir Green",
-      "last_seen": "2026-09-04T03:10:14",
-      "created_at": "2026-09-02T06:50:44",
-      "capabilities": [
-        "code",
-        "review",
-        "ops",
-        "dashboard"
-      ],
-      "source": "local",
-      "is_stale": false,
-      "is_duplicate": false
-    },
-    {
-      "id": 35,
       "name": "sir-violet",
+      "hostname": "N/A",
       "status": "offline",
-      "role": "agent",
       "last_seen": "2026-09-04T06:11:12",
-      "created_at": "2026-09-04T06:11:12",
       "capabilities": [
         "research",
         "intel",
         "osint",
         "cybersec"
       ],
-      "source": "manual",
+      "runtime_type": null,
       "is_stale": false,
-      "is_duplicate": false
+      "last_seen_unix": 1788502272
     },
     {
-      "id": 29,
-      "name": "test-agent",
+      "name": "mr-blue",
+      "hostname": "N/A",
       "status": "offline",
-      "role": "agent",
+      "last_seen": "2026-09-04T06:11:12",
+      "capabilities": [
+        "comms",
+        "phone",
+        "family"
+      ],
+      "runtime_type": null,
+      "is_stale": false,
+      "last_seen_unix": 1788502272
+    },
+    {
+      "name": "sir-green",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": "2026-09-04T03:10:14",
+      "capabilities": [
+        "code",
+        "review",
+        "ops",
+        "dashboard"
+      ],
+      "runtime_type": null,
+      "is_stale": false,
+      "last_seen_unix": 1788491414
+    },
+    {
+      "name": "sir-cobalt",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": "2026-09-04T03:10:14",
+      "capabilities": [
+        "code",
+        "review",
+        "research",
+        "ops"
+      ],
+      "runtime_type": null,
+      "is_stale": false,
+      "last_seen_unix": 1788491414
+    },
+    {
+      "name": "miss-pink",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": "2026-09-04T03:01:35",
+      "capabilities": [
+        "commander",
+        "torus",
+        "coordination"
+      ],
+      "runtime_type": null,
+      "is_stale": false,
+      "last_seen_unix": 1788490895
+    },
+    {
+      "name": "sir-azure",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": "2026-09-04T03:01:35",
+      "capabilities": [
+        "code",
+        "review",
+        "art",
+        "gpu"
+      ],
+      "runtime_type": null,
+      "is_stale": false,
+      "last_seen_unix": 1788490895
+    },
+    {
+      "name": "test-agent",
+      "hostname": "N/A",
+      "status": "offline",
       "last_seen": "2026-09-03T04:52:40",
-      "created_at": "2026-09-03T04:52:40",
       "capabilities": [],
-      "source": "manual",
+      "runtime_type": null,
       "is_stale": true,
-      "is_duplicate": false
+      "last_seen_unix": 1788411160
+    },
+    {
+      "name": "firecrawl",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-agent",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-competitive-intel",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-dashboard-reporting",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-deep-research",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-demo-walkthrough",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-developer-index",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-knowledge-base",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-knowledge-ingest",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-lead-gen",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-lead-research",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-map",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-market-research",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-monitor",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-parse",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-qa",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-research-index",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-research-papers",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-scrape",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-search",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-seo-audit",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-shop",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-website-design-clone",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-workflows",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "augur-ai",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-company-directories",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-crawl",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-download",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-interact",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
     }
   ],
   "stale_agents": [
     {
-      "id": 1,
-      "name": "firecrawl",
-      "last_seen": null,
-      "created": "2026-09-02T06:50:44"
-    },
-    {
-      "id": 2,
-      "name": "firecrawl-agent",
-      "last_seen": null,
-      "created": "2026-09-02T06:50:44"
-    },
-    {
-      "id": 4,
-      "name": "firecrawl-competitive-intel",
-      "last_seen": null,
-      "created": "2026-09-02T06:50:44"
-    },
-    {
-      "id": 6,
-      "name": "firecrawl-dashboard-reporting",
-      "last_seen": null,
-      "created": "2026-09-02T06:50:44"
-    },
-    {
-      "id": 7,
-      "name": "firecrawl-deep-research",
-      "last_seen": null,
-      "created": "2026-09-02T06:50:44"
-    },
-    {
-      "id": 8,
-      "name": "firecrawl-demo-walkthrough",
-      "last_seen": null,
-      "created": "2026-09-02T06:50:44"
-    },
-    {
-      "id": 9,
-      "name": "firecrawl-developer-index",
-      "last_seen": null,
-      "created": "2026-09-02T06:50:44"
-    },
-    {
-      "id": 12,
-      "name": "firecrawl-knowledge-base",
-      "last_seen": null,
-      "created": "2026-09-02T06:50:44"
-    },
-    {
-      "id": 13,
-      "name": "firecrawl-knowledge-ingest",
-      "last_seen": null,
-      "created": "2026-09-02T06:50:44"
-    },
-    {
-      "id": 14,
-      "name": "firecrawl-lead-gen",
-      "last_seen": null,
-      "created": "2026-09-02T06:50:44"
-    },
-    {
-      "id": 15,
-      "name": "firecrawl-lead-research",
-      "last_seen": null,
-      "created": "2026-09-02T06:50:44"
-    },
-    {
-      "id": 16,
-      "name": "firecrawl-map",
-      "last_seen": null,
-      "created": "2026-09-02T06:50:44"
-    },
-    {
-      "id": 17,
-      "name": "firecrawl-market-research",
-      "last_seen": null,
-      "created": "2026-09-02T06:50:44"
-    },
-    {
-      "id": 18,
-      "name": "firecrawl-monitor",
-      "last_seen": null,
-      "created": "2026-09-02T06:50:44"
-    },
-    {
-      "id": 19,
-      "name": "firecrawl-parse",
-      "last_seen": null,
-      "created": "2026-09-02T06:50:44"
-    },
-    {
-      "id": 20,
-      "name": "firecrawl-qa",
-      "last_seen": null,
-      "created": "2026-09-02T06:50:44"
-    },
-    {
-      "id": 21,
-      "name": "firecrawl-research-index",
-      "last_seen": null,
-      "created": "2026-09-02T06:50:44"
-    },
-    {
-      "id": 22,
-      "name": "firecrawl-research-papers",
-      "last_seen": null,
-      "created": "2026-09-02T06:50:44"
-    },
-    {
-      "id": 23,
-      "name": "firecrawl-scrape",
-      "last_seen": null,
-      "created": "2026-09-02T06:50:44"
-    },
-    {
-      "id": 24,
-      "name": "firecrawl-search",
-      "last_seen": null,
-      "created": "2026-09-02T06:50:44"
-    },
-    {
-      "id": 25,
-      "name": "firecrawl-seo-audit",
-      "last_seen": null,
-      "created": "2026-09-02T06:50:44"
-    },
-    {
-      "id": 26,
-      "name": "firecrawl-shop",
-      "last_seen": null,
-      "created": "2026-09-02T06:50:44"
-    },
-    {
-      "id": 27,
-      "name": "firecrawl-website-design-clone",
-      "last_seen": null,
-      "created": "2026-09-02T06:50:44"
-    },
-    {
-      "id": 28,
-      "name": "firecrawl-workflows",
-      "last_seen": null,
-      "created": "2026-09-02T06:50:44"
-    },
-    {
-      "id": 29,
       "name": "test-agent",
+      "hostname": "N/A",
+      "status": "offline",
       "last_seen": "2026-09-03T04:52:40",
-      "created": "2026-09-03T04:52:40"
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": 1788411160
+    },
+    {
+      "name": "firecrawl",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-agent",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-competitive-intel",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-dashboard-reporting",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-deep-research",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-demo-walkthrough",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-developer-index",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-knowledge-base",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-knowledge-ingest",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-lead-gen",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-lead-research",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-map",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-market-research",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-monitor",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-parse",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-qa",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-research-index",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-research-papers",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-scrape",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-search",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-seo-audit",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-shop",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-website-design-clone",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-workflows",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "augur-ai",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-company-directories",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-crawl",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-download",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-interact",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
     }
   ],
-  "duplicates": [],
+  "duplicates": {},
   "firecrawl_inventory": [
     {
-      "id": 1,
       "name": "firecrawl",
+      "hostname": "N/A",
       "status": "offline",
-      "last_seen": null
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
     },
     {
-      "id": 2,
       "name": "firecrawl-agent",
+      "hostname": "N/A",
       "status": "offline",
-      "last_seen": null
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
     },
     {
-      "id": 42,
-      "name": "firecrawl-company-directories",
-      "status": "offline",
-      "last_seen": null
-    },
-    {
-      "id": 4,
       "name": "firecrawl-competitive-intel",
+      "hostname": "N/A",
       "status": "offline",
-      "last_seen": null
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
     },
     {
-      "id": 43,
-      "name": "firecrawl-crawl",
-      "status": "offline",
-      "last_seen": null
-    },
-    {
-      "id": 6,
       "name": "firecrawl-dashboard-reporting",
+      "hostname": "N/A",
       "status": "offline",
-      "last_seen": null
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
     },
     {
-      "id": 7,
       "name": "firecrawl-deep-research",
+      "hostname": "N/A",
       "status": "offline",
-      "last_seen": null
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
     },
     {
-      "id": 8,
       "name": "firecrawl-demo-walkthrough",
+      "hostname": "N/A",
       "status": "offline",
-      "last_seen": null
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
     },
     {
-      "id": 9,
       "name": "firecrawl-developer-index",
+      "hostname": "N/A",
       "status": "offline",
-      "last_seen": null
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
     },
     {
-      "id": 44,
-      "name": "firecrawl-download",
-      "status": "offline",
-      "last_seen": null
-    },
-    {
-      "id": 45,
-      "name": "firecrawl-interact",
-      "status": "offline",
-      "last_seen": null
-    },
-    {
-      "id": 12,
       "name": "firecrawl-knowledge-base",
+      "hostname": "N/A",
       "status": "offline",
-      "last_seen": null
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
     },
     {
-      "id": 13,
       "name": "firecrawl-knowledge-ingest",
+      "hostname": "N/A",
       "status": "offline",
-      "last_seen": null
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
     },
     {
-      "id": 14,
       "name": "firecrawl-lead-gen",
+      "hostname": "N/A",
       "status": "offline",
-      "last_seen": null
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
     },
     {
-      "id": 15,
       "name": "firecrawl-lead-research",
+      "hostname": "N/A",
       "status": "offline",
-      "last_seen": null
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
     },
     {
-      "id": 16,
       "name": "firecrawl-map",
+      "hostname": "N/A",
       "status": "offline",
-      "last_seen": null
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
     },
     {
-      "id": 17,
       "name": "firecrawl-market-research",
+      "hostname": "N/A",
       "status": "offline",
-      "last_seen": null
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
     },
     {
-      "id": 18,
       "name": "firecrawl-monitor",
+      "hostname": "N/A",
       "status": "offline",
-      "last_seen": null
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
     },
     {
-      "id": 19,
       "name": "firecrawl-parse",
+      "hostname": "N/A",
       "status": "offline",
-      "last_seen": null
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
     },
     {
-      "id": 20,
       "name": "firecrawl-qa",
+      "hostname": "N/A",
       "status": "offline",
-      "last_seen": null
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
     },
     {
-      "id": 21,
       "name": "firecrawl-research-index",
+      "hostname": "N/A",
       "status": "offline",
-      "last_seen": null
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
     },
     {
-      "id": 22,
       "name": "firecrawl-research-papers",
+      "hostname": "N/A",
       "status": "offline",
-      "last_seen": null
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
     },
     {
-      "id": 23,
       "name": "firecrawl-scrape",
+      "hostname": "N/A",
       "status": "offline",
-      "last_seen": null
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
     },
     {
-      "id": 24,
       "name": "firecrawl-search",
+      "hostname": "N/A",
       "status": "offline",
-      "last_seen": null
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
     },
     {
-      "id": 25,
       "name": "firecrawl-seo-audit",
+      "hostname": "N/A",
       "status": "offline",
-      "last_seen": null
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
     },
     {
-      "id": 26,
       "name": "firecrawl-shop",
+      "hostname": "N/A",
       "status": "offline",
-      "last_seen": null
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
     },
     {
-      "id": 27,
       "name": "firecrawl-website-design-clone",
+      "hostname": "N/A",
       "status": "offline",
-      "last_seen": null
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
     },
     {
-      "id": 28,
       "name": "firecrawl-workflows",
+      "hostname": "N/A",
       "status": "offline",
-      "last_seen": null
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-company-directories",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-crawl",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-download",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
+    },
+    {
+      "name": "firecrawl-interact",
+      "hostname": "N/A",
+      "status": "offline",
+      "last_seen": null,
+      "capabilities": [],
+      "runtime_type": null,
+      "is_stale": true,
+      "last_seen_unix": null
     }
-  ],
-  "cleanup_plan": {
-    "ids_to_remove": [
-      1,
-      2,
-      4,
-      6,
-      7,
-      8,
-      9,
-      12,
-      13,
-      14,
-      15,
-      16,
-      17,
-      18,
-      19,
-      20,
-      21,
-      22,
-      23,
-      24,
-      25,
-      26,
-      27,
-      28,
-      29
-    ],
-    "sql_file": "tools\\crew_cleanup.sql"
-  }
+  ]
 }

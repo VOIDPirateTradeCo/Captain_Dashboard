@@ -1,229 +1,235 @@
 #!/usr/bin/env python3
 """
 Crew Agent Audit Script
-Reads the Mission Control agents DB, identifies stale/duplicate entries,
-and outputs a JSON report + cleanup SQL.
+Reads the Mission Control agents DB, identifies stale entries and duplicates,
+outputs a JSON report and cleanup SQL script.
 """
-
 import sqlite3
 import json
-import sys
+import os
 from datetime import datetime, timedelta
 from pathlib import Path
-from collections import defaultdict
+from collections import Counter
 
-# Config
-DB_PATH = Path('mission-control/.next/standalone/.data/mission-control.db')
+# Paths
+WORKSPACE = Path(__file__).parent.parent
+DB_PATH = WORKSPACE / "mission-control/.data/mission-control.db"
+REPORT_PATH = WORKSPACE / "tools/audit_report.json"
+CLEANUP_PATH = WORKSPACE / "tools/crew_cleanup.sql"
+
+# Thresholds
 STALE_DAYS = 7
-REPORT_PATH = Path('tools/audit_report.json')
-CLEANUP_PATH = Path('tools/crew_cleanup.sql')
+
+
+def ts_to_iso(ts):
+    """Convert a unix timestamp (seconds or millis) to ISO-8601 string."""
+    if ts is None:
+        return None
+    try:
+        if ts > 1e12:
+            dt = datetime.utcfromtimestamp(ts / 1000)
+        else:
+            dt = datetime.utcfromtimestamp(ts)
+        return dt.isoformat()
+    except (OSError, ValueError, OverflowError):
+        return None
+
+
+def ts_is_stale(ts, threshold):
+    """Check if a unix timestamp is older than threshold."""
+    if ts is None:
+        return True
+    try:
+        if ts > 1e12:
+            dt = datetime.utcfromtimestamp(ts / 1000)
+        else:
+            dt = datetime.utcfromtimestamp(ts)
+        return dt < threshold
+    except (OSError, ValueError, OverflowError):
+        return True
+
 
 def main():
     if not DB_PATH.exists():
-        print(f"ERROR: Database not found at {DB_PATH}", file=sys.stderr)
-        sys.exit(1)
+        print(f"ERROR: Database not found at {DB_PATH}")
+        return
 
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
 
-    # 1. Read all agents
-    rows = conn.execute('SELECT * FROM agents ORDER BY name, last_seen DESC').fetchall()
-    agents = [dict(r) for r in rows]
-    total = len(agents)
+    # Get all tables
+    cur.execute("SELECT name FROM sqlite_master WHERE type='table'")
+    tables = [r[0] for r in cur.fetchall()]
+
+    # Verify agents table exists
+    if 'agents' not in tables:
+        print("ERROR: agents table not found in database")
+        conn.close()
+        return
+
+    # Load agents
+    cur.execute("SELECT * FROM agents ORDER BY last_seen DESC")
+    rows = cur.fetchall()
 
     now = datetime.utcnow()
-    cutoff = now - timedelta(days=STALE_DAYS)
-    cutoff_ts = int(cutoff.timestamp())
+    stale_threshold = now - timedelta(days=STALE_DAYS)
 
-    # 2. Enrich with human-readable timestamps
-    for a in agents:
-        for field in ('last_seen', 'created_at', 'updated_at'):
-            val = a.get(field)
-            if val is not None:
-                try:
-                    a[f'{field}_dt'] = datetime.utcfromtimestamp(val).isoformat()
-                except (OSError, ValueError):
-                    a[f'{field}_dt'] = None
-            else:
-                a[f'{field}_dt'] = None
-        
-        # Extract capabilities from config if available
-        caps = []
-        if a.get('config'):
-            try:
-                cfg = json.loads(a['config'])
-                caps = cfg.get('capabilities', [])
-            except json.JSONDecodeError:
-                pass
-        a['capabilities_list'] = caps
+    agents = []
+    stale_agents = []
+    name_counter = Counter()
 
-    # 3. Identify stale (>7 days or never seen + created >7 days ago)
-    stale_ids = []
-    stale_names = []
-    for a in agents:
-        is_stale = False
-        if a['last_seen'] is not None:
-            if a['last_seen'] < cutoff_ts:
-                is_stale = True
-        elif a['created_at'] is not None:
-            if a['created_at'] < cutoff_ts:
-                is_stale = True
-        
-        if is_stale:
-            stale_ids.append(a['id'])
-            stale_names.append(a['name'])
+    for row in rows:
+        d = dict(row)
+        name = d.get('name', 'unknown')
+        status = d.get('status', 'unknown')
+        last_seen_ts = d.get('last_seen')
+        config_raw = d.get('config', '{}')
+        runtime_type = d.get('runtime_type', 'N/A')
 
-    # 4. Identify duplicates (same name, keep most recently seen)
-    name_groups = defaultdict(list)
-    for a in agents:
-        name_groups[a['name']].append(a)
+        try:
+            cfg = json.loads(config_raw) if config_raw else {}
+        except (json.JSONDecodeError, TypeError):
+            cfg = {}
 
-    duplicate_ids = []
-    duplicate_info = []
-    for name, group in name_groups.items():
-        if len(group) > 1:
-            # Keep the one with the most recent last_seen (or created_at as tiebreaker)
-            group.sort(key=lambda x: (x['last_seen'] or 0, x['created_at'] or 0), reverse=True)
-            keeper = group[0]
-            for dup in group[1:]:
-                duplicate_ids.append(dup['id'])
-                duplicate_info.append({
-                    'name': name,
-                    'removed_id': dup['id'],
-                    'kept_id': keeper['id'],
-                    'reason': 'duplicate'
-                })
+        capabilities = cfg.get('capabilities', [])
+        hostname = cfg.get('hostname', cfg.get('host', 'N/A'))
+        last_seen = ts_to_iso(last_seen_ts)
+        is_stale = ts_is_stale(last_seen_ts, stale_threshold)
+        name_counter[name] += 1
 
-    # 5. Firecrawl bulk detection (skill-spawned agents that are all offline)
-    firecrawl_agents = [a for a in agents if a['name'].startswith('firecrawl')]
-    firecrawl_stale = [a for a in firecrawl_agents if a['id'] in stale_ids and a['id'] not in duplicate_ids]
-
-    # 6. Build report
-    all_cleanup_ids = set(stale_ids) | set(duplicate_ids)
-    
-    report = {
-        'generated_at': now.isoformat(),
-        'total_agents': total,
-        'stale_threshold_days': STALE_DAYS,
-        'stale_cutoff': cutoff.isoformat(),
-        'summary': {
-            'total': total,
-            'stale_count': len(stale_ids),
-            'duplicate_count': len(duplicate_ids),
-            'cleanup_count': len(all_cleanup_ids),
-            'firecrawl_total': len(firecrawl_agents),
-            'firecrawl_stale': len(firecrawl_stale),
-        },
-        'all_agents': [
-            {
-                'id': a['id'],
-                'name': a['name'],
-                'status': a['status'],
-                'role': a.get('role'),
-                'last_seen': a.get('last_seen_dt'),
-                'created_at': a.get('created_at_dt'),
-                'capabilities': a.get('capabilities_list', []),
-                'source': a.get('source'),
-                'is_stale': a['id'] in stale_ids,
-                'is_duplicate': a['id'] in duplicate_ids,
-            }
-            for a in agents
-        ],
-        'stale_agents': [
-            {'id': a['id'], 'name': a['name'], 'last_seen': a.get('last_seen_dt'), 'created': a.get('created_at_dt')}
-            for a in agents if a['id'] in stale_ids
-        ],
-        'duplicates': duplicate_info,
-        'firecrawl_inventory': [
-            {'id': a['id'], 'name': a['name'], 'status': a['status'], 'last_seen': a.get('last_seen_dt')}
-            for a in firecrawl_agents
-        ],
-        'cleanup_plan': {
-            'ids_to_remove': sorted(all_cleanup_ids),
-            'sql_file': str(CLEANUP_PATH),
+        entry = {
+            "name": name,
+            "hostname": hostname,
+            "status": status,
+            "last_seen": last_seen,
+            "capabilities": capabilities,
+            "runtime_type": runtime_type,
+            "is_stale": is_stale,
+            "last_seen_unix": last_seen_ts,
         }
+        agents.append(entry)
+        if is_stale:
+            stale_agents.append(entry)
+
+    # Find duplicates
+    duplicates = {name: count for name, count in name_counter.items() if count > 1}
+
+    # Firecrawl breakdown
+    firecrawl = [a for a in agents if 'firecrawl' in a['name'].lower()]
+    firecrawl_stale = [a for a in firecrawl if a['is_stale']]
+
+    # Build report
+    report = {
+        "generated_at": now.isoformat(),
+        "database": str(DB_PATH),
+        "stale_threshold_days": STALE_DAYS,
+        "summary": {
+            "total_agents": len(agents),
+            "online": sum(1 for a in agents if a['status'] == 'online'),
+            "offline": sum(1 for a in agents if a['status'] == 'offline'),
+            "stale_count": len(stale_agents),
+            "duplicate_groups": len(duplicates),
+            "firecrawl_total": len(firecrawl),
+            "firecrawl_stale": len(firecrawl_stale),
+            "remaining_after_cleanup": len(agents) - len(stale_agents),
+        },
+        "agents": agents,
+        "stale_agents": stale_agents,
+        "duplicates": duplicates,
+        "firecrawl_inventory": firecrawl,
     }
 
-    # 7. Write JSON report
+    # Write report
     REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
     with open(REPORT_PATH, 'w') as f:
         json.dump(report, f, indent=2, default=str)
-    print(f"JSON report written to {REPORT_PATH}")
+    print(f"Audit report written to {REPORT_PATH}")
 
-    # Build names/ids for cleanup SQL
-    cleanup_ids_str = ', '.join(str(i) for i in sorted(all_cleanup_ids))
-    names_to_remove = [a['name'] for a in agents if a['id'] in all_cleanup_ids]
-    names_quoted = ', '.join(f"'{n}'" for n in names_to_remove)
+    # Generate cleanup SQL
+    # Related tables that reference agents by name
+    related_tables = []
+    agent_name_cols = {
+        'tasks': 'assigned_to',
+        'comments': 'author',
+        'notifications': 'recipient',
+        'task_subscriptions': 'agent_name',
+        'quality_reviews': 'reviewer',
+        'messages': 'from_agent',
+        'messages_to': 'to_agent',
+        'token_usage': 'agent_name',
+        'security_events': 'agent_name',
+        'project_agent_assignments': 'agent_name',
+        'eval_runs': 'agent_name',
+        'eval_traces': 'agent_name',
+        'mcp_call_log': 'agent_name',
+        'spawn_history': 'agent_name',
+        'runs': 'agent_name',
+        'activities': 'actor',
+        'audit_log': 'actor',
+        'webhooks': 'created_by',
+        'workflow_templates': 'created_by',
+        'workflow_pipelines': 'created_by',
+    }
 
-    # Identify which MC tables reference agents by name
-    ref_tables = []
-    try:
-        tables = conn.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall()
-        for t in tables:
-            tname = t[0]
-            try:
-                cols = conn.execute(f'PRAGMA table_info({tname})').fetchall()
-                col_names = [c[1] for c in cols]
-                agent_refs = [c for c in col_names if 'agent' in c.lower() or c == 'assigned_to']
-                if agent_refs and tname != 'agents':
-                    ref_tables.append((tname, agent_refs))
-            except Exception:
-                pass
-    except Exception:
-        pass
+    lines = []
+    lines.append("-- Crew Agent Cleanup SQL")
+    lines.append(f"-- Generated: {now.isoformat()}")
+    lines.append(f"-- Removes {len(stale_agents)} stale agents (>7 days) and related records")
+    lines.append("--")
+    lines.append("-- WARNING: Review before executing. This will DELETE data.")
+    lines.append("")
+    lines.append("BEGIN TRANSACTION;")
+    lines.append("")
 
-    sql_lines = [
-        "-- Crew Agent Cleanup Script",
-        f"-- Generated: {now.isoformat()}",
-        f"-- Total agents: {total}",
-        f"-- Stale (>{STALE_DAYS} days): {len(stale_ids)}",
-        f"-- Duplicates: {len(duplicate_ids)}",
-        f"-- Total to remove: {len(all_cleanup_ids)}",
-        "",
-        "-- WARNING: Review before running! This will permanently delete agents.",
-        "-- Review the JSON report first: tools/audit_report.json",
-        "",
-        "BEGIN TRANSACTION;",
-        "",
-        "-- Step 1: Remove related records from child tables first",
-    ]
+    for agent in stale_agents:
+        name_escaped = agent['name'].replace("'", "''")
 
-    # Add cleanup for each referencing table
-    for tname, cols in ref_tables:
-        for col in cols:
-            sql_lines.append(f"DELETE FROM {tname} WHERE {col} IN ({names_quoted});")
+        # Related table cleanup
+        for table, col in agent_name_cols.items():
+            if table in tables:
+                lines.append(f"DELETE FROM {table} WHERE {col} = '{name_escaped}';")
 
-    sql_lines.extend([
-        "",
-        f"-- Step 2: Remove agent entries (IDs: {cleanup_ids_str})",
-        f"DELETE FROM agents WHERE id IN ({cleanup_ids_str});",
-        "",
-        "COMMIT;",
-        "",
-        "-- Verification:",
-        f"SELECT COUNT(*) AS remaining_after_cleanup FROM agents;",
-    ])
+        # Agent spawn_history by agent_id (integer FK)
+        lines.append(f"DELETE FROM spawn_history WHERE agent_name = '{name_escaped}';")
+
+        # Runs by agent_name
+        lines.append(f"DELETE FROM runs WHERE agent_name = '{name_escaped}';")
+
+        # Agent API keys via subquery on agent id
+        lines.append(f"DELETE FROM agent_api_keys WHERE agent_id IN (SELECT id FROM agents WHERE name = '{name_escaped}');")
+
+        # Direct connections via agent_id FK
+        lines.append(f"DELETE FROM direct_connections WHERE agent_id IN (SELECT id FROM agents WHERE name = '{name_escaped}');")
+
+        # Ship agents via agent_id FK
+        lines.append(f"DELETE FROM ship_agents WHERE agent_id IN (SELECT id FROM agents WHERE name = '{name_escaped}');")
+
+        # Agent keys via agent_id FK
+        lines.append(f"DELETE FROM agent_keys WHERE agent_id IN (SELECT id FROM agents WHERE name = '{name_escaped}');")
+
+        # Finally delete the agent
+        lines.append(f"DELETE FROM agents WHERE name = '{name_escaped}';")
+        lines.append("")
+
+    lines.append("COMMIT;")
 
     with open(CLEANUP_PATH, 'w') as f:
-        f.write('\n'.join(sql_lines) + '\n')
+        f.write('\n'.join(lines))
     print(f"Cleanup SQL written to {CLEANUP_PATH}")
 
-    # 9. Print summary
-    print(f"\n{'='*60}")
-    print(f"CREW AGENT AUDIT SUMMARY")
-    print(f"{'='*60}")
-    print(f"Total agents in DB:      {total}")
-    print(f"Stale (>{STALE_DAYS}d):          {len(stale_ids)}")
-    print(f"Duplicates:              {len(duplicate_ids)}")
-    print(f"Firecrawl agents:        {len(firecrawl_agents)}")
-    print(f"Firecrawl stale:         {len(firecrawl_stale)}")
-    print(f"Agents to cleanup:       {len(all_cleanup_ids)}")
-    print(f"Agents remaining:        {total - len(all_cleanup_ids)}")
-    print(f"\nReport:  {REPORT_PATH}")
-    print(f"Cleanup: {CLEANUP_PATH}")
-    
     conn.close()
-    return report
 
-if __name__ == '__main__':
+    # Print summary
+    print(f"\n=== AUDIT SUMMARY ===")
+    print(f"Total agents: {len(agents)}")
+    print(f"Online: {report['summary']['online']}")
+    print(f"Offline: {report['summary']['offline']}")
+    print(f"Stale (>7 days): {len(stale_agents)}")
+    print(f"Duplicate groups: {len(duplicates)}")
+    print(f"Firecrawl agents: {len(firecrawl)} (stale: {len(firecrawl_stale)})")
+    print(f"Remaining after cleanup: {report['summary']['remaining_after_cleanup']}")
+
+
+if __name__ == "__main__":
     main()
