@@ -1,12 +1,13 @@
 # VOID Pirate — Captain's Dashboard
-# OPSEC-first: no secrets, no binaries, no temp artifacts.
+# Gitignore for all machines
 
-# --- Secrets & local env ---
+# --- Secrets ---
 .env
 .env.*
-!.env.test
+!.env.example
 *.local
 secrets/
+configs/reports/
 
 # --- Python ---
 __pycache__/
@@ -17,40 +18,45 @@ dist/
 build/
 *.venv
 venv/
+.venv/
 
 # --- Node / Next.js ---
 node_modules/
 .next/
 out/
 .next/
+*.tsbuildinfo
 
-# --- Logs & temp ---
+# --- Runtime databases ---
+*.db
+*.sqlite
+*.sqlite3
+*.sqlite-shm
+*.sqlite-wal
+
+# --- Logs ---
 *.log
 logs/
+
+# --- Temp / scratch ---
 tmp/
 temp/
 *.tmp
 *.swp
 *.bak
+_SCRATCH/
+_archive/
 
 # --- OS ---
 .DS_Store
 Thumbs.ini
 Desktop.ini
 
-# --- DB & large binaries ---
-*.db
-*.sqlite
-*.sqlite3
+# --- Large binaries ---
 *.7z
 *.zip
 *.tar.gz
-
-# --- Runtime/runtime-generated ---
-tools/
-_archive/
-_SCRATCH/
-*.pid
+*.rar
 
 # --- IDE ---
 .vscode/
