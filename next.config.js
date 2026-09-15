@@ -43,6 +43,10 @@ const nextConfig = {
   turbopack: {
     root: __dirname,
   },
+  // Dev server rejects cross-origin requests (page loads/HMR/API) from hosts
+  // not in this list. LAN crew/Captain access MC via IP or hostname, not
+  // localhost, so both need to be allowlisted here (dev mode only).
+  allowedDevOrigins: ['192.168.0.39', 'squidstation'],
   // Transpile ESM-only packages so they resolve correctly in all environments
   transpilePackages: ['react-markdown', 'remark-gfm'],
   

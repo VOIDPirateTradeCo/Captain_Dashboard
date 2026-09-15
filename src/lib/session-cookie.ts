@@ -53,7 +53,7 @@ function envFlag(name: string): boolean | undefined {
 export function getMcSessionCookieOptions(input: { maxAgeSeconds: number; isSecureRequest?: boolean }): Partial<ResponseCookie> {
   const secureEnv = envFlag('MC_COOKIE_SECURE')
   const isProduction = process.env.NODE_ENV === 'production'
-  const secure = secureEnv ?? input.isSecureRequest ?? isProduction
+  const secure = input.isSecureRequest ?? secureEnv ?? isProduction
 
   return {
     httpOnly: true,

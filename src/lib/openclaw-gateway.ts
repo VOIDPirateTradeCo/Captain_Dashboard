@@ -4,7 +4,12 @@ import { config } from './config'
 import { buildGatewayWebSocketUrl } from './gateway-url'
 import { getDetectedGatewayToken } from './gateway-runtime'
 
-const GATEWAY_PROTOCOL_VERSION = 3
+// OpenClaw's gateway client defaults to protocol v4 as of 2026.6.x (confirmed
+// via node_modules/openclaw/dist/client-*.js: `minProtocol: this.opts.minProtocol ?? 4`).
+// This was 3 until Sir Green's 2026-09-15 `npm install -g openclaw --force`
+// pulled a newer version that bumped it - bump here to match or every gateway
+// connect attempt fails the version handshake with "protocol mismatch".
+const GATEWAY_PROTOCOL_VERSION = 4
 const GATEWAY_CLIENT_ID = process.env.GATEWAY_CLIENT_ID || 'gateway-client'
 const GATEWAY_SCOPES = ['operator.admin', 'operator.write', 'operator.read']
 

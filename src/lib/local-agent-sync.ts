@@ -113,14 +113,30 @@ function extractRole(content: string): string {
   return 'agent'
 }
 
+// Allowlist of agent root directories that may contain crew agent definitions.
+// Everything else (e.g. ~/.hermes/skills/ with 27 bundled firecrawl-* skill symlinks)
+// is NOT scanned — only real crew agent directories that explicitly opt in via this
+// allowlist are imported as agents.
+const ALLOWED_LOCAL_AGENT_DIRS = new Set([
+  'agents',                 // ~/.agents/ (crew agent workspace dirs)
+  'codex-agents',           // ~/.codex/agents/ (Codex agent definitions)
+  'claude-agents',          // ~/.claude/agents/ (Claude agent definitions)
+])
+
 function getLocalAgentRoots(): string[] {
   const home = homedir()
-  return [
-    join(home, '.agents'),
-    join(home, '.codex', 'agents'),
-    join(home, '.claude', 'agents'),
-    join(home, '.hermes', 'skills'),
+  const roots: string[] = []
+  const candidates = [
+    { dir: join(home, '.agents'),                    basename: 'agents' },
+    { dir: join(home, '.codex', 'agents'),           basename: 'codex-agents' },
+    { dir: join(home, '.claude', 'agents'),          basename: 'claude-agents' },
   ]
+  for (const cand of candidates) {
+    if (!existsSync(cand.dir)) continue
+    if (!ALLOWED_LOCAL_AGENT_DIRS.has(cand.basename)) continue
+    roots.push(cand.dir)
+  }
+  return roots
 }
 
 // ---------------------------------------------------------------------------
