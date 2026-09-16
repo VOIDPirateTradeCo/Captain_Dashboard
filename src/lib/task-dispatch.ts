@@ -822,9 +822,49 @@ async function callClaudeDirectly(
 // ---------------------------------------------------------------------------
 
 export type DirectProvider = 'anthropic' | 'openai' | 'local' | 'minimax'
+  | 'google-free' | 'groq-free' | 'openrouter-free' | 'cloudflare-free'
+  | 'nvidia-free' | 'github-free' | 'zai-free' | 'mistral-free'
 
 function getOpenAIApiKey(): string | null {
   return (process.env.OPENAI_API_KEY || '').trim() || null
+}
+
+// --- Free-tier provider API keys ---
+
+function getGoogleFreeApiKey(): string | null {
+  return (process.env.GOOGLE_AI_API_KEY || process.env.GEMINI_API_KEY || '').trim() || null
+}
+
+function getGroqFreeApiKey(): string | null {
+  return (process.env.GROQ_API_KEY || '').trim() || null
+}
+
+function getOpenRouterApiKey(): string | null {
+  return (process.env.OPENROUTER_API_KEY || '').trim() || null
+}
+
+function getCloudflareAccountId(): string | null {
+  return (process.env.CF_ACCOUNT_ID || '').trim() || null
+}
+
+function getCloudflareApiToken(): string | null {
+  return (process.env.CF_API_TOKEN || process.env.CF_WORKERS_AI_TOKEN || '').trim() || null
+}
+
+function getNvidiaApiKey(): string | null {
+  return (process.env.NVIDIA_NIM_API_KEY || '').trim() || null
+}
+
+function getGitHubToken(): string | null {
+  return (process.env.GITHUB_TOKEN || process.env.GH_MODELS_TOKEN || '').trim() || null
+}
+
+function getZaiApiKey(): string | null {
+  return (process.env.ZAI_API_KEY || '').trim() || null
+}
+
+function getMistralApiKey(): string | null {
+  return (process.env.MISTRAL_API_KEY || '').trim() || null
 }
 
 /**
@@ -851,6 +891,15 @@ export function pickProvider(model: string): DirectProvider {
   if (catalogProvider === 'openai') return 'openai'
   if (catalogProvider === 'ollama') return 'local'
   if (catalogProvider === 'minimax') return 'minimax'
+  // Free-tier providers
+  if (catalogProvider === 'google-free') return 'google-free'
+  if (catalogProvider === 'groq-free') return 'groq-free'
+  if (catalogProvider === 'openrouter-free') return 'openrouter-free'
+  if (catalogProvider === 'cloudflare-free') return 'cloudflare-free'
+  if (catalogProvider === 'nvidia-free') return 'nvidia-free'
+  if (catalogProvider === 'github-free') return 'github-free'
+  if (catalogProvider === 'zai-free') return 'zai-free'
+  if (catalogProvider === 'mistral-free') return 'mistral-free'
 
   // Prefix-match fallback for models not in the catalog - behavior for
   // unknown IDs is unchanged (default remains 'anthropic').
@@ -858,6 +907,15 @@ export function pickProvider(model: string): DirectProvider {
   if (m.startsWith('openai/') || m.startsWith('gpt-') || m.startsWith('o1-') || m.startsWith('o3-')) return 'openai'
   if (m.startsWith('local/') || m.startsWith('ollama/') || m.startsWith('lmstudio/') || m.startsWith('litellm/')) return 'local'
   if (m.startsWith('minimax/')) return 'minimax'
+  // Free-tier prefix matches
+  if (m.startsWith('google/') || m.startsWith('gemini/')) return 'google-free'
+  if (m.startsWith('groq/')) return 'groq-free'
+  if (m.startsWith('openrouter/')) return 'openrouter-free'
+  if (m.startsWith('cloudflare/') || m.startsWith('cf/')) return 'cloudflare-free'
+  if (m.startsWith('nvidia/') || m.startsWith('nv/')) return 'nvidia-free'
+  if (m.startsWith('github/') || m.startsWith('gh/')) return 'github-free'
+  if (m.startsWith('zai/') || m.startsWith('glm/')) return 'zai-free'
+  if (m.startsWith('mistral/')) return 'mistral-free'
   return 'anthropic'
 }
 
@@ -964,11 +1022,19 @@ function isCodexCliAvailable(): boolean {
   return getCodexCliBinaryPath() !== null
 }
 
-function isDirectDispatchAvailable(provider?: DirectProvider): boolean {
+export function isDirectDispatchAvailable(provider?: DirectProvider): boolean {
   if (provider === 'anthropic') return !!getAnthropicApiKey() || isClaudeCliAvailable()
   if (provider === 'openai') return !!getOpenAIApiKey() || isCodexCliAvailable()
   if (provider === 'local') return !!getLocalEndpoint()
   if (provider === 'minimax') return !!getMiniMaxApiKey()
+  if (provider === 'google-free') return !!getGoogleFreeApiKey()
+  if (provider === 'groq-free') return !!getGroqFreeApiKey()
+  if (provider === 'openrouter-free') return !!getOpenRouterApiKey()
+  if (provider === 'cloudflare-free') return !!getCloudflareAccountId() && !!getCloudflareApiToken()
+  if (provider === 'nvidia-free') return !!getNvidiaApiKey()
+  if (provider === 'github-free') return !!getGitHubToken()
+  if (provider === 'zai-free') return !!getZaiApiKey()
+  if (provider === 'mistral-free') return !!getMistralApiKey()
   return !!getAnthropicApiKey() || !!getOpenAIApiKey() || !!getLocalEndpoint()
     || !!getMiniMaxApiKey() || isClaudeCliAvailable() || isCodexCliAvailable()
 }
@@ -1366,12 +1432,146 @@ async function callLocalDirectly(task: DispatchableTask, prompt: string, model: 
   return callOpenAICompatible(task, prompt, endpoint, getLocalApiKey(), stripProviderPrefix(model), 'local')
 }
 
+// --- Free-tier direct dispatch functions ---
+
+async function callGoogleFreeDirectly(task: DispatchableTask, prompt: string, model: string): Promise<AgentResponseParsed> {
+  const apiKey = getGoogleFreeApiKey()
+  if (!apiKey) throw new Error('GOOGLE_AI_API_KEY not set - cannot dispatch to Google free tier')
+  return callOpenAICompatible(task, prompt, 'https://generativelanguage.googleapis.com/v1beta/openai', apiKey, stripProviderPrefix(model), 'google-free')
+}
+
+async function callGroqFreeDirectly(task: DispatchableTask, prompt: string, model: string): Promise<AgentResponseParsed> {
+  const apiKey = getGroqFreeApiKey()
+  if (!apiKey) throw new Error('GROQ_API_KEY not set - cannot dispatch to Groq free tier')
+  return callOpenAICompatible(task, prompt, 'https://api.groq.com/openai/v1', apiKey, stripProviderPrefix(model), 'groq-free')
+}
+
+async function callOpenRouterFreeDirectly(task: DispatchableTask, prompt: string, model: string): Promise<AgentResponseParsed> {
+  const apiKey = getOpenRouterApiKey()
+  if (!apiKey) throw new Error('OPENROUTER_API_KEY not set - cannot dispatch to OpenRouter free tier')
+  return callOpenAICompatible(task, prompt, 'https://openrouter.ai/api/v1', apiKey, stripProviderPrefix(model), 'openrouter-free')
+}
+
+async function callCloudflareFreeDirectly(task: DispatchableTask, prompt: string, model: string): Promise<AgentResponseParsed> {
+  const accountId = getCloudflareAccountId()
+  const apiToken = getCloudflareApiToken()
+  if (!accountId || !apiToken) throw new Error('CF_ACCOUNT_ID and CF_API_TOKEN required for Cloudflare Workers AI')
+
+  const modelId = stripProviderPrefix(model)
+  const soul = getAgentSoulContent(task)
+  const messages: Array<{ role: string; content: string }> = []
+  if (soul) messages.push({ role: 'system', content: soul })
+  messages.push({ role: 'user', content: prompt })
+
+  logger.info({ taskId: task.id, model: modelId, agent: task.agent_name, provider: 'cloudflare-free' },
+    'Dispatching task via Cloudflare Workers AI')
+
+  const res = await fetch(`https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/@cf/${modelId}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${apiToken}`,
+    },
+    body: JSON.stringify({ messages, max_tokens: 4096 }),
+  })
+
+  if (!res.ok) {
+    const errorBody = await res.text().catch(() => '')
+    throw new Error(`Cloudflare Workers AI ${res.status}: ${errorBody.substring(0, 500)}`)
+  }
+
+  const data = await res.json() as {
+    result?: { response?: string }
+    success?: boolean
+    errors?: Array<{ message: string }>
+  }
+
+  if (!data.success && data.errors?.length) {
+    throw new Error(`Cloudflare Workers AI error: ${data.errors[0].message}`)
+  }
+
+  return { text: data.result?.response?.trim() || null, sessionId: null }
+}
+
+async function callNvidiaFreeDirectly(task: DispatchableTask, prompt: string, model: string): Promise<AgentResponseParsed> {
+  const apiKey = getNvidiaApiKey()
+  if (!apiKey) throw new Error('NVIDIA_NIM_API_KEY not set - cannot dispatch to NVIDIA NIM free tier')
+  return callOpenAICompatible(task, prompt, 'https://integrate.api.nvidia.com/v1', apiKey, stripProviderPrefix(model), 'nvidia-free')
+}
+
+async function callGitHubFreeDirectly(task: DispatchableTask, prompt: string, model: string): Promise<AgentResponseParsed> {
+  const token = getGitHubToken()
+  if (!token) throw new Error('GITHUB_TOKEN not set - cannot dispatch to GitHub Models free tier')
+  return callOpenAICompatible(task, prompt, 'https://models.inference.ai.azure.com/v1', token, stripProviderPrefix(model), 'github-free')
+}
+
+async function callZaiFreeDirectly(task: DispatchableTask, prompt: string, model: string): Promise<AgentResponseParsed> {
+  const apiKey = getZaiApiKey()
+  if (!apiKey) throw new Error('ZAI_API_KEY not set - cannot dispatch to Z.ai free tier')
+  return callOpenAICompatible(task, prompt, 'https://api.z.ai/api/paas/v4', apiKey, stripProviderPrefix(model), 'zai-free')
+}
+
+async function callMistralFreeDirectly(task: DispatchableTask, prompt: string, model: string): Promise<AgentResponseParsed> {
+  const apiKey = getMistralApiKey()
+  if (!apiKey) throw new Error('MISTRAL_API_KEY not set - cannot dispatch to Mistral free tier')
+
+  const modelId = stripProviderPrefix(model)
+  const soul = getAgentSoulContent(task)
+  const messages: Array<{ role: string; content: string }> = []
+  if (soul) messages.push({ role: 'system', content: soul })
+  messages.push({ role: 'user', content: prompt })
+
+  logger.info({ taskId: task.id, model: modelId, agent: task.agent_name, provider: 'mistral-free' },
+    'Dispatching task via Mistral API')
+
+  const res = await fetch('https://api.mistral.ai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({ model: modelId, messages, max_tokens: 4096 }),
+  })
+
+  if (!res.ok) {
+    const errorBody = await res.text().catch(() => '')
+    throw new Error(`Mistral API ${res.status}: ${errorBody.substring(0, 500)}`)
+  }
+
+  const data = await res.json() as {
+    choices?: Array<{ message?: { content?: string } }>
+    usage?: { prompt_tokens?: number; completion_tokens?: number }
+  }
+  const text = data.choices?.[0]?.message?.content?.trim() || null
+
+  if (data.usage) {
+    recordDispatchTokenUsage({
+      model: modelId,
+      sessionId: `task-${task.id}`,
+      inputTokens: data.usage.prompt_tokens || 0,
+      outputTokens: data.usage.completion_tokens || 0,
+      workspaceId: task.workspace_id,
+    })
+  }
+
+  return { text, sessionId: null }
+}
+
 async function callDirectly(task: DispatchableTask, prompt: string): Promise<AgentResponseParsed> {
   const model = classifyDirectModel(task)
   const provider = pickProvider(model)
   if (provider === 'minimax') return callMiniMaxDirectly(task, prompt, model)
   if (provider === 'openai') return callOpenAIDirectly(task, prompt, model)
   if (provider === 'local') return callLocalDirectly(task, prompt, model)
+  // Free-tier providers
+  if (provider === 'google-free') return callGoogleFreeDirectly(task, prompt, model)
+  if (provider === 'groq-free') return callGroqFreeDirectly(task, prompt, model)
+  if (provider === 'openrouter-free') return callOpenRouterFreeDirectly(task, prompt, model)
+  if (provider === 'cloudflare-free') return callCloudflareFreeDirectly(task, prompt, model)
+  if (provider === 'nvidia-free') return callNvidiaFreeDirectly(task, prompt, model)
+  if (provider === 'github-free') return callGitHubFreeDirectly(task, prompt, model)
+  if (provider === 'zai-free') return callZaiFreeDirectly(task, prompt, model)
+  if (provider === 'mistral-free') return callMistralFreeDirectly(task, prompt, model)
   // Anthropic: prefer the host Claude Code CLI when available - it uses the
   // operator's existing login, no API key needed. Fall back to the API key
   // path only if the CLI isn't installed.

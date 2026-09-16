@@ -47,11 +47,37 @@ export const MODEL_CATALOG: ModelConfig[] = [
   // Google — https://ai.google.dev/gemini-api/docs/pricing (verified 2026-07-04; Pro rates are the <=200K-token-prompt tier)
   { alias: 'gemini-2.5-pro', name: 'google/gemini-2.5-pro', provider: 'google', description: 'Gemini 2.5 Pro', costPerMTok: { input: 1.25, output: 10.0 } },
   { alias: 'gemini-2.5-flash', name: 'google/gemini-2.5-flash', provider: 'google', description: 'Gemini 2.5 Flash, fast', costPerMTok: { input: 0.3, output: 2.5 } },
+  // Google Gemini FREE tier (AI Studio) — flash models are free
+  { alias: 'gemini-flash-free', name: 'google/gemini-2.5-flash', provider: 'google-free', description: 'Gemini 2.5 Flash (free tier)', costPerMTok: { input: 0.0, output: 0.0 } },
   // Local / open-source
   { alias: 'deepseek', name: 'ollama/deepseek-r1:14b', provider: 'ollama', description: 'Local reasoning (free)', costPerMTok: { input: 0.0, output: 0.0 } },
   // Groq (hosted inference) — https://groq.com/pricing (verified 2026-07-04)
   { alias: 'groq-fast', name: 'groq/llama-3.1-8b-instant', provider: 'groq', description: '840 tok/s, ultra fast', costPerMTok: { input: 0.05, output: 0.08 } },
   { alias: 'groq', name: 'groq/llama-3.3-70b-versatile', provider: 'groq', description: 'Fast + quality balance', costPerMTok: { input: 0.59, output: 0.79 } },
+  // Groq FREE tier (gpt-oss, Qwen)
+  { alias: 'groq-gpt-oss-120b', name: 'groq/openai/gpt-oss-120b', provider: 'groq-free', description: 'GPT-OSS 120B (free)', costPerMTok: { input: 0.0, output: 0.0 } },
+  { alias: 'groq-qwen', name: 'groq/qwen3-32b', provider: 'groq-free', description: 'Qwen3 32B (free)', costPerMTok: { input: 0.0, output: 0.0 } },
+  // OpenRouter — 20+ free models, single API key
+  { alias: 'or-llama-3.3-70b-free', name: 'openrouter/meta-llama/llama-3.3-70b-instruct:free', provider: 'openrouter-free', description: 'Llama 3.3 70B (free via OpenRouter)', costPerMTok: { input: 0.0, output: 0.0 } },
+  { alias: 'or-glm-4.7-flash-free', name: 'openrouter/glm-4.7-flash:free', provider: 'openrouter-free', description: 'GLM 4.7 Flash (free via OpenRouter)', costPerMTok: { input: 0.0, output: 0.0 } },
+  { alias: 'or-mistral-7b-free', name: 'openrouter/mistral-7b-instruct:free', provider: 'openrouter-free', description: 'Mistral 7B (free via OpenRouter)', costPerMTok: { input: 0.0, output: 0.0 } },
+  // Cloudflare Workers AI — 10K neurons/day free
+  { alias: 'cf-llama-3.3-70b', name: 'cloudflare/@cf/meta/llama-3.3-70b-instruct', provider: 'cloudflare-free', description: 'Llama 3.3 70B (free neurons)', costPerMTok: { input: 0.0, output: 0.0 } },
+  { alias: 'cf-gpt-oss-120b', name: 'cloudflare/@cf/openai/gpt-oss-120b', provider: 'cloudflare-free', description: 'GPT-OSS 120B (free neurons)', costPerMTok: { input: 0.0, output: 0.0 } },
+  // NVIDIA NIM — 120+ models, 40 RPM free
+  { alias: 'nvidia-nemotron', name: 'nvidia/nemotron-3-ultra', provider: 'nvidia-free', description: 'Nemotron 3 Ultra (free)', costPerMTok: { input: 0.0, output: 0.0 } },
+  { alias: 'nvidia-deepseek', name: 'nvidia/deepseek-v4-pro', provider: 'nvidia-free', description: 'DeepSeek V4 Pro (free)', costPerMTok: { input: 0.0, output: 0.0 } },
+  { alias: 'nvidia-llama', name: 'nvidia/llama-3.3-70b-instruct', provider: 'nvidia-free', description: 'Llama 3.3 70B (free)', costPerMTok: { input: 0.0, output: 0.0 } },
+  // GitHub Models — 150-1K/day free
+  { alias: 'gh-gpt-4o', name: 'github/gpt-4o', provider: 'github-free', description: 'GPT-4o (free)', costPerMTok: { input: 0.0, output: 0.0 } },
+  { alias: 'gh-claude-sonnet', name: 'github/claude-sonnet-4', provider: 'github-free', description: 'Claude Sonnet (free)', costPerMTok: { input: 0.0, output: 0.0 } },
+  { alias: 'gh-llama-3.3-70b', name: 'github/llama-3.3-70b-instruct', provider: 'github-free', description: 'Llama 3.3 70B (free)', costPerMTok: { input: 0.0, output: 0.0 } },
+  // Z.ai (GLM) — free flash models
+  { alias: 'glm-4.7-flash', name: 'zai/glm-4.7-flash', provider: 'zai-free', description: 'GLM 4.7 Flash (free)', costPerMTok: { input: 0.0, output: 0.0 } },
+  { alias: 'glm-4.5-flash', name: 'zai/glm-4.5-flash', provider: 'zai-free', description: 'GLM 4.5 Flash (free)', costPerMTok: { input: 0.0, output: 0.0 } },
+  // Mistral — $10/month free credits
+  { alias: 'mistral-large', name: 'mistral/mistral-large-latest', provider: 'mistral-free', description: 'Mistral Large (free credits)', costPerMTok: { input: 0.0, output: 0.0 } },
+  { alias: 'mistral-7b', name: 'mistral/mistral-7b-instruct', provider: 'mistral-free', description: 'Mistral 7B (free credits)', costPerMTok: { input: 0.0, output: 0.0 } },
   // MiniMax — https://platform.minimax.io/docs/guides/pricing-paygo (verified 2026-07-24)
   {
     alias: 'minimax',
