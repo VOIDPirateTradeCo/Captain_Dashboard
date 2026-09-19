@@ -24,7 +24,7 @@ venv/
 node_modules/
 .next/
 out/
-.next/
+.nextbuild/
 *.tsbuildinfo
 
 # --- Runtime databases ---
