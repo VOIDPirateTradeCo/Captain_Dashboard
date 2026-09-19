@@ -3,11 +3,26 @@ node_modules/
 
 # Next.js
 .next/
+.nextbuild/
 out/
 
 # Production
 build/
 dist/
+
+# Data
+.data/
+data/
+
+# Runtime
+logs/
+tmp/
+*.log
+
+# Hermes / business
+.hermes/
+hermes-agent/
+shared-skills-vault/
 
 # Misc
 .DS_Store
