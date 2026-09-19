@@ -12,7 +12,8 @@ const LEGACY_SCRYPT_COST = 16384
 export function hashPassword(password: string): string {
   const salt = randomBytes(SALT_LENGTH).toString('hex')
   const hash = scryptSync(password, salt, KEY_LENGTH, { N: SCRYPT_COST, maxmem: SCRYPT_MAXMEM }).toString('hex')
-  return `${salt}:${hash}`
+  // Always pad to 64 hex chars (32 bytes) to avoid leading-zero truncation
+  return `${salt}:${hash.padStart(64, '0')}`
 }
 
 /**
@@ -23,7 +24,9 @@ export function hashPassword(password: string): string {
 export function verifyPasswordWithRehashCheck(password: string, stored: string): { valid: boolean; needsRehash: boolean } {
   const [salt, hash] = stored.split(':')
   if (!salt || !hash) return { valid: false, needsRehash: false }
-  const storedBuf = Buffer.from(hash, 'hex')
+  // Pad hash to 64 hex chars (32 bytes) to handle leading-zero truncation
+  const padded = hash.padStart(64, '0')
+  const storedBuf = Buffer.from(padded, 'hex')
 
   // Try current cost first
   const derived = scryptSync(password, salt, KEY_LENGTH, { N: SCRYPT_COST, maxmem: SCRYPT_MAXMEM })

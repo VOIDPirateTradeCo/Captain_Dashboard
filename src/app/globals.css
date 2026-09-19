@@ -328,7 +328,7 @@
 }
 
 @utility void-panel {
-  /* Void panel — glass card with luminous border */
+  /* Void panel -- glass card with luminous border */
   @apply bg-card/90 backdrop-blur-xs border border-border rounded-lg;
   box-shadow:
     inset 0 1px 0 hsl(var(--void-cyan) / 0.04),
@@ -337,7 +337,7 @@
 }
 
 @utility void-border-glow {
-  /* Void border glow — animated gradient border */
+  /* Void border glow -- animated gradient border */
   position: relative;
   &::before {
     content: '';
@@ -387,7 +387,7 @@
 }
 
 @utility void-bg {
-  /* Void background — layered CSS gradients */
+  /* Void background -- layered CSS gradients */
   background-image:
       /* Subtle cyan spotlight at top */
     radial-gradient(
@@ -649,7 +649,7 @@
     @apply bg-muted-foreground;
   }
 
-  /* Modern button defaults — enhances ALL raw <button> elements */
+  /* Modern button defaults -- enhances ALL raw <button> elements */
   button:focus-visible {
     outline: none;
     box-shadow:
@@ -726,13 +726,13 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
- * Theme overrides — MUST come after @layer base so they win the cascade.
+ * Theme overrides -- MUST come after @layer base so they win the cascade.
  * Each class is applied to <html> by next-themes alongside the "dark" class.
  * .void is empty because .dark already defines the void palette.
  * ═══════════════════════════════════════════════════════════════════════ */
 
 .void {
-  /* Inherits from .dark — no overrides needed */
+  /* Inherits from .dark -- no overrides needed */
 }
 
 .midnight-blue {

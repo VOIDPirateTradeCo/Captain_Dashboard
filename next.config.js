@@ -3,6 +3,7 @@ const withNextIntl = require('next-intl/plugin')('./src/i18n/request.ts')
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
+  distDir: '.nextbuild',
   outputFileTracingRoot: __dirname,
   outputFileTracingIncludes: {
     // These files are read from process.cwd() at runtime and therefore cannot
@@ -43,12 +44,17 @@ const nextConfig = {
   turbopack: {
     root: __dirname,
   },
+  // Don't clean standalone dir (avoids EBUSY on Windows when server running)
+  cleanDistDir: false,
   // Dev server rejects cross-origin requests (page loads/HMR/API) from hosts
-  // not in this list. LAN crew/Captain access MC via IP or hostname, not
-  // localhost, so both need to be allowlisted here (dev mode only).
-  allowedDevOrigins: ['192.168.0.39', 'squidstation'],
+  // not in this list. Wildcard '*' allows any host (safe behind Caddy proxy).
+  allowedDevOrigins: ['*'],
   // Transpile ESM-only packages so they resolve correctly in all environments
   transpilePackages: ['react-markdown', 'remark-gfm'],
+  // Disable image optimization in standalone mode (sharp native module issues)
+  images: {
+    unoptimized: true,
+  },
   
   // Security headers
   // Content-Security-Policy is set in src/proxy.ts with a per-request nonce.

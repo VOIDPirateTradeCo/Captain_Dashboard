@@ -821,7 +821,7 @@ async function callClaudeDirectly(
 //   anything else (incl. "claude-*")                      → Anthropic
 // ---------------------------------------------------------------------------
 
-export type DirectProvider = 'anthropic' | 'openai' | 'local' | 'minimax'
+export type DirectProvider = 'anthropic' | 'openai' | 'local' | 'minimax' | 'hermes'
   | 'google-free' | 'groq-free' | 'openrouter-free' | 'cloudflare-free'
   | 'nvidia-free' | 'github-free' | 'zai-free' | 'mistral-free'
 
@@ -2023,9 +2023,18 @@ export async function dispatchAssignedTasks(): Promise<{ ok: boolean; message: s
         // and callDirectly - a claude-runtime agent never falls back to a
         // less restrictive provider; failures surface as dispatch failures.
         agentResponse = await dispatchViaClaudeSession(task, prompt)
+      } else if (String(task.agent_runtime_type || '').toLowerCase() === 'hermes') {
+        // Hermes runtime: dispatch to local Hermes proxy via OpenAI-compatible /v1/chat/completions
+        const hermesUrl = process.env.HERMES_GATEWAY_URL || 'http://localhost:8645/v1'
+        agentResponse = await callOpenAICompatible(task, prompt, hermesUrl, getOpenAIApiKey(), 'stepfun/step-3.7-flash:free', 'hermes')
       } else if (useDirectApi && !targetSession) {
         // Direct API dispatch - provider chosen by `dispatchModel`. No gateway needed.
-        agentResponse = await callDirectly(task, prompt)
+        const hermesFallback = process.env.HERMES_GATEWAY_URL
+        if (hermesFallback && String(task.agent_runtime_type || '').toLowerCase() !== 'claude') {
+          agentResponse = await callOpenAICompatible(task, prompt, hermesFallback, null, 'stealth/union-alpha', 'hermes')
+        } else {
+          agentResponse = await callDirectly(task, prompt)
+        }
       } else if (targetSession) {
         // Dispatch to a specific existing session via chat.send
         logger.info({ taskId: task.id, targetSession, agent: task.agent_name }, 'Dispatching task to targeted session')

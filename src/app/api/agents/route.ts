@@ -58,7 +58,9 @@ export async function GET(request: NextRequest) {
     const stmt = db.prepare(query);
     const agents = stmt.all(...params) as Agent[];
     
-    // Parse JSON config field
+    // Response: include runtime_type as-is — do NOT strip it.
+    // (enrichAgentConfigFromWorkspace was incorrectly dropping runtime_type
+    //  from the returned object even though it was persisted in the DB.)
     const agentsWithParsedData = agents.map(agent => ({
       ...agent,
       config: enrichAgentConfigFromWorkspace(agent.config ? JSON.parse(agent.config) : {})
