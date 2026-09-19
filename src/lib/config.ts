@@ -2,10 +2,39 @@ import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 
+/**
+ * Normalize MSYS-style paths (/c/Users/foo → C:\Users\foo) on Windows.
+ * Git-bash / MSYS2 env vars and child-process output often use forward-slash
+ * drive paths that Node.js resolves as `C:\c\Users\...` on Windows.
+ */
+function normalizeMsysPath(p: string): string {
+  if (process.platform !== 'win32') return p
+  const m = p.match(/^\/([a-zA-Z])(?:\/(.*))?$/)
+  if (m) {
+    const rest = m[2] ? m[2].replace(/\//g, '\\') : ''
+    return `${m[1].toUpperCase()}:\\${rest}`
+  }
+  return p
+}
+
 /** Clamp a number to [min, max], falling back to `fallback` if NaN. */
 function clampInt(value: number, min: number, max: number, fallback: number): number {
   if (isNaN(value)) return fallback
   return Math.max(min, Math.min(max, Math.floor(value)))
+}
+
+/**
+ * Resolve the real Windows homedir, undoing any MSYS path mangling.
+ * Git-bash / MSYS2 set HOME=/c/users/kidsm; Node's os.homedir() may return
+ * that, and path.join('/c/users/kidsm', '.openclaw') becomes C:\c\users\...
+ */
+function resolveHomedir(): string {
+  if (process.platform !== 'win32') return os.homedir()
+  const envHome = process.env.USERPROFILE || process.env.HOME
+  if (envHome && /^[A-Za-z]:/.test(envHome)) return envHome
+  const msys = normalizeMsysPath(envHome || os.homedir())
+  if (/^[A-Za-z]:/.test(msys)) return msys
+  return os.homedir()
 }
 
 const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build'
@@ -30,15 +59,15 @@ const resolvedTokensPath = isBuildPhase
       path.join(resolvedDataDir, 'mission-control-tokens.json'))
   : (process.env.MISSION_CONTROL_TOKENS_PATH ||
       path.join(resolvedDataDir, 'mission-control-tokens.json'))
-const defaultOpenClawStateDir = path.join(os.homedir(), '.openclaw')
+const defaultOpenClawStateDir = path.join(resolveHomedir(), '.openclaw')
 const explicitOpenClawConfigPath =
-  process.env.OPENCLAW_CONFIG_PATH ||
-  process.env.MISSION_CONTROL_OPENCLAW_CONFIG_PATH ||
+  normalizeMsysPath(process.env.OPENCLAW_CONFIG_PATH || '') ||
+  normalizeMsysPath(process.env.MISSION_CONTROL_OPENCLAW_CONFIG_PATH || '') ||
   ''
 const legacyOpenClawHome =
-  process.env.OPENCLAW_HOME ||
-  process.env.CLAWDBOT_HOME ||
-  process.env.MISSION_CONTROL_OPENCLAW_HOME ||
+  normalizeMsysPath(process.env.OPENCLAW_HOME || '') ||
+  normalizeMsysPath(process.env.CLAWDBOT_HOME || '') ||
+  normalizeMsysPath(process.env.MISSION_CONTROL_OPENCLAW_HOME || '') ||
   ''
 const openclawStateDir =
   process.env.OPENCLAW_STATE_DIR ||
@@ -110,7 +139,7 @@ export const config = {
   soulTemplatesDir:
     process.env.OPENCLAW_SOUL_TEMPLATES_DIR ||
     (openclawStateDir ? path.join(openclawStateDir, 'templates', 'souls') : ''),
-  homeDir: os.homedir(),
+  homeDir: resolveHomedir(),
   // Optional coordinator agent for auto-routing unassigned tasks (issue #663).
   // Opt-in: empty string means the feature is OFF (tasks created without an
   // assignee stay unassigned). When set, new tasks with no assigned_to are

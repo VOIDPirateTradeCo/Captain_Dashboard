@@ -265,7 +265,10 @@ async function getSystemStatus(workspaceId: number, includeGlobalRuntime: boolea
 
   try {
     // System uptime (cross-platform)
-    if (process.platform === 'darwin') {
+    if (process.platform === 'win32') {
+      // Windows: use Node.js os.uptime() — returns seconds since boot
+      status.uptime = process.uptime() * 1000
+    } else if (process.platform === 'darwin') {
       const { stdout } = await runCommand('sysctl', ['-n', 'kern.boottime'], {
         timeoutMs: 3000
       })
@@ -317,20 +320,36 @@ async function getSystemStatus(workspaceId: number, includeGlobalRuntime: boolea
   }
 
   try {
-    // ClawdBot processes
-    const { stdout: processOutput } = await runCommand(
-      'ps',
-      ['-A', '-o', 'pid,comm,args'],
-      { timeoutMs: 3000 }
-    )
-    const processes = processOutput.split('\n')
-      .filter(line => line.trim())
-      .filter(line => !line.trim().toLowerCase().startsWith('pid '))
+    // ClawdBot processes (cross-platform)
+    let processLines: string[] = []
+    if (process.platform === 'win32') {
+      // Windows: use tasklist to find OpenClaw-related processes
+      const { stdout } = await runCommand('tasklist', [], { timeoutMs: 5000 })
+      const lines = stdout.split('\n').filter(l => l.trim())
+      // Parse: Image Name, PID, Session Name, Session#, Mem Usage
+      for (const line of lines) {
+        const parts = line.trim().split(/\s+/)
+        if (parts.length >= 2) {
+          const name = parts[0].toLowerCase()
+          if (name.includes('openclaw') || name.includes('clawdbot') || name.includes('hermes')) {
+            processLines.push(`${parts[1]} ${parts[0]}`)
+          }
+        }
+      }
+    } else {
+      const { stdout } = await runCommand('ps', ['-A', '-o', 'pid,comm,args'], {
+        timeoutMs: 3000
+      })
+      processLines = stdout.split('\n')
+        .filter(line => line.trim())
+        .filter(line => !line.trim().toLowerCase().startsWith('pid '))
+    }
+    const processes = processLines
       .map(line => {
         const parts = line.trim().split(/\s+/)
         return {
           pid: parts[0],
-          command: parts.slice(2).join(' ')
+          command: parts.slice(1).join(' ')
         }
       })
       .filter((proc) => /clawdbot|openclaw/i.test(proc.command))
@@ -392,16 +411,29 @@ async function getGatewayStatus() {
   }
 
   try {
-    const { stdout } = await runCommand('ps', ['-A', '-o', 'pid,comm,args'], {
-      timeoutMs: 3000
-    })
-    const match = stdout
-      .split('\n')
-      .find((line) => /clawdbot-gateway|openclaw-gateway|openclaw.*gateway/i.test(line))
-    if (match) {
-      const parts = match.trim().split(/\s+/)
-      gatewayStatus.running = true
-      gatewayStatus.pid = parts[0]
+    // Find gateway process (cross-platform)
+    if (process.platform === 'win32') {
+      const { stdout } = await runCommand('tasklist', [], { timeoutMs: 5000 })
+      const match = stdout
+        .split('\n')
+        .find(line => /openclaw-gateway|openclaw.*gateway|clawdbot-gateway/i.test(line))
+      if (match) {
+        gatewayStatus.running = true
+        const parts = match.trim().split(/\s+/)
+        gatewayStatus.pid = parts[1] || null
+      }
+    } else {
+      const { stdout } = await runCommand('ps', ['-A', '-o', 'pid,comm,args'], {
+        timeoutMs: 3000
+      })
+      const match = stdout
+        .split('\n')
+        .find((line) => /clawdbot-gateway|openclaw-gateway|openclaw.*gateway/i.test(line))
+      if (match) {
+        const parts = match.trim().split(/\s+/)
+        gatewayStatus.running = true
+        gatewayStatus.pid = parts[0]
+      }
     }
   } catch (error) {
     // Gateway not running
