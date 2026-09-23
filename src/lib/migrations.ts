@@ -1537,6 +1537,28 @@ const migrations: Migration[] = [
     }
   },
   {
+    id: '057_fleet_heartbeat',
+    up: (db) => {
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS fleet_heartbeat (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          hostname TEXT NOT NULL UNIQUE,
+          ip TEXT,
+          status TEXT NOT NULL DEFAULT 'online',
+          first_seen INTEGER NOT NULL,
+          last_seen INTEGER NOT NULL,
+          timestamp INTEGER,
+          tailscale_ip TEXT,
+          agent_version TEXT,
+          created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+          updated_at INTEGER NOT NULL DEFAULT (unixepoch())
+        )
+      `)
+      db.exec(`CREATE INDEX IF NOT EXISTS idx_fleet_heartbeat_hostname ON fleet_heartbeat(hostname)`)
+      db.exec(`CREATE INDEX IF NOT EXISTS idx_fleet_heartbeat_last_seen ON fleet_heartbeat(last_seen DESC)`)
+    }
+  },
+  {
     // #602: per-agent Claude Code base sessions. The base id is a server-generated
     // UUID owned by exactly one agent; created_at doubles as the created-on-disk
     // marker (NULL = base session not yet materialized by a first dispatch).

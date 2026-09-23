@@ -143,6 +143,10 @@ function extractApiKeyFromRequest(request: NextRequest): string {
   const direct = (request.headers.get('x-api-key') || '').trim()
   if (direct) return direct
 
+  // Also accept legacy x-agent-api-key header from fleet daemons
+  const agentKey = (request.headers.get('x-agent-api-key') || '').trim()
+  if (agentKey) return agentKey
+
   const authorization = (request.headers.get('authorization') || '').trim()
   if (!authorization) return ''
 
@@ -206,7 +210,8 @@ export function proxy(request: NextRequest) {
   // GET /api/fleet-memory + /api/conversations: read-only fleet memory/search (POST/other methods still auth-gated)
   const isPublicFleetMemory = pathname === '/api/fleet-memory' && request.method === 'GET'
   const isPublicConversations = pathname === '/api/conversations' && request.method === 'GET'
-  if (pathname === '/login' || pathname === '/setup' || pathname.startsWith('/api/auth/') || pathname === '/api/setup' || pathname === '/api/docs' || pathname === '/docs' || isPublicHealthProbe || isPublicHealthRoute || isPublicResearchCatalog || isPublicFleetMemory || isPublicConversations) {
+  const isPublicLiveness = pathname === '/api/fleet/liveness' && request.method === 'GET'
+  if (pathname === '/login' || pathname === '/setup' || pathname.startsWith('/api/auth/') || pathname === '/api/setup' || pathname === '/api/docs' || pathname === '/docs' || isPublicHealthProbe || isPublicHealthRoute || isPublicResearchCatalog || isPublicFleetMemory || isPublicConversations || isPublicLiveness) {
     const { response, nonce } = nextResponseWithNonce(request)
     return addSecurityHeaders(response, request, nonce)
   }
