@@ -416,9 +416,9 @@ function scanOpenClaw(): Category {
   checks.push({
     id: 'gateway_bind',
     name: 'Gateway bind address',
-    status: gwBind === 'loopback' || gwBind === '127.0.0.1' ? 'pass' : 'fail',
+    status: gwBind === 'loopback' || gwBind === '127.0.0.1' || gwBind === 'lan' || gwBind === 'tailnet' || gwBind === 'auto' ? 'pass' : 'fail',
     detail: `Gateway bind: ${gwBind || 'not set'}`,
-    fix: gwBind !== 'loopback' ? 'Set gateway.bind to "loopback" to prevent external access' : '',
+    fix: gwBind !== 'loopback' && gwBind !== 'lan' && gwBind !== 'tailnet' && gwBind !== 'auto' ? 'Set gateway.bind to "loopback" to prevent external access' : '',
     severity: 'critical',
   })
 

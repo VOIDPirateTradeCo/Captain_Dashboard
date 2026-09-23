@@ -259,7 +259,7 @@ export async function POST(request: NextRequest) {
       // Fix gateway bind
       if (shouldFix('gateway_bind')) {
         if (!ocConfig.gateway) ocConfig.gateway = {}
-        if (ocConfig.gateway.bind !== 'loopback' && ocConfig.gateway.bind !== '127.0.0.1') {
+        if (ocConfig.gateway.bind !== 'loopback' && ocConfig.gateway.bind !== '127.0.0.1' && ocConfig.gateway.bind !== 'lan' && ocConfig.gateway.bind !== 'tailnet' && ocConfig.gateway.bind !== 'auto') {
           ocConfig.gateway.bind = 'loopback'
           configChanged = true
           results.push({ id: 'gateway_bind', name: 'Gateway bind address', fixed: true, detail: 'Set bind to "loopback"', fixSafety: FIX_SAFETY['gateway_bind'] })
