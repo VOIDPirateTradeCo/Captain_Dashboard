@@ -1,0 +1,30 @@
+name: Vault Health Check
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  schedule:
+    - cron: '0 6 * * *'  # Daily 6AM UTC
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check for secrets
+        run: |
+          echo "Scanning for exposed secrets..."
+          grep -r "lin_api_\|ghp_\|sk-\|ATTA" . --include="*.md" --include="*.env" --include="*.json" | grep -v ".git" | grep -v "_KEY_VAULT" | wc -l
+      - name: Verify vault structure
+        run: |
+          test -d "Obsidian_Vault/Developer_Brain/00_Vault_Index" || (echo "Missing 00_Vault_Index" && exit 1)
+          test -d "Obsidian_Vault/Developer_Brain/02_Business_Operations" || (echo "Missing 02_Business_Operations" && exit 1)
+          test -d "Obsidian_Vault/Developer_Brain/09_Cosmos_Library" || (echo "Missing 09_Cosmos_Library" && exit 1)
+          echo "Vault structure OK"
+      - name: Count markdown files
+        run: |
+          COUNT=$(find . -name "*.md" | grep -v ".git" | wc -l)
+          echo "Markdown files: $COUNT"
