@@ -10,4 +10,5 @@ copy /y .data\mission-control.db .next\standalone\.data\mission-control.db >nul 
 copy /y .data\mission-control.db-shm .next\standalone\.data\mission-control.db-shm >nul 2>&1
 copy /y .data\mission-control.db-wal .next\standalone\.data\mission-control.db-wal >nul 2>&1
 
-node .next\standalone\server.js
+:: Start MC with .env loaded (fixes AUTH_PASS not detected in standalone mode)
+node --env-file=.env .next\standalone\server.js

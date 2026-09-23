@@ -380,15 +380,30 @@ function scanOpenClaw(): Category {
   try {
     const stat = statSync(configPath)
     const mode = (stat.mode & 0o777).toString(8)
-    checks.push({
-      id: 'config_permissions',
-      name: 'Config file permissions',
-      status: mode === '600' ? 'pass' : 'warn',
-      detail: `openclaw.json permissions are ${mode}`,
-      fix: mode !== '600' ? `Run: chmod 600 ${configPath}` : '',
-      severity: 'medium',
-      fixSafety: 'safe',
-    })
+    // Windows doesn't use Unix mode bits — ACLs are the real mechanism.
+    // Skip the 600 check on Windows since chmod is not applicable there.
+    if (process.platform !== 'win32') {
+      checks.push({
+        id: 'config_permissions',
+        name: 'Config file permissions',
+        status: mode === '600' ? 'pass' : 'warn',
+        detail: `openclaw.json permissions are ${mode}`,
+        fix: mode !== '600' ? `Run: chmod 600 ${configPath}` : '',
+        severity: 'medium',
+        fixSafety: 'safe',
+      })
+    } else {
+      checks.push({
+        id: 'config_permissions',
+        name: 'Config file permissions',
+        status: 'pass',
+        detail: 'Windows NTFS ACLs manage file permissions (chmod not applicable)',
+        fix: '',
+        severity: 'medium',
+        fixSafety: 'safe',
+        platform: 'win32',
+      })
+    }
   } catch { /* skip */ }
 
   const gwAuth = ocConfig?.gateway?.auth
