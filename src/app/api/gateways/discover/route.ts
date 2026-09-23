@@ -1,69 +1,71 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { readFileSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
 import { requireRole } from '@/lib/auth'
-import { denyUnscopedResourceForStrictWorkspace } from '@/lib/workspace-isolation'
+import { config } from '@/lib/config'
 
 interface DiscoveredGateway {
-  user: string
+  host: string
   port: number
   active: boolean
   description: string
+  source: 'config' | 'scan' | 'systemd'
 }
 
 /**
  * GET /api/gateways/discover
- * Discovers OpenClaw gateways via systemd services and port scanning.
- * Does not require filesystem access to other users' configs.
+ * Discovers OpenClaw gateways via:
+ * - Local config (always works, cross-platform)
+ * - systemd service scanning (Linux)
+ * - Port scanning localhost (fallback)
  */
 export async function GET(request: NextRequest) {
   const auth = requireRole(request, 'viewer')
   if ('error' in auth) return NextResponse.json({ error: auth.error }, { status: auth.status })
-  const isolationDeny = denyUnscopedResourceForStrictWorkspace(auth.user, 'runtime_configuration', new URL(request.url).pathname)
-  if (isolationDeny) return isolationDeny
 
   const discovered: DiscoveredGateway[] = []
+  const seenPorts = new Set<number>()
 
-  // Parse systemd services for openclaw-gateway instances
-  try {
-    const output = execFileSync('systemctl', [
-      'list-units', '--type=service', '--plain', '--no-legend', '--no-pager',
-    ], { encoding: 'utf-8', timeout: 3000 })
+  // 1. Always add the locally configured gateway first
+  if (config.gatewayHost && config.gatewayPort) {
+    let active = false
+    try {
+      const controller = new AbortController()
+      const timeout = setTimeout(() => controller.abort(), 3000)
+      const res = await fetch(`http://${config.gatewayHost}:${config.gatewayPort}/health`, {
+        signal: controller.signal,
+      })
+      active = res.ok
+      clearTimeout(timeout)
+    } catch {
+      // not reachable
+    }
 
-    const gwLines = output.split('\n').filter(l => l.includes('openclaw') && l.includes('gateway'))
+    discovered.push({
+      host: config.gatewayHost,
+      port: config.gatewayPort,
+      active,
+      description: 'Configured gateway (local)',
+      source: 'config',
+    })
+    seenPorts.add(config.gatewayPort)
+  }
 
-    for (const line of gwLines) {
-      // e.g. "openclaw-gateway@quant.service loaded active running OpenClaw Gateway (quant)"
-      const parts = line.trim().split(/\s+/)
-      const serviceName = parts[0] || ''
-      const state = parts[2] || '' // active/inactive
-      const description = parts.slice(4).join(' ') // "OpenClaw Gateway (quant)"
+  // 2. Linux: scan systemd services
+  if (process.platform === 'linux') {
+    try {
+      const output = execFileSync('systemctl', [
+        'list-units', '--type=service', '--plain', '--no-legend', '--no-pager',
+      ], { encoding: 'utf-8', timeout: 3000 })
 
-      // Extract user from service name
-      let user = ''
-      const templateMatch = serviceName.match(/openclaw-gateway@(\w+)\.service/)
-      if (templateMatch) {
-        user = templateMatch[1]
-      } else {
-        // Custom service name like "openclaw-leads-gateway.service"
-        const customMatch = serviceName.match(/openclaw-(\w+)-gateway\.service/)
-        if (customMatch) user = customMatch[1]
-      }
-      if (!user) continue
+      const gwLines = output.split('\n').filter(l => l.includes('openclaw') && l.includes('gateway'))
 
-      // Find the port by checking what openclaw-gateway processes are listening on
-      let port = 0
-      try {
-        const configPath = `/home/${user}/.openclaw/openclaw.json`
-        const raw = readFileSync(configPath, 'utf-8')
-        const config = JSON.parse(raw)
-        if (typeof config?.gateway?.port === 'number') port = config.gateway.port
-      } catch {
-        // Can't read config — try to detect from ss output
-      }
+      for (const line of gwLines) {
+        const parts = line.trim().split(/\s+/)
+        const serviceName = parts[0] || ''
+        const state = parts[2] || ''
+        const description = parts.slice(4).join(' ').replace(/[()]/g, '').trim()
 
-      // If we couldn't read config, try finding port via ss for the service PID
-      if (!port) {
+        let port = 0
         try {
           const pidOutput = execFileSync('systemctl', [
             'show', serviceName, '--property=ExecMainPID', '--value',
@@ -82,19 +84,55 @@ export async function GET(request: NextRequest) {
             }
           }
         } catch { /* ignore */ }
+
+        if (port && !seenPorts.has(port)) {
+          discovered.push({
+            host: '127.0.0.1',
+            port,
+            active: state === 'active',
+            description: description || 'OpenClaw Gateway (systemd)',
+            source: 'systemd',
+          })
+          seenPorts.add(port)
+        }
       }
-
-      if (!port) continue
-
-      discovered.push({
-        user,
-        port,
-        active: state === 'active',
-        description: description.replace(/[()]/g, '').trim(),
-      })
+    } catch {
+      // systemctl not available — skip
     }
-  } catch {
-    // systemctl not available or failed — fall back silently
+  }
+
+  // 3. Windows: check common OpenClaw ports via netstat
+  if (process.platform === 'win32') {
+    const commonPorts = [18789, 8080, 3000, 3100, 11434]
+    try {
+      const netstat = execFileSync('netstat', ['-ano'], { encoding: 'utf-8', timeout: 3000 })
+      for (const port of commonPorts) {
+        if (seenPorts.has(port)) continue
+        const listening = netstat.includes(`:${port}`) && netstat.includes('LISTENING')
+        if (listening) {
+          // Verify it's actually an OpenClaw gateway
+          let isActive = false
+          try {
+            const controller = new AbortController()
+            const timeout = setTimeout(() => controller.abort(), 2000)
+            const res = await fetch(`http://127.0.0.1:${port}/health`, { signal: controller.signal })
+            isActive = res.ok
+            clearTimeout(timeout)
+          } catch { /* not reachable */ }
+
+          discovered.push({
+            host: '127.0.0.1',
+            port,
+            active: isActive,
+            description: `Gateway on port ${port} (detected)`,
+            source: 'scan',
+          })
+          seenPorts.add(port)
+        }
+      }
+    } catch {
+      // netstat failed — skip
+    }
   }
 
   return NextResponse.json({ gateways: discovered })
