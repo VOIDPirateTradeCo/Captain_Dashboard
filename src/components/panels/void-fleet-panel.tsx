@@ -12,6 +12,22 @@ import { useCallback, useEffect, useState } from 'react'
 import { apiFetch, ApiError } from '@/lib/api-client'
 import { Button } from '@/components/ui/button'
 
+interface LivenessPC {
+  hostname: string
+  ip: string | null
+  tailscale_ip: string | null
+  agent_version: string | null
+  last_seen: number
+  seconds_ago: number
+  status: string
+}
+interface LivenessResp {
+  pcs: LivenessPC[]
+  total: number
+  online: number
+  stale: number
+}
+
 interface ShipDetail {
   ip?: string
   status?: string
@@ -82,6 +98,25 @@ function useCollector<T>(path: string) {
   return { data, err, loading, reload: load }
 }
 
+function useLiveness() {
+  const [data, setData] = useState<LivenessResp | null>(null)
+  const [err, setErr] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
+  const load = useCallback(async () => {
+    setLoading(true)
+    try {
+      setData(await apiFetch<LivenessResp>('/api/fleet/liveness'))
+      setErr(null)
+    } catch (e) {
+      setErr(e instanceof ApiError ? `${e.code} ${e.status}` : e instanceof Error ? e.message : 'error')
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+  useEffect(() => { void load() }, [load])
+  return { data, err, loading, reload: load }
+}
+
 function dot(status?: string) {
   const s = (status || '').toLowerCase()
   const c = s === 'online' ? 'bg-green-500' : s === 'stale' || s === 'loading' ? 'bg-yellow-500' : 'bg-red-500'
@@ -102,9 +137,12 @@ export function VoidFleetPanel() {
   const hw = useCollector<HwResp>('hw')
   const containers = useCollector<ContainersResp>('containers')
   const pinkcady = useCollector<PinkcadyResp>('pinkcady')
+  const liveness = useLiveness()
+
+  const [activeTab, setActiveTab] = useState<'ships' | 'liveness' | 'health'>('liveness')
 
   const reloadAll = () => {
-    ships.reload(); fleet.reload(); hw.reload(); containers.reload(); pinkcady.reload()
+    ships.reload(); fleet.reload(); hw.reload(); containers.reload(); pinkcady.reload(); liveness.reload()
   }
 
   const shipNames = Object.keys(ships.data?.ships || {})
@@ -122,103 +160,142 @@ export function VoidFleetPanel() {
               : 'via host collector'}
           </p>
         </div>
-        <Button variant="outline" size="sm" onClick={reloadAll}>Refresh</Button>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={reloadAll}>Refresh</Button>
+          <div className="flex gap-1">
+            <button onClick={() => setActiveTab('liveness')} className={`px-2 py-1 text-xs rounded ${activeTab === 'liveness' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground'}`}>Liveness</button>
+            <button onClick={() => setActiveTab('ships')} className={`px-2 py-1 text-xs rounded ${activeTab === 'ships' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground'}`}>Ships</button>
+            <button onClick={() => setActiveTab('health')} className={`px-2 py-1 text-xs rounded ${activeTab === 'health' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground'}`}>Health</button>
+          </div>
+        </div>
       </div>
 
-      {(ships.err || fleet.err) && (
-        <p className="text-xs text-red-500">collector: {ships.err || fleet.err}</p>
+      {activeTab === 'liveness' && (
+        <div className="rounded-lg border border-border bg-card overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-left text-xs text-muted-foreground border-b border-border">
+                <th className="px-3 py-2">PC</th><th className="px-3 py-2">LAN IP</th>
+                <th className="px-3 py-2">Tailscale</th><th className="px-3 py-2">Last Seen</th>
+                <th className="px-3 py-2">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {liveness.data?.pcs?.map(pc => (
+                <tr key={pc.hostname} className="border-b border-border/50 last:border-0">
+                  <td className="px-3 py-2 font-medium text-foreground">{pc.hostname}</td>
+                  <td className="px-3 py-2 font-mono text-xs">{pc.ip || '—'}</td>
+                  <td className="px-3 py-2 font-mono text-xs">{pc.tailscale_ip || '—'}</td>
+                  <td className="px-3 py-2 text-xs text-muted-foreground">{ago(pc.seconds_ago)}</td>
+                  <td className="px-3 py-2">{dot(pc.status)}<span className="ml-2 text-xs">{pc.status}</span></td>
+                </tr>
+              ))}
+              {!liveness.loading && liveness.data?.pcs?.length === 0 && (
+                <tr><td colSpan={5} className="px-3 py-4 text-center text-xs text-muted-foreground">no fleet PCs reporting</td></tr>
+              )}
+              {liveness.loading && (
+                <tr><td colSpan={5} className="px-3 py-4 text-center text-xs text-muted-foreground">loading...</td></tr>
+              )}
+            </tbody>
+          </table>
+          {liveness.err && <p className="text-xs text-red-500 px-3 py-2">{liveness.err}</p>}
+        </div>
       )}
 
-      {/* Ships */}
-      <div className="rounded-lg border border-border bg-card overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="text-left text-xs text-muted-foreground border-b border-border">
-              <th className="px-3 py-2">Ship</th><th className="px-3 py-2">Role</th>
-              <th className="px-3 py-2">LAN IP</th><th className="px-3 py-2">Tailscale</th>
-              <th className="px-3 py-2">Crew</th><th className="px-3 py-2">Agent</th>
-              <th className="px-3 py-2">Last seen</th><th className="px-3 py-2">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {shipNames.map(name => {
-              const d = ships.data?.ship_details?.[name] || {}
-              const f = fleet.data?.ships?.[name] || {}
-              return (
-                <tr key={name} className="border-b border-border/50 last:border-0">
-                  <td className="px-3 py-2 font-medium text-foreground">{name}</td>
-                  <td className="px-3 py-2 text-muted-foreground">{d.role || f.lane || '—'}</td>
-                  <td className="px-3 py-2 font-mono text-xs">{d.ip || '—'}</td>
-                  <td className="px-3 py-2 font-mono text-xs">{f.tailscale_ip || '—'}</td>
-                  <td className="px-3 py-2 text-muted-foreground">{f.crew || '—'}</td>
-                  <td className="px-3 py-2 text-xs">{f.agent_version || '—'}</td>
-                  <td className="px-3 py-2 text-xs text-muted-foreground">{ago(f.seconds_ago)}</td>
-                  <td className="px-3 py-2">{dot(ships.data?.ships?.[name])}<span className="ml-2 text-xs">{ships.data?.ships?.[name] || f.state || '—'}</span></td>
-                </tr>
-              )
-            })}
-            {shipNames.length === 0 && !ships.loading && (
-              <tr><td colSpan={8} className="px-3 py-4 text-center text-xs text-muted-foreground">no ships reported</td></tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      <div className="grid gap-4 md:grid-cols-2">
-        {/* Local rig */}
-        <div className="rounded-lg border border-border bg-card p-4">
-          <h2 className="text-sm font-medium text-foreground">Local rig{rig?.hostname ? ` — ${rig.hostname}` : ''}</h2>
-          {rig ? (
-            <dl className="mt-2 space-y-1 text-xs text-muted-foreground">
-              <div><span className="text-foreground">CPU</span> {rig.cpu?.Name?.trim()} ({rig.cpu?.NumberOfCores}c/{rig.cpu?.NumberOfLogicalProcessors}t)</div>
-              <div><span className="text-foreground">RAM</span> {rig.memory?.total_gb} GB</div>
-              <div><span className="text-foreground">GPU</span> {rig.gpu?.Name} ({Math.round((rig.gpu?.adapter_ram_mb || 0))} MB)</div>
-              {(rig.disks || []).filter(d => (d.total_gb || 0) > 0).map(d => (
-                <div key={d.DeviceID}><span className="text-foreground">{d.DeviceID}</span> {d.free_gb} / {d.total_gb} GB free</div>
-              ))}
-            </dl>
-          ) : <p className="mt-2 text-xs text-muted-foreground">{hw.err || 'loading…'}</p>}
+      {activeTab === 'ships' && (
+        <div className="rounded-lg border border-border bg-card overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-left text-xs text-muted-foreground border-b border-border">
+                <th className="px-3 py-2">Ship</th><th className="px-3 py-2">Role</th>
+                <th className="px-3 py-2">LAN IP</th><th className="px-3 py-2">Tailscale</th>
+                <th className="px-3 py-2">Crew</th><th className="px-3 py-2">Agent</th>
+                <th className="px-3 py-2">Last seen</th><th className="px-3 py-2">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {shipNames.map(name => {
+                const d = ships.data?.ship_details?.[name] || {}
+                const f = fleet.data?.ships?.[name] || {}
+                return (
+                  <tr key={name} className="border-b border-border/50 last:border-0">
+                    <td className="px-3 py-2 font-medium text-foreground">{name}</td>
+                    <td className="px-3 py-2 text-muted-foreground">{d.role || f.lane || '—'}</td>
+                    <td className="px-3 py-2 font-mono text-xs">{d.ip || '—'}</td>
+                    <td className="px-3 py-2 font-mono text-xs">{f.tailscale_ip || '—'}</td>
+                    <td className="px-3 py-2 text-muted-foreground">{f.crew || '—'}</td>
+                    <td className="px-3 py-2 text-xs">{f.agent_version || '—'}</td>
+                    <td className="px-3 py-2 text-xs text-muted-foreground">{ago(f.seconds_ago)}</td>
+                    <td className="px-3 py-2">{dot(ships.data?.ships?.[name])}<span className="ml-2 text-xs">{ships.data?.ships?.[name] || f.state || '—'}</span></td>
+                  </tr>
+                )
+              })}
+              {shipNames.length === 0 && !ships.loading && (
+                <tr><td colSpan={8} className="px-3 py-4 text-center text-xs text-muted-foreground">no ships reported</td></tr>
+              )}
+            </tbody>
+          </table>
         </div>
+      )}
 
-        {/* Containers */}
-        <div className="rounded-lg border border-border bg-card p-4">
-          <h2 className="text-sm font-medium text-foreground">Docker</h2>
-          {containers.data?.containers ? (
-            <>
-              <p className="mt-2 text-xs text-muted-foreground">
-                {containers.data.containers.running}/{containers.data.containers.total} running · {containers.data.containers.fleet ?? 0} fleet · {containers.data.containers.security ?? 0} security
-              </p>
-              <div className="mt-2 flex flex-wrap gap-1">
-                {(containers.data.containers.names || []).map(n => (
-                  <span key={n} className="rounded bg-secondary px-1.5 py-0.5 text-[11px] text-secondary-foreground">{n}</span>
+      {activeTab === 'ships' && (
+        <div className="grid gap-4 md:grid-cols-2">
+          {/* Local rig */}
+          <div className="rounded-lg border border-border bg-card p-4">
+            <h2 className="text-sm font-medium text-foreground">Local rig{rig?.hostname ? ` — ${rig.hostname}` : ''}</h2>
+            {rig ? (
+              <dl className="mt-2 space-y-1 text-xs text-muted-foreground">
+                <div><span className="text-foreground">CPU</span> {rig.cpu?.Name?.trim()} ({rig.cpu?.NumberOfCores}c/{rig.cpu?.NumberOfLogicalProcessors}t)</div>
+                <div><span className="text-foreground">RAM</span> {rig.memory?.total_gb} GB</div>
+                <div><span className="text-foreground">GPU</span> {rig.gpu?.Name} ({Math.round((rig.gpu?.adapter_ram_mb || 0))} MB)</div>
+                {(rig.disks || []).filter(d => (d.total_gb || 0) > 0).map(d => (
+                  <div key={d.DeviceID}><span className="text-foreground">{d.DeviceID}</span> {d.free_gb} / {d.total_gb} GB free</div>
                 ))}
-              </div>
-            </>
-          ) : <p className="mt-2 text-xs text-muted-foreground">{containers.err || 'loading…'}</p>}
-        </div>
-      </div>
-
-      {/* PINKCADY verdict */}
-      <div className="rounded-lg border border-border bg-card p-4">
-        <div className="flex items-center gap-2">
-          <h2 className="text-sm font-medium text-foreground">PINKCADY boot verdict</h2>
-          <span className={`rounded px-1.5 py-0.5 text-[11px] ${pc?.clear_to_boot ? 'bg-green-500/15 text-green-500' : 'bg-yellow-500/15 text-yellow-500'}`}>
-            {pc?.verdict || '—'}
-          </span>
-        </div>
-        {pc ? (
-          <div className="mt-2 space-y-1 text-xs text-muted-foreground">
-            <div>{pc.captain_msg}</div>
-            {pc.sentinel_heartbeat?.data && (
-              <div>
-                sentinel: {pc.sentinel_heartbeat.data.status}
-                {pc.sentinel_heartbeat.data.tailscale ? ' · tailscale up' : ''}
-                {pc.sentinel_heartbeat.data.git && ` · git ${pc.sentinel_heartbeat.data.git.dirty ? `dirty (${pc.sentinel_heartbeat.data.git.changes} changes)` : 'clean'} @ ${pc.sentinel_heartbeat.data.git.sha}`}
-              </div>
-            )}
+              </dl>
+            ) : <p className="mt-2 text-xs text-muted-foreground">{hw.err || 'loading…'}</p>}
           </div>
-        ) : <p className="mt-2 text-xs text-muted-foreground">{pinkcady.err || 'loading…'}</p>}
-      </div>
+
+          {/* Containers */}
+          <div className="rounded-lg border border-border bg-card p-4">
+            <h2 className="text-sm font-medium text-foreground">Docker</h2>
+            {containers.data?.containers ? (
+              <>
+                <p className="mt-2 text-xs text-muted-foreground">
+                  {containers.data.containers.running}/{containers.data.containers.total} running · {containers.data.containers.fleet ?? 0} fleet · {containers.data.containers.security ?? 0} security
+                </p>
+                <div className="mt-2 flex flex-wrap gap-1">
+                  {(containers.data.containers.names || []).map(n => (
+                    <span key={n} className="rounded bg-secondary px-1.5 py-0.5 text-[11px] text-secondary-foreground">{n}</span>
+                  ))}
+                </div>
+              </>
+            ) : <p className="mt-2 text-xs text-muted-foreground">{containers.err || 'loading…'}</p>}
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'ships' && (
+        <div className="rounded-lg border border-border bg-card p-4">
+          <div className="flex items-center gap-2">
+            <h2 className="text-sm font-medium text-foreground">PINKCADY boot verdict</h2>
+            <span className={`rounded px-1.5 py-0.5 text-[11px] ${pc?.clear_to_boot ? 'bg-green-500/15 text-green-500' : 'bg-yellow-500/15 text-yellow-500'}`}>
+              {pc?.verdict || '—'}
+            </span>
+          </div>
+          {pc ? (
+            <div className="mt-2 space-y-1 text-xs text-muted-foreground">
+              <div>{pc.captain_msg}</div>
+              {pc.sentinel_heartbeat?.data && (
+                <div>
+                  sentinel: {pc.sentinel_heartbeat.data.status}
+                  {pc.sentinel_heartbeat.data.tailscale ? ' · tailscale up' : ''}
+                  {pc.sentinel_heartbeat.data.git && ` · git ${pc.sentinel_heartbeat.data.git.dirty ? `dirty (${pc.sentinel_heartbeat.data.git.changes} changes)` : 'clean'} @ ${pc.sentinel_heartbeat.data.git.sha}`}
+                </div>
+              )}
+            </div>
+          ) : <p className="mt-2 text-xs text-muted-foreground">{pinkcady.err || 'loading…'}</p>}
+        </div>
+      )}
     </div>
   )
 }
