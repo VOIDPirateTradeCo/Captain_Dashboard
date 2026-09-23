@@ -4,10 +4,12 @@ import { CrewAIAdapter } from './crewai'
 import { LangGraphAdapter } from './langgraph'
 import { AutoGenAdapter } from './autogen'
 import { ClaudeSdkAdapter } from './claude-sdk'
+import { ParallelCliAdapter } from './parallel'
 import type { FrameworkAdapter } from './adapter'
 
 const adapters = new Map<string, () => FrameworkAdapter>([
   ['openclaw', () => new OpenClawAdapter()],
+  ['parallel', () => new ParallelCliAdapter()],
   ['generic', () => new GenericAdapter()],
   ['crewai', () => new CrewAIAdapter()],
   ['langgraph', () => new LangGraphAdapter()],

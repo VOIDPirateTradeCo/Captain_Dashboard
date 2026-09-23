@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
   // Capability manifests are declared per adapter version (#900) — composed
   // here so detection (host state) and capability depth (adapter code) stay
   // separate truths.
-  const runtimes = detectAllRuntimes().map((runtime) => ({
+  const runtimes = (await detectAllRuntimes()).map((runtime) => ({
     ...runtime,
     capabilities: getRuntimeCapabilities(runtime.id),
   }))

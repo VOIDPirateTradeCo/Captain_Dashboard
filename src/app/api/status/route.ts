@@ -413,14 +413,28 @@ async function getGatewayStatus() {
   try {
     // Find gateway process (cross-platform)
     if (process.platform === 'win32') {
-      const { stdout } = await runCommand('tasklist', [], { timeoutMs: 5000 })
-      const match = stdout
-        .split('\n')
-        .find(line => /openclaw-gateway|openclaw.*gateway|clawdbot-gateway/i.test(line))
-      if (match) {
-        gatewayStatus.running = true
-        const parts = match.trim().split(/\s+/)
-        gatewayStatus.pid = parts[1] || null
+      try {
+        // On Windows, gateway runs as node.exe; check command line for openclaw
+        const { stdout } = await runCommand('wmic', ['process', 'where', 'name="node.exe"', 'get', 'commandline,processid', '/format:csv'], { timeoutMs: 5000 })
+        const match = stdout
+          .split('\n')
+          .find(line => /openclaw|gateway/i.test(line))
+        if (match) {
+          gatewayStatus.running = true
+          const parts = match.trim().split(',')
+          gatewayStatus.pid = parts[parts.length - 1] || null
+        }
+      } catch {
+        // WMIC may be deprecated; fallback to PowerShell
+        try {
+          const { stdout } = await runCommand('powershell', ['-Command', 'Get-Process node -ErrorAction SilentlyContinue | Where-Object { $_.CommandLine -match "openclaw|gateway" } | Select-Object -ExpandProperty Id'], { timeoutMs: 5000 })
+          if (stdout.trim()) {
+            gatewayStatus.running = true
+            gatewayStatus.pid = stdout.trim().split('\n')[0]
+          }
+        } catch {
+          // Gateway not detectable
+        }
       }
     } else {
       const { stdout } = await runCommand('ps', ['-A', '-o', 'pid,comm,args'], {
@@ -570,10 +584,11 @@ async function performHealthCheck() {
   // Check gateway connection
   try {
     const gatewayStatus = await getGatewayStatus()
+    // FIX: use port_listening (socket probe) as source of truth, not the wmic-based running flag
     health.checks.push({
       name: 'Gateway',
-      status: gatewayStatus.running ? 'healthy' : 'unhealthy',
-      message: gatewayStatus.running ? 'Gateway is running' : 'Gateway is not running'
+      status: gatewayStatus.port_listening ? 'healthy' : 'unhealthy',
+      message: gatewayStatus.port_listening ? `Gateway is running (port ${config.gatewayPort})` : 'Gateway is not running'
     })
   } catch (error) {
     health.checks.push({
@@ -583,17 +598,32 @@ async function performHealthCheck() {
     })
   }
 
-  // Check disk space (cross-platform: use df -h / and parse capacity column)
+  // Check disk space (cross-platform)
   try {
-    const { stdout } = await runCommand('df', ['-h', '/'], {
-      timeoutMs: 3000
-    })
-    const lines = stdout.trim().split('\n')
-    const last = lines[lines.length - 1] || ''
-    const parts = last.split(/\s+/)
-    // On macOS capacity is col 4 ("85%"), on Linux use% is col 4 as well
-    const pctField = parts.find(p => p.endsWith('%')) || '0%'
-    const usagePercent = parseInt(pctField.replace('%', '') || '0')
+    let usagePercent = 0
+    if (process.platform === 'win32') {
+      // FIX: avoid PowerShell pipeline — use wmic directly for disk space
+      const { stdout: diskOutput } = await runCommand('wmic', ['logicaldisk', 'where', 'DeviceID="C:"', 'get', 'FreeSpace,Size', '/format:csv'], { timeoutMs: 3000 })
+      const lines = diskOutput.trim().split('\n').filter(l => l.trim())
+      if (lines.length >= 2) {
+        const parts = lines[1].trim().split(',')
+        if (parts.length >= 3) {
+          const free = parseInt(parts[1], 10)
+          const total = parseInt(parts[2], 10)
+          if (total > 0) {
+            usagePercent = Math.round(((total - free) / total) * 100)
+          }
+        }
+      }
+    } else {
+      const { stdout } = await runCommand('df', ['-h', '/'], { timeoutMs: 3000 })
+      const lines = stdout.trim().split('\n')
+      const last = lines[lines.length - 1] || ''
+      const parts = last.split(/\s+/)
+      // On macOS capacity is col 4 ("85%"), on Linux use% is col 4 as well
+      const pctField = parts.find(p => p.endsWith('%')) || '0%'
+      usagePercent = parseInt(pctField.replace('%', '') || '0')
+    }
 
     health.checks.push({
       name: 'Disk Space',

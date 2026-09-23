@@ -10,7 +10,7 @@ import { pruneGatewaySessionsOlderThan, getAgentLiveStatuses } from './sessions'
 import { eventBus } from './event-bus'
 import { syncSkillsFromDisk } from './skill-sync'
 import { syncLocalAgents } from './local-agent-sync'
-import { dispatchAssignedTasks, runAegisReviews, requeueStaleTasks, autoRouteInboxTasks, reconcileDeferredTaskCompletions } from './task-dispatch'
+import { dispatchAssignedTasks, runAegisReviews, requeueStaleTasks, autoRouteInboxTasks, reconcileDeferredTaskCompletions, requeueOrphanedInProgressTasks, requeueOrphanedAssignedTasks } from './task-dispatch'
 import { spawnRecurringTasks } from './recurring-tasks'
 import { resolveSharedRuntimeWorkspaceId } from './workspace-isolation'
 
@@ -190,8 +190,8 @@ async function runHeartbeatCheck(): Promise<{ ok: boolean; message: string }> {
       return { ok: true, message: 'All agents healthy' }
     }
 
-    // Mark stale agents as offline
-    const markOffline = db.prepare('UPDATE agents SET status = ?, updated_at = ? WHERE id = ? AND workspace_id = ?')
+    // Mark stale agents as offline -- guard against concurrent syncAgentLiveStatuses
+    const markOffline = db.prepare("UPDATE agents SET status = ?, updated_at = ? WHERE id = ? AND workspace_id = ? AND status != 'offline'")
     const logActivity = db.prepare(`
       INSERT INTO activities (type, entity_type, entity_id, actor, description, workspace_id)
       VALUES ('agent_status_change', 'agent', ?, 'heartbeat', ?, ?)
@@ -244,7 +244,7 @@ async function syncAgentLiveStatuses(requestedWorkspaceId?: number): Promise<num
     id: number; name: string; config: string | null
   }>
 
-  const update = db.prepare('UPDATE agents SET status = ?, last_seen = ?, last_activity = ?, updated_at = ? WHERE id = ? AND workspace_id = ?')
+  const update = db.prepare("UPDATE agents SET status = ?, last_seen = ?, last_activity = ?, updated_at = ? WHERE id = ? AND workspace_id = ? AND status != 'offline'")
   let refreshed = 0
 
   const normalize = (s: string) => s.toLowerCase().replace(/[^a-z0-9._-]+/g, '-')
@@ -363,7 +363,7 @@ export function initScheduler() {
 
   tasks.set('skill_sync', {
     name: 'Skill Sync',
-    intervalMs: TICK_MS, // Every 60s — lightweight file stat checks
+    intervalMs: TICK_MS, // Every 60s -- lightweight file stat checks
     lastRun: null,
     nextRun: now + 10_000, // First scan 10s after startup
     enabled: true,
@@ -372,7 +372,7 @@ export function initScheduler() {
 
   tasks.set('local_agent_sync', {
     name: 'Local Agent Sync',
-    intervalMs: TICK_MS, // Every 60s — lightweight dir scan
+    intervalMs: TICK_MS, // Every 60s -- lightweight dir scan
     lastRun: null,
     nextRun: now + 15_000, // First scan 15s after startup
     enabled: true,
@@ -381,7 +381,7 @@ export function initScheduler() {
 
   tasks.set('gateway_agent_sync', {
     name: 'Gateway Agent Sync',
-    intervalMs: TICK_MS, // Every 60s — re-read openclaw.json
+    intervalMs: TICK_MS, // Every 60s -- re-read openclaw.json
     lastRun: null,
     nextRun: now + 20_000, // First scan 20s after startup (after local sync)
     enabled: true,
@@ -390,7 +390,7 @@ export function initScheduler() {
 
   tasks.set('task_dispatch', {
     name: 'Task Dispatch',
-    intervalMs: TICK_MS, // Every 60s — check for assigned tasks to dispatch
+    intervalMs: TICK_MS, // Every 60s -- check for assigned tasks to dispatch
     lastRun: null,
     nextRun: now + 10_000, // First check 10s after startup
     enabled: true,
@@ -399,7 +399,7 @@ export function initScheduler() {
 
   tasks.set('aegis_review', {
     name: 'Aegis Quality Review',
-    intervalMs: TICK_MS, // Every 60s — check for tasks awaiting review
+    intervalMs: TICK_MS, // Every 60s -- check for tasks awaiting review
     lastRun: null,
     nextRun: now + 30_000, // First check 30s after startup (after dispatch)
     enabled: true,
@@ -408,7 +408,7 @@ export function initScheduler() {
 
   tasks.set('recurring_task_spawn', {
     name: 'Recurring Task Spawn',
-    intervalMs: TICK_MS, // Every 60s — check for recurring tasks due
+    intervalMs: TICK_MS, // Every 60s -- check for recurring tasks due
     lastRun: null,
     nextRun: now + 20_000, // First check 20s after startup
     enabled: true,
@@ -417,9 +417,27 @@ export function initScheduler() {
 
   tasks.set('stale_task_requeue', {
     name: 'Stale Task Requeue',
-    intervalMs: TICK_MS, // Every 60s — check for stale in_progress tasks
+    intervalMs: TICK_MS, // Every 60s -- check for stale in_progress tasks
     lastRun: null,
     nextRun: now + 25_000, // First check 25s after startup
+    enabled: true,
+    running: false,
+  })
+
+  tasks.set('orphaned_task_recovery', {
+    name: 'Orphaned Task Recovery',
+    intervalMs: TICK_MS,
+    lastRun: null,
+    nextRun: now + 30_000,
+    enabled: true,
+    running: false,
+  })
+
+  tasks.set('orphaned_assigned_recovery', {
+    name: 'Orphaned Assigned Recovery',
+    intervalMs: TICK_MS,
+    lastRun: null,
+    nextRun: now + 35_000,
     enabled: true,
     running: false,
   })
@@ -441,59 +459,69 @@ function getNextDailyMs(hour: number): number {
 }
 
 /** Check and run due tasks */
+let isTicking = false
 async function tick() {
-  const now = Date.now()
+  if (isTicking) return
+  isTicking = true
+  try {
+    const now = Date.now()
 
-  for (const [id, task] of tasks) {
-    if (task.running || now < task.nextRun) continue
+    for (const [id, task] of tasks) {
+      if (task.running || now < task.nextRun) continue
 
-    // Check if this task is enabled in settings (heartbeat is always enabled)
-    const settingKey = id === 'auto_backup' ? 'general.auto_backup'
-      : id === 'auto_cleanup' ? 'general.auto_cleanup'
-      : id === 'webhook_retry' ? 'webhooks.retry_enabled'
-      : id === 'claude_session_scan' ? 'general.claude_session_scan'
-      : id === 'skill_sync' ? 'general.skill_sync'
-      : id === 'local_agent_sync' ? 'general.local_agent_sync'
-      : id === 'gateway_agent_sync' ? 'general.gateway_agent_sync'
-      : id === 'task_dispatch' ? 'general.task_dispatch'
-      : id === 'aegis_review' ? 'general.aegis_review'
-      : id === 'recurring_task_spawn' ? 'general.recurring_task_spawn'
-      : id === 'stale_task_requeue' ? 'general.stale_task_requeue'
-      : 'general.agent_heartbeat'
-    const defaultEnabled = id === 'agent_heartbeat' || id === 'webhook_retry' || id === 'claude_session_scan' || id === 'skill_sync' || id === 'local_agent_sync' || id === 'gateway_agent_sync' || id === 'task_dispatch' || id === 'aegis_review' || id === 'recurring_task_spawn' || id === 'stale_task_requeue'
-    if (!isSettingEnabled(settingKey, defaultEnabled)) continue
+      const settingKey = id === 'auto_backup' ? 'general.auto_backup'
+        : id === 'auto_cleanup' ? 'general.auto_cleanup'
+        : id === 'webhook_retry' ? 'webhooks.retry_enabled'
+        : id === 'claude_session_scan' ? 'general.claude_session_scan'
+        : id === 'skill_sync' ? 'general.skill_sync'
+        : id === 'local_agent_sync' ? 'general.local_agent_sync'
+        : id === 'gateway_agent_sync' ? 'general.gateway_agent_sync'
+        : id === 'task_dispatch' ? 'general.task_dispatch'
+        : id === 'aegis_review' ? 'general.aegis_review'
+        : id === 'recurring_task_spawn' ? 'general.recurring_task_spawn'
+        : id === 'stale_task_requeue' ? 'general.stale_task_requeue'
+        : id === 'orphaned_task_recovery' ? 'general.agent_heartbeat'
+        : 'general.agent_heartbeat'
+      const alwaysEnabled = id === 'agent_heartbeat' || id === 'orphaned_task_recovery'
+      const defaultEnabled = alwaysEnabled || id === 'webhook_retry' || id === 'claude_session_scan' || id === 'skill_sync' || id === 'local_agent_sync' || id === 'gateway_agent_sync' || id === 'task_dispatch' || id === 'aegis_review' || id === 'recurring_task_spawn' || id === 'stale_task_requeue'
+      if (!alwaysEnabled && !isSettingEnabled(settingKey, defaultEnabled)) continue
 
-    task.running = true
-    try {
-      const result = id === 'auto_backup' ? await runBackup()
-        : id === 'agent_heartbeat' ? await runHeartbeatCheck()
-        : id === 'webhook_retry' ? await processWebhookRetries()
-        : id === 'claude_session_scan' ? await syncClaudeSessions()
-        : id === 'skill_sync' ? await syncSkillsFromDisk()
-        : id === 'local_agent_sync' ? await syncLocalAgents()
-        : id === 'gateway_agent_sync' ? await syncAgentsFromConfig('scheduled').then(async r => {
-            if (r.error) return { ok: false, message: r.error }
-            const refreshed = await syncAgentLiveStatuses()
-            return { ok: true, message: `Gateway sync: ${r.created} created, ${r.updated} updated, ${r.synced} total | Live status: ${refreshed} refreshed` }
-          })
-        : id === 'task_dispatch' ? await autoRouteInboxTasks().then(async (routeResult) => {
-            const reconcileResult = await reconcileDeferredTaskCompletions()
-            const dispatchResult = await dispatchAssignedTasks()
-            const parts = [reconcileResult.message, routeResult.message, dispatchResult.message].filter(m => m && !m.includes('No ') && !m.includes('none completed'))
-            return { ok: routeResult.ok && reconcileResult.ok && dispatchResult.ok, message: parts.join(' | ') || 'No tasks to reconcile, route, or dispatch' }
-          })
-        : id === 'aegis_review' ? await runAegisReviews()
-        : id === 'recurring_task_spawn' ? await spawnRecurringTasks()
-        : id === 'stale_task_requeue' ? await requeueStaleTasks()
-        : await runCleanup()
-      task.lastResult = { ...result, timestamp: now }
-    } catch (err: any) {
-      task.lastResult = { ok: false, message: err.message, timestamp: now }
-    } finally {
-      task.running = false
-      task.lastRun = now
-      task.nextRun = now + task.intervalMs
+      task.running = true
+      try {
+        const result = id === 'auto_backup' ? await runBackup()
+          : id === 'agent_heartbeat' ? await runHeartbeatCheck()
+          : id === 'webhook_retry' ? await processWebhookRetries()
+          : id === 'claude_session_scan' ? await syncClaudeSessions()
+          : id === 'skill_sync' ? await syncSkillsFromDisk()
+          : id === 'local_agent_sync' ? await syncLocalAgents()
+          : id === 'gateway_agent_sync' ? await syncAgentsFromConfig('scheduled').then(async r => {
+              if (r.error) return { ok: false, message: r.error }
+              const refreshed = await syncAgentLiveStatuses()
+              return { ok: true, message: `Gateway sync: ${r.created} created, ${r.updated} updated, ${r.synced} total | Live status: ${refreshed} refreshed` }
+            })
+          : id === 'task_dispatch' ? await autoRouteInboxTasks().then(async (routeResult) => {
+              const reconcileResult = await reconcileDeferredTaskCompletions()
+              const dispatchResult = await dispatchAssignedTasks()
+              const parts = [reconcileResult.message, routeResult.message, dispatchResult.message].filter(m => m && !m.includes('No ') && !m.includes('none completed'))
+              return { ok: routeResult.ok && reconcileResult.ok && dispatchResult.ok, message: parts.join(' | ') || 'No tasks to reconcile, route, or dispatch' }
+            })
+          : id === 'aegis_review' ? await runAegisReviews()
+          : id === 'recurring_task_spawn' ? await spawnRecurringTasks()
+          : id === 'stale_task_requeue' ? await requeueStaleTasks()
+          : id === 'orphaned_task_recovery' ? await requeueOrphanedInProgressTasks()
+          : id === 'orphaned_assigned_recovery' ? await requeueOrphanedAssignedTasks()
+          : await runCleanup()
+        task.lastResult = { ...result, timestamp: now }
+      } catch (err: any) {
+        task.lastResult = { ok: false, message: err.message, timestamp: now }
+      } finally {
+        task.running = false
+        task.lastRun = now
+        task.nextRun = now + task.intervalMs
+      }
     }
+  } finally {
+    isTicking = false
   }
 }
 
@@ -521,12 +549,15 @@ export function getSchedulerStatus() {
       : id === 'aegis_review' ? 'general.aegis_review'
       : id === 'recurring_task_spawn' ? 'general.recurring_task_spawn'
       : id === 'stale_task_requeue' ? 'general.stale_task_requeue'
+      : id === 'orphaned_task_recovery' ? 'general.agent_heartbeat'
+      : id === 'orphaned_assigned_recovery' ? 'general.agent_heartbeat'
       : 'general.agent_heartbeat'
-    const defaultEnabled = id === 'agent_heartbeat' || id === 'webhook_retry' || id === 'claude_session_scan' || id === 'skill_sync' || id === 'local_agent_sync' || id === 'gateway_agent_sync' || id === 'task_dispatch' || id === 'aegis_review' || id === 'recurring_task_spawn' || id === 'stale_task_requeue'
+    const alwaysEnabled = id === 'agent_heartbeat' || id === 'orphaned_task_recovery' || id === 'orphaned_assigned_recovery'
+    const defaultEnabled = alwaysEnabled || id === 'webhook_retry' || id === 'claude_session_scan' || id === 'skill_sync' || id === 'local_agent_sync' || id === 'gateway_agent_sync' || id === 'task_dispatch' || id === 'aegis_review' || id === 'recurring_task_spawn' || id === 'stale_task_requeue'
     result.push({
       id,
       name: task.name,
-      enabled: isSettingEnabled(settingKey, defaultEnabled),
+      enabled: alwaysEnabled || isSettingEnabled(settingKey, defaultEnabled),
       lastRun: task.lastRun,
       nextRun: task.nextRun,
       running: task.running,
@@ -539,6 +570,8 @@ export function getSchedulerStatus() {
 
 /** Manually trigger a scheduled task */
 export async function triggerTask(taskId: string, workspaceId?: number): Promise<{ ok: boolean; message: string }> {
+  const task = tasks.get(taskId)
+  if (task?.running) return { ok: false, message: `Task "${taskId}" is already running -- wait for it to finish` }
   if (taskId === 'auto_backup') return runBackup()
   if (taskId === 'auto_cleanup') return runCleanup()
   if (taskId === 'agent_heartbeat') return runHeartbeatCheck()
@@ -551,6 +584,8 @@ export async function triggerTask(taskId: string, workspaceId?: number): Promise
   if (taskId === 'aegis_review') return runAegisReviews()
   if (taskId === 'recurring_task_spawn') return spawnRecurringTasks()
   if (taskId === 'stale_task_requeue') return requeueStaleTasks()
+  if (taskId === 'orphaned_task_recovery') return requeueOrphanedInProgressTasks()
+  if (taskId === 'orphaned_assigned_recovery') return requeueOrphanedAssignedTasks()
   return { ok: false, message: `Unknown task: ${taskId}` }
 }
 

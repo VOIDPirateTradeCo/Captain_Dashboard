@@ -201,7 +201,12 @@ export function proxy(request: NextRequest) {
   const isPublicHealthProbe = pathname === '/api/status' && request.nextUrl.searchParams.get('action') === 'health'
   // Exact-match only (no prefix/wildcard) so this exempts just the two health routes.
   const isPublicHealthRoute = pathname === '/api/health' || pathname === '/health'
-  if (pathname === '/login' || pathname === '/setup' || pathname.startsWith('/api/auth/') || pathname === '/api/setup' || pathname === '/api/docs' || pathname === '/docs' || isPublicHealthProbe || isPublicHealthRoute) {
+  // GET /api/research returns a public catalog (modes + rate limit); POST requires auth in the route handler
+  const isPublicResearchCatalog = pathname === '/api/research' && request.method === 'GET'
+  // GET /api/fleet-memory + /api/conversations: read-only fleet memory/search (POST/other methods still auth-gated)
+  const isPublicFleetMemory = pathname === '/api/fleet-memory' && request.method === 'GET'
+  const isPublicConversations = pathname === '/api/conversations' && request.method === 'GET'
+  if (pathname === '/login' || pathname === '/setup' || pathname.startsWith('/api/auth/') || pathname === '/api/setup' || pathname === '/api/docs' || pathname === '/docs' || isPublicHealthProbe || isPublicHealthRoute || isPublicResearchCatalog || isPublicFleetMemory || isPublicConversations) {
     const { response, nonce } = nextResponseWithNonce(request)
     return addSecurityHeaders(response, request, nonce)
   }

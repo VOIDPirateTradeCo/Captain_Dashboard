@@ -151,10 +151,10 @@ export function AgentSquadPanelPhase3() {
         setSyncToast(`Synced ${data.synced} agents (${data.created} new, ${data.updated} updated)`)
       }
       fetchAgents()
-      setTimeout(() => setSyncToast(null), 5000)
+      toastTimersRef.current.push(setTimeout(() => setSyncToast(null), 5000))
     } catch (err: any) {
       setSyncToast(`Sync failed: ${err.message}`)
-      setTimeout(() => setSyncToast(null), 5000)
+      toastTimersRef.current.push(setTimeout(() => setSyncToast(null), 5000))
     } finally {
       setSyncing(false)
     }
@@ -206,10 +206,15 @@ export function AgentSquadPanelPhase3() {
     } finally {
       setLoading(false)
     }
-  }, [agents.length, setAgents, showHidden])
+  }, [setAgents, showHidden])
 
   // Smart polling with visibility pause
   useSmartPoll(fetchAgents, 30000, { enabled: autoRefresh, pauseWhenSseConnected: true })
+
+  const toastTimersRef = useRef<ReturnType<typeof setTimeout>[]>([])
+  useEffect(() => {
+    return () => { toastTimersRef.current.forEach(clearTimeout); toastTimersRef.current = [] }
+  }, [])
 
   // Update agent status
   const updateAgentStatus = async (agentName: string, status: Agent['status'], activity?: string) => {
@@ -328,7 +333,7 @@ export function AgentSquadPanelPhase3() {
         : `Deleted agent: ${payload?.deleted || agentId}`,
     )
     await fetchAgents()
-    setTimeout(() => setSyncToast(null), 5000)
+    toastTimersRef.current.push(setTimeout(() => setSyncToast(null), 5000))
   }
 
   // Format last seen time
@@ -779,7 +784,7 @@ function AgentDetailModalPhase3({
         // raw:true keeps the .ok check; redirectOnUnauthenticated:false preserves
         // the original no-redirect behavior on auth failure.
         const response = await apiFetch<Response>(`/api/agents/${agent.name}/soul`, {
-          method: 'PATCH',
+          method: 'GET',
           raw: true,
           redirectOnUnauthenticated: false,
         })
@@ -1166,6 +1171,7 @@ function QuickSpawnModal({
   })
   const [isSpawning, setIsSpawning] = useState(false)
   const [spawnResult, setSpawnResult] = useState<any>(null)
+  const spawnTimersRef = useRef<ReturnType<typeof setTimeout>[]>([])
 
   // Cost labels are input/output USD per MILLION tokens ("/1K" was a
   // mislabel — these were always per-MTok prices). Values match MODEL_CATALOG.
@@ -1222,9 +1228,9 @@ function QuickSpawnModal({
         onSpawned()
 
         // Auto-close after 2 seconds if successful
-        setTimeout(() => {
+        spawnTimersRef.current.push(setTimeout(() => {
           onClose()
-        }, 2000)
+        }, 2000))
       } else {
         alert(result.error || 'Failed to spawn agent')
       }

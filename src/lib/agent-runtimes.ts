@@ -378,7 +378,7 @@ function pruneJobs() {
 // Detection
 // ---------------------------------------------------------------------------
 
-function detectOpenClaw(): RuntimeStatus {
+async function detectOpenClaw(): Promise<RuntimeStatus> {
   const meta = RUNTIME_META.openclaw
   let installed = false
   let version: string | null = null
@@ -404,22 +404,27 @@ function detectOpenClaw(): RuntimeStatus {
     // binary not found
   }
 
-  // Check if gateway port is listening (simple sync check)
+  // Check if gateway port is reachable
+  let reachable = false
   try {
     const net = require('node:net')
     const socket = new net.Socket()
-    socket.setTimeout(500)
-    new Promise<boolean>((resolve) => {
+    socket.setTimeout(1000)
+    const socketPromise = new Promise<boolean>(resolve => {
       socket.once('connect', () => { socket.destroy(); resolve(true) })
       socket.once('error', () => { socket.destroy(); resolve(false) })
       socket.once('timeout', () => { socket.destroy(); resolve(false) })
       socket.connect(config.gatewayPort, config.gatewayHost)
     })
-    // We can't await here synchronously, so just check config existence for "running"
-    running = installed
+    // Wait up to 1.2s for socket result
+    reachable = await Promise.race([
+      socketPromise,
+      new Promise<boolean>(r => setTimeout(() => r(false), 1200))
+    ])
   } catch {
-    // ignore
+    reachable = false
   }
+  running = installed && reachable
 
   return { id: 'openclaw', ...meta, installed, version, running, authenticated: true }
 }
@@ -611,7 +616,7 @@ function detectOpenCode(): RuntimeStatus {
   return { id: 'opencode', ...meta, installed, version, running, authenticated: installed }
 }
 
-const DETECTORS: Record<RuntimeId, () => RuntimeStatus> = {
+const DETECTORS: Record<RuntimeId, () => RuntimeStatus | Promise<RuntimeStatus>> = {
   openclaw: detectOpenClaw,
   hermes: detectHermes,
   claude: detectClaude,
@@ -644,15 +649,15 @@ function undetectedStub(id: RuntimeId): RuntimeStatus {
   }
 }
 
-export function detectRuntime(id: RuntimeId): RuntimeStatus {
+export async function detectRuntime(id: RuntimeId): Promise<RuntimeStatus> {
   if (runtimeScanDisabled()) return undetectedStub(id)
   const detector = DETECTORS[id]
-  return detector ? detector() : { id, name: id, description: '', installed: false, version: null, running: false, authRequired: false, authHint: '', authenticated: false }
+  return detector ? await detector() : { id, name: id, description: '', installed: false, version: null, running: false, authRequired: false, authHint: '', authenticated: false }
 }
 
-export function detectAllRuntimes(): RuntimeStatus[] {
+export async function detectAllRuntimes(): Promise<RuntimeStatus[]> {
   if (runtimeScanDisabled()) return (Object.keys(DETECTORS) as RuntimeId[]).map(undetectedStub)
-  return Object.values(DETECTORS).map(fn => fn())
+  return Promise.all(Object.values(DETECTORS).map(fn => fn()))
 }
 
 // ---------------------------------------------------------------------------

@@ -1550,6 +1550,23 @@ const migrations: Migration[] = [
         db.exec(`ALTER TABLE agents ADD COLUMN claude_base_session_created_at TEXT DEFAULT NULL`)
       }
     }
+  },
+  {
+    id: '056_task_checklists',
+    up: (db) => {
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS task_checklists (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            task_id INTEGER NOT NULL,
+            item_text TEXT NOT NULL,
+            position INTEGER NOT NULL DEFAULT 0,
+            checked INTEGER NOT NULL DEFAULT 0,
+            created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+            FOREIGN KEY (task_id) REFERENCES tasks(id) ON DELETE CASCADE
+        )
+      `)
+      db.exec(`CREATE INDEX IF NOT EXISTS idx_task_checklists_task_id ON task_checklists(task_id)`)
+    }
   }
 ]
 

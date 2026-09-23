@@ -22,7 +22,23 @@ export interface HermesMemory {
   userMemoryEntries: number
 }
 
-const MEMORY_DIR = () => join(config.homeDir, '.hermes', 'memories')
+/**
+ * Resolve the Hermes data directory on this machine:
+ * 1. HERMES_DATA_DIR env override (used by fleet pushers on remote PCs)
+ * 2. %LOCALAPPDATA%/hermes (standard Windows install location)
+ * 3. ~/.hermes (legacy fallback)
+ */
+function resolveHermesDataDir(): string {
+  if (process.env.HERMES_DATA_DIR) return process.env.HERMES_DATA_DIR
+  const localAppData = process.env.LOCALAPPDATA
+  if (localAppData) {
+    const candidate = join(localAppData, 'hermes')
+    if (existsSync(candidate)) return candidate
+  }
+  return join(config.homeDir, '.hermes')
+}
+
+const MEMORY_DIR = () => join(resolveHermesDataDir(), 'memories')
 
 function countSectionEntries(content: string): number {
   if (!content) return 0

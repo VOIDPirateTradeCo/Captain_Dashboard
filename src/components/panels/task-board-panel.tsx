@@ -165,6 +165,7 @@ const priorityColors: Record<string, string> = {
   low: 'border-l-green-500',
   medium: 'border-l-yellow-500',
   high: 'border-l-orange-500',
+  urgent: 'border-l-red-500',
   critical: 'border-l-red-500',
 }
 
@@ -341,6 +342,15 @@ type DunkPhase = 'idle' | 'success' | 'error' | 'dismissing'
 function DunkItButton({ taskId, onDunked }: { taskId: number; onDunked: (id: number) => void }) {
   const t = useTranslations('taskBoard')
   const [phase, setPhase] = useState<DunkPhase>('idle')
+  const timersRef = useRef<ReturnType<typeof setTimeout>[]>([])
+
+  // Cleanup timers on unmount
+  useEffect(() => {
+    return () => {
+      timersRef.current.forEach(clearTimeout)
+      timersRef.current = []
+    }
+  }, [])
 
   const handleClick = async (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -351,13 +361,16 @@ function DunkItButton({ taskId, onDunked }: { taskId: number; onDunked: (id: num
         body: JSON.stringify({ status: 'done' }),
       })
       setPhase('success')
-      setTimeout(() => {
+      const t1 = setTimeout(() => {
         setPhase('dismissing')
-        setTimeout(() => onDunked(taskId), 400)
+        const t2 = setTimeout(() => onDunked(taskId), 400)
+        timersRef.current.push(t2)
       }, 600)
+      timersRef.current.push(t1)
     } catch {
       setPhase('error')
-      setTimeout(() => setPhase('idle'), 1500)
+      const t3 = setTimeout(() => setPhase('idle'), 1500)
+      timersRef.current.push(t3)
     }
   }
 

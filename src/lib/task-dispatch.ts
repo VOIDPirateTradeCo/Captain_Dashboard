@@ -165,6 +165,7 @@ export interface CliDispatchSandboxOptions {
   allowedTools: string[] | null
   maxBudgetUsd: number | null
   cwd: string | null
+  model: string | null
 }
 
 /**
@@ -255,13 +256,15 @@ export function resolveCliSandboxOptions(
   const pick = (camel: string, snake: string): unknown => {
     if (meta[camel] !== undefined) return meta[camel]
     if (meta[snake] !== undefined) return meta[snake]
-    return agentCfg[camel]
+    if (agentCfg[camel] !== undefined) return agentCfg[camel]
+    return agentCfg[snake]
   }
 
   return {
     allowedTools: filterCliAllowedTools(pick('dispatchAllowedTools', 'dispatch_allowed_tools'), task.id),
     maxBudgetUsd: clampCliMaxBudgetUsd(pick('dispatchMaxBudgetUsd', 'dispatch_max_budget_usd'), task.id),
     cwd: resolveCliDispatchCwd(pick('dispatchCwd', 'dispatch_cwd'), workspaceRoot, task.id),
+    model: pick('dispatchModel', 'dispatch_model') as string | null,
   }
 }
 
@@ -1104,12 +1107,16 @@ async function callClaudeViaCli(
       proc.kill('SIGTERM')
       reject(new Error(`Claude CLI timed out after ${timeoutMs / 1000}s`))
     }, timeoutMs)
+    let rejected = false
     const guardOutput = (chunk: Buffer) => {
       outputBytes += chunk.length
       if (outputBytes > CLAUDE_CLI_MAX_OUTPUT_BYTES) {
-        clearTimeout(timer)
-        proc.kill('SIGKILL')
-        reject(new Error(`Claude CLI output exceeded ${CLAUDE_CLI_MAX_OUTPUT_BYTES} bytes`))
+        if (!rejected) {
+          rejected = true
+          clearTimeout(timer)
+          proc.kill('SIGKILL')
+          reject(new Error(`Claude CLI output exceeded ${CLAUDE_CLI_MAX_OUTPUT_BYTES} bytes`))
+        }
         return false
       }
       return true
@@ -1404,6 +1411,7 @@ async function callCodexViaCli(
     const timeoutMs = 300_000
     const timer = setTimeout(() => {
       proc.kill('SIGTERM')
+      try { rmSync(outPath, { force: true }) } catch { /* ignore */ }
       reject(new Error(`Codex CLI timed out after ${timeoutMs / 1000}s`))
     }, timeoutMs)
 
@@ -1415,7 +1423,7 @@ async function callCodexViaCli(
       let text: string | null = null
       try { text = (readFileSync(outPath, 'utf8') as string).trim() || null } catch { /* no output file written */ }
       try { rmSync(outPath, { force: true }) } catch { /* ignore */ }
-      if (code !== 0 && !text) {
+      if (code !== 0) {
         return reject(new Error(`codex CLI exited ${code}: ${(stderr || stdout).slice(0, 500)}`))
       }
       resolve({ text: text || stdout.trim() || null, sessionId: null })
@@ -1678,7 +1686,7 @@ export async function runAegisReviews(): Promise<{ ok: boolean; message: string 
 
   for (const task of tasks) {
     // Move to quality_review to prevent re-processing
-    db.prepare('UPDATE tasks SET status = ?, updated_at = ? WHERE id = ? AND workspace_id = ?')
+    db.prepare("UPDATE tasks SET status = ?, updated_at = ? WHERE id = ? AND workspace_id = ? AND status = 'review'")
       .run('quality_review', Math.floor(Date.now() / 1000), task.id, task.workspace_id)
 
     eventBus.broadcast('task.status_changed', {
@@ -1738,7 +1746,7 @@ export async function runAegisReviews(): Promise<{ ok: boolean; message: string 
       `).run(task.id, verdict.status, verdict.notes, task.workspace_id)
 
       if (verdict.status === 'approved') {
-        db.prepare('UPDATE tasks SET status = ?, updated_at = ? WHERE id = ? AND workspace_id = ?')
+        db.prepare("UPDATE tasks SET status = ?, updated_at = ? WHERE id = ? AND workspace_id = ? AND status = 'quality_review'")
           .run('done', Math.floor(Date.now() / 1000), task.id, task.workspace_id)
 
         eventBus.broadcast('task.status_changed', {
@@ -1757,7 +1765,7 @@ export async function runAegisReviews(): Promise<{ ok: boolean; message: string 
 
         if (newAttempts >= maxAegisRetries) {
           // Too many rejections - move to failed
-          db.prepare('UPDATE tasks SET status = ?, error_message = ?, dispatch_attempts = ?, updated_at = ? WHERE id = ? AND workspace_id = ?')
+          db.prepare("UPDATE tasks SET status = ?, error_message = ?, dispatch_attempts = ?, updated_at = ? WHERE id = ? AND workspace_id = ? AND status = 'quality_review'")
             .run('failed', `Aegis rejected ${newAttempts} times. Last: ${verdict.notes}`, newAttempts, now, task.id, task.workspace_id)
 
           eventBus.broadcast('task.status_changed', {
@@ -1771,7 +1779,7 @@ export async function runAegisReviews(): Promise<{ ok: boolean; message: string 
           syncAndEscalateIfFailed(task, 'failed', `Aegis rejected ${newAttempts} times`, newAttempts)
         } else {
           // Requeue to assigned for re-dispatch with feedback
-          db.prepare('UPDATE tasks SET status = ?, error_message = ?, dispatch_attempts = ?, updated_at = ? WHERE id = ? AND workspace_id = ?')
+          db.prepare("UPDATE tasks SET status = ?, error_message = ?, dispatch_attempts = ?, updated_at = ? WHERE id = ? AND workspace_id = ? AND status = 'quality_review'")
             .run('assigned', `Aegis rejected: ${verdict.notes}`, newAttempts, now, task.id, task.workspace_id)
 
           eventBus.broadcast('task.status_changed', {
@@ -1809,7 +1817,7 @@ export async function runAegisReviews(): Promise<{ ok: boolean; message: string 
       logger.error({ taskId: task.id, err }, 'Aegis review failed')
 
       // Revert to review so it can be retried
-      db.prepare('UPDATE tasks SET status = ?, updated_at = ? WHERE id = ? AND workspace_id = ?')
+      db.prepare("UPDATE tasks SET status = ?, updated_at = ? WHERE id = ? AND workspace_id = ? AND status = 'quality_review'")
         .run('review', Math.floor(Date.now() / 1000), task.id, task.workspace_id)
 
       eventBus.broadcast('task.status_changed', {
@@ -1878,8 +1886,8 @@ export async function requeueStaleTasks(): Promise<{ ok: boolean; message: strin
     const newAttempts = (task.dispatch_attempts ?? 0) + 1
 
     if (newAttempts >= maxDispatchRetries) {
-      db.prepare('UPDATE tasks SET status = ?, error_message = ?, dispatch_attempts = ?, updated_at = ? WHERE id = ? AND workspace_id = ?')
-        .run('failed', `Task stuck in_progress ${newAttempts} times - agent "${task.assigned_to}" offline. Moved to failed.`, newAttempts, now, task.id, task.workspace_id)
+      db.prepare('UPDATE tasks SET status = ?, error_message = ?, dispatch_attempts = ?, updated_at = ? WHERE id = ? AND workspace_id = ? AND status = ?')
+        .run('failed', `Task stuck in_progress ${newAttempts} times - agent "${task.assigned_to}" offline. Moved to failed.`, newAttempts, now, task.id, task.workspace_id, 'in_progress')
 
       eventBus.broadcast('task.status_changed', {
         id: task.id,
@@ -1893,8 +1901,8 @@ export async function requeueStaleTasks(): Promise<{ ok: boolean; message: strin
       syncAndEscalateIfFailed(task as any, 'failed', `Task stuck in_progress ${newAttempts} times`, newAttempts)
       failed++
     } else {
-      db.prepare('UPDATE tasks SET status = ?, error_message = ?, dispatch_attempts = ?, updated_at = ? WHERE id = ? AND workspace_id = ?')
-        .run('assigned', `Requeued: agent "${task.assigned_to}" went offline while task was in_progress`, newAttempts, now, task.id, task.workspace_id)
+      db.prepare('UPDATE tasks SET status = ?, error_message = ?, dispatch_attempts = ?, updated_at = ? WHERE id = ? AND workspace_id = ? AND status = ?')
+        .run('assigned', `Requeued: agent "${task.assigned_to}" went offline while task was in_progress`, newAttempts, now, task.id, task.workspace_id, 'in_progress')
 
       // Add a comment explaining the requeue
       db.prepare(`
@@ -1922,6 +1930,130 @@ export async function requeueStaleTasks(): Promise<{ ok: boolean; message: strin
     message: total === 0
       ? `Found ${staleTasks.length} stale task(s) but agents still online`
       : `Requeued ${requeued}, failed ${failed} of ${staleTasks.length} stale task(s)`,
+  }
+}
+
+export async function requeueOrphanedInProgressTasks(
+  staleMs = 15 * 60 * 1000,
+): Promise<{ ok: boolean; message: string }> {
+  const db = getDatabase()
+  const now = Math.floor(Date.now() / 1000)
+  const staleThreshold = now - Math.floor(staleMs / 1000)
+  const maxDispatchRetries = 5
+  const maxAegisRetries = 3
+
+  // Catch in_progress orphans (mid-dispatch PID death) AND quality_review orphans
+  // (Aegis PID death mid-review). Both states have no other self-heal path.
+  const orphans = db.prepare(`
+    SELECT id, title, assigned_to, dispatch_attempts, workspace_id, status
+    FROM tasks
+    WHERE status IN ('in_progress', 'quality_review')
+      AND updated_at < ?
+    ORDER BY updated_at ASC
+  `).all(staleThreshold) as Array<{
+    id: number; title: string; assigned_to: string | null
+    dispatch_attempts: number; workspace_id: number; status: string
+  }>
+
+  if (orphans.length === 0) return { ok: true, message: 'No orphaned tasks' }
+
+  let requeued = 0
+  let failed = 0
+
+  for (const task of orphans) {
+    const isQualityReview = task.status === 'quality_review'
+    const currentAttempts = task.dispatch_attempts ?? 0
+    // For quality_review orphans, use aegis retries counter (tracks review cycles)
+    const newAttempts = currentAttempts + 1
+    const maxRetries = isQualityReview ? maxAegisRetries : maxDispatchRetries
+
+    if (newAttempts >= maxRetries) {
+      const failMsg = isQualityReview
+        ? `Orphaned quality_review task failed after ${newAttempts} review attempts (Aegis PID death). Last agent: ${task.assigned_to ?? 'none'}`
+        : `Orphaned in_progress task failed after ${newAttempts} attempts (PID death mid-dispatch). Last agent: ${task.assigned_to ?? 'none'}`
+      db.prepare("UPDATE tasks SET status = ?, error_message = ?, dispatch_attempts = ?, updated_at = ? WHERE id = ? AND workspace_id = ? AND status = ?")
+        .run('failed', failMsg, newAttempts, now, task.id, task.workspace_id, task.status)
+
+      eventBus.broadcast('task.status_changed', {
+        id: task.id, status: 'failed', previous_status: task.status,
+        error_message: failMsg, reason: 'orphaned_task_max_retries', workspace_id: task.workspace_id,
+      })
+      syncAndEscalateIfFailed(task as any, 'failed', failMsg, newAttempts)
+      failed++
+    } else {
+      // in_progress -> assigned (retry dispatch)
+      // quality_review -> review (retry Aegis review)
+      const revertStatus = isQualityReview ? 'review' : 'assigned'
+      const requeueMsg = isQualityReview
+        ? `Orphaned quality_review task requeued (review attempt ${newAttempts}/${maxRetries}): Aegis likely died mid-review`
+        : `Orphaned in_progress task requeued (attempt ${newAttempts}/${maxRetries}): PID likely died mid-dispatch`
+      db.prepare("UPDATE tasks SET status = ?, error_message = ?, dispatch_attempts = ?, updated_at = ? WHERE id = ? AND workspace_id = ? AND status = ?")
+        .run(revertStatus, requeueMsg, newAttempts, now, task.id, task.workspace_id, task.status)
+
+      db.prepare(`INSERT INTO comments (task_id, author, content, created_at, workspace_id) VALUES (?, 'scheduler', ?, ?, ?)`)
+        .run(task.id, requeueMsg, now, task.workspace_id)
+
+      eventBus.broadcast('task.status_changed', {
+        id: task.id, status: revertStatus, previous_status: task.status,
+        error_message: requeueMsg, reason: 'orphaned_task_requeue', workspace_id: task.workspace_id,
+      })
+      syncAndEscalateIfFailed(task as any, revertStatus)
+      requeued++
+    }
+  }
+
+  return {
+    ok: true,
+    message: `Requeued ${requeued}, failed ${failed} of ${orphans.length} orphaned task(s)`,
+  }
+}
+
+/**
+ * Catch assigned tasks whose agent row is missing (deleted/renamed agent).
+ * dispatchAssignedTasks uses JOIN agents — silently skips these.
+ * This function re-routes them to inbox for re-assignment.
+ */
+export async function requeueOrphanedAssignedTasks(
+  staleMs = 15 * 60 * 1000,
+): Promise<{ ok: boolean; message: string }> {
+  const db = getDatabase()
+  const now = Math.floor(Date.now() / 1000)
+  const staleThreshold = now - Math.floor(staleMs / 1000)
+
+  const orphans = db.prepare(`
+    SELECT t.id, t.title, t.assigned_to, t.workspace_id
+    FROM tasks t
+    LEFT JOIN agents a ON a.name = t.assigned_to AND a.workspace_id = t.workspace_id
+    WHERE t.status = 'assigned'
+      AND t.updated_at < ?
+      AND a.id IS NULL
+    ORDER BY t.updated_at ASC
+  `).all(staleThreshold) as Array<{
+    id: number; title: string; assigned_to: string | null; workspace_id: number
+  }>
+
+  if (orphans.length === 0) return { ok: true, message: 'No orphaned assigned tasks' }
+
+  let requeued = 0
+
+  for (const task of orphans) {
+    const msg = `Assigned task orphaned: agent "${task.assigned_to}" no longer exists. Routed back to inbox for re-assignment.`
+    db.prepare("UPDATE tasks SET status = ?, assigned_to = NULL, error_message = ?, updated_at = ? WHERE id = ? AND workspace_id = ? AND status = 'assigned'")
+      .run('inbox', msg, now, task.id, task.workspace_id)
+
+    db.prepare(`INSERT INTO comments (task_id, author, content, created_at, workspace_id) VALUES (?, 'scheduler', ?, ?, ?)`)
+      .run(task.id, msg, now, task.workspace_id)
+
+    eventBus.broadcast('task.status_changed', {
+      id: task.id, status: 'inbox', previous_status: 'assigned',
+      error_message: msg, reason: 'orphaned_assigned_agent_missing', workspace_id: task.workspace_id,
+    })
+    requeued++
+  }
+
+  return {
+    ok: true,
+    message: `Routed ${requeued} orphaned assigned task(s) back to inbox`,
   }
 }
 
@@ -2026,7 +2158,8 @@ export async function dispatchAssignedTasks(): Promise<{ ok: boolean; message: s
       } else if (String(task.agent_runtime_type || '').toLowerCase() === 'hermes') {
         // Hermes runtime: dispatch to local Hermes proxy via OpenAI-compatible /v1/chat/completions
         const hermesUrl = process.env.HERMES_GATEWAY_URL || 'http://localhost:8645/v1'
-        agentResponse = await callOpenAICompatible(task, prompt, hermesUrl, getOpenAIApiKey(), 'stepfun/step-3.7-flash:free', 'hermes')
+        const hermesModel = resolveCliSandboxOptions(task).model || 'stepfun/step-3.7-flash:free'
+        agentResponse = await callOpenAICompatible(task, prompt, hermesUrl, getOpenAIApiKey(), hermesModel, 'hermes')
       } else if (useDirectApi && !targetSession) {
         // Direct API dispatch - provider chosen by `dispatchModel`. No gateway needed.
         const hermesFallback = process.env.HERMES_GATEWAY_URL
@@ -2190,9 +2323,17 @@ export async function dispatchAssignedTasks(): Promise<{ ok: boolean; message: s
       }
 
       // Update task: status → review, set outcome
-      db.prepare(`
-        UPDATE tasks SET status = ?, outcome = ?, resolution = ?, metadata = ?, updated_at = ? WHERE id = ? AND workspace_id = ?
+      const successUpdate = db.prepare(`
+        UPDATE tasks SET status = ?, outcome = ?, resolution = ?, metadata = ?, updated_at = ? WHERE id = ? AND workspace_id = ? AND status = 'in_progress'
       `).run('review', 'success', truncated, JSON.stringify(existingMeta), Math.floor(Date.now() / 1000), task.id, task.workspace_id)
+
+      if (successUpdate.changes === 0) {
+        // Task status changed concurrently (e.g. cancelled, or another dispatcher won a race).
+        // Do not record false success — log and skip.
+        logger.warn({ taskId: task.id }, 'dispatchAssignedTasks: success UPDATE affected 0 rows — task status changed concurrently, skipping')
+        results.push({ id: task.id, success: false, error: 'Task status changed concurrently, dispatch result discarded' })
+        continue
+      }
 
       // Add a comment from the agent with the full response
       db.prepare(`
@@ -2237,18 +2378,28 @@ export async function dispatchAssignedTasks(): Promise<{ ok: boolean; message: s
       logger.info({ taskId: task.id, agent: task.agent_name }, 'Task dispatched and completed')
     } catch (err: any) {
       const errorMsg = err.message || 'Unknown error'
-      logger.error({ taskId: task.id, agent: task.agent_name, err }, 'Task dispatch failed')
+      // Distinguish credit/billing errors from agent-unreachable errors so ops can
+      // diagnose quickly without root-causing 90+ failures by hand.
+      const errorLower = errorMsg.toLowerCase()
+      const isBillingError = ['credit', 'balance', 'insufficient', 'billing', 'payment', 'quota'].some(k => errorLower.includes(k))
+      const errorCategory = isBillingError ? 'billing_exhausted' : 'agent_unreachable'
+      
+      logger.error({ taskId: task.id, agent: task.agent_name, errorCategory, err }, 'Task dispatch failed')
 
-      // Increment dispatch_attempts and decide next status
-      const currentAttempts = (db.prepare('SELECT dispatch_attempts FROM tasks WHERE id = ? AND workspace_id = ?')
-        .get(task.id, task.workspace_id) as { dispatch_attempts: number } | undefined)?.dispatch_attempts ?? 0
-      const newAttempts = currentAttempts + 1
+      // Atomic increment to prevent race conditions on dispatch_attempts
+      db.prepare('UPDATE tasks SET dispatch_attempts = dispatch_attempts + 1 WHERE id = ? AND workspace_id = ?')
+        .run(task.id, task.workspace_id)
+      const newAttemptsRow = db.prepare('SELECT dispatch_attempts FROM tasks WHERE id = ? AND workspace_id = ?')
+        .get(task.id, task.workspace_id) as { dispatch_attempts: number }
+      const newAttempts = newAttemptsRow?.dispatch_attempts ?? 1
       const maxDispatchRetries = 5
 
       if (newAttempts >= maxDispatchRetries) {
-        const failureMessage = `Dispatch failed ${newAttempts} times. Last: ${errorMsg.substring(0, 5000)}`
-        // Too many failures - move to failed
-        db.prepare('UPDATE tasks SET status = ?, error_message = ?, dispatch_attempts = ?, updated_at = ? WHERE id = ? AND workspace_id = ?')
+        const failurePrefix = isBillingError
+          ? `BILLING: Agent account credits exhausted. Dispatch abandoned after ${newAttempts} attempts`
+          : `Dispatch failed ${newAttempts} times`
+        const failureMessage = `${failurePrefix}. Last: ${errorMsg.substring(0, 5000)}`
+        db.prepare("UPDATE tasks SET status = ?, error_message = ?, dispatch_attempts = ?, updated_at = ? WHERE id = ? AND workspace_id = ? AND status = 'in_progress'")
           .run('failed', failureMessage, newAttempts, Math.floor(Date.now() / 1000), task.id, task.workspace_id)
 
         eventBus.broadcast('task.status_changed', {
@@ -2256,13 +2407,13 @@ export async function dispatchAssignedTasks(): Promise<{ ok: boolean; message: s
           status: 'failed',
           previous_status: 'in_progress',
           error_message: failureMessage,
-          reason: 'max_dispatch_retries_exceeded',
+          reason: isBillingError ? 'agent_credits_exhausted' : 'max_dispatch_retries_exceeded',
+          error_category: errorCategory,
           workspace_id: task.workspace_id,
         })
-        syncAndEscalateIfFailed(task, 'failed', `Dispatch failed ${newAttempts} times`, newAttempts)
+        syncAndEscalateIfFailed(task, 'failed', isBillingError ? `Agent credits exhausted after ${newAttempts} dispatch attempts` : `Dispatch failed ${newAttempts} times`, newAttempts)
       } else {
-        // Revert to assigned so it can be retried on the next tick
-        db.prepare('UPDATE tasks SET status = ?, error_message = ?, dispatch_attempts = ?, updated_at = ? WHERE id = ? AND workspace_id = ?')
+        db.prepare("UPDATE tasks SET status = ?, error_message = ?, dispatch_attempts = ?, updated_at = ? WHERE id = ? AND workspace_id = ? AND status = 'in_progress'")
           .run('assigned', errorMsg.substring(0, 5000), newAttempts, Math.floor(Date.now() / 1000), task.id, task.workspace_id)
 
         eventBus.broadcast('task.status_changed', {
@@ -2270,7 +2421,8 @@ export async function dispatchAssignedTasks(): Promise<{ ok: boolean; message: s
           status: 'assigned',
           previous_status: 'in_progress',
           error_message: errorMsg.substring(0, 500),
-          reason: 'dispatch_failed',
+          reason: isBillingError ? 'dispatch_failed_billing' : 'dispatch_failed',
+          error_category: errorCategory,
           workspace_id: task.workspace_id,
         })
         syncAndEscalateIfFailed(task, 'assigned')
@@ -2281,12 +2433,14 @@ export async function dispatchAssignedTasks(): Promise<{ ok: boolean; message: s
         'task',
         task.id,
         'scheduler',
-        `Task dispatch failed for "${task.title}": ${errorMsg.substring(0, 200)}`,
-        { error: errorMsg.substring(0, 1000) },
+        isBillingError
+          ? `BILLING EXHAUSTED — Task "${task.title}" agent account has insufficient credits`
+          : `Task dispatch failed for "${task.title}": ${errorMsg.substring(0, 200)}`,
+        { error: errorMsg.substring(0, 1000), error_category: errorCategory },
         task.workspace_id
       )
 
-      results.push({ id: task.id, success: false, error: errorMsg.substring(0, 100) })
+      results.push({ id: task.id, success: false, error: isBillingError ? 'Agent credits exhausted' : errorMsg.substring(0, 100) })
     }
   }
 
@@ -2361,10 +2515,14 @@ function scoreAgentForTask(
 export async function autoRouteInboxTasks(): Promise<{ ok: boolean; message: string }> {
   const db = getDatabase()
 
+  // Skip migrated Trello cards (metadata LIKE '%migrated_at%') — they are
+  // informational/infrastructure cards not meant for agent auto-dispatch.
+  // Bulk imports set metadata.migrated_at; manual tasks don't have it.
   const inboxTasks = db.prepare(`
     SELECT id, title, description, priority, tags, workspace_id
     FROM tasks
     WHERE status = 'inbox' AND assigned_to IS NULL
+      AND (metadata NOT LIKE '%migrated_at%' OR metadata IS NULL)
     ORDER BY
       CASE priority WHEN 'critical' THEN 0 WHEN 'high' THEN 1 WHEN 'medium' THEN 2 ELSE 3 END ASC,
       created_at ASC
@@ -2420,8 +2578,9 @@ export async function autoRouteInboxTasks(): Promise<{ ok: boolean; message: str
         return c < 3
       })
       if (!alt) continue // all agents at capacity
-      db.prepare('UPDATE tasks SET status = ?, assigned_to = ?, updated_at = ? WHERE id = ? AND workspace_id = ?')
-        .run('assigned', alt.agent.name, now, task.id, task.workspace_id)
+      const result = db.prepare('UPDATE tasks SET status = ?, assigned_to = ?, updated_at = ? WHERE id = ? AND workspace_id = ? AND status = ?')
+        .run('assigned', alt.agent.name, now, task.id, task.workspace_id, 'inbox')
+      if (result.changes === 0) continue // Task was already claimed by concurrent process
 
       db_helpers.logActivity('task_auto_routed', 'task', task.id, 'scheduler',
         `Auto-assigned "${task.title}" to ${alt.agent.name} (${alt.agent.role}, score: ${alt.score})`,
@@ -2434,8 +2593,9 @@ export async function autoRouteInboxTasks(): Promise<{ ok: boolean; message: str
       continue
     }
 
-    db.prepare('UPDATE tasks SET status = ?, assigned_to = ?, updated_at = ? WHERE id = ? AND workspace_id = ?')
-      .run('assigned', best.name, now, task.id, task.workspace_id)
+    const result = db.prepare('UPDATE tasks SET status = ?, assigned_to = ?, updated_at = ? WHERE id = ? AND workspace_id = ? AND status = ?')
+      .run('assigned', best.name, now, task.id, task.workspace_id, 'inbox')
+    if (result.changes === 0) continue // Task was already claimed by concurrent process
 
     db_helpers.logActivity('task_auto_routed', 'task', task.id, 'scheduler',
       `Auto-assigned "${task.title}" to ${best.name} (${best.role}, score: ${scored[0].score})`,

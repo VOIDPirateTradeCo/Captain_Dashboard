@@ -7,7 +7,6 @@ import { logger } from '@/lib/logger';
 import { validateBody, createTaskSchema, bulkUpdateTaskStatusSchema } from '@/lib/validation';
 import { resolveMentionRecipients } from '@/lib/mentions';
 import { normalizeTaskCreateStatus, resolveTaskAssignee } from '@/lib/task-status';
-import { reconcileDeferredTaskCompletions } from '@/lib/task-dispatch';
 import { pushTaskToGitHub, syncTaskOutbound } from '@/lib/github-sync-engine';
 import { pushTaskToGnap } from '@/lib/gnap-sync';
 import { config } from '@/lib/config';
@@ -83,12 +82,6 @@ export async function GET(request: NextRequest) {
     const limit = Math.min(parseInt(searchParams.get('limit') || '50'), 200);
     const offset = parseInt(searchParams.get('offset') || '0');
 
-    try {
-      await reconcileDeferredTaskCompletions({ workspaceId, limit: 5 })
-    } catch (err) {
-      logger.warn({ err }, 'Deferred task reconciliation failed during task list read')
-    }
-    
     // Build dynamic query
     let query = `
       SELECT t.*, p.name as project_name, p.ticket_prefix as project_prefix,

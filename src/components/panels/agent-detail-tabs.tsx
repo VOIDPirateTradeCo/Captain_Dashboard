@@ -389,8 +389,7 @@ export function SoulTab({
   const handleLoadTemplate = async (templateName: string) => {
     try {
       const data = await apiFetch<{ content: string }>(
-        `/api/agents/${agent.name}/soul?template=${templateName}`,
-        { method: 'PATCH' }
+        `/api/agents/${agent.name}/soul?template=${templateName}`
       )
       setContent(data.content)
       setSelectedTemplate(templateName)
