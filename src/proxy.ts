@@ -211,7 +211,8 @@ export function proxy(request: NextRequest) {
   const isPublicFleetMemory = pathname === '/api/fleet-memory' && request.method === 'GET'
   const isPublicConversations = pathname === '/api/conversations' && request.method === 'GET'
   const isPublicLiveness = pathname === '/api/fleet/liveness' && request.method === 'GET'
-  if (pathname === '/login' || pathname === '/setup' || pathname.startsWith('/api/auth/') || pathname === '/api/setup' || pathname === '/api/docs' || pathname === '/docs' || isPublicHealthProbe || isPublicHealthRoute || isPublicResearchCatalog || isPublicFleetMemory || isPublicConversations || isPublicLiveness) {
+  const isPublicHiveMemory = pathname === '/api/hive/memory' && request.method === 'GET'
+  if (pathname === '/login' || pathname === '/setup' || pathname.startsWith('/api/auth/') || pathname === '/api/setup' || pathname === '/api/docs' || pathname === '/docs' || isPublicHealthProbe || isPublicHealthRoute || isPublicResearchCatalog || isPublicFleetMemory || isPublicConversations || isPublicLiveness || isPublicHiveMemory) {
     const { response, nonce } = nextResponseWithNonce(request)
     return addSecurityHeaders(response, request, nonce)
   }

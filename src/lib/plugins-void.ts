@@ -26,6 +26,7 @@ import { VoidSecurityPanel } from '@/components/panels/void-security-panel'
 import { VoidMonitoringPanel } from '@/components/panels/void-monitoring-panel'
 import { VoidVaultPanel } from '@/components/panels/void-vault-panel'
 import { VoidHiveHealthPanel } from '@/components/panels/void-hivehealth-panel'
+import { HiveMemoryPanel } from '@/components/panels/hive-memory-panel'
 
 interface VoidPanelDef {
   /** URL slug + nav id + registry key. Must start with `void-`. */
@@ -73,6 +74,13 @@ const VOID_PANELS: VoidPanelDef[] = [
     icon: '🩺',
     groupId: 'observe',
     component: VoidHiveHealthPanel,
+  },
+  {
+    id: 'void-hivememory',
+    label: 'Hive Memory',
+    icon: '🧠',
+    groupId: 'observe',
+    component: HiveMemoryPanel,
   },
   {
     id: 'void-placeholder',

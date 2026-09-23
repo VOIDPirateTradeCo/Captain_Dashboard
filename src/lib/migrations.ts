@@ -1559,6 +1559,25 @@ const migrations: Migration[] = [
     }
   },
   {
+    id: '058_hive_memory',
+    up: (db) => {
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS hive_memory (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          agent_name TEXT NOT NULL,
+          memory_type TEXT NOT NULL DEFAULT 'general',
+          content TEXT NOT NULL,
+          importance INTEGER NOT NULL DEFAULT 0,
+          created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+          updated_at INTEGER NOT NULL DEFAULT (unixepoch())
+        )
+      `)
+      db.exec(`CREATE INDEX IF NOT EXISTS idx_hive_memory_agent ON hive_memory(agent_name)`)
+      db.exec(`CREATE INDEX IF NOT EXISTS idx_hive_memory_type ON hive_memory(memory_type)`)
+      db.exec(`CREATE INDEX IF NOT EXISTS idx_hive_memory_created ON hive_memory(created_at DESC)`)
+    }
+  },
+  {
     // #602: per-agent Claude Code base sessions. The base id is a server-generated
     // UUID owned by exactly one agent; created_at doubles as the created-on-disk
     // marker (NULL = base session not yet materialized by a first dispatch).
