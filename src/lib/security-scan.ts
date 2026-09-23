@@ -268,20 +268,24 @@ function scanCredentials(): Category {
 
   const envPath = path.join(process.cwd(), '.env')
   if (existsSync(envPath)) {
-    try {
-      const stat = statSync(envPath)
-      const mode = (stat.mode & 0o777).toString(8)
-      checks.push({
-        id: 'env_permissions',
-        name: '.env file permissions',
-        status: mode === '600' ? 'pass' : 'warn',
-        detail: `.env permissions are ${mode}`,
-        fix: mode !== '600' ? 'Run: chmod 600 .env' : '',
-        severity: 'medium',
-        fixSafety: 'safe',
-      })
-    } catch {
-      checks.push({ id: 'env_permissions', name: '.env file permissions', status: 'warn', detail: 'Could not check .env permissions', fix: 'Run: chmod 600 .env', severity: 'medium', fixSafety: 'safe' })
+    if (process.platform !== 'win32') {
+      try {
+        const stat = statSync(envPath)
+        const mode = (stat.mode & 0o777).toString(8)
+        checks.push({
+          id: 'env_permissions',
+          name: '.env file permissions',
+          status: mode === '600' ? 'pass' : 'warn',
+          detail: `.env permissions are ${mode}`,
+          fix: mode !== '600' ? 'Run: chmod 600 .env' : '',
+          severity: 'medium',
+          fixSafety: 'safe',
+        })
+      } catch {
+        checks.push({ id: 'env_permissions', name: '.env file permissions', status: 'warn', detail: 'Could not check .env permissions', fix: 'Run: chmod 600 .env', severity: 'medium', fixSafety: 'safe' })
+      }
+    } else {
+      checks.push({ id: 'env_permissions', name: '.env file permissions', status: 'pass', detail: 'Windows NTFS ACLs manage .env permissions (chmod not applicable)', fix: '', severity: 'medium', fixSafety: 'safe', platform: 'win32' })
     }
   }
 
