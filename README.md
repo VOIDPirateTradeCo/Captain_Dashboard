@@ -27,6 +27,12 @@ It works with OpenClaw, Claude Code, Codex, and other runtimes - it is not part 
 
 Node.js 22 or newer and pnpm are required for a source install.
 
+> [!IMPORTANT]
+> **On this machine (SQUIDSTATION), the ONE correct way to start Mission Control in
+> production is `mc-run.bat` in this directory.** It deploys the standalone build
+> (`scripts/deploy-standalone.cjs`) and starts `node .next/standalone/server.js`
+> on port 3100. Do not use any other start scripts — they have been removed.
+
 ```bash
 git clone https://github.com/builderz-labs/mission-control.git
 cd mission-control

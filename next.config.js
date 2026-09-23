@@ -3,7 +3,7 @@ const withNextIntl = require('next-intl/plugin')('./src/i18n/request.ts')
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
-  distDir: '.nextbuild',
+
   outputFileTracingRoot: __dirname,
   outputFileTracingIncludes: {
     // These files are read from process.cwd() at runtime and therefore cannot
@@ -46,14 +46,22 @@ const nextConfig = {
   },
   // Don't clean standalone dir (avoids EBUSY on Windows when server running)
   cleanDistDir: false,
-  // Dev server rejects cross-origin requests (page loads/HMR/API) from hosts
-  // not in this list. Wildcard '*' allows any host (safe behind Caddy proxy).
-  allowedDevOrigins: ['*'],
   // Transpile ESM-only packages so they resolve correctly in all environments
   transpilePackages: ['react-markdown', 'remark-gfm'],
   // Disable image optimization in standalone mode (sharp native module issues)
   images: {
     unoptimized: true,
+  },
+
+  // Fleet memory pushers POST large SQLite conversation exports (up to ~100MB).
+  // The standalone server truncates request bodies at 10MB without this.
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '250mb',
+    },
+    proxy: {
+      maxSize: '250mb',
+    },
   },
   
   // Security headers

@@ -679,7 +679,7 @@ async function run() {
       process.exit(EXIT.USAGE);
     }
 
-    let handler = groupMap[action];
+    const handler = groupMap[action];
     if (!handler) {
       console.error(`Unknown action: ${group} ${action}`);
       usage();
