@@ -59,9 +59,6 @@ const nextConfig = {
     serverActions: {
       bodySizeLimit: '250mb',
     },
-    proxy: {
-      maxSize: '250mb',
-    },
   },
   
   // Security headers
