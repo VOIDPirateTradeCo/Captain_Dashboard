@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sandbox Lab</title>
+    <style>
+        body { background:#02040a; color:#e2e8f0; font-family:'Segoe UI',monospace; padding:20px; margin:0; }
+        nav { background:#0f172a; padding:10px 20px; border-bottom:1px solid #1e293b; }
+        nav a { color:#7dd3fc; text-decoration:none; margin-right:14px; font-size:13px; }
+        nav a:hover { color:#fbbf24; }
+        h1 { color:#a855f7; }
+        .card { background:rgba(15,23,42,0.65); border:1px solid #1e293b; border-radius:12px; padding:16px; margin:14px 0; }
+        .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px; }
+        pre { background:#000; padding:12px; border-radius:8px; color:#c084fc; overflow:auto; font-size:0.78em; }
+        h3 { color:#fbbf24; }
+    </style>
+</head>
+<body>
+<nav>
+    <a href="/">🏠 HQ</a><a href="/tab/fleet">🛰️ Fleet</a><a href="/tab/security">🛡️ Security</a>
+    <a href="/tab/tickets">🎟️ Tickets</a><a href="/tab/hivemind">🧠 Hive Mind</a><a href="/tab/art">🎨 AI Art</a>
+    <a href="/tab/whitewhale">🐋 White Whale</a><a href="/tab/monitoring">📡 Monitoring</a><a href="/tab/sandbox">🧪 Sandbox</a>
+</nav>
+<h1>🧪 SANDBOX LAB — Isolated Test Environment</h1>
+<p>VirtualBox VMs, Docker sandboxes, and isolated network segments for safe experimentation.</p>
+<div class="grid">
+    <div class="card"><h3>Status</h3><pre id="status">Loading...</pre></div>
+    <div class="card"><h3>VMs</h3><pre id="vms">Loading...</pre></div>
+    <div class="card"><h3>Hardware</h3><pre id="hardware">Loading...</pre></div>
+    <div class="card"><h3>Network</h3><pre id="network">Loading...</pre></div>
+    <div class="card"><h3>Docker</h3><pre id="docker">Loading...</pre></div>
+</div>
+<script>
+async function loadSec(sec, el){
+    try { const r=await fetch('/api/sandbox/'+sec); const d=await r.json();
+        document.getElementById(el).textContent = (typeof d==='string')? d : JSON.stringify(d,null,2);
+    } catch(e){ document.getElementById(el).textContent='ERR '+e.message; }
+}
+async function load(){
+    for (const [s,e] of [['status','status'],['vms','vms'],['hardware','hardware'],['network','network'],['docker','docker']]) await loadSec(s,e);
+}
+load(); setInterval(load, 15000);
+</script>
+</body>
+</html>

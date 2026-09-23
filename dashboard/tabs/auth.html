@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><title>Auth & Scopes</title>
+<style>body{background:#0b1d2e;color:#ffd700;font-family:'Segoe UI',sans-serif;padding:20px;margin:0}
+nav{background:#081726;padding:10px 20px;border-bottom:1px solid #1f3a55;margin:-20px -20px 18px}
+nav a{color:#00aaff;text-decoration:none;margin-right:14px;font-size:14px}nav a:hover{color:#ffd700}
+h1{color:#ffd700}.card{background:#122a3d;border:1px solid #1f3a55;border-radius:10px;padding:14px;margin:8px 0}
+.scope{display:inline-block;background:#0a1f30;border:1px solid #56fb88;color:#56fb88;border-radius:6px;padding:4px 10px;margin:3px}
+input{background:#0a1f30;color:#9fe7ff;border:1px solid #1f3a55;padding:6px;border-radius:6px;width:240px}
+button{background:#5a1020;color:#ffd700;border:1px solid #ffd700;padding:6px 12px;border-radius:6px;cursor:pointer}
+.status{color:#9fe7ff;font-size:.85em;margin-top:8px}</style></head>
+<body>
+<nav><a href="/">🏠 HQ</a><a href="/tab/fleet">🛰️ Fleet</a><a href="/tab/crew">👥 Crew</a><a href="/tab/dataview">📊 Dataview</a><a href="/tab/auth">🔑 Auth</a><a href="/tab/diagram">📐 Diagram</a></nav>
+<h1>🔑 CREW AUTH & SCOPES — White Whale Gating</h1>
+<p class="status">Verify a crew bot token (White Whale passphrase-gated tools). Endpoint: <code>/api/auth/verify?token=</code></p>
+<div class="card"><span class="scope">green_tide → Sir Green</span><span class="scope">pink_wave → Miss Pink</span><span class="scope">azure_storm → Sir Azure</span></div>
+<div class="card"><input id="tok" placeholder="enter crew token"><button onclick="verify()">Verify</button><div class="status" id="st"></div></div>
+<script>
+async function loadScopes(){try{const d=await(await fetch('/api/auth/scopes')).json();
+document.getElementById('st').textContent='valid tokens: '+(d.valid_tokens||[]).join(', ');}catch(e){}}
+async function verify(){const t=document.getElementById('tok').value;
+try{const d=await(await fetch('/api/auth/verify?token='+encodeURIComponent(t))).json();
+document.getElementById('st').textContent=JSON.stringify(d);}catch(e){document.getElementById('st').textContent='ERR '+e.message;}}
+loadScopes();</script></body></html>

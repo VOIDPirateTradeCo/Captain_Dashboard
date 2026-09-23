@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Augur Trading — VOID Pirate Captain</title>
+    <style>
+        body { background:#02040a; color:#e2e8f0; font-family:'Segoe UI',monospace; padding:20px; margin:0; }
+        nav { background:#0f172a; padding:10px 20px; border-bottom:1px solid #1e293b; }
+        nav a { color:#7dd3fc; text-decoration:none; margin-right:14px; font-size:13px; }
+        nav a:hover { color:#fbbf24; }
+        h1 { color:#38bdf8; }
+        .card { background:rgba(15,23,42,0.65); border:1px solid #1e293b; border-radius:12px; padding:16px; margin:14px 0; }
+        pre { background:#000; padding:12px; border-radius:8px; color:#56fb88; overflow:auto; font-size:0.8em; }
+        .metric { color:#fbbf24; }
+        .error { color:#f87171; }
+        .section-title { color:#38bdf8; margin-top:18px; }
+        .kv { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:8px 18px; }
+        .kv .row { display:flex; justify-content:space-between; gap:8px; padding:6px 8px; background:rgba(0,0,0,0.35); border:1px solid #1f2937; border-radius:8px; }
+        .kv .label { color:#9fb3d0; }
+        .kv .value { color:#fbbf24; font-weight:700; }
+        .badge { display:inline-block; padding:4px 8px; border-radius:999px; border:1px solid #1e293b; font-size:12px; margin:4px 6px 4px 0; }
+        .badge.ok { color:#56fb88; border-color:#22c55e44; background:#22c55e12; }
+        .badge.warn { color:#fbae42; border-color:#f59e0b44; background:#f59e0b12; }
+        .badge.bad { color:#f85149; border-color:#ef444444; background:#ef444412; }
+    </style>
+</head>
+<body>
+<nav>
+    <a href="/">🏠 HQ</a><a href="/tab/fleet">🛰️ Fleet</a><a href="/tab/security">🛡️ Security</a>
+    <a href="/tab/tickets">🎟️ Tickets</a><a href="/tab/hivemind">🧠 Hive Mind</a><a href="/tab/art">🎨 AI Art</a>
+    <a href="/tab/whitewhale">🐋 White Whale</a><a href="/tab/monitoring">📡 Monitoring</a><a href="/tab/rig-report">⚙️ Rig Report</a>
+</nav>
+<h1>🧠 AUGUR TRADING — Live Alpaca + AI Status</h1>
+<p class="metric">Augur training status, Alpaca paper account, open orders, positions, and signals.</p>
+
+<div class="card">
+  <h3 class="section-title">Alpaca Account</h3>
+  <div id="account" class="kv">Loading...</div>
+</div>
+
+<div class="card">
+  <h3 class="section-title">Open Orders</h3>
+  <pre id="orders">Loading...</pre>
+</div>
+
+<div class="card">
+  <h3 class="section-title">Positions</h3>
+  <pre id="positions">Loading...</pre>
+</div>
+
+<div class="card">
+  <h3 class="section-title">Augur Status</h3>
+  <div id="augur" class="kv">Loading...</div>
+</div>
+
+<div class="card">
+  <h3 class="section-title">Signals</h3>
+  <pre id="signals">Loading...</pre>
+</div>
+
+<div class="card">
+  <h3 class="section-title">Raw JSON</h3>
+  <pre id="raw">Loading...</pre>
+</div>
+
+<script>
+function esc(s){ return String(s==null?'':s); }
+function boolBadge(v){
+  if(v===true) return '<span class="badge ok">true</span>';
+  if(v===false) return '<span class="badge bad">false</span>';
+  return '<span class="badge warn">'+esc(v)+'</span>';
+}
+function renderAccount(obj){
+  const wrap=document.getElementById('account');
+  if(!obj || Object.keys(obj).length===0){ wrap.innerHTML='<div class="row"><span class="label">No account data</span><span class="value">—</span></div>'; return; }
+  wrap.innerHTML=Object.entries(obj).map(([k,v])=>{
+    let val=esc(v);
+    if(k==='status') val=boolBadge(v);
+    return '<div class="row"><span class="label">'+k+'</span><span class="value">'+val+'</span></div>';
+  }).join('');
+}
+function renderAugurStatus(obj){
+  const wrap=document.getElementById('augur');
+  if(!obj || Object.keys(obj).length===0){ wrap.innerHTML='<div class="row"><span class="label">No augur data</span><span class="value">—</span></div>'; return; }
+  wrap.innerHTML=Object.entries(obj).map(([k,v])=>{
+    let val=esc(v);
+    if(k==='running' || k==='stop_requested') val=boolBadge(v);
+    return '<div class="row"><span class="label">'+k+'</span><span class="value">'+val+'</span></div>';
+  }).join('');
+}
+async function load(){
+  try {
+    const r = await fetch('/api/augur');
+    const data = await r.json();
+    const bridge = data.alpaca_bridge || {};
+    const account = (bridge.account || {});
+    renderAccount(account);
+    document.getElementById('orders').textContent = JSON.stringify(bridge.open_orders || [], null, 2);
+    document.getElementById('positions').textContent = JSON.stringify(bridge.positions || [], null, 2);
+    const augur = ((data.live_backend && data.live_backend.augur_status && data.live_backend.augur_status.data) || {});
+    renderAugurStatus(augur);
+    document.getElementById('signals').textContent = JSON.stringify(((data.live_backend && data.live_backend.signals && data.live_backend.signals.data) || {}), null, 2);
+    document.getElementById('raw').textContent = JSON.stringify(data, null, 2);
+  } catch(e) {
+    document.getElementById('account').innerHTML = '<span class="badge bad">ERR ' + esc(e.message) + '</span>';
+  }
+}
+load();
+setInterval(load, 15000);
+</script>
+</body>
+</html>

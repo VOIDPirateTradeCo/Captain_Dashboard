@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fleet Updates</title>
+    <style>
+        body { background:#0b1d2e; color:#ffd700; font-family:'Segoe UI',sans-serif; padding:20px; margin:0; }
+        nav { background:#081726; padding:10px 20px; border-bottom:1px solid #1f3a55; margin:-20px -20px 18px; }
+        nav a { color:#00aaff; text-decoration:none; margin-right:14px; font-size:14px; }
+        nav a:hover { color:#ffd700; }
+        h1 { color:#ffd700; }
+        .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:14px; }
+        .card { background:#122a3d; border:1px solid #1f3a55; border-radius:12px; padding:16px; }
+        .comp { color:#56fb88; font-weight:700; }
+        .ver { color:#9fe7ff; font-size:1.1em; }
+        .node { display:inline-block; padding:3px 8px; border-radius:6px; margin:2px; font-size:0.82em; }
+        .node.online { border:1px solid #56fb88; color:#56fb88; }
+        .node.offline { border:1px solid #f85149; color:#f85149; }
+        code { background:#0a1f30; padding:2px 6px; border-radius:4px; color:#9fe7ff; font-size:0.8em; }
+        .status { color:#9fe7ff; font-size:0.85em; margin-top:8px; }
+        button { background:#5a1020; color:#ffd700; border:1px solid #ffd700; padding:6px 12px; border-radius:6px; cursor:pointer; }
+    </style>
+</head>
+<body>
+<nav>
+    <a href="/">🏠 HQ</a><a href="/tab/fleet">🛰️ Fleet</a><a href="/tab/crew">👥 Crew</a>
+    <a href="/tab/fleet_version">📦 Fleet Updates</a><a href="/tab/security">🛡️ Security</a><a href="/tab/monitoring">📡 Monitoring</a>
+</nav>
+<h1>📦 FLEET VERSION DISTRIBUTION</h1>
+<p class="status">Pull-based: Captain (SQUIDSTATION) bumps a version → committed to the shared vault → crew PCs <code>git pull</code> + <code>docker compose up</code>. No remote-exec needed.</p>
+<div class="grid" id="comp-grid"><div class="card">Loading manifest...</div></div>
+<h2 style="color:#ffd700;margin-top:20px;">🖥️ Crew Nodes</h2>
+<div class="card" id="nodes-card">Loading...</div>
+
+<script>
+async function load(){
+    try {
+        const m = await (await fetch('/api/fleet/version')).json();
+        const grid = document.getElementById('comp-grid'); grid.innerHTML='';
+        for (const [name, c] of Object.entries(m.components||{})){
+            const d=document.createElement('div'); d.className='card';
+            d.innerHTML=`<div class="comp">${name}</div><div class="ver">v${c.version}</div>
+                <div class="status">${c.notes||''}</div>
+                <div class="status">sync: <code>${c.update_cmd}</code></div>`;
+            grid.appendChild(d);
+        }
+        const nc=document.getElementById('nodes-card');
+        nc.innerHTML = (m.crew_nodes? Object.entries(m.crew_nodes).map(([n,nd])=>
+            `<span class="node ${nd.online?'online':'offline'}">${n} ${nd.online?'🟢':'🔴'} ${nd.role} (${nd.ip}) — v${nd.last_seen_version||'?'}</span>`).join(' '):'')
+            + `<div class="status">distribution: ${m.distribution_model||''} · this node: ${m.this_node||''}</div>`;
+    } catch(e){ document.getElementById('comp-grid').innerHTML=`<div class="card">ERR ${e.message}</div>`; }
+}
+load(); setInterval(load, 20000);
+</script>
+</body>
+</html>

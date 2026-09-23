@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fleet — Hive Mind Command</title>
+    <style>
+        body { background:#02040a; color:#e2e8f0; font-family:'Segoe UI','Courier New',monospace; padding:20px; }
+        h1 { color:#38bdf8; margin:0 0 4px 0; }
+        .sub { color:#64748b; font-size:0.85em; margin-bottom:16px; }
+
+        .banner { border-radius:10px; padding:14px 18px; margin-bottom:18px; font-size:1.1em;
+                  border:1px solid; display:flex; justify-content:space-between; align-items:center; }
+        .banner.synced { background:rgba(16,185,129,0.10); border-color:#10b981; color:#34d399; }
+        .banner.partial { background:rgba(251,191,36,0.10); border-color:#fbbf24; color:#fbbf24; }
+        .banner b { font-size:1.3em; }
+
+        .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(310px,1fr)); gap:14px; }
+        .card { background:rgba(15,23,42,0.85); border:1px solid #1e293b; border-radius:10px;
+                padding:16px; box-shadow:0 0 18px rgba(56,189,248,0.08); }
+        .card.online { border-left:4px solid #10b981; }
+        .card.stale { border-left:4px solid #fbbf24; }
+        .card.missing { border-left:4px solid #f87171; opacity:0.75; }
+        .card h3 { color:#fbbf24; margin:0 0 2px 0; font-size:1.15em; }
+        .crew { color:#94a3b8; font-size:0.85em; margin-bottom:10px; }
+
+        .state { font-weight:bold; letter-spacing:0.5px; }
+        .ok { color:#34d399; } .bad { color:#f87171; } .warn { color:#fbbf24; } .dim { color:#64748b; }
+
+        table { width:100%; border-collapse:collapse; font-size:0.86em; margin-top:8px; }
+        td { padding:2px 0; vertical-align:top; }
+        td.k { color:#64748b; width:38%; }
+
+        .pills { margin-top:10px; display:flex; flex-wrap:wrap; gap:5px; }
+        .pill { font-size:0.72em; padding:2px 7px; border-radius:10px; border:1px solid; }
+        .pill.up { color:#34d399; border-color:#10b981; background:rgba(16,185,129,0.08); }
+        .pill.down { color:#f87171; border-color:#7f1d1d; background:rgba(248,113,113,0.06); }
+        .pill.tool { color:#93c5fd; border-color:#1e40af; background:rgba(59,130,246,0.08); }
+
+        .install { background:#0b1120; border:1px dashed #334155; border-radius:8px;
+                   padding:12px; margin-top:18px; font-size:0.82em; color:#94a3b8; }
+        .install code { display:block; color:#38bdf8; margin:3px 0; white-space:pre-wrap; }
+    </style>
+</head>
+<body>
+    <h1>&#9875; Fleet — Hive Mind</h1>
+    <div class="sub">Live from <span class="mono">/api/fleet</span> — every rig running hive_agent.py. Refreshes every 10s.</div>
+
+    <div id="banner" class="banner partial">Loading hive state…</div>
+    <div class="grid" id="ships"></div>
+    <div id="pending"></div>
+
+    <script>
+        function age(sec) {
+            if (sec === null || sec === undefined) return '—';
+            if (sec < 60) return sec + 's ago';
+            if (sec < 3600) return Math.round(sec / 60) + 'm ago';
+            return Math.round(sec / 3600) + 'h ago';
+        }
+
+        function esc(s) {
+            return String(s === null || s === undefined ? '—' : s)
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        function shipCard(s) {
+            // NEVER_SEEN = agent not installed yet; STALE = installed but silent >5min.
+            const cls = s.state === 'ONLINE' ? 'online' : (s.state === 'STALE' ? 'stale' : 'missing');
+            const sc  = s.state === 'ONLINE' ? 'ok' : (s.state === 'STALE' ? 'warn' : 'bad');
+
+            if (!s.agent_installed) {
+                return `<div class="card missing">
+                    <h3>${esc(s.ship)}</h3>
+                    <div class="crew">${esc(s.crew)}</div>
+                    <div class="state bad">AGENT NOT INSTALLED</div>
+                    <div class="dim" style="margin-top:8px;font-size:0.85em;">
+                        Never checked in. Crew must run the one-line install below.</div>
+                </div>`;
+            }
+
+            const svc = Object.entries(s.services || {}).map(([k, v]) =>
+                `<span class="pill ${v ? 'up' : 'down'}">${esc(k)}</span>`).join('');
+            const tools = Object.entries(s.tooling || {})
+                .filter(([, v]) => v)
+                .map(([k]) => `<span class="pill tool">${esc(k)}</span>`).join('');
+
+            return `<div class="card ${cls}">
+                <h3>${esc(s.ship)}</h3>
+                <div class="crew">${esc(s.crew)} &middot; ${esc(s.lane)}</div>
+                <div class="state ${sc}">${esc(s.state)}</div>
+                <table>
+                    <tr><td class="k">Last seen</td><td>${age(s.seconds_ago)}</td></tr>
+                    <tr><td class="k">LAN IP</td><td>${esc(s.ip)}</td></tr>
+                    <tr><td class="k">Tailscale</td><td>${esc(s.tailscale_ip)}</td></tr>
+                    <tr><td class="k">OS</td><td>${esc(s.os)}</td></tr>
+                    <tr><td class="k">CPU / Disk</td><td>${esc(s.cpu_count)} cores &middot; ${esc(s.disk_free_gb)} GB free</td></tr>
+                    <tr><td class="k">Agent</td><td>v${esc(s.agent_version)}</td></tr>
+                </table>
+                <div class="pills">${svc}</div>
+                <div class="pills">${tools}</div>
+            </div>`;
+        }
+
+        async function loadFleet() {
+            try {
+                const r = await fetch('/api/fleet');
+                const d = await r.json();
+                const h = d.hive_mind || {};
+
+                const banner = document.getElementById('banner');
+                banner.className = 'banner ' + (h.sync_complete ? 'synced' : 'partial');
+                banner.innerHTML = h.sync_complete
+                    ? `<span>&#9989; HIVE MIND FULLY SYNCED</span><b>${h.ships_online}/${h.ships_total}</b>`
+                    : `<span>&#9888; HIVE MIND PARTIAL — awaiting ${(h.ships_pending_agent || []).join(', ') || 'crew'}</span><b>${h.ships_online}/${h.ships_total}</b>`;
+
+                const ships = Object.values(d.ships || {});
+                // Online rigs first so the Captain sees live capacity at a glance.
+                ships.sort((a, b) => (a.state === 'ONLINE' ? 0 : 1) - (b.state === 'ONLINE' ? 0 : 1));
+                document.getElementById('ships').innerHTML = ships.map(shipCard).join('');
+
+                const pend = h.ships_pending_agent || [];
+                document.getElementById('pending').innerHTML = pend.length ? `
+                    <div class="install">
+                        <b style="color:#fbbf24;">Pending rigs: ${pend.join(', ')}</b><br>
+                        Run on each rig (PowerShell, no admin needed):
+                        <code>mkdir "$env:USERPROFILE\\void_hive" -Force</code>
+                        <code>curl.exe -o "$env:USERPROFILE\\void_hive\\hive_agent.py" http://192.168.0.39:9000/agent</code>
+                        <code>python "$env:USERPROFILE\\void_hive\\hive_agent.py" once</code>
+                        <code>python "$env:USERPROFILE\\void_hive\\hive_agent.py" install</code>
+                    </div>` : '';
+            } catch (e) {
+                document.getElementById('banner').innerHTML =
+                    '<span class="bad">Fleet API unreachable — is the dashboard backend on 9000 up?</span>';
+            }
+        }
+
+        loadFleet();
+        setInterval(loadFleet, 10000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+[
+  {
+    "provider": "Groq",
+    "has_free_tier": true,
+    "limits": "Organization-level free tier with model-specific rate limits. Examples: groq/compound 30 RPM / 250 RPD / 70K TPM; openai/gpt-oss-120b 30 RPM / 1K RPD / 8K TPM / 200K TPD. Cached tokens do not count toward limits. Spend limits unavailable on free tier.",
+    "signup_url": "https://console.groq.com/",
+    "notes": "Free tier is rate-limited, not credit-based. Higher limits available on Developer paid plan. Exact limits visible on account Limits page."
+  },
+  {
+    "provider": "Together AI",
+    "has_free_tier": false,
+    "limits": "Official docs state there is no free trial; platform requires a minimum $5 credit purchase upfront. Invite-only research credits program exists for students.",
+    "signup_url": "https://api.together.ai/",
+    "notes": "Some third-party sources mention $5 signup credits or startup accelerator credits up to $50K, but official billing docs say no free trial and minimum $5 purchase required."
+  },
+  {
+    "provider": "Mistral",
+    "has_free_tier": true,
+    "limits": "Free mode includes monthly usage with low rate limits. Community reports indicate roughly 1 request per second globally per API key and approximately ~1 billion tokens/month included. Exact per-model RPM/TPM limits are shown in the Admin Panel API Limits page.",
+    "signup_url": "https://console.mistral.ai/",
+    "notes": "Free tier is enough for testing, not production. Usage and limits are managed per Organization and Workspace in the Admin Panel."
+  },
+  {
+    "provider": "HuggingFace",
+    "has_free_tier": true,
+    "limits": "Inference Providers: free users get $0.10 monthly credits (subject to change); pay-as-you-go available. Hub API: free user rate limits are 1,000 API / 5,000 resolver / 200 page requests per 5-minute window. PRO/Team/Enterprise tiers raise these limits.",
+    "signup_url": "https://huggingface.co/join",
+    "notes": "Free monthly Inference Provider credit is small and consumed via routed requests. Hub rate limits apply separately to model/dataset download and search."
+  },
+  {
+    "provider": "Cohere",
+    "has_free_tier": true,
+    "limits": "Trial/evaluation API key is free with 1,000 API calls per month. Chat models trial rate limit is 20 requests/min; Embed is 2,000 inputs/min; Rerank is 10 req/min. Trial keys are for non-production use only.",
+    "signup_url": "https://dashboard.cohere.com/api-keys",
+    "notes": "Trial keys are rate-limited and non-production. Production keys require payment and provide higher throughput."
+  },
+  {
+    "provider": "DeepSeek",
+    "has_free_tier": false,
+    "limits": "No ongoing free tier. New accounts reportedly receive a one-time grant of 5,000,000 tokens (~$8 value), usable across all models. After grant exhaustion, pay-as-you-go pricing applies.",
+    "signup_url": "https://platform.deepseek.com/",
+    "notes": "Free signup credits are promotional and may require no credit card according to third-party reports; official docs emphasize prepaid balance/top-up. Peak/off-peak pricing affects cost."
+  },
+  {
+    "provider": "Anthropic",
+    "has_free_tier": false,
+    "limits": "New Console accounts receive a one-time small free credit trial, commonly reported as approximately $5 in API credits, usable across Haiku/Sonnet/Opus. Trial expires roughly 14 days after claim. SMS phone verification required; no credit card required for trial. Student builders program offers additional credits (~$50).",
+    "signup_url": "https://platform.claude.com/",
+    "notes": "API is prepaid beyond trial credits; no ongoing free tier. Enterprise extended trials available by contacting sales."
+  }
+]

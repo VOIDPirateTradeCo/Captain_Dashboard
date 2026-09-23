@@ -1,76 +1,112 @@
-# Dependencies
+# VOID Pirate — Mission Control + Captain Dashboard
+# Merged gitignore
+
+# --- Secrets ---
+.env
+.env.*
+!.env.example
+*.local
+secrets/
+configs/reports/
+
+# --- Dependencies ---
 node_modules/
 
-# Next.js
+# --- Next.js ---
 .next/
 .nextbuild/
 out/
-
-# Production
 build/
 dist/
 
-# Data
+# --- Data ---
 .data/
 data/
+*.db
+*.sqlite
+*.sqlite3
+*.sqlite-shm
+*.sqlite-wal
 
-# Runtime
+# --- Runtime ---
 logs/
 tmp/
 *.log
+tmp/
+temp/
+.tmp
+*.tmp
+*.swp
+*.bak
 
-# Hermes / business
+# --- Hermes / business ---
 .hermes/
 hermes-agent/
 shared-skills-vault/
+aegis/
 
-# Misc
+# --- OS ---
 .DS_Store
-*.pem
+Thumbs.ini
+Desktop.ini
 
-# Environment variables - ignore all .env* variants by default
-.env*
+# --- IDE ---
+.vscode/
+.idea/
+.vs/
 
-# Re-allow intentionally committed sample/test files
-!.env.example
-!.env.test
+# --- Large binaries ---
+*.7z
+*.zip
+*.tar.gz
+*.rar
 
-# npm (project uses pnpm)
+# --- npm (project uses pnpm) ---
 package-lock.json
 
-# Debug
+# --- Debug ---
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Vercel
+# --- Vercel ---
 .vercel
 
-# TypeScript
+# --- TypeScript ---
 *.tsbuildinfo
 next-env.d.ts
-.data/
-aegis/
 
-# Playwright
+# --- Playwright ---
 test-results/
 playwright-report/
 .tmp/
 .playwright-mcp/
-
-# Local QA screenshots
 /e2e-debug-*.png
 /e2e-channels-*.png
 docs/_*.png
 
-# Claude Code context files (root CLAUDE.md is committed for AI agent discovery)
+# --- Claude Code context ---
 **/CLAUDE.md
 !/CLAUDE.md
 
-# IDE state
-.vs/
-
-# VOID: MC DB backups (12084) + pre-edit compose backup
+# --- VOID-specific ---
 .backups/
 *.orig
 .next_fresh/
+_SCRATCH/
+_archive/
+_tmp_*
+_scan_*
+_ollama/
+
+# --- Python ---
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+*.venv
+venv/
+.venv/
+
+# --- Misc ---
+*.pem

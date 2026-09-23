@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><title>Diagram</title>
+<style>body{background:#0b1d2e;color:#ffd700;font-family:'Segoe UI',sans-serif;padding:20px;margin:0}
+nav{background:#081726;padding:10px 20px;border-bottom:1px solid #1f3a55;margin:-20px -20px 18px}
+nav a{color:#00aaff;text-decoration:none;margin-right:14px;font-size:14px}nav a:hover{color:#ffd700}
+h1{color:#ffd700}.card{background:#122a3d;border:1px solid #1f3a55;border-radius:10px;padding:14px;margin:8px 0}
+pre{background:#0a1f30;color:#9fe7ff;padding:10px;border-radius:6px;overflow:auto;font-size:.8em}
+.status{color:#9fe7ff;font-size:.85em;margin-top:8px}</style></head>
+<body>
+<nav><a href="/">🏠 HQ</a><a href="/tab/fleet">🛰️ Fleet</a><a href="/tab/crew">👥 Crew</a><a href="/tab/dataview">📊 Dataview</a><a href="/tab/auth">🔑 Auth</a><a href="/tab/diagram">📐 Diagram</a></nav>
+<h1>📐 ARCHITECTURE DIAGRAM</h1>
+<p class="status">Live system diagram from the dashboard backend. Endpoint: <code>/api/diagram</code></p>
+<div class="card"><pre id="out">Loading…</pre></div>
+<script>
+async function load(){try{const d=await(await fetch('/api/diagram')).json();
+document.getElementById('out').textContent=JSON.stringify(d,null,2);}catch(e){document.getElementById('out').textContent='ERR '+e.message;}}
+load();setInterval(load,30000);</script></body></html>
