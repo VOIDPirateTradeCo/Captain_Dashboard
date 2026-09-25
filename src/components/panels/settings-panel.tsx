@@ -977,6 +977,9 @@ export function SettingsPanel() {
       {/* Account / OAuth connection */}
       <AccountOAuthSection />
 
+      {/* Password change */}
+      <PasswordChangeSection />
+
       {/* Unsaved changes bar */}
       {hasChanges && (
         <div className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-card border border-border rounded-lg shadow-lg px-4 py-2.5 flex items-center gap-3 z-40">
@@ -1195,6 +1198,116 @@ function AccountOAuthSection() {
             {feedback.text}
           </div>
         )}
+      </div>
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Password Change Section
+// ---------------------------------------------------------------------------
+
+function PasswordChangeSection() {
+  const { currentUser } = useMissionControl()
+  const [changing, setChanging] = useState(false)
+  const [oldPassword, setOldPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [feedback, setFeedback] = useState<{ ok: boolean; text: string } | null>(null)
+
+  const handleChangePassword = async () => {
+    if (!oldPassword || !newPassword || !confirmPassword) {
+      setFeedback({ ok: false, text: 'All fields are required' })
+      return
+    }
+    if (newPassword.length < 8) {
+      setFeedback({ ok: false, text: 'New password must be at least 8 characters' })
+      return
+    }
+    if (newPassword !== confirmPassword) {
+      setFeedback({ ok: false, text: 'New passwords do not match' })
+      return
+    }
+
+    setChanging(true)
+    try {
+      const res = await apiFetch<Response>('/api/auth/change-password', {
+        method: 'POST',
+        body: JSON.stringify({ old_password: oldPassword, new_password: newPassword }),
+        raw: true,
+      })
+      const data = await res.json().catch(() => ({}))
+      if (res.ok) {
+        setFeedback({ ok: true, text: 'Password changed successfully' })
+        setOldPassword('')
+        setNewPassword('')
+        setConfirmPassword('')
+      } else {
+        setFeedback({ ok: false, text: data.error || 'Failed to change password' })
+      }
+    } catch {
+      setFeedback({ ok: false, text: 'Network error' })
+    } finally {
+      setChanging(false)
+    }
+  }
+
+  if (!currentUser) return null
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center gap-2 pt-2">
+        <h3 className="text-sm font-medium text-foreground">Change Password</h3>
+      </div>
+
+      <div className="bg-card border border-border rounded-lg p-4 space-y-3">
+        <div>
+          <label className="text-xs text-muted-foreground block mb-1">Current Password</label>
+          <input
+            type="password"
+            value={oldPassword}
+            onChange={e => setOldPassword(e.target.value)}
+            className="w-full px-2 py-1.5 text-sm bg-background border border-border rounded-md focus:border-primary focus:outline-hidden"
+            placeholder="Enter current password"
+          />
+        </div>
+        <div>
+          <label className="text-xs text-muted-foreground block mb-1">New Password</label>
+          <input
+            type="password"
+            value={newPassword}
+            onChange={e => setNewPassword(e.target.value)}
+            className="w-full px-2 py-1.5 text-sm bg-background border border-border rounded-md focus:border-primary focus:outline-hidden"
+            placeholder="Enter new password (min 8 chars)"
+          />
+        </div>
+        <div>
+          <label className="text-xs text-muted-foreground block mb-1">Confirm New Password</label>
+          <input
+            type="password"
+            value={confirmPassword}
+            onChange={e => setConfirmPassword(e.target.value)}
+            className="w-full px-2 py-1.5 text-sm bg-background border border-border rounded-md focus:border-primary focus:outline-hidden"
+            placeholder="Confirm new password"
+          />
+        </div>
+
+        {feedback && (
+          <div className={`rounded-md p-2.5 text-xs font-medium ${
+            feedback.ok ? 'bg-green-500/10 text-green-400' : 'bg-destructive/10 text-destructive'
+          }`}>
+            {feedback.text}
+          </div>
+        )}
+
+        <Button
+          onClick={handleChangePassword}
+          disabled={changing || !oldPassword || !newPassword || !confirmPassword}
+          variant="default"
+          size="sm"
+        >
+          {changing ? 'Changing...' : 'Change Password'}
+        </Button>
       </div>
     </div>
   )

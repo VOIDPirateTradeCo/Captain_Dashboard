@@ -17,8 +17,14 @@ function hashPassword(password) {
   return `${salt}:${hash.padStart(64, '0')}`
 }
 
-const targetUser = process.argv[2] || 'Captain'
-const newPassword = process.argv[3] || 'Brewbeard2026!'
+const targetUser = process.argv[2]
+const newPassword = process.argv[3]
+
+if (!targetUser || !newPassword) {
+  console.error('Usage: node scripts/reset-admin-password.js <username> <new_password>')
+  console.error('Example: node scripts/reset-admin-password.js captain MyNewPassword123')
+  process.exit(1)
+}
 
 const dataDir = process.env.MISSION_CONTROL_DATA_DIR || path.join(process.cwd(), '.data')
 const dbPath = path.join(dataDir, 'mission-control.db')
